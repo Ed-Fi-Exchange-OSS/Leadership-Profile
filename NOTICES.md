@@ -1,7 +1,7 @@
-# Insert Repository Name Here
+# Leadership-Profile
 
 This product includes software developed at the [Ed-Fi
-Alliance](https://www.ed-fi.org).
+Alliance](https://www.ed-fi.org) and the [Michael and Susan Dell Foundation](https://www.dell.org).
 
 Copyright (c) 2020 Ed-Fi Alliance, LLC and contributors.
 
