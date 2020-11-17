@@ -1,6 +1,6 @@
-﻿# Insert Repository Name Here
+﻿# Leadership-Profile
 
-Insert project information here
+<Detailed description TBD>
 
 ## Legal Information
 
