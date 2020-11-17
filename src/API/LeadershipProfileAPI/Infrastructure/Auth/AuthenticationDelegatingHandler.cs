@@ -57,8 +57,8 @@ namespace LeadershipProfileAPI.Infrastructure.Auth
         {
             var baseUri = new Uri(_configuration["ODS-API"] + @"/v5.0.0/api/");
 
-            var encodedConsumerKey = HttpUtility.UrlEncode(_configuration["TeacherPortal:Client-Id"]);
-            var encodedConsumerKeySecret = HttpUtility.UrlEncode(_configuration["TeacherPortal:Client-Password"]);
+            var encodedConsumerKey = HttpUtility.UrlEncode(_configuration["ODS-API:Client-Id"]);
+            var encodedConsumerKeySecret = HttpUtility.UrlEncode(_configuration["ODS-API:Client-Secret"]);
             var encodedPair =
                 Convert.ToBase64String(Encoding.UTF8.GetBytes($"{encodedConsumerKey}:{encodedConsumerKeySecret}"));
 
