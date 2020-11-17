@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LeadershipProfileAPI.Infrastructure.Auth;
+using Microsoft.VisualBasic;
 
 namespace LeadershipProfileAPI
 {
@@ -26,8 +28,16 @@ namespace LeadershipProfileAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<AuthenticationDelegatingHandler>();
+
+            var handlerLifeTimeInMinutes = Convert.ToInt32(Configuration["ODS-API-Client-HandlerLifetimeInMin"]);
+            services.AddHttpClient("ODS-API-Client",
+                    x => { x.BaseAddress = new Uri(Configuration["ODS-API"]); })
+                .SetHandlerLifetime(TimeSpan.FromMinutes(handlerLifeTimeInMinutes))
+                .AddHttpMessageHandler<AuthenticationDelegatingHandler>();
 
             services.AddControllers();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "LeadershipProfileAPI", Version = "v1" });
