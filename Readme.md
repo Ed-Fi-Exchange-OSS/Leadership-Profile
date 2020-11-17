@@ -1,6 +1,6 @@
 ﻿# Leadership-Profile
 
-<Detailed description TBD>
+{Detailed description TBD}
 
 ## Legal Information
 
