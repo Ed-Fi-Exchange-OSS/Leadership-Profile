@@ -55,8 +55,6 @@ namespace LeadershipProfileAPI.Infrastructure.Auth
 
         private async Task<string> GetNewToken()
         {
-            var baseUri = new Uri(_configuration["ODS-API"] + @"/v5.0.0/api/");
-
             var encodedConsumerKey = HttpUtility.UrlEncode(_configuration["ODS-API:Client-Id"]);
             var encodedConsumerKeySecret = HttpUtility.UrlEncode(_configuration["ODS-API:Client-Secret"]);
             var encodedPair =
@@ -66,7 +64,7 @@ namespace LeadershipProfileAPI.Infrastructure.Auth
             var requestToken = new HttpRequestMessage
             {
                 Method = HttpMethod.Post,
-                RequestUri = new Uri(baseUri, "oauth/token"),
+                RequestUri = new Uri(new Uri(_configuration["ODS-API"] + @"/v5.0.0/api/"), "oauth/token"),
                 Content = new StringContent("grant_type=client_credentials")
             };
 
