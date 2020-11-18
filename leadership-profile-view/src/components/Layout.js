@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import Navigation from './Navigation';
-import List from './List';
+import Directory from './Directory';
 
 class Layout extends Component {
     render() {
       return (
         <div>
             <Navigation />
-            <List />
+            <Directory />
         </div>
       );
     }
