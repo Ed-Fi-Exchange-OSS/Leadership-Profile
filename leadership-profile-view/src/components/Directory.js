@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Button } from 'reactstrap';
+import DirectoryFilters from './DirectoryFilters';
+import TableList from './TableList';
 
-class List extends Component {
+class Directory extends Component {
     render() {
         return (
             <div>
@@ -28,10 +30,11 @@ class List extends Component {
                         </Button>
                     </p>
                 </div>
-
+                <DirectoryFilters />
+                <TableList />
             </div>
         );
     }
   }
 
-  export default List;
+  export default Directory;
