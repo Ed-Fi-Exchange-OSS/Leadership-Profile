@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Table, Pagination, PaginationItem, PaginationLink } from 'reactstrap';
+import { RightPointingIcon } from './Icons'
 
 class List extends Component {
     render() {
@@ -31,6 +32,7 @@ class List extends Component {
                             <td>Teacher</td>
                             <td>5</td>
                             <td>Ph.D.</td>
+                            <td><RightPointingIcon /></td>
                         </tr>
                     </tbody>
                 </Table>
