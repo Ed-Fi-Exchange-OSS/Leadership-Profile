@@ -1,12 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -38,23 +34,21 @@ namespace LeadershipProfileAPI.Controllers
             response.EnsureSuccessStatusCode();
 
             var readAsString = await response.Content.ReadAsStringAsync();
-         
-            var teachers = JsonConvert.DeserializeObject<IList<TeacherProfile>>(JArray.Parse(readAsString).ToString());
 
-            return teachers;
+            return JsonConvert.DeserializeObject<IList<TeacherProfile>>(JArray.Parse(readAsString).ToString());
         }
     }
 
   
     public class TeacherProfile
     {
-        [Newtonsoft.Json.JsonProperty("staffUniqueId")]
+        [JsonProperty("staffUniqueId")]
         public string Id { get; set; }
-        [Newtonsoft.Json.JsonProperty("firstName")]
+        [JsonProperty("firstName")]
         public string FirstName { get; set; }
-        [Newtonsoft.Json.JsonProperty("middleName")]
+        [JsonProperty("middleName")]
         public string MiddleName { get; set; }
-        [Newtonsoft.Json.JsonProperty("lastSurname")]
+        [JsonProperty("lastSurname")]
         public string LastName { get; set; }
     }
 }

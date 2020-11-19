@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.30709.132
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeadershipProfileAPI", "LeadershipProfileAPI.csproj", "{F69973E8-264D-43C1-8A83-32FDA0BD47EB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeadershiProfileAPI.Tests", "..\LeadershiProfileAPI.Tests\LeadershiProfileAPI.Tests.csproj", "{A183970E-ACF7-46F1-BE9A-1FABBB2EF6A9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{F69973E8-264D-43C1-8A83-32FDA0BD47EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F69973E8-264D-43C1-8A83-32FDA0BD47EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F69973E8-264D-43C1-8A83-32FDA0BD47EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A183970E-ACF7-46F1-BE9A-1FABBB2EF6A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A183970E-ACF7-46F1-BE9A-1FABBB2EF6A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A183970E-ACF7-46F1-BE9A-1FABBB2EF6A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A183970E-ACF7-46F1-BE9A-1FABBB2EF6A9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
