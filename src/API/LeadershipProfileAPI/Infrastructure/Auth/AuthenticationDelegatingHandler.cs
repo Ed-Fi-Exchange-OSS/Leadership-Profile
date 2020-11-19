@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -12,7 +10,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.Extensions.Configuration;
-using Microsoft.VisualBasic;
 
 namespace LeadershipProfileAPI.Infrastructure.Auth
 {
@@ -38,7 +35,7 @@ namespace LeadershipProfileAPI.Infrastructure.Auth
             if (valueFound)
             {
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", tokenValue);
-                response = await base.SendAsync(request, cancellationToken);
+                response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
             }
 
             if (response != null &&
@@ -46,14 +43,14 @@ namespace LeadershipProfileAPI.Infrastructure.Auth
                 response.StatusCode != HttpStatusCode.Forbidden)
                 return response;
 
-            var newToken = await GetNewToken();
+            var newToken = await GetNewTokenAsync().ConfigureAwait(false);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", newToken);
-            response = await base.SendAsync(request, cancellationToken);
+            response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
             return response;
         }
 
-        private async Task<string> GetNewToken()
+        private async Task<string> GetNewTokenAsync()
         {
             var encodedConsumerKey = HttpUtility.UrlEncode(_configuration["ODS-API:Client-Id"]);
             var encodedConsumerKeySecret = HttpUtility.UrlEncode(_configuration["ODS-API:Client-Secret"]);
@@ -69,19 +66,21 @@ namespace LeadershipProfileAPI.Infrastructure.Auth
             };
 
             requestToken.Content.Headers.ContentType =
-                new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded") { CharSet = "UTF-8" };
+                new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded") {CharSet = "UTF-8"};
             requestToken.Headers.TryAddWithoutValidation("Authorization", $"Basic {encodedPair}");
 
             var authApi = _clientFactory.CreateClient();
-            var authResponse = await authApi.SendAsync(requestToken);
+            var authResponse = await authApi.SendAsync(requestToken).ConfigureAwait(false);
 
             if (!authResponse.IsSuccessStatusCode)
                 return string.Empty;
 
-            var refreshTokenResponse = await authResponse.Content.ReadAsStreamAsync();
-            var result = await JsonSerializer.DeserializeAsync<RefreshTokenResponse>(refreshTokenResponse);
+            var refreshTokenResponse = await authResponse.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            var result = await JsonSerializer.DeserializeAsync<RefreshTokenResponse>(refreshTokenResponse)
+                .ConfigureAwait(false);
 
-            TokenDictionary.AddOrUpdate("token", result.AccessToken, (k, existingToken) => result.AccessToken); // check for key match
+            TokenDictionary.AddOrUpdate("token", result.AccessToken,
+                (k, existingToken) => result.AccessToken); // check for key match
 
             return result.AccessToken;
         }
