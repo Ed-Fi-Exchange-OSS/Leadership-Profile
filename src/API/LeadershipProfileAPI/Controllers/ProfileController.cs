@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using LeadershipProfileAPI.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -8,6 +9,7 @@ using Newtonsoft.Json.Linq;
 
 namespace LeadershipProfileAPI.Controllers
 {
+    [TypeFilter(typeof(ApiExceptionFilter))]
     [ApiController]
     [Route("[controller]")]
     public class ProfileController : ControllerBase
@@ -21,6 +23,7 @@ namespace LeadershipProfileAPI.Controllers
             _clientFactory = clientFactory;
         }
 
+     
         [HttpGet]
         public async Task<IEnumerable<TeacherProfile>> Get()
         {
