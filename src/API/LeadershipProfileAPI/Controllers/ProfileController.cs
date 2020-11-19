@@ -24,13 +24,10 @@ namespace LeadershipProfileAPI.Controllers
         [HttpGet]
         public async Task<IEnumerable<TeacherProfile>> Get()
         {
-
             var client = _clientFactory.CreateClient("ODS-API-Client");
 
-            var fragment = "v5.0.0/api/data/v3";
-             
-            var request = new HttpRequestMessage(HttpMethod.Get, $"{fragment}/ed-fi/staffs");
-            
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{Constants.VersionUriFragment}/ed-fi/staffs");
+
             var response = await client.SendAsync(request).ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
@@ -41,16 +38,12 @@ namespace LeadershipProfileAPI.Controllers
         }
     }
 
-  
+
     public class TeacherProfile
     {
-        [JsonProperty("staffUniqueId")]
-        public string Id { get; set; }
-        [JsonProperty("firstName")]
-        public string FirstName { get; set; }
-        [JsonProperty("middleName")]
-        public string MiddleName { get; set; }
-        [JsonProperty("lastSurname")]
-        public string LastName { get; set; }
+        [JsonProperty("staffUniqueId")] public string Id { get; set; }
+        [JsonProperty("firstName")] public string FirstName { get; set; }
+        [JsonProperty("middleName")] public string MiddleName { get; set; }
+        [JsonProperty("lastSurname")] public string LastName { get; set; }
     }
 }
