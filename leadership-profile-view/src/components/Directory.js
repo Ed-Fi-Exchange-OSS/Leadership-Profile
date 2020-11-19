@@ -6,27 +6,36 @@ import DirectoryFilters from './DirectoryFilters';
 import TableList from './TableList';
 import CardList from './CardList';
 
-export default function Directory() {
+const Directory = () => {
     const [activeComponent, setActiveComponent] = useState("table");
 
     return (
         <div>
             <div className='directory-div'>
                 <h2>Directory</h2>
-                <BreadcrumbList />
-                <p>
-                    View Style
-                    <Button color="primary" onClick={() => setActiveComponent("table")}>
-                        <TableViewIcon />
-                    </Button>
-                    <Button color="primary" onClick={() => setActiveComponent("card")}>
-                        <CardViewIcon />
-                    </Button>
-                </p>
+                <div className="directory-subtitle-controls">
+                    <BreadcrumbList />
+                    <div className="view-style-buttons">
+                        <span>View Style</span>
+                        <Button color="primary" onClick={() => setActiveComponent("table")}>
+                            <TableViewIcon />
+                        </Button>
+                        <Button color="primary" onClick={() => setActiveComponent("card")}>
+                            <CardViewIcon />
+                        </Button>
+                    </div>
+                </div>
             </div>
             <DirectoryFilters />
-            <TableList name="table" />
-            <CardList name="card" />
+            { activeComponent === "table" ? (
+                <TableList/>
+            ) : activeComponent === "card" ? (
+                <CardList />
+            ) : null (
+                <div />
+            )}
         </div>
     );
 }
+
+export default Directory;

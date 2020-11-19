@@ -3,17 +3,7 @@ import React, { Component } from 'react';
 class TableViewIcon extends Component {
     render() {
         return (
-            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-grid-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zm8 0A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm-8 8A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm8 0A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5v-3z" />
-            </svg>
-        )
-    }
-}
-
-class CardViewIcon extends Component {
-    render() {
-        return (
-            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-card-list" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <svg width="12px" height="12px" viewBox="0 0 16 16" class="bi bi-card-list" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" d="M14.5 3h-13a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z" />
                 <path fill-rule="evenodd" d="M5 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 5 8zm0-2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0 5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5z" />
                 <circle cx="3.5" cy="5.5" r=".5" />
@@ -24,12 +14,34 @@ class CardViewIcon extends Component {
     }
 }
 
+class CardViewIcon extends Component {
+    render() {
+        return (
+
+            <svg width="12px" height="12px" viewBox="0 0 16 16" class="bi bi-grid-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zm8 0A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm-8 8A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm8 0A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5v-3z" />
+            </svg>
+        )
+    }
+}
+
 class FilterIcon extends Component {
     render() {
         return (
-            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-funnel-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2z" />
-            </svg>
+            <svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" fill="solid" xmlns="http://www.w3.org/2000/svg">
+                <title>402B5C56-C715-4CE9-B8C9-4B3F6DF96D9A</title>
+                <defs>
+                    <path d="M10.877,17.457 L12.903,18.99 L12.903,14.437 C12.903,14.271 12.945,14.108 13.023,13.962 L17.323,6 L6.643,6 L10.765,13.978 C10.839,14.12 10.877,14.278 10.877,14.437 L10.877,17.457 Z M13.903,22 C13.69,22 13.477,21.932 13.3,21.797 L9.274,18.752 C9.024,18.563 8.877,18.268 8.877,17.955 L8.877,14.681 L4.112,5.459 C3.951,5.149 3.964,4.778 4.146,4.48 C4.327,4.182 4.651,4 5,4 L19,4 C19.352,4 19.678,4.185 19.859,4.488 C20.039,4.79 20.047,5.165 19.88,5.475 L14.903,14.69 L14.903,21 C14.903,21.379 14.689,21.726 14.349,21.895 C14.208,21.965 14.055,22 13.903,22 L13.903,22 Z" id="path-1"></path>
+                </defs>
+                <g id="⭐️-[Symbols]-Icons" stroke-width="1" fill="solid" fill-color="#3366FF">
+                    <g id="27)-Icon/funnel">
+                        <mask id="mask-2" >
+                            <use xlink href="#path-1"></use>
+                        </mask>
+                        <use id="🎨-Icon-Сolor" fill="#3366FF" href="#path-1"></use>
+                    </g>
+                </g>
+            </svg >
         );
     }
 }
