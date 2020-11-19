@@ -28,12 +28,14 @@ namespace LeadershipProfileAPI.Controllers
             var client = _clientFactory.CreateClient("ODS-API-Client");
 
             var fragment = "v5.0.0/api/data/v3";
-
-            var response = await client.GetAsync($"{fragment}/ed-fi/staffs");
+             
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{fragment}/ed-fi/staffs");
+            
+            var response = await client.SendAsync(request).ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
 
-            var readAsString = await response.Content.ReadAsStringAsync();
+            var readAsString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             return JsonConvert.DeserializeObject<IList<TeacherProfile>>(JArray.Parse(readAsString).ToString());
         }
