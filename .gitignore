@@ -562,4 +562,7 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 
+# Ignore log file
+src/API/LeadershipProfileAPI/log*.txt
+
 # End of https://www.toptal.com/developers/gitignore/api/visualstudio,rider,react,visualstudiocode,node
