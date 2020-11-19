@@ -1,3 +1,7 @@
+.body {
+  margin: 33px 120px;
+}
+
 .dot {
   height: 25px;
   width: 25px;
@@ -5,3 +9,93 @@
   border-radius: 50%;
   display: inline-block;
 }
+
+/* Directory */
+.directory-subtitle-controls {
+  display: flex;
+  justify-content: space-between;
+}
+
+.view-style-buttons > button {
+  height: 24px;
+  width: 24px;
+  padding: 0;
+}
+
+/* Breadcrumbs */
+.previous-page, .current-page {
+  height: 24px;
+  width: 101px;
+  /* TODO download font */
+  /* font-family: Poppins; */
+  font-size: 14px;
+  letter-spacing: 0;
+  line-height: 24px;
+}
+
+.previous-page {
+  color: #222B45;
+}
+
+.current-page {
+  color: #3366FF;
+}
+
+/* Directory Filters */
+.filters-container {
+  height: 88px;
+  /* width: 1200px; */
+  border-radius: 4px;
+  background-color: #A6C1FF;
+}
+
+.filter-form {
+  display: flex;
+  justify-content: space-between;
+}
+
+.filter-select-with-label {
+  display: flex;
+  width: 25%;
+  margin: 20px;
+}
+
+.filter-select-with-label label {
+  width: 25%;
+}
+
+.filter-select {
+  width: 15%;
+  margin: 20px 30px;
+}
+
+select.filter-dropdown {
+  width: 100% !important;
+}
+
+.filter-select-with-label select {
+  width: 60%;
+}
+
+/* .filters-container label {
+  margin-left: 5%;
+  height: 24px;
+  width: 30%;
+}
+
+select.filter-select {
+  margin: 24px 10px;
+  height: 40px;
+  min-width: 20%;
+} */
+
+.search-sort-container {
+  width: 100%;
+  margin: 24px 0 32px;
+}
+
+/* label
+width: 40%;
+    vertical-align: center;
+    margin: auto 20px;
+*/

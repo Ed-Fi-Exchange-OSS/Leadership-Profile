@@ -7,13 +7,13 @@ class DirectoryFilters extends Component {
         return (
             <div>
                 <div className="filters-container">
-                    <Form inline>
-                        <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                            <Label for="exampleSelect" className="mr-sm-2">
+                    <Form className="filter-form">
+                        <FormGroup className="mb-2 mt-7 mr-sm-2 mb-sm-0 filter-select-with-label">
+                            <Label for="districtSelect" className="mr-sm-2">
                                 <FilterIcon />
                                 Filter by
                             </Label>
-                            <Input type="select" name="select" id="exampleSelect">
+                            <Input type="select" name="select" id="districtSelect" class="filter-dropdown-sm">
                                 <option>District - All</option>
                                 <option>2</option>
                                 <option>3</option>
@@ -21,8 +21,8 @@ class DirectoryFilters extends Component {
                                 <option>5</option>
                             </Input>
                         </FormGroup>
-                        <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                            <Input type="select" name="select" id="exampleSelect">
+                        <FormGroup className="mb-2 mr-sm-2 mb-sm-0 filter-select">
+                            <Input type="select" name="select" class="filter-dropdown">
                                 <option>School - All</option>
                                 <option>2</option>
                                 <option>3</option>
@@ -30,8 +30,8 @@ class DirectoryFilters extends Component {
                                 <option>5</option>
                             </Input>
                         </FormGroup>
-                        <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                            <Input type="select" name="select" id="exampleSelect">
+                        <FormGroup className="mb-2 mr-sm-2 mb-sm-0 filter-select">
+                            <Input type="select" name="select" class="filter-dropdown">
                                 <option>Position - All</option>
                                 <option>2</option>
                                 <option>3</option>
@@ -39,8 +39,8 @@ class DirectoryFilters extends Component {
                                 <option>5</option>
                             </Input>
                         </FormGroup>
-                        <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                            <Input type="select" name="select" id="exampleSelect">
+                        <FormGroup className="mb-2 mr-sm-2 mb-sm-0 filter-select">
+                            <Input type="select" name="select" class="filter-dropdown">
                                 <option>Years of Service - All</option>
                                 <option>2</option>
                                 <option>3</option>
@@ -48,8 +48,8 @@ class DirectoryFilters extends Component {
                                 <option>5</option>
                             </Input>
                         </FormGroup>
-                        <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                            <Input type="select" name="select" id="exampleSelect">
+                        <FormGroup className="mb-2 mr-sm-2 mb-sm-0 filter-select">
+                            <Input type="select" name="select" class="filter-dropdown">
                                 <option>Degree - All</option>
                                 <option>2</option>
                                 <option>3</option>
@@ -59,14 +59,12 @@ class DirectoryFilters extends Component {
                         </FormGroup>
                     </Form>
                 </div>
-                
+
                 <div className="search-sort-container">
                     <Form inline>
-                        <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                            <div>
-                                <Input type="text" name="searchByName" placeholder="Search by name" />
-                                <SearchIcon />
-                            </div>
+                        <FormGroup className="w-50" class="search-by-name">
+                            <Input type="text" name="searchByName" placeholder="Search by name" className="w-100" />
+                            <SearchIcon />
                         </FormGroup>
                         <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
                             <Input type="select" name="select" id="exampleSelect">
@@ -76,7 +74,7 @@ class DirectoryFilters extends Component {
                                 <option>4</option>
                                 <option>5</option>
                             </Input>
-                        </FormGroup>                        
+                        </FormGroup>
                         <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
                             <Label for="sortBy" className="mr-sm-2">
                                 <FilterIcon />
@@ -104,6 +102,6 @@ class DirectoryFilters extends Component {
             </div>
         );
     }
-  }
+}
 
-  export default DirectoryFilters;
+export default DirectoryFilters;
