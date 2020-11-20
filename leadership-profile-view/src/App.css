@@ -79,6 +79,7 @@ select.filter-dropdown {
 
 .search-sort-form {
   display: flex;
+  margin-top: 30px;
 }
 
 .sorting-container {
