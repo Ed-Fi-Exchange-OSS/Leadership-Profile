@@ -77,25 +77,24 @@ select.filter-dropdown {
   width: 60%;
 }
 
-/* .filters-container label {
-  margin-left: 5%;
-  height: 24px;
+.search-sort-form {
+  display: flex;
+}
+
+.sorting-container {
+  display: flex;
+  width: 50%;
+}
+
+.sort-by {
+  display: flex;
+  width: 60%;
+}
+
+.sort-by select {
+  width: 60%;
+}
+
+.experience-sort {
   width: 30%;
 }
-
-select.filter-select {
-  margin: 24px 10px;
-  height: 40px;
-  min-width: 20%;
-} */
-
-.search-sort-container {
-  width: 100%;
-  margin: 24px 0 32px;
-}
-
-/* label
-width: 40%;
-    vertical-align: center;
-    margin: auto 20px;
-*/

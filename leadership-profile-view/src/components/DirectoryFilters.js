@@ -61,42 +61,35 @@ class DirectoryFilters extends Component {
                 </div>
 
                 <div className="search-sort-container">
-                    <Form inline>
+                    <Form className="search-sort-form">
                         <FormGroup className="w-50" class="search-by-name">
                             <Input type="text" name="searchByName" placeholder="Search by name" className="w-100" />
                             <SearchIcon />
                         </FormGroup>
-                        <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                            <Input type="select" name="select" id="exampleSelect">
-                                <option>Degree - All</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                            </Input>
-                        </FormGroup>
-                        <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                            <Label for="sortBy" className="mr-sm-2">
-                                <FilterIcon />
-                                Sort by
-                            </Label>
-                            <Input type="select" name="select" id="sortBy">
-                                <option>A - B</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                            </Input>
-                        </FormGroup>
-                        <FormGroup>
-                            <Input type="select" name="select" id="experience">
-                                <option>Most experience</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                            </Input>
-                        </FormGroup>
+                        <div className="sorting-container">
+                            <FormGroup className="mb-2 mr-sm-2 mb-sm-0 sort-by">
+                                <Label for="sortBy" className="mr-sm-2">
+                                    <FilterIcon />
+                                    Sort by
+                                </Label>
+                                <Input type="select" name="select" id="sort-by">
+                                    <option>A - B</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                </Input>
+                            </FormGroup>
+                            <FormGroup className="experience-sort">
+                                <Input type="select" name="select" id="experience">
+                                    <option>Most experience</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                </Input>
+                            </FormGroup>
+                        </div>
                     </Form>
                 </div>
             </div>
