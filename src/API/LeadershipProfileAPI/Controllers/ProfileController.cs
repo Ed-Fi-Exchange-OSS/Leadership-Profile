@@ -27,7 +27,7 @@ namespace LeadershipProfileAPI.Controllers
         [HttpGet]
         public async Task<IEnumerable<TeacherProfile>> Get()
         {
-            var client = _clientFactory.CreateClient("ODS-API-Client");
+            var client = _clientFactory.CreateClient(Constants.ODSApiClient);
 
             var request = new HttpRequestMessage(HttpMethod.Get, $"{Constants.VersionUriFragment}/ed-fi/staffs");
 
