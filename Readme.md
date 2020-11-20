@@ -25,7 +25,7 @@ Take a look at Microsoft's recommended way managing secret storage [here](https:
  `dotnet user-secrets init`
 
 2. After running the command above, you should see `UserSecretId` in csproj file:
-[Image]
+![screenshot](/docs/images/screenshot-secrets-csproj.png)
 
 3. To set the Client Id run 
 
