@@ -6,7 +6,7 @@ class List extends Component {
     render() {
         return (
             <div>
-                <Table striped>
+                <Table striped className="directory-table">
                     <thead>
                     <tr>
                         <th></th>
@@ -35,9 +35,8 @@ class List extends Component {
                             <td><RightPointingIcon /></td>
                         </tr>
                     </tbody>
-                </Table>
-                <div>
-                    <span>Showing 1-10 of 340 Users</span>
+                <tfoot>
+                <span>Showing 1-10 of 340 Users</span>
                     <Pagination size="sm" aria-label="Page navigation example">
                         <PaginationItem>
                             <PaginationLink previous href="#" />
@@ -61,8 +60,9 @@ class List extends Component {
                             <PaginationLink next href="#" />
                         </PaginationItem>
                     </Pagination>
+                </tfoot>
+                </Table>
                 </div>
-            </div>
         );
     }
 }

@@ -64,7 +64,7 @@ class DirectoryFilters extends Component {
                     <Form className="search-sort-form">
                         <FormGroup className="w-50" class="search-by-name">
                             <Input type="text" name="searchByName" placeholder="Search by name" className="w-100" />
-                            <SearchIcon />
+                            <SearchIcon stylingId="search-by-name-icon" />
                         </FormGroup>
                         <div className="sorting-container">
                             <FormGroup className="mb-2 mr-sm-2 mb-sm-0 sort-by">

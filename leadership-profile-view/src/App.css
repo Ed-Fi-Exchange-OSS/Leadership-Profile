@@ -99,3 +99,16 @@ select.filter-dropdown {
 .experience-sort {
   width: 30%;
 }
+
+#search-by-name-icon {
+  float: right;
+  margin-right: 6px;
+  margin-top: -27.5px;
+  position: relative;
+  z-index: 2;
+}
+
+/* Directory table list formatting */
+.directory-table thead {
+  background-color: #dfe6ff;
+}
