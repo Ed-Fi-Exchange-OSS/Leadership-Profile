@@ -13,10 +13,10 @@ namespace LeadershipProfileAPI.Tests
         [Fact]
         public async Task ShouldReturnListOfTeacherProfiles()
         {
-            var fakeClientFactory = new MockHttpClientFactory();
-            var  fakeLogger = new MockLogger();
+            var mockHttpClientFactory = new MockHttpClientFactory();
+            var mockLogger = new MockLogger();
 
-            var controller = new ProfileController(fakeLogger, fakeClientFactory);
+            var controller = new ProfileController(mockLogger, mockHttpClientFactory);
 
             var result = (await controller.Get()).ToList();
 

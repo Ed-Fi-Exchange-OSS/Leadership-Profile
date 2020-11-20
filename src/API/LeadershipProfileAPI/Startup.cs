@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Net.Http;
 using LeadershipProfileAPI.Infrastructure.Auth;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -25,9 +26,9 @@ namespace LeadershipProfileAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<AuthenticationDelegatingHandler>();
-
+            
             var handlerLifeTimeInMinutes = Convert.ToInt32(Configuration["ODS-API-Client-HandlerLifetimeInMin"]);
-            services.AddHttpClient("ODS-API-Client",
+            services.AddHttpClient(Constants.ODSApiClient,
                     x => { x.BaseAddress = new Uri(Configuration["ODS-API"]); })
                 .SetHandlerLifetime(TimeSpan.FromMinutes(handlerLifeTimeInMinutes))
                 .AddHttpMessageHandler<AuthenticationDelegatingHandler>();
