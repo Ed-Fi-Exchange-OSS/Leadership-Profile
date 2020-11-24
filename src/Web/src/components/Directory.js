@@ -1,9 +1,9 @@
-import React, { Component, useState } from 'react';
+import React, { useState } from 'react';
 import { Button } from 'reactstrap';
 import { TableViewIcon, CardViewIcon } from './Icons';
 import BreadcrumbList from './Breadcrumb';
 import DirectoryFilters from './DirectoryFilters';
-import TableList from './TableList';
+import TableList from './TableComponents/TableList';
 import CardList from './CardList';
 
 const Directory = () => {
