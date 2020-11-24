@@ -7,7 +7,7 @@ const ProfileInfo = (props) => {
         <Card body>
             <Row>
                 <Col sm="2">
-                    <img width="50px" height="50px" src="https://hips.hearstapps.com/countryliving.cdnds.net/17/47/1511194376-cavachon-puppy-christmas.jpg" class="rounded-circle" />
+                    <img width="50px" height="50px" src="https://hips.hearstapps.com/countryliving.cdnds.net/17/47/1511194376-cavachon-puppy-christmas.jpg" className="rounded-circle" />
                 </Col>
                 <Col>
                     <Row>
