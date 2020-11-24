@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
+import Axios from 'axios';
 
 function UseTableList() {
+    const history = useHistory();
+    const location = useLocation();
     const [data, setData] = useState([]);
 
     const [url, setUrl] = useState(window.location.href);
@@ -18,18 +22,20 @@ function UseTableList() {
     });
 
     useEffect(() => {
+        if (history.action === 'POP' && searchableUrl.search !== location.search) {
+            const searchParams = new URLSearchParams(history.location.search);
+            setPaging({ ...paging, page: searchParams.get('page') });
+            setSort({ category: searchParams.get('sortField'), value: searchParams.get('sortBy') });
+        }
+    }, [history.action, history.location]);
+
+    useEffect(() => {
         searchableUrl = new URL(url);
         const params = Array.from(searchableUrl.searchParams);
         params.forEach(param => searchableUrl.searchParams.delete(param[0]));
         searchableUrl.searchParams.set('page', paging.page);
         searchableUrl.searchParams.set('sortField', sort.category);
         searchableUrl.searchParams.set('sortBy', sort.value);
-        Object.keys(filters)
-            .forEach((key) => {
-                if (filters[key] !== null) {
-                    searchableUrl.searchParams.set(key, filters[key]);
-                }
-            });
         searchableUrl.searchParams.sort();
         setUrl(searchableUrl.href);
     }, [sort, paging.page]);
@@ -42,21 +48,37 @@ function UseTableList() {
 
     useEffect(() => {
         if (!searchableUrl.search) return;
-        const getDirectoryData = `api/pulsechecks/queue${history.location.search}`;
-        const apiUrl = new URL(pulseCheckQueueUrl, config.API_URL);
-        Axios.get(apiUrl, { headers: { Authorization: `Bearer  ${loginData.accessToken}` } })
+        let unmounted = false;
+        const apiUrl = new URL(`https://localhost:44383/Profile?${history.location.search}`);
+        Axios.get(apiUrl)
             .then((response) => {
-                if (response.data.pulseCheckList !== null) {
-                    setData(response.data.staff);
+                if (!unmounted && response.data !== null) {
+                    setData(response.data.profiles);
                     setPaging({
                         ...paging,
-                        totalSize: response.data.totalPulseChecks,
-                        maxPages: Math.ceil(response.data.totalPulseChecks / response.data.count),
+                        totalSize: response.data.totalCount,
+                        maxPages: Math.ceil(response.data.totalCount / 10),
                     });
                 }
             })
-            .catch(error => error);
+            .catch(error => console.log(error.message));
+        return () => {
+            unmounted = true;
+        };
     }, [url]);
 
-    export default UseTableList;
+    function setPage(newPage) {
+        setPaging({
+            ...paging,
+            page: newPage,
+        });
+    }
+  
+    function setColumnSort(category, value) {
+        setSort({ category, value });
+    }
+
+    return { setColumnSort, setSort, sort, data, paging, setPage }
 }
+
+export default UseTableList;

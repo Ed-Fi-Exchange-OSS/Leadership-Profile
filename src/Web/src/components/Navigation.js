@@ -27,7 +27,7 @@ const Navigation = (props) => {
           <Nav>            
               <UncontrolledDropdown nav inNavbar>
                 <DropdownToggle nav caret>
-                    <span class="dot"></span>
+                    <span className="dot"></span>
                     User's Name
                 </DropdownToggle>
                 <DropdownMenu right>

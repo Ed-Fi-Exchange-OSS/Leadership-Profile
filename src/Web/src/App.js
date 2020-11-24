@@ -15,13 +15,13 @@ function App() {
     <div className="App">
       <Navigation />
       <Router>
-        <Switch>
+        {/* <Switch> */}
           <div className="body">
-            <Route exact path="/" component={Directory} />
+            <Route path="/:parameters" render={() => <Directory />} />
             {/* add :id when we have api feeding it */}
-            <Route path="/profile" component={Profile} />
+            <Route exact path="/profile" component={Profile} />
           </div>
-        </Switch>
+        {/* </Switch> */}
       </Router>
     </div>
   );
