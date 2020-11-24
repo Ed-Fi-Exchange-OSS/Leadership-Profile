@@ -29,7 +29,7 @@ namespace LeadershipProfileAPI.Controllers
                 [FromQuery] int page,
                 [FromQuery] string sortField,
                 [FromQuery] string sortBy,
-                [FromQuery] string searchValue
+                [FromQuery] string search
             )
         {
             var client = _clientFactory.CreateClient(Constants.ODSApiClient);
@@ -46,9 +46,9 @@ namespace LeadershipProfileAPI.Controllers
 
             var currentPageProfiles = allProfiles.AsQueryable();
 
-            if (searchValue != null)
+            if (search != null)
                 currentPageProfiles = currentPageProfiles
-                    .Where(x => x.FirstName.Contains(searchValue) || x.LastName.Contains(searchValue))
+                    .Where(x => x.FirstName.Contains(search) || x.LastName.Contains(search))
                     .AsQueryable();
 
             if (sortBy != null && sortField != null)

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Button } from 'reactstrap';
-import { TableViewIcon, CardViewIcon } from './Icons';
-import BreadcrumbList from './Breadcrumb';
-import DirectoryFilters from './DirectoryFilters';
-import TableList from './TableComponents/TableList';
-import CardList from './CardList';
+import { TableViewIcon, CardViewIcon } from '../Icons';
+import BreadcrumbList from '../Breadcrumb';
+import DirectoryFilters from './FiltersComponents/DirectoryFilters';
+import TableList from './TableListComponents/TableList';
+import CardList from './CardListComponents/CardList';
 
 const Directory = () => {
     const [activeComponent, setActiveComponent] = useState("table");

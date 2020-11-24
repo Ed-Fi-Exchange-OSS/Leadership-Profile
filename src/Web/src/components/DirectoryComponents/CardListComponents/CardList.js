@@ -1,5 +1,5 @@
 import React from 'react';
-import { MailIcon, PhoneIcon, PersonIcon, GeoIcon, RightPointingIcon } from './Icons';
+import { MailIcon, PhoneIcon, PersonIcon, GeoIcon, RightPointingIcon } from '../../Icons';
 import { Card, CardTitle, CardText, Row, Col } from 'reactstrap';
 
 // Will use recursion through the data. Card written multiple times right now for visual purposes 
