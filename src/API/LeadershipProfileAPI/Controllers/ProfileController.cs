@@ -58,7 +58,7 @@ namespace LeadershipProfileAPI.Controllers
             return new DirectoryResponse
             {
                 TotalCount = allProfiles.Count,
-                Profiles = currentPageProfiles.ToList(),
+                Profiles = currentPageProfiles.ToArray(),
                 Page = intPage
             };
         }
@@ -100,7 +100,7 @@ namespace LeadershipProfileAPI.Controllers
     {
         public int TotalCount { get; set; }
 
-        public List<TeacherProfile> Profiles { get; set; }
+        public TeacherProfile[] Profiles { get; set; }
 
         public int Page { get; set; }
     }
