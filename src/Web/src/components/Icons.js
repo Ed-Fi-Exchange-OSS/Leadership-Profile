@@ -41,7 +41,7 @@ class FilterIcon extends Component {
                         <use id="🎨-Icon-Сolor" fill="#3366FF" href="#path-1"></use>
                     </g>
                 </g>
-            </svg >
+            </svg>
         );
     }
 }

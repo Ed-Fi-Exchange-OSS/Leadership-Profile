@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Table, Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 import { RightPointingIcon, SortIcon } from '../Icons'
 import Sorting from './Sorting';
-import UseDirectory from './UseDirectory';
 
-function CreateTableList() {
-    const { setColumnSort, sort, data, } = props;
+const CreateTableList = (props) => {
+    const { sort, data, setColumnSort } = props;
 
     function RenderTable(data) {
         return (
@@ -51,13 +50,13 @@ function CreateTableList() {
 
     return (
         <div>
-            {RenderTable(data)}
+            {data != null ? RenderTable(data) : ''}
         </div>
     );
 }
 
-const TableList = () => (
-    <CreateTableList />
+const TableList = (props) => (
+    <CreateTableList sort={props.sort} data={props.data} setColumnSort={props.setColumnSort} />
 );
 
 export default TableList;

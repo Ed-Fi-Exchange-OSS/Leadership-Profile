@@ -7,7 +7,6 @@ const Searching = (props) => {
     const { searchValue, onSearchValueChange } = props;
 
     function handleChange(e) {
-        e.preventDefault();
         onSearchValueChange(e.target.value);
     }
 

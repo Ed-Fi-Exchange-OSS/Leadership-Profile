@@ -10,8 +10,7 @@ import UseDirectory from './UseDirectory';
 
 const Directory = () => {
     const [activeComponent, setActiveComponent] = useState("table");
-    const { paging, setPage } = UseDirectory(); 
-    const { setColumnSort, setSort, sort, data, paging, setPage, search, setSearchValue } = UseDirectory();
+    const { setColumnSort, sort, data, paging, setPage, search, setSearchValue } = UseDirectory();
 
     return (
         <div>
@@ -30,9 +29,9 @@ const Directory = () => {
                     </div>
                 </div>
             </div>
-            <DirectoryFilters />
+            <DirectoryFilters search={search} setSearchValue={setSearchValue} />
             { activeComponent === "table" ? (
-                <TableList/>
+                <TableList sort={sort} data={data} setColumnSort={setColumnSort} />
             ) : activeComponent === "card" ? (
                 <CardList />
             ) : null (

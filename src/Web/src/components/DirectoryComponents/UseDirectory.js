@@ -6,8 +6,6 @@ function UseDirectory() {
     const history = useHistory();
     const location = useLocation();
     const [data, setData] = useState([]);
-    console.log(data);
-
 
     const [url, setUrl] = useState(window.location.href);
     let searchableUrl = new URL(url);
@@ -72,7 +70,7 @@ function UseDirectory() {
                     });
                 }
             })
-            .catch(error => console.log(error.message));
+            .catch(error => console.error(error.message));
         return () => {
             unmounted = true;
         };
@@ -90,7 +88,6 @@ function UseDirectory() {
     }
 
     function setSearchValue(value) {
-        console.log(value);
         setSearch(value);
     }
 
