@@ -26,7 +26,7 @@ namespace LeadershipProfileAPI.Controllers
 
         [HttpGet]
         public async Task<DirectoryResponse> GetDirectory(
-                [FromQuery] int page,
+                [FromQuery] string page,
                 [FromQuery] string sortField,
                 [FromQuery] string sortBy,
                 [FromQuery] string search
@@ -38,8 +38,6 @@ namespace LeadershipProfileAPI.Controllers
 
             var response = await client.SendAsync(request).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
-
             var readAsString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             var allProfiles = JsonConvert.DeserializeObject<IList<TeacherProfile>>(JArray.Parse(readAsString).ToString());
@@ -48,19 +46,20 @@ namespace LeadershipProfileAPI.Controllers
 
             if (search != null)
                 currentPageProfiles = currentPageProfiles
-                    .Where(x => x.FirstName.Contains(search) || x.LastName.Contains(search))
+                    .Where(x => x.FirstName.ToLowerInvariant().Contains(search) || x.LastName.ToLowerInvariant().Contains(search))
                     .AsQueryable();
 
             if (sortBy != null && sortField != null)
                 currentPageProfiles = Sort(currentPageProfiles, sortField, sortBy).AsQueryable();
 
-            currentPageProfiles = currentPageProfiles.Skip((page <= 0 ? 0 : page - 1) * 10).Take(10).AsQueryable();
+            var intPage = int.Parse(page);
+            currentPageProfiles = currentPageProfiles.Skip((intPage <= 0 ? 0 : intPage - 1) * 10).Take(10).AsQueryable();
 
             return new DirectoryResponse
             {
                 TotalCount = allProfiles.Count,
                 Profiles = currentPageProfiles.ToList(),
-                Page = page
+                Page = intPage
             };
         }
 

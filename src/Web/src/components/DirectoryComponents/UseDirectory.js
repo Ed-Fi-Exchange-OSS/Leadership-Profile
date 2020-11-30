@@ -1,11 +1,13 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import Axios from 'axios';
 
-function UseTableList() {
+function UseDirectory() {
     const history = useHistory();
     const location = useLocation();
     const [data, setData] = useState([]);
+    console.log(data);
+
 
     const [url, setUrl] = useState(window.location.href);
     let searchableUrl = new URL(url);
@@ -14,6 +16,10 @@ function UseTableList() {
         category: searchableUrl.searchParams.get('sortField') !== null && searchableUrl.searchParams.get('sortField') !== 'null' ? searchableUrl.searchParams.get('sortField') : 'Id',
         value: searchableUrl.searchParams.get('sortBy') !== null && searchableUrl.searchParams.get('sortBy') !== 'null' ? searchableUrl.searchParams.get('sortBy') : 'desc',
     });
+
+    const [search, setSearch] = useState(
+        searchableUrl.searchParams.get('search') !== null && searchableUrl.searchParams.get('search') !== 'null' ? searchableUrl.searchParams.get('search') : null
+    );
 
     const [paging, setPaging] = useState({
         page: searchableUrl.searchParams.get('page') !== null && searchableUrl.searchParams.get('page') !== 'null' ? searchableUrl.searchParams.get('page') : 1,
@@ -26,6 +32,7 @@ function UseTableList() {
             const searchParams = new URLSearchParams(history.location.search);
             setPaging({ ...paging, page: searchParams.get('page') });
             setSort({ category: searchParams.get('sortField'), value: searchParams.get('sortBy') });
+            setSearch(searchParams.get('search'));
         }
     }, [history.action, history.location]);
 
@@ -36,9 +43,11 @@ function UseTableList() {
         searchableUrl.searchParams.set('page', paging.page);
         searchableUrl.searchParams.set('sortField', sort.category);
         searchableUrl.searchParams.set('sortBy', sort.value);
+        if (search !== null)
+            searchableUrl.searchParams.set('search', search);
         searchableUrl.searchParams.sort();
         setUrl(searchableUrl.href);
-    }, [sort, paging.page]);
+    }, [sort, paging.page, search]);
 
     useEffect(() => {
         searchableUrl = new URL(url);
@@ -49,11 +58,13 @@ function UseTableList() {
     useEffect(() => {
         if (!searchableUrl.search) return;
         let unmounted = false;
-        const apiUrl = new URL(`https://localhost:44383/Profile?${history.location.search}`);
+        const apiUrl = new URL(`https://localhost:44383/Profile${history.location.search}`);
         Axios.get(apiUrl)
             .then((response) => {
                 if (!unmounted && response.data !== null) {
-                    setData(response.data.profiles);
+                    if (response.data.profiles !== undefined) {
+                        setData(response.data.profiles);
+                    }
                     setPaging({
                         ...paging,
                         totalSize: response.data.totalCount,
@@ -78,7 +89,12 @@ function UseTableList() {
         setSort({ category, value });
     }
 
-    return { setColumnSort, setSort, sort, data, paging, setPage }
+    function setSearchValue(value) {
+        console.log(value);
+        setSearch(value);
+    }
+
+    return { setColumnSort, setSort, sort, data, paging, search, setPage, setSearchValue }
 }
 
-export default UseTableList;
+export default UseDirectory;

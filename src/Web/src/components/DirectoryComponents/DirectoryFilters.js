@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import Searching from './Searching';
-import { FilterIcon, SearchIcon } from '../../Icons';
-import UseDirectoryFilters from './UseDirectoryFilters';
+import { FilterIcon, SearchIcon } from '../Icons';
+import UseDirectory from './UseDirectory';
 
-function CreateDirectoryFilters() {
-    const { search, setSearch } = UseDirectoryFilters();
+const CreateDirectoryFilters = (props) => {
+    const { search, setSearchValue } = props;
 
     function RenderFilters(data) {
         return (
@@ -66,7 +66,7 @@ function CreateDirectoryFilters() {
 
                 <div className="search-sort-container">
                     <Form className="search-sort-form">
-                        <Searching onSearchValueChange={searchValue => setSearch(searchValue)} />
+                        <Searching onSearchValueChange={searchValue => setSearchValue(searchValue)} />
                         <div className="sorting-container">
                             <FormGroup className="mb-2 mr-sm-2 mb-sm-0 sort-by">
                                 <Label for="sortBy" className="mr-sm-2">
@@ -99,7 +99,6 @@ function CreateDirectoryFilters() {
 
     return (
         <div>
-            {/* Will eventually pass in filter options as parameters */}
             {RenderFilters()}
         </div>
     );
