@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { SortIcon } from '../../Icons'
+import { SortIcon } from '../Icons'
 
 function selectNewStatus(status) {
   const values = [null, 'asc', 'desc'];

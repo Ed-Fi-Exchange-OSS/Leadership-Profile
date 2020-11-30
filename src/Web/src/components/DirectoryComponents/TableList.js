@@ -1,11 +1,11 @@
 import React from 'react';
 import { Table, Pagination, PaginationItem, PaginationLink } from 'reactstrap';
-import { RightPointingIcon, SortIcon } from '../../Icons'
+import { RightPointingIcon, SortIcon } from '../Icons'
 import Sorting from './Sorting';
-import UseTableList from './UseTableList';
+import UseDirectory from './UseDirectory';
 
 function CreateTableList() {
-    const { setColumnSort, setSort, sort, data, paging, setPage } = UseTableList();
+    const { setColumnSort, sort, data, } = props;
 
     function RenderTable(data) {
         return (
