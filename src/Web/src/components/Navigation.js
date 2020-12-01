@@ -18,7 +18,7 @@ const Navigation = (props) => {
 
   return (
     <div>
-      <Navbar color="light" light expand="md">
+      <Navbar expand="md">
         <NavbarBrand href="/">TPDM Leadership Portal</NavbarBrand>
         <NavbarToggler onClick={toggle} />
         <Collapse isOpen={isOpen} navbar>

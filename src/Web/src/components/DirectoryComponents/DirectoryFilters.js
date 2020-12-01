@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input, Row, Col } from 'reactstrap';
 import Searching from './Searching';
 import { FilterIcon, SearchIcon } from '../Icons';
 import UseDirectory from './UseDirectory';
@@ -11,8 +11,10 @@ const CreateDirectoryFilters = (props) => {
         return (
             <div>
                 <div className="filters-container">
-                    <Form className="filter-form">
-                        <FormGroup className="mb-2 mt-7 mr-sm-2 mb-sm-0 filter-select-with-label">
+                    <Form>
+                    <Row>
+                        <Col className="filter-select-with-label">
+                        <FormGroup className="mb-2 mt-7 mr-sm-2 mb-sm-0 form-group-filter-with-label">
                             <Label for="districtSelect" className="mr-sm-2">
                                 <FilterIcon />
                                 Filter by
@@ -25,7 +27,9 @@ const CreateDirectoryFilters = (props) => {
                                 <option>5</option>
                             </Input>
                         </FormGroup>
-                        <FormGroup className="mb-2 mr-sm-2 mb-sm-0 filter-select">
+                        </Col>
+                        <Col>
+                        <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
                             <Input type="select" name="select" className="filter-dropdown">
                                 <option>School - All</option>
                                 <option>2</option>
@@ -34,7 +38,9 @@ const CreateDirectoryFilters = (props) => {
                                 <option>5</option>
                             </Input>
                         </FormGroup>
-                        <FormGroup className="mb-2 mr-sm-2 mb-sm-0 filter-select">
+                        </Col>
+                        <Col>
+                        <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
                             <Input type="select" name="select" className="filter-dropdown">
                                 <option>Position - All</option>
                                 <option>2</option>
@@ -43,7 +49,9 @@ const CreateDirectoryFilters = (props) => {
                                 <option>5</option>
                             </Input>
                         </FormGroup>
-                        <FormGroup className="mb-2 mr-sm-2 mb-sm-0 filter-select">
+                        </Col>
+                        <Col>
+                        <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
                             <Input type="select" name="select" className="filter-dropdown">
                                 <option>Years of Service - All</option>
                                 <option>2</option>
@@ -52,7 +60,9 @@ const CreateDirectoryFilters = (props) => {
                                 <option>5</option>
                             </Input>
                         </FormGroup>
-                        <FormGroup className="mb-2 mr-sm-2 mb-sm-0 filter-select">
+                        </Col>
+                        <Col>
+                            <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
                             <Input type="select" name="select" className="filter-dropdown">
                                 <option>Degree - All</option>
                                 <option>2</option>
@@ -61,6 +71,8 @@ const CreateDirectoryFilters = (props) => {
                                 <option>5</option>
                             </Input>
                         </FormGroup>
+                        </Col>
+                    </Row>
                     </Form>
                 </div>
 
@@ -68,7 +80,7 @@ const CreateDirectoryFilters = (props) => {
                     <Form className="search-sort-form">
                         <Searching onSearchValueChange={searchValue => setSearchValue(searchValue)} />
                         <div className="sorting-container">
-                            <FormGroup className="mb-2 mr-sm-2 mb-sm-0 sort-by">
+                            <FormGroup className="mb-2 mr-sm-2 mb-sm-0 sort-by-form-group">
                                 <Label for="sortBy" className="mr-sm-2">
                                     <FilterIcon />
                                     Sort by

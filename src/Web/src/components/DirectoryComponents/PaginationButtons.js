@@ -7,17 +7,15 @@ const PaginationButtons = (props) => {
   const { page, maxPages } = paging;
   const intPage = parseInt(page, 0);
   return (
-    <ButtonGroup>
-      {intPage > 1 ? <Button outline color="primary" onClick={() => setPage(1)}>{'<<'}</Button> : ''}
-      {intPage > 1 ? <Button outline color="primary" onClick={() => setPage(intPage - 1)}>{'<'}</Button> : ''}
-      {intPage > 2 ? <Button outline color="primary" onClick={() => setPage(intPage - 2)}>{intPage - 2}</Button> : ''}
-      {intPage > 1 ? <Button outline color="primary" onClick={() => setPage(intPage - 1)}>{intPage - 1}</Button> : ''}
-      <Button color="primary" active>{page}</Button>
-      {intPage < maxPages ? <Button outline color="primary" onClick={() => setPage(intPage + 1)}>{intPage + 1}</Button> : '' }
-      {intPage < maxPages - 2 ? <Button outline color="primary" onClick={() => setPage(intPage + 2)}>{intPage + 2}</Button> : '' }
-      {intPage < maxPages - 1 ? <Button outline color="primary" onClick={() => setPage(intPage + 1)}>{'>'}</Button> : '' }
-      {page < maxPages ? <Button outline color="primary" onClick={() => setPage(maxPages)}>{'>>'}</Button> : '' }
-    </ButtonGroup>
+    <div>
+      {intPage > 1 ? <a outline color="primary" onClick={() => setPage(intPage - 1)}>{'<'}</a> : ''}
+      {intPage > 2 ? <a outline color="primary" onClick={() => setPage(intPage - 2)}>{intPage - 2}</a> : ''}
+      {intPage > 1 ? <a outline color="primary" onClick={() => setPage(intPage - 1)}>{intPage - 1}</a> : ''}
+      <a color="primary" active>{page}</a>
+      {intPage < maxPages ? <a outline color="primary" onClick={() => setPage(intPage + 1)}>{intPage + 1}</a> : '' }
+      {intPage < maxPages - 2 ? <a outline color="primary" onClick={() => setPage(intPage + 2)}>{intPage + 2}</a> : '' }
+      {intPage <= maxPages - 1 ? <a outline color="primary" onClick={() => setPage(intPage + 1)}>{'>'}</a> : '' }
+    </div>
   );
 };
 

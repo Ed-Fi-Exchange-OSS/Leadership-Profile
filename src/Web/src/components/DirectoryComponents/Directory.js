@@ -15,12 +15,12 @@ const Directory = () => {
     return (
         <div>
             <div className='directory-div'>
-                <h2>Directory</h2>
+                <h2 className='directory-title'>Directory</h2>
                 <div className="directory-subtitle-controls">
                     <BreadcrumbList />
                     <div className="view-style-buttons">
-                        <span>View Style</span>
-                        <Button color="primary" onClick={() => setActiveComponent("table")}>
+                        <span className="view-style-label">View Style</span>
+                        <Button color="primary" className="view-style-button-first" onClick={() => setActiveComponent("table")}>
                             <TableViewIcon />
                         </Button>
                         <Button color="primary" onClick={() => setActiveComponent("card")}>
