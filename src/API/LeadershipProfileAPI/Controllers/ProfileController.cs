@@ -39,7 +39,7 @@ namespace LeadershipProfileAPI.Controllers
             )
         {
             var intPage = Convert.ToInt32(page);
-            var pageSizeLimit = 20;// for some reason the API returns only half of the limit. If we need 10 record, set the limit to 20
+            var pageSizeLimit = 10;
             var offset = (intPage <= 0 ? 0 : intPage - 1) * pageSizeLimit;
 
             var query = new Dictionary<string, string>
@@ -56,6 +56,9 @@ namespace LeadershipProfileAPI.Controllers
             var response = await client.SendAsync(request).ConfigureAwait(false);
 
             var readAsString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            if(!response.IsSuccessStatusCode)
+                throw new ApiExceptionFilter.ApiException($"ODS API call failed with response: {response.StatusCode}");
 
             var totalCount = Convert.ToInt32(response.Headers.FirstOrDefault(a => a.Key =="Total-Count").Value?.FirstOrDefault());
           
@@ -127,5 +130,10 @@ namespace LeadershipProfileAPI.Controllers
         [JsonProperty("firstName")] public string FirstName { get; set; }
         [JsonProperty("middleName")] public string MiddleName { get; set; }
         [JsonProperty("lastSurname")] public string LastName { get; set; }
+        public string Location { get; set; } = "Austin, TX";
+        public int YearsOfService { get; set; } = 10;
+        public string Institution { get; set; } = "Default Institution";
+        public string HighestDegree { get; set; } = "Default Degree";
+        public string Major { get; set; } = "Default Major";
     }
 }
