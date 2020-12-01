@@ -4,7 +4,7 @@ const BreadcrumbList = (props) => {
     // This will need to me refactored to be dynamic or maybe conditionals. 
     // Maybe pass in the path? For now, it should not be more than Home and Contact details. 
     return (
-        <div>
+        <div className="breadcrumb-div">
             <div>
                 <a href="/" className="previous-page">Home</a>
                 <span> &gt; </span>
