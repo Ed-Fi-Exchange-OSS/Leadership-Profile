@@ -130,5 +130,10 @@ namespace LeadershipProfileAPI.Controllers
         [JsonProperty("firstName")] public string FirstName { get; set; }
         [JsonProperty("middleName")] public string MiddleName { get; set; }
         [JsonProperty("lastSurname")] public string LastName { get; set; }
+        public string Location { get; set; } = "Austin, TX";
+        public int YearsOfService { get; set; } = 10;
+        public string Institution { get; set; } = "Default Institution";
+        public string HighestDegree { get; set; } = "Default Degree";
+        public string Major { get; set; } = "Default Major";
     }
 }
