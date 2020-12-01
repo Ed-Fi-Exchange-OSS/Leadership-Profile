@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Pagination, PaginationItem, PaginationLink } from 'reactstrap';
-import { RightPointingIcon, SortIcon } from '../Icons'
+import { RightPointingIcon, SortIcon } from '../Icons';
 import Sorting from './Sorting';
+import PaginationButtons from './PaginationButtons';
 
 const CreateTableList = (props) => {
-    const { sort, data, setColumnSort } = props;
+    const { sort, data, setColumnSort, paging, setPage } = props;
 
     function RenderTable(data) {
         return (
@@ -43,6 +44,14 @@ const CreateTableList = (props) => {
                             <td>Ph.D.</td>
                             <td><RightPointingIcon /></td>
                         </tr>)) : ''}
+                        <tr className="bottom-row">
+                            <td colSpan="7">
+                                <span>Showing {paging.page}-10 of {paging.totalSize} Users</span>
+                            </td>
+                            <td colSpan="2" className="pagination-buttons-container">
+                                <PaginationButtons paging={paging} setPage={setPage} />
+                            </td>
+                        </tr>
                 </tbody>
             </Table>
         );
@@ -56,7 +65,13 @@ const CreateTableList = (props) => {
 }
 
 const TableList = (props) => (
-    <CreateTableList sort={props.sort} data={props.data} setColumnSort={props.setColumnSort} />
+    <CreateTableList
+        sort={props.sort}
+        data={props.data}
+        setColumnSort={props.setColumnSort}
+        paging={props.paging}
+        setPage={props.setPage}
+    />
 );
 
 export default TableList;

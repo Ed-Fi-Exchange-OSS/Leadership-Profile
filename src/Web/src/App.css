@@ -1,16 +1,17 @@
 .App {
-  width: 1440px;
   font-family: 'Poppins', sans-serif;
 }
 
 .body {
-  margin: 33px 120px;
+  margin: 33px auto;
+  width: 1440px;
 }
 
 .navbar {
   height: 96px;
   border-bottom: #000 solid 1px;
 }
+
 
 .navbar-brand {
   color: #000;
@@ -82,8 +83,6 @@
 .previous-page, .current-page {
   height: 24px;
   width: 101px;
-  /* TODO download font */
-  /* font-family: Poppins; */
   font-size: 14px;
   letter-spacing: 0;
   line-height: 24px;
@@ -100,7 +99,6 @@
 /* Directory Filters */
 .filters-container {
   height: 88px;
-  width: 1200px;
   border-radius: 4px;
   background-color: #A6C1FF;
   padding: 24px 10px;
@@ -163,6 +161,33 @@
 }
 
 /* Directory table list formatting */
+.directory-table {
+  border: 1px solid #E4E5E6;
+  border-radius: 4px;
+}
+
 .directory-table thead {
   background-color: #dfe6ff;
+}
+
+/* Pagination */
+.bottom-row {
+  background-color: transparent!important;
+}
+
+.pagination-buttons-container {
+  text-align: right;
+}
+
+.current-pagination-page {
+  color: #000;
+  font-weight: bolder;
+}
+
+.pagination-button-div a {
+  padding: 5px;
+}
+
+.pagination-arrows {
+  color: #dfe6ff;
 }

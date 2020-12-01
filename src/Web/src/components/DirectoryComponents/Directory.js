@@ -17,7 +17,7 @@ const Directory = () => {
             <div className='directory-div'>
                 <h2 className='directory-title'>Directory</h2>
                 <div className="directory-subtitle-controls">
-                    <BreadcrumbList />
+                    <BreadcrumbList currentPage="home" />
                     <div className="view-style-buttons">
                         <span className="view-style-label">View Style</span>
                         <Button color="primary" className="view-style-button-first" onClick={() => setActiveComponent("table")}>
@@ -31,13 +31,12 @@ const Directory = () => {
             </div>
             <DirectoryFilters search={search} setSearchValue={setSearchValue} />
             { activeComponent === "table" ? (
-                <TableList sort={sort} data={data} setColumnSort={setColumnSort} />
+                <TableList sort={sort} data={data} setColumnSort={setColumnSort} paging={paging} setPage={setPage} />
             ) : activeComponent === "card" ? (
                 <CardList />
             ) : null (
                 <div />
             )}
-            <PaginationButtons paging={paging} setPage={setPage} />
         </div>
     );
 }

@@ -19,7 +19,7 @@ function App() {
           <div className="body">
             <Route path="/:parameters" render={() => <Directory />} />
             {/* add :id when we have api feeding it */}
-            <Route exact path="/profile" component={Profile} />
+            <Route path="/profile/:id" component={Profile} />
           </div>
           </Switch>
       </Router>
