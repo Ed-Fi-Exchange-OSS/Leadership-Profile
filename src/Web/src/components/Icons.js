@@ -28,21 +28,15 @@ class CardViewIcon extends Component {
 class FilterIcon extends Component {
     render() {
         return (
-            <svg width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-funnel-fill" fill="#3366FF" xmlns="http://www.w3.org/2000/svg">
-                <path fillRule="evenodd" d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2z"/>
-            </svg>
+            <img src={process.env.PUBLIC_URL +"/icons/funnel-fill.svg"} />
         );
     }
 }
 
 const SortIcon = () =>
     <span>
-        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-down-up" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-            <path fillRule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
-        </svg>
-    </span>
-
-;
+        <img src={process.env.PUBLIC_URL +"/icons/Sort by.svg"} />
+    </span>;
 
 const SearchIcon = ({ stylingId }) =>
     <svg id={stylingId} width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-search" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -93,9 +87,9 @@ class GeoIcon extends Component {
 class RightPointingIcon extends Component {
     render() {
         return (
-            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-caret-right-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12.14 8.753l-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
-            </svg>
+            <span>
+                <img src={process.env.PUBLIC_URL +"/icons/arrow-ios-right.svg"} />
+            </span>
         );
     }
 }
