@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Chartjs from 'chart.js';
-import { Collapse, Table } from 'reactstrap';
-import { PersonIcon, GeoIcon, PhoneIcon, MailIcon } from '../Icons';
 
 const chartConfig = {
     type: 'bar',

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Pagination, PaginationItem, PaginationLink } from 'reactstrap';
-import { RightPointingIcon, SortIcon } from '../Icons';
+import React from 'react';
+import { Table } from 'reactstrap';
+import { RightPointingIcon } from '../Icons';
 import Sorting from './Sorting';
 import PaginationButtons from './PaginationButtons';
 

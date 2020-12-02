@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import Axios from 'axios';
 
@@ -8,16 +8,12 @@ function UseDirectory() {
     const [data, setData] = useState([]);
 
     const [url, setUrl] = useState(window.location.href);
-    let searchableUrl = new URL(url);
+    const searchableUrl = useRef(new URL(url));
 
     const [sort, setSort] = useState({
         category: searchableUrl.searchParams.get('sortField') !== null && searchableUrl.searchParams.get('sortField') !== 'null' ? searchableUrl.searchParams.get('sortField') : 'Id',
         value: searchableUrl.searchParams.get('sortBy') !== null && searchableUrl.searchParams.get('sortBy') !== 'null' ? searchableUrl.searchParams.get('sortBy') : 'desc',
     });
-
-    // const [search, setSearch] = useState(
-        // searchableUrl.searchParams.get('search') !== null && searchableUrl.searchParams.get('search') !== 'null' ? searchableUrl.searchParams.get('search') : null
-    // );
 
     const [paging, setPaging] = useState({
         page: searchableUrl.searchParams.get('page') !== null && searchableUrl.searchParams.get('page') !== 'null' ? searchableUrl.searchParams.get('page') : 1,
@@ -30,27 +26,27 @@ function UseDirectory() {
             const searchParams = new URLSearchParams(history.location.search);
             setPaging({ ...paging, page: searchParams.get('page') });
             setSort({ category: searchParams.get('sortField'), value: searchParams.get('sortBy') });
-            // setSearch(searchParams.get('search'));
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [history.action, history.location]);
 
     useEffect(() => {
-        searchableUrl = new URL(url);
+        searchableUrl.current.textContent = new URL(url);
         const params = Array.from(searchableUrl.searchParams);
         params.forEach(param => searchableUrl.searchParams.delete(param[0]));
         searchableUrl.searchParams.set('page', paging.page);
         searchableUrl.searchParams.set('sortField', sort.category);
         searchableUrl.searchParams.set('sortBy', sort.value);
-        // if (search !== null)
-        //     searchableUrl.searchParams.set('search', search);
         searchableUrl.searchParams.sort();
         setUrl(searchableUrl.href);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sort, paging.page]);
 
     useEffect(() => {
-        searchableUrl = new URL(url);
+        searchableUrl.current.textContent = new URL(url);
         if (searchableUrl.search === location.search || !searchableUrl.search) return;
         history.push(`queue${searchableUrl.search}`);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [url]);
 
     useEffect(() => {
@@ -74,6 +70,7 @@ function UseDirectory() {
         return () => {
             unmounted = true;
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [url]);
 
     function setPage(newPage) {

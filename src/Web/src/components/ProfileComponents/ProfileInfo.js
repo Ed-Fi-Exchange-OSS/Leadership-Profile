@@ -2,12 +2,12 @@ import React from 'react';
 import { Row, Col, Card, CardTitle, CardText } from 'reactstrap';
 import { PersonIcon, GeoIcon, PhoneIcon, MailIcon } from '../Icons';
 
-const ProfileInfo = (props) => {
+const ProfileInfo = () => {
     return (
         <Card body>
             <Row>
                 <Col sm="2">
-                    <img width="50px" height="50px" src="https://hips.hearstapps.com/countryliving.cdnds.net/17/47/1511194376-cavachon-puppy-christmas.jpg" className="rounded-circle" />
+                    <img width="50px" height="50px" src="https://hips.hearstapps.com/countryliving.cdnds.net/17/47/1511194376-cavachon-puppy-christmas.jpg" alt="profile" className="rounded-circle" />
                 </Col>
                 <Col>
                     <Row>
