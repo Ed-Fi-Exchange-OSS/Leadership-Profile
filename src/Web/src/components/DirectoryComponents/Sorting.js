@@ -19,7 +19,7 @@ function selectNewStatus(status) {
 const Sorting = (props) => {
   const { status, onSortChange } = props;
   return (
-    <span onClick={() => onSortChange(selectNewStatus(status))}>
+    <span className="sort-icon" onClick={() => onSortChange(selectNewStatus(status))}>
       <SortIcon />
     </span>
   );

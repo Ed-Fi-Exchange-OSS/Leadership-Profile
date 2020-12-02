@@ -63,6 +63,11 @@
   display: inline-block;
 }
 
+.nav .dot {
+  vertical-align: bottom;
+    margin: 0 10px;
+}
+
 /* Directory */
 .directory-subtitle-controls {
   display: flex;
@@ -107,6 +112,10 @@
 .filter-form {
   display: flex;
   justify-content: space-between;
+}
+
+.filter-title {
+  margin-left: 10px;
 }
 
 .filter-select-with-label {
@@ -161,6 +170,10 @@
 }
 
 /* Directory table list formatting */
+.sort-icon {
+  margin-left: 10px;
+}
+
 .directory-table {
   border: 1px solid #E4E5E6;
   border-radius: 4px;
