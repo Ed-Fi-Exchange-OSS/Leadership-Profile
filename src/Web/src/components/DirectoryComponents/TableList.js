@@ -21,13 +21,38 @@ const CreateTableList = (props) => {
                         <th>
                             Name
                             <Sorting onSortChange={newStatus => setColumnSort('name', newStatus)}
-                                status={sort.category === 'id' ? sort.value : null} />
+                                status={sort.category === 'name' ? sort.value : null} />
                         </th>
-                        <th>District <SortIcon /></th>
-                        <th>School <SortIcon /></th>
-                        <th>Position <SortIcon /></th>
-                        <th>Years <SortIcon /></th>
-                        <th>Degree <SortIcon /></th>
+                        <th>
+                            Location
+                            <Sorting onSortChange={newStatus => setColumnSort('location', newStatus)}
+                                status={sort.category === 'location' ? sort.value : null} />
+                        </th>
+                        <th>
+                            School 
+                            <Sorting onSortChange={newStatus => setColumnSort('school', newStatus)}
+                                status={sort.category === 'school' ? sort.value : null} />
+                        </th>
+                        <th>
+                            Position
+                            <Sorting onSortChange={newStatus => setColumnSort('position', newStatus)}
+                                status={sort.category === 'position' ? sort.value : null} />
+                        </th>
+                        <th>
+                            Years
+                            <Sorting onSortChange={newStatus => setColumnSort('yearsOfService', newStatus)}
+                                status={sort.category === 'yearsOfService' ? sort.value : null} />
+                        </th>
+                        <th>
+                            Highest Degree
+                            <Sorting onSortChange={newStatus => setColumnSort('highestDegree', newStatus)}
+                                status={sort.category === 'highestDegree' ? sort.value : null} />
+                        </th>
+                        <th>
+                            Major
+                            <Sorting onSortChange={newStatus => setColumnSort('major', newStatus)}
+                                status={sort.category === 'major' ? sort.value : null} />
+                        </th>
                         <th></th>
                     </tr>
                 </thead>
@@ -37,15 +62,16 @@ const CreateTableList = (props) => {
                             <td><span className="dot"></span></td>
                             <td>{profile.id}</td>
                             <td>{profile.lastName}, {profile.firstName}</td>
-                            <td>Mesquite District</td>
-                            <td>Mesquite High School</td>
+                            <td>{profile.location}</td>
+                            <td>{profile.institution}</td>
                             <td>Teacher</td>
-                            <td>5</td>
-                            <td>Ph.D.</td>
+                            <td>{profile.yearsOfService}</td>
+                            <td>{profile.highestDegree}</td>
+                            <td>{profile.major}</td>
                             <td><RightPointingIcon /></td>
                         </tr>)) : ''}
                         <tr className="bottom-row">
-                            <td colSpan="7">
+                            <td colSpan="8">
                                 <span>Showing {paging.page}-10 of {paging.totalSize} Users</span>
                             </td>
                             <td colSpan="2" className="pagination-buttons-container">

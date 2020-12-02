@@ -100,6 +100,12 @@ namespace LeadershipProfileAPI.Controllers
             {
                 "id" => teacherProfiles.OrderBy(x => x.Id),
                 "name" => teacherProfiles.OrderBy(x => x.LastName),
+                "location" => teacherProfiles.OrderBy(x => x.Location),
+                "school" => teacherProfiles.OrderBy(x => x.Institution),
+                // "position" => teacherProfiles.OrderBy(x => x.Position),
+                "yearsOfService" => teacherProfiles.OrderBy(x => x.YearsOfService),
+                "highestDegree" => teacherProfiles.OrderBy(x => x.HighestDegree),
+                "major" => teacherProfiles.OrderBy(x => x.Major),
                 _ => teacherProfiles
             };
         }
@@ -110,6 +116,12 @@ namespace LeadershipProfileAPI.Controllers
             {
                 "id" => teacherProfiles.OrderByDescending(x => x.Id),
                 "name" => teacherProfiles.OrderByDescending(x => x.LastName),
+                "location" => teacherProfiles.OrderByDescending(x => x.Location),
+                "school" => teacherProfiles.OrderByDescending(x => x.Institution),
+                // "position" => teacherProfiles.OrderByDescending(x => x.Position),
+                "yearsOfService" => teacherProfiles.OrderByDescending(x => x.YearsOfService),
+                "highestDegree" => teacherProfiles.OrderByDescending(x => x.HighestDegree),
+                "major" => teacherProfiles.OrderByDescending(x => x.Major),
                 _ => teacherProfiles
             };
         }

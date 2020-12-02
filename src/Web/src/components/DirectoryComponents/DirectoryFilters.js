@@ -5,7 +5,7 @@ import { FilterIcon, SearchIcon } from '../Icons';
 import UseDirectory from './UseDirectory';
 
 const CreateDirectoryFilters = (props) => {
-    const { search, setSearchValue } = props;
+    // const { search, setSearchValue } = props;
 
     function RenderFilters(data) {
         return (
@@ -78,7 +78,7 @@ const CreateDirectoryFilters = (props) => {
 
                 <div className="search-sort-container">
                     <Form className="search-sort-form">
-                        <Searching onSearchValueChange={searchValue => setSearchValue(searchValue)} />
+                        <Searching />
                         <div className="sorting-container">
                             <FormGroup className="mb-2 mr-sm-2 mb-sm-0 sort-by-form-group">
                                 <Label for="sortBy" className="mr-sm-2">
