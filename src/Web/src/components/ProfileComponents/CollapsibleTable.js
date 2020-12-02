@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Collapse, Table } from 'reactstrap';
-import { PersonIcon, GeoIcon, PhoneIcon, MailIcon } from '../Icons';
 
 const CollapsibleTable = (props) => {
     const [isOpen, setIsOpen] = useState(false);

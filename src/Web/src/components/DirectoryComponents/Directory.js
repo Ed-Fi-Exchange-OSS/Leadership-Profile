@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { Button, Pagination } from 'reactstrap';
+import { Button } from 'reactstrap';
 import { TableViewIcon, CardViewIcon } from '../Icons';
 import BreadcrumbList from '../Breadcrumb';
 import DirectoryFilters from './DirectoryFilters';
 import TableList from './TableList';
-import PaginationButtons from './PaginationButtons';
 import CardList from './CardListComponents/CardList';
 import UseDirectory from './UseDirectory';
 

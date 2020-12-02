@@ -10,10 +10,9 @@ const BreadcrumbList = (props) => {
                     <a href="/" className={currentPage === "profile" ? "previous-page" : "current-page"}>Home</a>
                     <span> &gt; </span>
                     {currentPage === 'profile' ? 
-                        (<a href="#" className="current-page">Contact details</a>)
+                        (<a href="/profile" className="current-page">Contact details</a>)
                         : ''
                     }
-                    
                 </div>
             </div>
         </div>

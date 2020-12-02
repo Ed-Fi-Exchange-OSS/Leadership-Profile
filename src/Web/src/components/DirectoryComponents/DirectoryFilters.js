@@ -1,12 +1,9 @@
-import React, { Component } from 'react';
-import { Button, Form, FormGroup, Label, Input, Row, Col } from 'reactstrap';
+import React from 'react';
+import { Form, FormGroup, Label, Input, Row, Col } from 'reactstrap';
 import Searching from './Searching';
-import { FilterIcon, SearchIcon } from '../Icons';
-import UseDirectory from './UseDirectory';
+import { FilterIcon } from '../Icons';
 
 const CreateDirectoryFilters = (props) => {
-    // const { search, setSearchValue } = props;
-
     function RenderFilters(data) {
         return (
             <div>
