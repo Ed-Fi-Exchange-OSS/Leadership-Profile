@@ -28,14 +28,14 @@ class CardViewIcon extends Component {
 class FilterIcon extends Component {
     render() {
         return (
-            <img src={process.env.PUBLIC_URL +"/icons/funnel-fill.svg"} />
+            <img alt="filtering icon" src={process.env.PUBLIC_URL +"/icons/funnel-fill.svg"} />
         );
     }
 }
 
 const SortIcon = () =>
     <span>
-        <img src={process.env.PUBLIC_URL +"/icons/Sort by.svg"} />
+        <img alt="sorting icon" src={process.env.PUBLIC_URL +"/icons/Sort by.svg"} />
     </span>;
 
 const SearchIcon = ({ stylingId }) =>
@@ -88,7 +88,7 @@ class RightPointingIcon extends Component {
     render() {
         return (
             <span>
-                <img src={process.env.PUBLIC_URL +"/icons/arrow-ios-right.svg"} />
+                <img alt="right arrow" src={process.env.PUBLIC_URL +"/icons/arrow-ios-right.svg"} />
             </span>
         );
     }
