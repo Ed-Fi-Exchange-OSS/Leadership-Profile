@@ -12,7 +12,7 @@ const PaginationButtons = (props) => {
       {intPage > 1 ? <a className="pagination-arrows" onClick={() => setPage(intPage - 1)}>{'<'}</a> : ''}
       {intPage > 2 ? <a onClick={() => setPage(intPage - 2)}>{intPage - 2}</a> : ''}
       {intPage > 1 ? <a onClick={() => setPage(intPage - 1)}>{intPage - 1}</a> : ''}
-      <a class="current-pagination-page">{page}</a>
+      <a className="current-pagination-page">{page}</a>
       {intPage < maxPages ? <a onClick={() => setPage(intPage + 1)}>{intPage + 1}</a> : '' }
       {intPage < maxPages - 2 ? <a onClick={() => setPage(intPage + 2)}>{intPage + 2}</a> : '' }
       {intPage <= maxPages - 1 ? <a className="pagination-arrows" onClick={() => setPage(intPage + 1)}>{'>'}</a> : '' }

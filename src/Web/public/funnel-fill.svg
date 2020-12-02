@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>27) Icon/funnel-fill</title>
+    <defs>
+        <path d="M13.9033,22 C13.6893,22 13.4773,21.932 13.3003,21.797 L9.2743,18.752 C9.0243,18.563 8.8773,18.268 8.8773,17.955 L8.8773,14.681 L4.1113,5.459 C3.9513,5.149 3.9643,4.778 4.1463,4.48 C4.3273,4.182 4.6513,4 5.0003,4 L19.0003,4 C19.3523,4 19.6783,4.185 19.8593,4.488 C20.0393,4.79 20.0473,5.166 19.8803,5.475 L14.9033,14.69 L14.9033,21 C14.9033,21.379 14.6883,21.726 14.3483,21.896 C14.2073,21.965 14.0553,22 13.9033,22" id="path-1"></path>
+    </defs>
+    <g id="27)-Icon/funnel-fill" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <mask id="mask-2" fill="white">
+            <use xlink:href="#path-1"></use>
+        </mask>
+        <use id="🎨-Icon-Сolor" fill="#222B45" xlink:href="#path-1"></use>
+    </g>
+</svg>
