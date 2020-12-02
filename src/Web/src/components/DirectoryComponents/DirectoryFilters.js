@@ -13,8 +13,7 @@ const CreateDirectoryFilters = (props) => {
                         <Col className="filter-select-with-label">
                         <FormGroup className="mb-2 mt-7 mr-sm-2 mb-sm-0 form-group-filter-with-label">
                             <Label for="districtSelect" className="mr-sm-2">
-                                {/* <FilterIcon /> */}
-                                <img src={process.env.PUBLIC_URL +"/funnel-fill.svg"} />
+                                <FilterIcon />
                                 <span className="filter-title">Filter by</span>
                             </Label>
                             <Input type="select" name="select" id="districtSelect" className="filter-dropdown-sm">
