@@ -204,3 +204,47 @@
 .pagination-arrows {
   color: #dfe6ff;
 }
+
+/* Profile */
+
+/* Collapsible Table */
+
+.profile-collapsible-container {
+  border: 1px solid #E4E5E6;
+  margin-bottom: 32px;
+  border-radius: 5px;
+}
+
+.profile-collapsible-header {
+  background: #dfe6ff;
+  height: 64px;
+  font-family: 'Poppins';
+  font-size: 22px;
+  font-weight: bold;
+  padding-top: 18px;
+  color: #3366FF;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  margin-bottom: 0;
+}
+
+.profile-table-header-row {
+  background-color: #f8f9ff;
+}
+
+.profile-table-body-row, .profile-table-header-row {
+  height: 56px;
+}
+
+.profile-table-body-row td:first-of-type, .profile-table-header-row th:first-of-type {
+  padding-left: 24px;
+  vertical-align: middle;
+}
+
+.profile-collapsible-icon {
+  margin: 0 21px 0 26px;
+}
+
+.profile-collapsible-table {
+  margin-bottom: 0!important;
+}

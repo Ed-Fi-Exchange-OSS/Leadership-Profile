@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const PaginationButtons = (props) => {
-  console.log(props);
   const { paging, setPage } = props;
   const { page, maxPages } = paging;
   const intPage = parseInt(page, 0);

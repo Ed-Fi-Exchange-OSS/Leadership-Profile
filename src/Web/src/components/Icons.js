@@ -94,6 +94,9 @@ class RightPointingIcon extends Component {
     }
 }
 
+const EducationIcon = () => {
+}
+
 export {
     TableViewIcon,
     CardViewIcon,
@@ -104,5 +107,6 @@ export {
     PhoneIcon,
     PersonIcon,
     GeoIcon,
-    RightPointingIcon
+    RightPointingIcon,
+    EducationIcon
 };

@@ -23,7 +23,10 @@ const ProfileInfo = () => {
                         <Col>
                             <CardText><GeoIcon /> Mesquite District</CardText>
                             <CardText>Mesquite High School</CardText>
-                            <CardText>5 years of service</CardText>
+                            <CardText>
+                                <ion-icon name="ribbon"></ion-icon>
+                                5 years of service
+                            </CardText>
                         </Col>
                         <Col>
                             <CardText><PhoneIcon /> +1 123 123 1233</CardText>
