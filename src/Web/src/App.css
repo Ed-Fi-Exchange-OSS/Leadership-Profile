@@ -207,6 +207,30 @@
 
 /* Profile */
 
+/* Profile Nav */
+
+.profile-nav {
+  margin-top: 32px;
+  margin-bottom: 32px!important;
+  border-bottom: #eff0f2 2px solid;
+}
+
+.nav-option {
+  width: 183px;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.nav-option > .nav-link {
+  padding-bottom: 16px;
+}
+
+.current-profile-page {
+  border-bottom: #3366FF 2.5px solid;
+}
+
 /* Collapsible Table */
 
 .profile-collapsible-container {
