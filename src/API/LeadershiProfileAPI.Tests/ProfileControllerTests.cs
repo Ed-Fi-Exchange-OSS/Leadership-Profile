@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using LeadershipProfileAPI.Controllers;
 using LeadershipProfileAPI.Tests.Infrastructure;
@@ -18,11 +19,11 @@ namespace LeadershipProfileAPI.Tests
 
             var controller = new ProfileController(mockLogger, mockHttpClientFactory);
 
-            var result = (await controller.Get()).ToList();
+            var result = (await controller.GetDirectory("1",null,null,null)).Profiles.ToList();
 
             result.ShouldNotBeNull();
 
-			result.Count.ShouldBeEquivalentTo(2);
+			result.Count().ShouldBeEquivalentTo(2);
 
 			result.Select(x=>x.FirstName).Contains("Barry").ShouldBeTrue();
         }

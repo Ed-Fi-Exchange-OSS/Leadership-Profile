@@ -2,16 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using LeadershipProfileAPI.Infrastructure;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Primitives;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using HttpMethod = System.Net.Http.HttpMethod;
 
 namespace LeadershipProfileAPI.Controllers
@@ -51,20 +47,21 @@ namespace LeadershipProfileAPI.Controllers
 
             var client = _clientFactory.CreateClient(Constants.ODSApiClient);
 
-            var request = new HttpRequestMessage(HttpMethod.Get, QueryHelpers.AddQueryString($"{Constants.VersionUriFragment}/ed-fi/staffs", query));
+            var staffsRequest = new HttpRequestMessage(HttpMethod.Get,
+                QueryHelpers.AddQueryString($"{Constants.VersionUriFragment}/ed-fi/staffs", query));
             
-            var response = await client.SendAsync(request).ConfigureAwait(false);
+            var response = await GetApiResponse<IList<Models.TeacherProfile>>(client, staffsRequest).ConfigureAwait(false);
 
-            var readAsString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var staffCount = Convert.ToInt32(response.headers.GetHeader("Total-Count"));
 
-            if(!response.IsSuccessStatusCode)
-                throw new ApiExceptionFilter.ApiException($"ODS API call failed with response: {response.StatusCode}");
+            await GetAssociations(client, response.response).ConfigureAwait(false);
 
-            var totalCount = Convert.ToInt32(response.Headers.FirstOrDefault(a => a.Key =="Total-Count").Value?.FirstOrDefault());
-          
-            var allProfiles = JsonConvert.DeserializeObject<IList<TeacherProfile>>(JArray.Parse(readAsString).ToString());
+            foreach (var teacherProfile in response.response)
+            {
+                teacherProfile.Location = teacherProfile.Addresses.GetLocation();
+            }
 
-            var currentPageProfiles = allProfiles.AsQueryable();
+            var currentPageProfiles = response.response.AsQueryable();
 
             if (search != null)
                 currentPageProfiles = currentPageProfiles
@@ -76,13 +73,57 @@ namespace LeadershipProfileAPI.Controllers
 
             return new DirectoryResponse
             {
-                TotalCount = totalCount,
+                TotalCount = staffCount,
                 Profiles = currentPageProfiles.ToArray(),
                 Page = intPage
             };
         }
 
-        private static IEnumerable<TeacherProfile> Sort(IQueryable<TeacherProfile> teacherProfiles, string sortField, string sortOrder)
+        private static async Task GetAssociations(HttpClient client, IList<Models.TeacherProfile> staffTeacherProfiles)
+        {
+            /*Note: this approach is less than idea but we are dependent on the ODS API.
+              In near future, this will optimized with access to data.
+            */
+            foreach (var staffTeacherProfile in staffTeacherProfiles)
+            {
+                var organizationQuery = new Dictionary<string, string>
+                {
+                    {"totalCount", $"{true}"},
+                    {"staffUniqueId", $"{staffTeacherProfile.Id}"}
+                };
+
+                var organizationRequest = new HttpRequestMessage(HttpMethod.Get, 
+                    QueryHelpers.AddQueryString($"{Constants.VersionUriFragment}/ed-fi/staffEducationOrganizationAssignmentAssociations", 
+                        organizationQuery));
+
+                var organizations = (await GetApiResponse<IList<Models.StaffOrganization>>(client, organizationRequest).ConfigureAwait(false)).response;
+
+                staffTeacherProfile.YearsOfService = organizations.GetYearsOfService();
+
+                var schoolQuery = new Dictionary<string, string> {{"schoolid", organizations.FirstOrDefault()?.educationOrganizationReference.educationOrganizationId.ToString()}};
+
+                var schoolRequest = new HttpRequestMessage(HttpMethod.Get, QueryHelpers.AddQueryString($"{Constants.VersionUriFragment}/ed-fi/schools", schoolQuery));
+
+                var schools = (await GetApiResponse<IList<Models.School>>(client, schoolRequest).ConfigureAwait(false)).response;
+
+                staffTeacherProfile.Institution = schools.FirstOrDefault()?.nameOfInstitution;
+            }
+        }
+
+        private static async Task<(HttpResponseHeaders headers, TResponse response)> GetApiResponse<TResponse>(HttpClient client, HttpRequestMessage request)
+        {
+            var response = await client.SendAsync(request).ConfigureAwait(false);
+
+            var readAsString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            if (!response.IsSuccessStatusCode)
+                throw new ApiExceptionFilter.ApiException(
+                    $"ODS API call for uri({request.RequestUri}) failed with response: {response.StatusCode}");
+
+            return (response.Headers, System.Text.Json.JsonSerializer.Deserialize<TResponse>(readAsString));
+        }
+
+        private static IEnumerable<Models.TeacherProfile> Sort(IQueryable<Models.TeacherProfile> teacherProfiles, string sortField, string sortOrder)
         {
             if (string.IsNullOrWhiteSpace(sortField))
             {
@@ -94,7 +135,7 @@ namespace LeadershipProfileAPI.Controllers
                 : SortDescending(teacherProfiles, sortField);
         }
 
-        private static IQueryable<TeacherProfile> SortAscending(IQueryable<TeacherProfile> teacherProfiles, string sortField)
+        private static IQueryable<Models.TeacherProfile> SortAscending(IQueryable<Models.TeacherProfile> teacherProfiles, string sortField)
         {
             return sortField.ToLower() switch
             {
@@ -110,7 +151,7 @@ namespace LeadershipProfileAPI.Controllers
             };
         }
 
-        private static IQueryable<TeacherProfile> SortDescending(IQueryable<TeacherProfile> teacherProfiles, string sortField)
+        private static IQueryable<Models.TeacherProfile> SortDescending(IQueryable<Models.TeacherProfile> teacherProfiles, string sortField)
         {
             return sortField.ToLower() switch
             {
@@ -131,21 +172,9 @@ namespace LeadershipProfileAPI.Controllers
     {
         public int TotalCount { get; set; }
 
-        public TeacherProfile[] Profiles { get; set; }
+        public Models.TeacherProfile[] Profiles { get; set; }
 
         public int Page { get; set; }
     }
 
-    public class TeacherProfile
-    {
-        [JsonProperty("staffUniqueId")] public string Id { get; set; }
-        [JsonProperty("firstName")] public string FirstName { get; set; }
-        [JsonProperty("middleName")] public string MiddleName { get; set; }
-        [JsonProperty("lastSurname")] public string LastName { get; set; }
-        public string Location { get; set; } = "Austin, TX";
-        public int YearsOfService { get; set; } = 10;
-        public string Institution { get; set; } = "Default Institution";
-        public string HighestDegree { get; set; } = "Default Degree";
-        public string Major { get; set; } = "Default Major";
-    }
 }
