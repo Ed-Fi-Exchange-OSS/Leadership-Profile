@@ -9,6 +9,7 @@ using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using Microsoft.AspNetCore.Server.IIS.Core;
 using Microsoft.Extensions.Configuration;
 
 namespace LeadershipProfileAPI.Infrastructure.Auth
@@ -73,7 +74,7 @@ namespace LeadershipProfileAPI.Infrastructure.Auth
             var authResponse = await authApi.SendAsync(requestToken).ConfigureAwait(false);
 
             if (!authResponse.IsSuccessStatusCode)
-                return string.Empty;
+                throw new ApiExceptionFilter.ApiException($"Authorization failed with status code: {authResponse.StatusCode}");
 
             var refreshTokenResponse = await authResponse.Content.ReadAsStreamAsync().ConfigureAwait(false);
             var result = await JsonSerializer.DeserializeAsync<RefreshTokenResponse>(refreshTokenResponse)
