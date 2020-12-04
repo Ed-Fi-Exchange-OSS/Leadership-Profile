@@ -6,10 +6,11 @@ import DirectoryFilters from './DirectoryFilters';
 import TableList from './TableList';
 import CardList from './CardListComponents/CardList';
 import UseDirectory from './UseDirectory';
+import ErrorMessage from '../ErrorMessage';
 
 const Directory = () => {
     const [activeComponent, setActiveComponent] = useState("table");
-    const { setColumnSort, sort, data, paging, setPage, search, setSearchValue } = UseDirectory();
+    const { setColumnSort, sort, data, paging, setPage, search, setSearchValue, error } = UseDirectory();
 
     return (
         <div>
@@ -29,6 +30,8 @@ const Directory = () => {
                 </div>
             </div>
             <DirectoryFilters search={search} setSearchValue={setSearchValue} />
+            {console.log(error)}
+            { error ? <ErrorMessage /> : '' }
             { activeComponent === "table" ? (
                 <TableList sort={sort} data={data} setColumnSort={setColumnSort} paging={paging} setPage={setPage} />
             ) : activeComponent === "card" ? (

@@ -6,6 +6,7 @@ function UseDirectory() {
     const history = useHistory();
     const location = useLocation();
     const [data, setData] = useState([]);
+    const [error, setError] = useState(false);
 
     const [url, setUrl] = useState(window.location.href);
     const searchableUrl = useRef(new URL(url));
@@ -55,6 +56,9 @@ function UseDirectory() {
         const apiUrl = new URL(`https://localhost:44383/Profile${history.location.search}`);
         Axios.get(apiUrl)
             .then((response) => {
+                if (response.isError) {
+                    setError(true);
+                }
                 if (!unmounted && response.data !== null) {
                     if (response.data.profiles !== undefined) {
                         setData(response.data.profiles);
@@ -66,7 +70,10 @@ function UseDirectory() {
                     });
                 }
             })
-            .catch(error => console.error(error.message));
+            .catch(error => {
+                setError(true);
+                console.error(error.message);
+            });
         return () => {
             unmounted = true;
         };
@@ -88,7 +95,7 @@ function UseDirectory() {
     //     setSearch(value);
     // }
 
-    return { setColumnSort, setSort, sort, data, paging, setPage }
+    return { setColumnSort, setSort, sort, data, paging, setPage, error }
 }
 
 export default UseDirectory;
