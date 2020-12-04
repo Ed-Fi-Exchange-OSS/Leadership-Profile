@@ -30,7 +30,6 @@ const Directory = () => {
                 </div>
             </div>
             <DirectoryFilters search={search} setSearchValue={setSearchValue} />
-            {console.log(error)}
             { error ? <ErrorMessage /> : '' }
             { activeComponent === "table" ? (
                 <TableList sort={sort} data={data} setColumnSort={setColumnSort} paging={paging} setPage={setPage} />
