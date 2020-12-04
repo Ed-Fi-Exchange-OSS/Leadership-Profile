@@ -82,7 +82,7 @@ const CreateDirectoryFilters = (props) => {
                                     <FilterIcon />
                                     <span className="filter-title">Sort by</span>
                                 </Label>
-                                <Input type="select" name="select" id="sort-by">
+                                <Input disabled type="select" name="select" id="sort-by">
                                     <option>A - B</option>
                                     <option>2</option>
                                     <option>3</option>
@@ -91,7 +91,7 @@ const CreateDirectoryFilters = (props) => {
                                 </Input>
                             </FormGroup>
                             <FormGroup className="experience-sort">
-                                <Input type="select" name="select" id="experience">
+                                <Input disabled type="select" name="select" id="experience">
                                     <option>Most experience</option>
                                     <option>2</option>
                                     <option>3</option>
