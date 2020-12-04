@@ -16,7 +16,7 @@ const CreateDirectoryFilters = (props) => {
                                 <FilterIcon />
                                 <span className="filter-title">Filter by</span>
                             </Label>
-                            <Input type="select" name="select" id="districtSelect" className="filter-dropdown-sm">
+                            <Input disabled type="select" name="select" id="districtSelect" className="filter-dropdown-sm">
                                 <option>District - All</option>
                                 <option>2</option>
                                 <option>3</option>
@@ -27,7 +27,7 @@ const CreateDirectoryFilters = (props) => {
                         </Col>
                         <Col>
                         <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                            <Input type="select" name="select" className="filter-dropdown">
+                            <Input disabled type="select" name="select" className="filter-dropdown">
                                 <option>School - All</option>
                                 <option>2</option>
                                 <option>3</option>
@@ -38,7 +38,7 @@ const CreateDirectoryFilters = (props) => {
                         </Col>
                         <Col>
                         <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                            <Input type="select" name="select" className="filter-dropdown">
+                            <Input disabled type="select" name="select" className="filter-dropdown">
                                 <option>Position - All</option>
                                 <option>2</option>
                                 <option>3</option>
@@ -49,7 +49,7 @@ const CreateDirectoryFilters = (props) => {
                         </Col>
                         <Col>
                         <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                            <Input type="select" name="select" className="filter-dropdown">
+                            <Input disabled type="select" name="select" className="filter-dropdown">
                                 <option>Years of Service - All</option>
                                 <option>2</option>
                                 <option>3</option>
@@ -60,7 +60,7 @@ const CreateDirectoryFilters = (props) => {
                         </Col>
                         <Col>
                             <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                            <Input type="select" name="select" className="filter-dropdown">
+                            <Input disabled type="select" name="select" className="filter-dropdown">
                                 <option>Degree - All</option>
                                 <option>2</option>
                                 <option>3</option>

@@ -115,7 +115,9 @@
 }
 
 .filter-title {
-  margin-left: 10px;
+  margin-left: 5px;
+  margin-right: 5px;
+  vertical-align: bottom;
 }
 
 .filter-select-with-label {
