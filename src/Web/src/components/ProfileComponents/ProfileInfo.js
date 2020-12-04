@@ -1,6 +1,6 @@
 import React from 'react';
 import { Row, Col, Card, CardTitle, CardText } from 'reactstrap';
-import { PersonIcon, GeoIcon, PhoneIcon, MailIcon } from '../Icons';
+import { PersonIcon, GeoIcon, PhoneIcon, MailIcon, EducationIcon, RibbonIcon, CalendarIcon, IdIcon } from '../Icons';
 
 const ProfileInfo = () => {
     return (
@@ -16,22 +16,18 @@ const ProfileInfo = () => {
                     <Row>
                         <Col>
                             <CardText><PersonIcon /> Principal</CardText>
-                            {/* Get ID icon */}
-                            <CardText>ID 12345</CardText>
+                            <CardText><IdIcon />ID 12345</CardText>
                             <CardText>Interested in next role</CardText>
                         </Col>
                         <Col>
                             <CardText><GeoIcon /> Mesquite District</CardText>
-                            <CardText>Mesquite High School</CardText>
-                            <CardText>
-                                <ion-icon name="ribbon"></ion-icon>
-                                5 years of service
-                            </CardText>
+                            <CardText><EducationIcon /> Mesquite High School</CardText>
+                            <CardText><RibbonIcon /> 5 years of service</CardText>
                         </Col>
                         <Col>
                             <CardText><PhoneIcon /> +1 123 123 1233</CardText>
                             <CardText><MailIcon /> arivera@mesquite.edu</CardText>
-                            <CardText>Last start date: 11/11/2015</CardText>
+                            <CardText><CalendarIcon /> Last start date: 11/11/2015</CardText>
                         </Col>
                     </Row>
                 </Col>
