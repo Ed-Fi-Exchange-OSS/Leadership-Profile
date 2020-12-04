@@ -45,7 +45,7 @@ function UseDirectory() {
     useEffect(() => {
         searchableUrl.current.textContent = new URL(url);
         if (searchableUrl.current.search === location.search || !searchableUrl.current.search) return;
-        history.push(`queue${searchableUrl.current.search}`);
+        history.push(`directory${searchableUrl.current.search}`);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [url]);
 
