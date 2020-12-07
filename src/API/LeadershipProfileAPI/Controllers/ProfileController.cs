@@ -91,7 +91,7 @@ namespace LeadershipProfileAPI.Controllers
                 var organizationQuery = new Dictionary<string, string>
                 {
                     {"totalCount", $"{true}"},
-                    {"staffUniqueId", $"{staffTeacherProfile.Id}"}
+                    {"staffUniqueId", $"{staffTeacherProfile.StaffUniqueId}"}
                 };
 
                 var organizationRequest = new HttpRequestMessage(HttpMethod.Get, 

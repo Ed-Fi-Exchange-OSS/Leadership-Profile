@@ -1,7 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using LeadershipProfileAPI.Controllers;
+using LeadershipProfileAPI.Infrastructure;
 using LeadershipProfileAPI.Tests.Infrastructure;
 using LeadershipProfileAPI.Tests.Infrastructure.Profile;
 using Shouldly;
@@ -26,6 +27,19 @@ namespace LeadershipProfileAPI.Tests
 			result.Count().ShouldBeEquivalentTo(2);
 
 			result.Select(x=>x.FirstName).Contains("Barry").ShouldBeTrue();
+        }
+
+        [Fact]
+        public async Task ShouldReturnApiExceptionOnODSAPIError()
+        {
+            var mockHttpClientFactory = new MocExceptionkHttpClientFactory();
+            var mockLogger = new MockLogger();
+
+            var controller = new ProfileController(mockLogger, mockHttpClientFactory);
+
+            var exception = await Should.ThrowAsync<ApiExceptionFilter.ApiException>(() => controller.GetDirectory("1", null, null, null));
+            
+            exception.Message.ShouldContain(HttpStatusCode.InternalServerError.ToString());
         }
     }
 }
