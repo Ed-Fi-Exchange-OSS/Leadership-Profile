@@ -62,11 +62,11 @@ namespace LeadershipProfileAPI.Controllers
             }
 
             var currentPageProfiles = response.response.AsQueryable();
-
-            if (search != null)
-                currentPageProfiles = currentPageProfiles
-                    .Where(x => x.FirstName.ToLowerInvariant().Contains(search) || x.LastName.ToLowerInvariant().Contains(search))
-                    .AsQueryable();
+            
+            // if (search != null)
+            //     currentPageProfiles = currentPageProfiles
+            //         .Where(x => x.FirstName.ToLowerInvariant().Contains(search) || x.LastName.ToLowerInvariant().Contains(search))
+            //         .AsQueryable();
 
             if (sortBy != null && sortField != null)
                 currentPageProfiles = Sort(currentPageProfiles, sortField, sortBy).AsQueryable();
