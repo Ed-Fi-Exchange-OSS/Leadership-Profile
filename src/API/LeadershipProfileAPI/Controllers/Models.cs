@@ -12,6 +12,7 @@ namespace LeadershipProfileAPI.Controllers
         public class TeacherProfile
         {
             [JsonPropertyName("id")] public string Id { get; set; }
+            [JsonPropertyName("staffUniqueId")] public string StaffUniqueId { get; set; }
             [JsonPropertyName("firstName")] public string FirstName { get; set; }
             [JsonPropertyName("middleName")] public string MiddleName { get; set; }
             [JsonPropertyName("lastSurname")] public string LastName { get; set; }
