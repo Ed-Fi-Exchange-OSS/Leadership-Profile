@@ -33,6 +33,9 @@ const GeoIcon = () =>
 const EducationIcon = () =>
     <img alt="right arrow" src={process.env.PUBLIC_URL + "/icons/school.svg"} />
 
+const EducationIconNavy = () =>
+    <img alt="right arrow" src={process.env.PUBLIC_URL + "/icons/school-navy.svg"} />
+
 const RibbonIcon = () =>
     <img alt="right arrow" src={process.env.PUBLIC_URL + "/icons/ribbon.svg"} />
 
@@ -59,6 +62,7 @@ export {
     PersonIcon,
     GeoIcon,
     EducationIcon,
+    EducationIconNavy,
     RibbonIcon,
     CalendarIcon,
     IdIcon,

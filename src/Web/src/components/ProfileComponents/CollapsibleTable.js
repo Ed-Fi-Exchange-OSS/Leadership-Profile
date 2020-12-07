@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { Collapse, Table } from 'reactstrap';
+import { EducationIcon, RibbonIcon, DownPointingIcon } from '../Icons';
 
 function getIcon(title) {
     switch (title) {
         case "Education":
-            return <ion-icon name="school"></ion-icon>;
+            return <EducationIcon />;
         case "Position History":
             return <ion-icon name="briefcase"></ion-icon>;
         case "Certifications":
-            return <ion-icon name="medal"></ion-icon>;
+            return <RibbonIcon />;
         case "Professional Development and Learning Experiences":
             return <ion-icon name="bar-chart"></ion-icon>;
     }
@@ -25,8 +26,9 @@ const CollapsibleTable = (props) => {
     return (
         <div className="profile-collapsible-container">
             <h2 className="profile-collapsible-header" onClick={toggle}>
-                <span  className="profile-collapsible-icon">{getIcon(title)}</span>
-                {title}
+                <span className="profile-collapsible-icon">{getIcon(title)}</span>
+                <span>{title}</span>
+                <span className="profile-collapsible-down-icon"><DownPointingIcon /></span>
             </h2>
             <Collapse isOpen={isOpen}>
                 <Table striped className="profile-collapsible-table">

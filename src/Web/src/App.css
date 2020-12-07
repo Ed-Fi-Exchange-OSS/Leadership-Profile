@@ -206,6 +206,39 @@
 }
 
 /* Profile */
+/* Profile Info */
+
+.profile-card-title {
+  margin: 0 0 10px 20px;
+  height: 32px;
+  width: 185px;
+  color: #222B45;
+  font-family: Poppins;
+  font-size: 22px;
+  font-weight: bold;
+  letter-spacing: 0;
+  line-height: 32px;
+}
+
+.profile-info-text {
+  width: 35%;
+  padding-bottom: 20px;
+}
+
+.profile-info-icon {
+  width: 3%;
+  padding-bottom: 20px;
+  padding-right: 20px;
+  text-align: center;
+}
+
+.green-dot {
+  height: 10px;
+  width: 10px;
+  background-color: #7ed321;
+  border-radius: 50%;
+  display: inline-block;
+}
 
 /* Profile Nav */
 
@@ -240,6 +273,7 @@
 }
 
 .profile-collapsible-header {
+  position: relative;
   background: #dfe6ff;
   height: 64px;
   font-family: 'Poppins';
@@ -250,6 +284,13 @@
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
   margin-bottom: 0;
+}
+
+.profile-collapsible-down-icon {
+  color: #3366FF;
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
 }
 
 .profile-table-header-row {
