@@ -206,3 +206,9 @@
 .pagination-arrows {
   color: #dfe6ff;
 }
+
+.pagination-button-div a:hover {
+  cursor: pointer;
+  text-decoration: underline!important;
+  color: #0056b3!important;
+}
