@@ -62,7 +62,7 @@ namespace LeadershipProfileAPI.Infrastructure.Auth
             var requestToken = new HttpRequestMessage
             {
                 Method = HttpMethod.Post,
-                RequestUri = new Uri(new Uri(_configuration["ODS-API"]), "oauth/token"),
+                RequestUri = new Uri($"{_configuration["ODS-API"]}v5.0.0/api/oauth/token"),
                 Content = new StringContent("grant_type=client_credentials")
             };
 
