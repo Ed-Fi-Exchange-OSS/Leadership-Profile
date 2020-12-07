@@ -59,6 +59,8 @@ namespace LeadershipProfileAPI.Controllers
             foreach (var teacherProfile in response.response)
             {
                 teacherProfile.Location = teacherProfile.Addresses.GetLocation();
+                teacherProfile.FullName =
+                    $"{teacherProfile.FirstName} {teacherProfile.MiddleName} {teacherProfile.LastName}";
             }
 
             var currentPageProfiles = response.response.AsQueryable();

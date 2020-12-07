@@ -15,6 +15,7 @@ namespace LeadershipProfileAPI.Controllers
             [JsonPropertyName("firstName")] public string FirstName { get; set; }
             [JsonPropertyName("middleName")] public string MiddleName { get; set; }
             [JsonPropertyName("lastSurname")] public string LastName { get; set; }
+            [JsonPropertyName("fullName")] public string FullName { get; set; }
             [JsonPropertyName("addresses")] public Address[] Addresses { get; set; }
             public string Location { get; set; } = "Default Location";
             public int YearsOfService { get; set; }
