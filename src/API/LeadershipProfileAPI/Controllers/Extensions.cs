@@ -25,7 +25,17 @@ namespace LeadershipProfileAPI.Controllers
         {   
             var address = addresses.FirstOrDefault();
 
-            return address == null ? "Default Location" : $"{address.city}, {address.stateAbbreviationDescriptor.Split('#')[1]}";
+            if (address == null)
+                return "Default Location";
+            
+            var stateDescriptor = address.stateAbbreviationDescriptor.Split('#');
+
+            var state = "Default State";
+
+            if (stateDescriptor.Length >= 2)
+                state = stateDescriptor[1];
+
+            return $"{address.city}, {state}";
         }
     }
 }
