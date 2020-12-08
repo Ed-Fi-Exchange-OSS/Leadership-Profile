@@ -12,7 +12,7 @@ const Searching = (props) => {
 
     return (
         <FormGroup className="w-50 search-by-name">
-            <Input onChange={e => handleOnChange(e.target.value)} type="text" name="searchByName" placeholder="Search by name" className="w-100" />
+            <Input disabled onChange={e => handleOnChange(e.target.value)} type="text" name="searchByName" placeholder="Search by name" className="w-100" />
             <SearchIcon stylingId="search-by-name-icon" />
         </FormGroup>
     );
