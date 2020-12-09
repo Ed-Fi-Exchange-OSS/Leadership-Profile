@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>27) Icon/arrow-ios-down</title>
+    <defs>
+        <path d="M12,16 C11.772,16 11.545,15.923 11.36,15.768 L5.36,10.768 C4.936,10.415 4.878,9.784 5.232,9.36 C5.585,8.936 6.215,8.879 6.64,9.232 L12.011,13.708 L17.373,9.393 C17.803,9.047 18.433,9.115 18.779,9.545 C19.125,9.975 19.057,10.604 18.627,10.951 L12.627,15.779 C12.444,15.926 12.222,16 12,16" id="path-1"></path>
+    </defs>
+    <g id="27)-Icon/arrow-ios-down" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <mask id="mask-2" fill="white">
+            <use xlink:href="#path-1"></use>
+        </mask>
+        <use id="🎨-Icon-Сolor" fill="#3366FF" xlink:href="#path-1"></use>
+    </g>
+</svg>

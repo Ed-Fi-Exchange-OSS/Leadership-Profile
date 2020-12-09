@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="14px" height="18px" viewBox="0 0 14 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>A7149DF2-CB28-4F68-97FA-DD26D2D7DAC5</title>
+    <defs>
+        <path d="M7,10 C10.859,10 14,13.14 14,17 C14,17.552 13.553,18 13,18 L13,18 L1,18 C0.447,18 0,17.552 0,17 C0,13.14 3.141,10 7,10 Z M7,0 C9.206,0 11,1.794 11,4 C11,6.206 9.206,8 7,8 C4.794,8 3,6.206 3,4 C3,1.794 4.794,0 7,0 Z" id="path-1"></path>
+    </defs>
+    <g id="UI-Main-Pages-(Broke-links-to-icons)" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="02.0.0.-Profile--Page---General---Default---Collapsed" transform="translate(-261.000000, -259.000000)">
+            <g id="Contact-Information-Modul" transform="translate(120.000000, 184.000000)">
+                <g id="Position" transform="translate(136.000000, 72.000000)">
+                    <g id="27)-Icon/bookmark-fill" transform="translate(5.000000, 3.000000)">
+                        <mask id="mask-2" fill="white">
+                            <use xlink:href="#path-1"></use>
+                        </mask>
+                        <use id="🎨-Icon-Сolor" fill="#1A34B8" xlink:href="#path-1"></use>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
