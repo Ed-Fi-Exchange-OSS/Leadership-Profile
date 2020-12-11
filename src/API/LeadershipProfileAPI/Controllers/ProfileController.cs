@@ -81,8 +81,8 @@ namespace LeadershipProfileAPI.Controllers
             };
         }
 
-        [HttpGet(":id")]
-        public async Task<Models.TeacherCompleteProfile> GetProfile([FromQuery] Guid id)
+        [HttpGet("{id}")]
+        public async Task<Models.TeacherCompleteProfile> GetProfile([FromRoute] Guid id)
         {
             var client = _clientFactory.CreateClient(Constants.ODSApiClient);
 
