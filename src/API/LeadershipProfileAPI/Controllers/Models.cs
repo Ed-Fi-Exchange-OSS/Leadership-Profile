@@ -25,6 +25,57 @@ namespace LeadershipProfileAPI.Controllers
             public string Major { get; set; } = "Default Major";
         }
 
+        public class TeacherCompleteProfile
+        {
+            [JsonPropertyName("staffUniqueId")] public string StaffUniqueId { get; set; }
+            [JsonPropertyName("firstName")] public string FirstName { get; set; }
+            [JsonPropertyName("middleName")] public string MiddleName { get; set; }
+            [JsonPropertyName("lastSurname")] public string LastName { get; set; }
+            [JsonPropertyName("fullName")] public string FullName { get; set; }
+            public string District { get; set; } = "Default School District";
+            public string School { get; set; } = "Default High School";
+            public int YearsOfService { get; set; }
+            public string Phone { get; set; } = "+12320103203";
+            public string Email { get; set; } = "default@email.com";
+            public DateTime StartDate { get; set; }
+            public TeacherEducation[] Education { get; set; }
+            public PositionHistory[] PositionHistory { get; set; }
+            public Certificate[] Certificates { get; set; }
+            public ProfessionalDevelopment[] ProfessionalDevelopment { get; set; }
+        }
+
+        public class TeacherEducation
+        {
+            public string Institution { get; set; } = "Default Institution";
+            public string HighestDegree { get; set; } = "Default Degree";
+            public string Major { get; set; } = "Default Major";
+            public string Specialization { get; set; } = "Default Specialization";
+        }
+
+        public class PositionHistory
+        {
+            public string Role { get; set; } = "Default Role";
+            public string School { get; set; } = "Default School";
+            public DateTime StartDate { get; set; }
+            public DateTime EndDate { get; set; }
+        }
+
+        public class Certificate
+        {
+            public string Description { get; set; } = "Default Certificate";
+            public string Type { get; set; } = "Default Type";
+            public DateTime ValidFromDate { get; set; }
+            public DateTime ValidToDate { get; set; }
+        }
+
+        public class ProfessionalDevelopment
+        {
+            public string CourseName { get; set; } = "Default Course Name";
+            public DateTime Date { get; set; }
+            public string Location { get; set; } = "Default Location";
+            public string AlignmentToLeadership { get; set; } = "Default Alignment";
+        }
+
         public class TeacherProfileRaw
         {
             public string id { get; set; }

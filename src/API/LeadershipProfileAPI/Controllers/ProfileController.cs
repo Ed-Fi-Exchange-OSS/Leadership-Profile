@@ -81,6 +81,24 @@ namespace LeadershipProfileAPI.Controllers
             };
         }
 
+        [HttpGet]
+        public async Task<Models.TeacherCompleteProfile> GetProfile([FromQuery] Guid id)
+        {
+            var client = _clientFactory.CreateClient(Constants.ODSApiClient);
+
+            var query = new Dictionary<string, string>
+            {
+                {"id",$"{id}"}
+            };
+
+            // var staffRequest = new HttpRequestMessage(HttpMethod.Get,
+            //     QueryHelpers.AddQueryString($"...", query));
+
+            // var response = await GetApiResponse<IList<Models.TeacherCompleteProfile>>(client, staffRequest).ConfigureAwait(false);
+
+            return new Models.TeacherCompleteProfile();
+        }
+
         private static async Task GetAssociations(HttpClient client, IList<Models.TeacherProfile> staffTeacherProfiles)
         {
             /*Note: this approach is less than idea but we are dependent on the ODS API.
@@ -178,5 +196,4 @@ namespace LeadershipProfileAPI.Controllers
 
         public int Page { get; set; }
     }
-
 }
