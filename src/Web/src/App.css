@@ -232,12 +232,19 @@
   text-align: center;
 }
 
-.green-dot {
+.small-dot {
   height: 10px;
   width: 10px;
-  background-color: #7ed321;
   border-radius: 50%;
   display: inline-block;
+}
+
+.green-dot {
+  background-color: #7ed321;
+}
+
+.red-dot {
+  background-color: tomato;
 }
 
 /* Profile Nav */
