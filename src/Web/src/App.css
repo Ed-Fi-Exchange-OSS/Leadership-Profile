@@ -65,7 +65,7 @@
 
 .nav .dot {
   vertical-align: bottom;
-    margin: 0 10px;
+  margin: 0 10px;
 }
 
 /* Directory */
@@ -74,9 +74,8 @@
   justify-content: space-between;
 }
 
-.view-style-buttons > button {
-  height: 24px;
-  width: 24px;
+.view-style-buttons > a {
+  padding: .05rem .375rem!important;
   padding: 0;
 }
 
@@ -218,6 +217,12 @@
   font-weight: bold;
   letter-spacing: 0;
   line-height: 32px;
+}
+
+.profile-info-picture{
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
 }
 
 .profile-info-text {

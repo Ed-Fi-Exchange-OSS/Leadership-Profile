@@ -20,12 +20,12 @@ const Directory = () => {
                     <BreadcrumbList currentPage="home" />
                     <div className="view-style-buttons">
                         <span className="view-style-label">View Style</span>
-                        <Button color="primary" className="view-style-button-first view-style-button" onClick={() => setActiveComponent("table")}>
+                        <a role="button" color="primary" className="btn btn-primary view-style-button-first view-style-button" onClick={() => setActiveComponent("table")}>
                             <TableViewIcon />
-                        </Button>
-                        <Button color="primary" className="view-style-button" onClick={() => setActiveComponent("card")}>
+                        </a>
+                        <a role="button" color="primary" className="btn btn-primary view-style-button" onClick={() => setActiveComponent("card")}>
                             <CardViewIcon />
-                        </Button>
+                        </a>
                     </div>
                 </div>
             </div>
