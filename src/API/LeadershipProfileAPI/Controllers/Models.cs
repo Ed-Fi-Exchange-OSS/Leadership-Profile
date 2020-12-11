@@ -32,12 +32,14 @@ namespace LeadershipProfileAPI.Controllers
             [JsonPropertyName("middleName")] public string MiddleName { get; set; } = "Middle";
             [JsonPropertyName("lastSurname")] public string LastName { get; set; } = "Last name";
             [JsonPropertyName("fullName")] public string FullName { get; set; } = "First Middle Last";
+            public string CurrentPosition { get; set; } = "Default Position";
             public string District { get; set; } = "Default School District";
             public string School { get; set; } = "Default High School";
             public int YearsOfService { get; set; }
             public string Phone { get; set; } = "+12320103203";
             public string Email { get; set; } = "default@email.com";
             public DateTime StartDate { get; set; }
+            public bool InterestedInNextRole { get; set; }
             public TeacherEducation[] Education { get; set; } = {new TeacherEducation()};
             public PositionHistory[] PositionHistory { get; set; } = {new PositionHistory()};
             public Certificate[] Certificates { get; set; } = {new Certificate()};
@@ -47,8 +49,8 @@ namespace LeadershipProfileAPI.Controllers
         public class TeacherEducation
         {
             public string Institution { get; set; } = "Default Institution";
-            public string HighestDegree { get; set; } = "Default Degree";
-            public string Major { get; set; } = "Default Major";
+            public string Degree { get; set; } = "Default Degree";
+            public DateTime GraduationDate { get; set; }
             public string Specialization { get; set; } = "Default Specialization";
         }
 
