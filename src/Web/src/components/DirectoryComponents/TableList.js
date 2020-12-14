@@ -1,12 +1,11 @@
 import React from 'react';
 import { Table } from 'reactstrap';
-import { useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { RightPointingIcon } from '../Icons';
 import Sorting from './Sorting';
 import PaginationButtons from './PaginationButtons';
 
 const CreateTableList = (props) => {
-    const history = useHistory();
     const { sort, data, setColumnSort, paging, setPage } = props;
 
     function RenderTable(data) {
@@ -60,7 +59,7 @@ const CreateTableList = (props) => {
                 </thead>
                 <tbody>
                     {data !== [] ? data.map(profile => (
-                        <tr onClick={() => history.push(`profile/${profile.id}`)} className="profile-table-row">
+                        <tr>
                             <td><span className="dot"></span></td>
                             <td>{profile.staffUniqueId}</td>
                             <td>{profile.lastSurname}, {profile.firstName}</td>
@@ -70,7 +69,7 @@ const CreateTableList = (props) => {
                             <td>{profile.yearsOfService}</td>
                             <td>{profile.highestDegree}</td>
                             <td>{profile.major}</td>
-                            <td><RightPointingIcon /></td>
+                            <td className="profile-table-row"><Link to={`profile/${profile.id}`}><RightPointingIcon /></Link></td>
                         </tr>)) : ''}
                         <tr className="bottom-row">
                             <td colSpan="8">

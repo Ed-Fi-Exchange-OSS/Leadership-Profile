@@ -55,7 +55,7 @@ const RibbonIcon = () =>
     <img alt="right arrow" src={process.env.PUBLIC_URL + "/icons/ribbon.svg"} />
 
 const RightPointingIcon = () =>
-    <img alt="right arrow" src={process.env.PUBLIC_URL + "/icons/arrow-ios-right.svg"} />
+    <ion-icon name="chevron-forward-outline"></ion-icon>
 
 const DownPointingIcon = () =>
     <img alt="right arrow" src={process.env.PUBLIC_URL + "/icons/arrow-ios-down.svg"} />
