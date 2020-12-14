@@ -1,5 +1,6 @@
 import React from 'react';
 import { Table } from 'reactstrap';
+import { Link } from 'react-router-dom';
 import { RightPointingIcon } from '../Icons';
 import Sorting from './Sorting';
 import PaginationButtons from './PaginationButtons';
@@ -68,7 +69,7 @@ const CreateTableList = (props) => {
                             <td>{profile.yearsOfService}</td>
                             <td>{profile.highestDegree}</td>
                             <td>{profile.major}</td>
-                            <td><RightPointingIcon /></td>
+                            <td className="profile-table-row"><Link to={`profile/${profile.id}`}><RightPointingIcon /></Link></td>
                         </tr>)) : ''}
                         <tr className="bottom-row">
                             <td colSpan="8">

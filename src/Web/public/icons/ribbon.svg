@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="14px" height="20px" viewBox="0 0 14 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>2A7FDC99-C5F6-4895-988A-786314DE762E</title>
+    <defs>
+        <path d="M7,1.9999 C9.206,1.9999 11,3.7939 11,5.9999 C11,8.2059 9.206,9.9999 7,9.9999 C4.794,9.9999 3,8.2059 3,5.9999 C3,3.7939 4.794,1.9999 7,1.9999 M13.969,18.7509 L11.66,9.7719 C12.496,8.7399 13,7.4289 13,5.9999 C13,2.6909 10.309,-0.0001 7,-0.0001 C3.691,-0.0001 1,2.6909 1,5.9999 C1,7.4289 1.504,8.7399 2.34,9.7719 L0.031,18.7509 C-0.069,19.1429 0.075,19.5559 0.398,19.7989 C0.721,20.0419 1.158,20.0639 1.506,19.8619 L6.836,16.7329 L12.516,19.8749 C12.667,19.9589 12.834,19.9999 13,19.9999 C13.217,19.9999 13.433,19.9299 13.612,19.7909 C13.928,19.5469 14.068,19.1379 13.969,18.7509" id="path-1"></path>
+    </defs>
+    <g id="UI-Main-Pages-(Broke-links-to-icons)" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="02.0.0.-Profile--Page---General---Default---Collapsed" transform="translate(-623.000000, -338.000000)">
+            <g id="Contact-Information-Modul" transform="translate(120.000000, 184.000000)">
+                <g id="Experience" transform="translate(498.000000, 152.000000)">
+                    <g id="27)-Icon/bookmark-fill-Copy-4" transform="translate(5.000000, 2.000000)">
+                        <mask id="mask-2" fill="white">
+                            <use xlink:href="#path-1"></use>
+                        </mask>
+                        <use id="🎨-Icon-Сolor" fill="#1A34B8" xlink:href="#path-1"></use>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

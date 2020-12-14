@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="20px" viewBox="0 0 16 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>4F0DE447-551F-4EE2-9EFF-7E0BF3FC2190</title>
+    <defs>
+        <path d="M8,6 C7.173,6 6.5,6.673 6.5,7.5 C6.5,8.327 7.173,9 8,9 C8.827,9 9.5,8.327 9.5,7.5 C9.5,6.673 8.827,6 8,6 M8,11 C6.07,11 4.5,9.43 4.5,7.5 C4.5,5.57 6.07,4 8,4 C9.93,4 11.5,5.57 11.5,7.5 C11.5,9.43 9.93,11 8,11 M8,0 C3.589,0 0,3.554 0,7.923 C0,13.397 7.049,19.502 7.349,19.759 C7.537,19.92 7.768,20 8,20 C8.232,20 8.463,19.92 8.651,19.759 C8.951,19.502 16,13.397 16,7.923 C16,3.554 12.411,0 8,0" id="path-1"></path>
+    </defs>
+    <g id="UI-Main-Pages-(Broke-links-to-icons)" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="02.0.0.-Profile--Page---General---Default---Collapsed" transform="translate(-622.000000, -258.000000)">
+            <g id="Contact-Information-Modul" transform="translate(120.000000, 184.000000)">
+                <g id="District" transform="translate(498.000000, 72.000000)">
+                    <g id="27)-Icon/bookmark-fill-Copy-2" transform="translate(4.000000, 2.000000)">
+                        <mask id="mask-2" fill="white">
+                            <use xlink:href="#path-1"></use>
+                        </mask>
+                        <use id="🎨-Icon-Сolor" fill="#1A34B8" xlink:href="#path-1"></use>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

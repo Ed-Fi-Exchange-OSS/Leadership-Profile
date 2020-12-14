@@ -9,7 +9,7 @@ import {
 import './App.css';
 import Navigation from './components/Navigation';
 import Directory from './components/DirectoryComponents/Directory';
-import Profile from './components/Profile';
+import Profile from './components/ProfileComponents/Profile';
 
 function App() {
   return (
