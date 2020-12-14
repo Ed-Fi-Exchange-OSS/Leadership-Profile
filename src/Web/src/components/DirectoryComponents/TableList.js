@@ -60,7 +60,7 @@ const CreateTableList = (props) => {
                 </thead>
                 <tbody>
                     {data !== [] ? data.map(profile => (
-                        <tr onClick={() => history.push(`profile/${profile.id}`)}>
+                        <tr onClick={() => history.push(`profile/${profile.id}`)} className="profile-table-row">
                             <td><span className="dot"></span></td>
                             <td>{profile.staffUniqueId}</td>
                             <td>{profile.lastSurname}, {profile.firstName}</td>

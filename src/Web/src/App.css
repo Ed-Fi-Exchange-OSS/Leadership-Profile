@@ -182,6 +182,10 @@
   background-color: #dfe6ff;
 }
 
+.profile-table-row {
+  cursor: pointer;
+}
+
 /* Pagination */
 .bottom-row {
   background-color: transparent!important;
