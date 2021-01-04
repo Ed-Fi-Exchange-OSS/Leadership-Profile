@@ -8,8 +8,10 @@ import {
 
 import './App.css';
 import Navigation from './components/Navigation';
+import Login from './components/LoginComponents/Login';
 import Directory from './components/DirectoryComponents/Directory';
 import Profile from './components/ProfileComponents/Profile';
+import Registration from './components/LoginComponents/Registration';
 
 function App() {
   return (
@@ -18,11 +20,14 @@ function App() {
       <Router>
           <Switch>
           <div className="body">
-            <Route exact path="/">
+            <Route path="/">
               <Redirect to="/directory?page=1&sortBy=desc&sortField=id" />
             </Route>
-            <Route exact path="/:parameters" component={Directory} />
+            <Route exact path="/directory?:parameters" component={Directory} />
             <Route path="/profile/:id" component={Profile} />
+            {/* temporary routing until we have private routes and loggedinroute */}
+            <Route exact path="/login/login" component={Login} />
+            <Route exact path="/login/register" component={Registration} />
           </div>
           </Switch>
       </Router>
