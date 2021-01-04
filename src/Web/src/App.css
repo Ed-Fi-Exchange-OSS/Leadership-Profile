@@ -329,3 +329,17 @@
 .profile-collapsible-table {
   margin-bottom: 0!important;
 }
+
+/* Login */
+.login-card, .register-card {
+  width: 75%;
+  margin: 0 auto;
+}
+
+.login-submit, .register-submit {
+  margin-top: 20px;
+}
+
+.login-input, .register-input {
+  padding: 10px;
+}
