@@ -1,6 +1,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/visualstudio,rider,react,visualstudiocode,node
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudio,rider,react,visualstudiocode,node
 
+# Identity Server
+*.jwk
+
 ### Node ###
 # Logs
 logs
