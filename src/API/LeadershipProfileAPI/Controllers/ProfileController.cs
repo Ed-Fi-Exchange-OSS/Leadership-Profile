@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using LeadershipProfileAPI.Infrastructure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
@@ -15,6 +16,7 @@ namespace LeadershipProfileAPI.Controllers
     [TypeFilter(typeof(ApiExceptionFilter))]
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class ProfileController : ControllerBase
     {
         private readonly ILogger<ProfileController> _logger;
@@ -81,6 +83,7 @@ namespace LeadershipProfileAPI.Controllers
             };
         }
 
+        
         [HttpGet("{id}")]
         public async Task<Models.TeacherCompleteProfile> GetProfile([FromRoute] Guid id)
         {
