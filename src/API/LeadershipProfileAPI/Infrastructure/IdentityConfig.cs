@@ -11,7 +11,7 @@ namespace LeadershipProfileAPI.Infrastructure
 {
     public class IdentityConfig
     {
-        public static string ApiName = "TPDMAPI";
+        public static string ApiName = "TPDM_API";
 
         public static List<TestUser> Users
         {
@@ -77,7 +77,7 @@ namespace LeadershipProfileAPI.Infrastructure
         public static IEnumerable<ApiScope> ApiScopes =>
             new List<ApiScope>
             {
-                new ApiScope(ApiName, "My API")
+                new ApiScope(ApiName, ApiName)
             };
 
         public static IEnumerable<Client> Clients =>
@@ -91,17 +91,21 @@ namespace LeadershipProfileAPI.Infrastructure
 
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
                     // scopes that client has access to
-                    AllowedScopes = {ApiName}
+                    AllowedScopes = {ApiName},
+
+                    RequireConsent = false
+
                 },
                 new Client
                 {
-                    ClientId = "js",
-                    ClientName = "JavaScript Client",
+                    ClientId = "interactive",
+                    ClientSecrets = { new Secret("secret".Sha256()) },
+                    ClientName = "code Client",
                     AllowedGrantTypes = GrantTypes.Code,
                     RequireClientSecret = false,
 
-                    RedirectUris =           { "https://localhost:5001/callback.html" },
-                    PostLogoutRedirectUris = { "https://localhost:5001/index.html" },
+                    RedirectUris =           { "https://localhost:5001/login" }, //should be our home page
+                    //PostLogoutRedirectUris = { "https://localhost:5001/login" },
                     AllowedCorsOrigins =     { "https://localhost:5001" },
 
                     AllowedScopes =
@@ -109,7 +113,13 @@ namespace LeadershipProfileAPI.Infrastructure
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         ApiName
-                    }
+                    },
+
+                    RequireConsent = false,
+
+                    AlwaysIncludeUserClaimsInIdToken = true
+
+
                 }
             };
     }
