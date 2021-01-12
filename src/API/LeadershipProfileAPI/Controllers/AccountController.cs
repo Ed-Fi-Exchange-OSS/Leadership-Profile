@@ -146,7 +146,7 @@ namespace LeadershipProfileAPI.Controllers
             // something went wrong, show form with error
             var vm2 = await BuildLoginViewModelAsync(model);
             //return View(vm);
-            return new LoginResultModel { ReturnUrl = vm2.ReturnUrl, Result = true}; ;
+            return new LoginResultModel { ReturnUrl = vm2.ReturnUrl}; ;
         }
 
         [HttpPost("register")]

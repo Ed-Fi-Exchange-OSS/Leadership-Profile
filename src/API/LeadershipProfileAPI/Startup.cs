@@ -66,7 +66,7 @@ namespace LeadershipProfileAPI
                 options.DefaultAuthenticateScheme = IdentityServerAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 
-            }).AddOpenIdConnect("oidc", "Demo IdentityServer", options =>
+            }).AddOpenIdConnect("oidc", "TPDM IdentityServer", options =>
             {
                 options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
                 options.SignOutScheme = IdentityServerConstants.SignoutScheme;
@@ -75,7 +75,7 @@ namespace LeadershipProfileAPI
                 options.Authority = "https://localhost:5001";
                 options.ClientId = "interactive";
                 options.ClientSecret = "secret";
-                options.ResponseType = "code";
+                options.ResponseType = "code id_token token";
                 options.Scope.Add(IdentityConfig.ApiName);
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -109,7 +109,7 @@ namespace LeadershipProfileAPI
                 // this defines a CORS policy called "default"
                 options.AddPolicy("default", policy =>
                 {
-                    policy.WithOrigins("https://localhost:5003")
+                    policy.WithOrigins("https://localhost:5001")
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                 });
