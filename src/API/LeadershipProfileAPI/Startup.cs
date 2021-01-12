@@ -1,13 +1,6 @@
 using System;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Security.Claims;
-using IdentityModel;
 using IdentityServer4;
 using IdentityServer4.AccessTokenValidation;
-using IdentityServer4.EntityFramework.DbContexts;
-using IdentityServer4.EntityFramework.Mappers;
 using LeadershipProfileAPI.Data;
 using LeadershipProfileAPI.Infrastructure;
 using LeadershipProfileAPI.Infrastructure.Auth;
@@ -22,7 +15,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Serilog;
 
 namespace LeadershipProfileAPI
 {
@@ -65,12 +57,6 @@ namespace LeadershipProfileAPI
 
 
             AddAuth(connectionString, services);
-
-            //using (var scope = services.BuildServiceProvider().GetRequiredService<IServiceScopeFactory>().CreateScope())
-            //{
-
-            //    EnsureUsers(scope);
-            //}
         }
 
         private static void AddAuth(string connectionString, IServiceCollection services)
@@ -143,81 +129,6 @@ namespace LeadershipProfileAPI
             //.AddOperationalStore(options => { options.ConfigureDbContext = b => b.UseSqlServer(connectionString); })
             .AddDeveloperSigningCredential();
         }
-
-        //private static void EnsureUsers(IServiceScope scope)
-        //{
-        //    var userMgr = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
-        //    var alice = userMgr.FindByNameAsync("alice").GetAwaiter().GetResult();
-        //    if (alice == null)
-        //    {
-        //        alice = new IdentityUser
-        //        {
-        //            UserName = "alice",
-        //            Email = "AliceSmith@email.com",
-        //            EmailConfirmed = true,
-        //        };
-        //        var result = userMgr.CreateAsync(alice, "Pass123$").GetAwaiter().GetResult();
-        //        if (!result.Succeeded)
-        //        {
-        //            throw new Exception(result.Errors.First().Description);
-        //        }
-
-        //        result = userMgr.AddClaimsAsync(alice, new Claim[]
-        //        {
-        //              new (JwtClaimTypes.Name, "Alice Smith"),
-        //              new Claim(JwtClaimTypes.GivenName, "Alice"),
-        //              new Claim(JwtClaimTypes.FamilyName, "Smith"),
-        //              new Claim(JwtClaimTypes.WebSite, "http://alice.com"),
-        //        }).GetAwaiter().GetResult();
-        //        if (!result.Succeeded)
-        //        {
-        //            throw new Exception(result.Errors.First().Description);
-        //        }
-
-        //        Log.Debug("alice created");
-        //    }
-        //    else
-        //    {
-        //        Log.Debug("alice already exists");
-        //    }
-
-        //    var bob = userMgr.FindByNameAsync("bob").GetAwaiter().GetResult();
-        //    if (bob == null)
-        //    {
-        //        bob = new IdentityUser
-        //        {
-        //            UserName = "bob",
-        //            Email = "BobSmith@email.com",
-        //            EmailConfirmed = true
-        //        };
-        //        var result = userMgr.CreateAsync(bob, "Pass123$").GetAwaiter().GetResult();
-        //        if (!result.Succeeded)
-        //        {
-        //            throw new Exception(result.Errors.First().Description);
-        //        }
-
-        //        result = userMgr.AddClaimsAsync(bob, new Claim[]
-        //        {
-        //          new Claim(JwtClaimTypes.Name, "Bob Smith"),
-        //          new Claim(JwtClaimTypes.GivenName, "Bob"),
-        //          new Claim(JwtClaimTypes.FamilyName, "Smith"),
-        //          new Claim(JwtClaimTypes.WebSite, "http://bob.com"),
-        //          new Claim("location", "somewhere")
-        //                }).GetAwaiter().GetResult();
-        //        if (!result.Succeeded)
-        //        {
-        //            throw new Exception(result.Errors.First().Description);
-        //        }
-
-        //        Log.Debug("bob created");
-        //    }
-        //    else
-        //    {
-        //        Log.Debug("bob already exists");
-        //    }
-        //}
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
