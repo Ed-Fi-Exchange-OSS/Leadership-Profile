@@ -1,15 +1,13 @@
 using System;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
+using IdentityServer4;
 using IdentityServer4.AccessTokenValidation;
-using IdentityServer4.EntityFramework.DbContexts;
-using IdentityServer4.EntityFramework.Mappers;
+using LeadershipProfileAPI.Data;
 using LeadershipProfileAPI.Infrastructure;
 using LeadershipProfileAPI.Infrastructure.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -17,7 +15,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Serilog;
 
 namespace LeadershipProfileAPI
 {
@@ -34,6 +31,7 @@ namespace LeadershipProfileAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+           
             services.AddCors(); // Make sure you call this previous to AddMvc
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Latest);
 
@@ -46,33 +44,6 @@ namespace LeadershipProfileAPI
                 .AddHttpMessageHandler<AuthenticationDelegatingHandler>();
 
 
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = IdentityServerAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer("Bearer", options =>
-            {
-                options.Authority = "https://localhost:5001";
-
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateAudience = false
-                };
-
-                //options.RequireHttpsMetadata = false;
-            });
-
-            // adds an authorization policy to make sure the token is for scope 'api1'
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("ApiScope", policy =>
-                {
-                    policy.RequireAuthenticatedUser();
-                    policy.RequireClaim("scope", IdentityConfig.ApiName);
-                });
-            });
-
             services.AddControllers();
 
             services.AddSwaggerGen(c =>
@@ -82,19 +53,82 @@ namespace LeadershipProfileAPI
 
             var connectionString = Configuration.GetConnectionString("EdFi");
 
-            services.AddIdentityServer()
-                .AddInMemoryClients(IdentityConfig.Clients)
-                .AddInMemoryIdentityResources(IdentityConfig.IdentityResources)
-                .AddInMemoryApiScopes(IdentityConfig.ApiScopes)
-                .AddTestUsers(IdentityConfig.Users)
-                .AddOperationalStore(options =>
-                {
-                    options.ConfigureDbContext = b => b.UseSqlServer(connectionString);
-                })
-                .AddDeveloperSigningCredential();
+            services.AddDbContext<TpdmDBContext>(options => options.UseSqlServer(connectionString));
+
+
+            AddAuth(connectionString, services);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        private static void AddAuth(string connectionString, IServiceCollection services)
+        {
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = IdentityServerAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                
+            }).AddOpenIdConnect("oidc", "Demo IdentityServer", options =>
+            {
+                options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                options.SignOutScheme = IdentityServerConstants.SignoutScheme;
+                options.SaveTokens = true; // idserver
+
+                options.Authority = "https://localhost:5001";
+                options.ClientId = "interactive";
+                options.ClientSecret = "secret";
+                options.ResponseType = "code";
+                options.Scope.Add(IdentityConfig.ApiName);
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    NameClaimType = "name",
+                    RoleClaimType = "role"
+                };
+            }).AddJwtBearer("Bearer", options =>
+            {
+                options.Authority = "https://localhost:5001"; //value from environment variable // API
+
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateAudience = false
+                };
+
+                options.RequireHttpsMetadata = false;
+            });
+
+            
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ApiScope", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("scope", IdentityConfig.ApiName);
+                });
+            });
+
+            services.AddCors(options =>
+            {
+                // this defines a CORS policy called "default"
+                options.AddPolicy("default", policy =>
+                {
+                    policy.WithOrigins("https://localhost:5003")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
+
+            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<TpdmDBContext>();
+
+            services.AddIdentityServer(options =>
+            {
+                options.UserInteraction.LoginUrl = "/login";
+                options.UserInteraction.ErrorUrl = "/error";
+            })
+            .AddInMemoryClients(IdentityConfig.Clients)
+            .AddInMemoryIdentityResources(IdentityConfig.IdentityResources)
+            .AddInMemoryApiScopes(IdentityConfig.ApiScopes)
+            .AddAspNetIdentity<IdentityUser>()
+            //.AddOperationalStore(options => { options.ConfigureDbContext = b => b.UseSqlServer(connectionString); })
+            .AddDeveloperSigningCredential();
+        }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
