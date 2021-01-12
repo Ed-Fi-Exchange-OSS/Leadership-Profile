@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using IdentityModel;
 using IdentityServer4;
@@ -18,6 +19,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.EntityFrameworkCore;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace LeadershipProfileAPI.Controllers
@@ -71,38 +73,25 @@ namespace LeadershipProfileAPI.Controllers
         private readonly IAuthenticationSchemeProvider _schemeProvider;
         private readonly IEventService _events;
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<IdentityUser> _userManager;
 
         public AccountController(
             IIdentityServerInteractionService interaction,
             IClientStore clientStore,
             IAuthenticationSchemeProvider schemeProvider,
             IEventService events,
-            SignInManager<IdentityUser> signInManager)
+            SignInManager<IdentityUser> signInManager,
+            UserManager<IdentityUser> userManager)
         {
             _interaction = interaction;
             _clientStore = clientStore;
             _schemeProvider = schemeProvider;
             _events = events;
             _signInManager = signInManager;
+            _userManager = userManager;
         }
 
-        /// <summary>
-        /// Entry point into the login workflow
-        /// </summary>
-        //[HttpGet]
-        //public async Task<IActionResult> Login(string returnUrl)
-        //{
-        //    // build a model so we know what to show on the login page
-        //    var vm = await BuildLoginViewModelAsync(returnUrl);
-
-        //    if (vm.IsExternalLoginOnly)
-        //    {
-        //        // we only have one option for logging in and it's an external provider
-        //        return RedirectToAction("Challenge", "External", new { scheme = vm.ExternalLoginScheme, returnUrl });
-        //    }
-
-        //    return View(vm);
-        //}
+     
 
         /// <summary>
         /// Handle postback from username/password login
@@ -160,11 +149,52 @@ namespace LeadershipProfileAPI.Controllers
             return new LoginResultModel { ReturnUrl = vm2.ReturnUrl, Result = true}; ;
         }
 
-        //[HttpPost("register")]
-        //public async Task<LoginViewModel> Register()
-        //{
+        [HttpPost("register")]
+        public async Task<LoginResultModel> Register(RegisterModel model)
+        {
+            //if(model.StaffUniqueId)
+            //    //check if staff exists
 
-        //}
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.SelectMany(v => v.Value.Errors);
+                //.Where(e => e.Count > 0).ToList();
+
+                var errors2 = ModelState.Select(v => v.Value.Errors)
+                                                .Where(e => e.Count > 0).ToList();
+
+                throw new ApiExceptionFilter.ApiException("Missing important properties");
+            }
+
+            var user = new IdentityUser(model.Username)
+            {
+                Email = model.Email
+            };
+            var result = await _userManager.CreateAsync(user, model.Password).ConfigureAwait(false);
+            if (!result.Succeeded)
+            {
+                throw new ApiExceptionFilter.ApiException("Couldn't create a user");
+            }
+
+            result = await _userManager.AddClaimsAsync(user, new Claim[]
+            {
+                new (JwtClaimTypes.Name, $"{model.FirstName} {model.LastName}"),
+                new (JwtClaimTypes.GivenName, model.FirstName),
+                new (JwtClaimTypes.FamilyName, model.LastName)
+            });
+
+            if (!result.Succeeded)
+            {
+                throw new ApiExceptionFilter.ApiException("Couldn't create claims");
+            }
+
+            //create relationship with staff
+
+            await _signInManager.SignInAsync(user, false).ConfigureAwait(false);
+
+            return new LoginResultModel {Result = true, ReturnUrl = model.ReturnUrl};
+        
+        }
 
         ///// <summary>
         ///// Handle logout page postback
@@ -317,6 +347,20 @@ namespace LeadershipProfileAPI.Controllers
 
             return vm;
         }
+    }
+
+    public class RegisterModel  
+    {
+        [Required]
+        public string Username { get; set; }
+        [Required]
+        public string Password { get; set; }
+        public string Email { get; set; }
+        [Required]
+        public string StaffUniqueId { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string ReturnUrl { get; set; }
     }
 
     public class LoginResultModel   
