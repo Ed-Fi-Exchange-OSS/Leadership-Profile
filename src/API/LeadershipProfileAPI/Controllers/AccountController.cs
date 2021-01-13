@@ -15,7 +15,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace LeadershipProfileAPI.Controllers
@@ -97,24 +96,24 @@ namespace LeadershipProfileAPI.Controllers
         [HttpPost("register")]
         public async Task<LoginResultModel> Register(RegisterModel model)
         {
-            //if(model.StaffUniqueId)
-            //    //check if staff exists
+            var staff = _dbContext.Staff.SingleOrDefault(s => s.StaffUniqueId == model.StaffUniqueId);
+            
+            if(staff == null)
+                throw new ApiExceptionFilter.ApiException("Staff record not found.");
+
             if (!ModelState.IsValid)
             {
-                var errors = ModelState.SelectMany(v => v.Value.Errors);
-                //.Where(e => e.Count > 0).ToList();
-
-                var errors2 = ModelState.Select(v => v.Value.Errors)
-                                                .Where(e => e.Count > 0).ToList();
+                //var errors = ModelState.SelectMany(v => v.Value.Errors);
+                //var errors2 = ModelState.Select(v => v.Value.Errors)
+                //                                .Where(e => e.Count > 0).ToList();
 
                 throw new ApiExceptionFilter.ApiException("Missing important properties");
             }
 
-            var user = new IdentityUser(model.Username)
-            {
-                Email = model.Email
-            };
+            var user = new IdentityUser(model.Username) {Email = model.Email};
+
             var result = await _userManager.CreateAsync(user, model.Password).ConfigureAwait(false);
+            
             if (!result.Succeeded)
             {
                 throw new ApiExceptionFilter.ApiException("Couldn't create a user");
@@ -125,7 +124,7 @@ namespace LeadershipProfileAPI.Controllers
                 new (JwtClaimTypes.Name, $"{model.FirstName} {model.LastName}"),
                 new (JwtClaimTypes.GivenName, model.FirstName),
                 new (JwtClaimTypes.FamilyName, model.LastName),
-                new ("role","Admin") // check db before adding this in th
+               // new ("role","Admin") // check db before adding this in 
 
             });
 
@@ -135,11 +134,12 @@ namespace LeadershipProfileAPI.Controllers
             }
 
             //create relationship with staff
-
-            await _signInManager.SignInAsync(user, false).ConfigureAwait(false);
-
-            //httpcontext login
-
+            staff.TpdmUsername = user.UserName;
+            await _dbContext.SaveChangesAsync();
+            
+           // await _signInManager.SignInAsync(user, false).ConfigureAwait(false);
+            await Login(new LoginInputModel {Username = user.UserName, Password = model.Password});
+            
             return new LoginResultModel {Result = true, ReturnUrl = model.ReturnUrl};
         
         }
@@ -257,7 +257,6 @@ namespace LeadershipProfileAPI.Controllers
         public string ClientName { get; set; }
         public string SignOutIframeUrl { get; set; }
         public bool AutomaticRedirectAfterSignOut { get; set; }
-
         public string LogoutId { get; set; }
         public string ExternalAuthenticationScheme { get; set; }
     }
