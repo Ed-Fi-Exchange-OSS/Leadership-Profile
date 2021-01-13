@@ -4,6 +4,7 @@ using IdentityServer4.AccessTokenValidation;
 using LeadershipProfileAPI.Data;
 using LeadershipProfileAPI.Infrastructure;
 using LeadershipProfileAPI.Infrastructure.Auth;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -77,6 +78,8 @@ namespace LeadershipProfileAPI
                 options.ClientSecret = "secret";
                 options.ResponseType = "code id_token token";
                 options.Scope.Add(IdentityConfig.ApiName);
+                options.Scope.Add("roles");
+                options.ClaimActions.MapUniqueJsonKey("role","role");
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     NameClaimType = "name",
@@ -88,7 +91,8 @@ namespace LeadershipProfileAPI
 
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateAudience = false
+                    ValidateAudience = false,
+                    RoleClaimType = "role"
                 };
 
                 options.RequireHttpsMetadata = false;
