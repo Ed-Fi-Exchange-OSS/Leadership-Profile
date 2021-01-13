@@ -54,7 +54,8 @@ namespace LeadershipProfileAPI
 
             var connectionString = Configuration.GetConnectionString("EdFi");
 
-            services.AddDbContext<TpdmDBContext>(options => options.UseSqlServer(connectionString));
+            services.AddDbContext<EdFiIdentityDbContext>(options => options.UseSqlServer(connectionString));
+            services.AddDbContext<EdFiDbContext>(options => options.UseSqlServer(connectionString));
 
 
             AddAuth(connectionString, services);
@@ -119,7 +120,7 @@ namespace LeadershipProfileAPI
                 });
             });
 
-            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<TpdmDBContext>();
+            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<EdFiIdentityDbContext>();
 
             services.AddIdentityServer(options =>
             {

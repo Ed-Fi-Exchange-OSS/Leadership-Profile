@@ -9,11 +9,13 @@ using IdentityServer4.Events;
 using IdentityServer4.Extensions;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
+using LeadershipProfileAPI.Data;
 using LeadershipProfileAPI.Infrastructure;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace LeadershipProfileAPI.Controllers
@@ -30,6 +32,7 @@ namespace LeadershipProfileAPI.Controllers
         private readonly IEventService _events;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly EdFiDbContext _dbContext;
 
         public AccountController(
             IIdentityServerInteractionService interaction,
@@ -37,7 +40,8 @@ namespace LeadershipProfileAPI.Controllers
             IAuthenticationSchemeProvider schemeProvider,
             IEventService events,
             SignInManager<IdentityUser> signInManager,
-            UserManager<IdentityUser> userManager)
+            UserManager<IdentityUser> userManager,
+            EdFiDbContext dbContext)
         {
             _interaction = interaction;
             _clientStore = clientStore;
@@ -45,6 +49,7 @@ namespace LeadershipProfileAPI.Controllers
             _events = events;
             _signInManager = signInManager;
             _userManager = userManager;
+            _dbContext = dbContext;
         }
         
         [HttpPost("login")]
@@ -94,7 +99,6 @@ namespace LeadershipProfileAPI.Controllers
         {
             //if(model.StaffUniqueId)
             //    //check if staff exists
-
             if (!ModelState.IsValid)
             {
                 var errors = ModelState.SelectMany(v => v.Value.Errors);
