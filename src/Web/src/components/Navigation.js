@@ -5,6 +5,8 @@ import {
   NavbarToggler,
   NavbarBrand,
   Nav,
+  NavItem,
+  NavLink,
   UncontrolledDropdown,
   DropdownToggle,
   DropdownMenu,
@@ -13,6 +15,7 @@ import {
 
 const Navigation = (props) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   const toggle = () => setIsOpen(!isOpen);
 
@@ -21,30 +24,35 @@ const Navigation = (props) => {
       <Navbar expand="md">
         <NavbarBrand href="/">TPDM Leadership Portal</NavbarBrand>
         <NavbarToggler onClick={toggle} />
-        <Collapse isOpen={isOpen} navbar>
-          <Nav className="mr-auto" navbar>
-          </Nav>
-          <Nav>            
-              <UncontrolledDropdown nav inNavbar>
-                <DropdownToggle nav caret>
-                    <span className="dot"></span>
-                    User's Name
-                </DropdownToggle>
-                <DropdownMenu right>
-                    <DropdownItem>
-                    Option 1
-                    </DropdownItem>
-                    <DropdownItem>
-                    Option 2
-                    </DropdownItem>
-                    <DropdownItem divider />
-                    <DropdownItem>
-                    Reset
-                    </DropdownItem>
-                </DropdownMenu>
-                </UncontrolledDropdown>
-            </Nav>
-        </Collapse>
+          <Collapse isOpen={isOpen} navbar>
+            {loggedIn ? 
+            <Nav className="ml-auto">
+                <UncontrolledDropdown nav inNavbar>
+                  <DropdownToggle nav caret>
+                      <span className="dot"></span>
+                      User's Name
+                  </DropdownToggle>
+                  <DropdownMenu right>
+                      <DropdownItem>
+                        Option 1
+                      </DropdownItem>
+                      <DropdownItem>
+                        Option 2
+                      </DropdownItem>
+                      <DropdownItem divider />
+                      <DropdownItem>
+                        Logout
+                      </DropdownItem>
+                  </DropdownMenu>
+                  </UncontrolledDropdown>
+              </Nav>
+            : 
+            <Nav className="ml-auto">
+              <NavItem>
+                <NavLink href="/login/">Login</NavLink>
+              </NavItem>
+            </Nav>}
+          </Collapse>
       </Navbar>
     </div>
   );

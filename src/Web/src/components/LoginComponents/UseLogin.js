@@ -18,20 +18,16 @@ function UseLogin() {
         })
     }, [email, password]);
 
-    useEffect(() => {
-
-    }, [loginInfo]);
-
-    async function setLogin(e) {
-        console.log('logging in');
+    function setLogin(e) {
         if (password !== '' && email !== '') {
             let unmounted = false;
-            const apiUrl = new URL(`https://localhost:44383/account/login`);
+            const apiUrl = new URL(`https://localhost:5001/account/login`);
             Axios.post(apiUrl, {
                 'username': email,
                 'password': password,
                 "rememberLogin": true,
-                "returnUrl": "http://localhost:3000/directory?page=1&sortBy=desc&sortField=id"
+            }, {
+                withCredentials: true
             }).then((response) => {
                 if (!unmounted && response.data !== null) {
                     setError(false);

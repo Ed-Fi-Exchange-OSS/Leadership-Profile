@@ -7,27 +7,33 @@ import {
 } from "react-router-dom";
 
 import './App.css';
+import PrivateRoute from './utils/PrivateRoute';
+import LoggedInRoute from './utils/LoggedInRoute';
 import Navigation from './components/Navigation';
 import Login from './components/LoginComponents/Login';
 import Directory from './components/DirectoryComponents/Directory';
 import Profile from './components/ProfileComponents/Profile';
 import Registration from './components/LoginComponents/Registration';
+import authService from './utils/auth-service';
 
 function App() {
+  // const isAuthenticated = authService.isAuthenticated();
+  // console.log(isAuthenticated);
+
   return (
     <div className="App">
       <Navigation />
       <Router>
           <Switch>
           <div className="body">
-            <Route exact path="/login/login" component={Login} />
-            <Route exact path="/login/register" component={Registration} />
+            {/* <LoggedInRoute exact path='/account/login' isAuthenticated={isAuthenticated} component={Login} /> */}
             <Route exact path="/">
               <Redirect to="/directory?page=1&sortBy=desc&sortField=id" />
             </Route>
-            <Route exact path="/:parameters" component={Directory} />
-            <Route path="/profile/:id" component={Profile} />
-            {/* temporary routing until we have private routes and loggedinroute */}
+            {/* <PrivateRoute exact path="/:searchParams" isAuthenticated={isAuthenticated} component={Directory} />
+            <PrivateRoute path="/profile/:id" isAuthenticated={isAuthenticated} component={Profile} /> */}
+            <Route exact path="/account/login" component={Login} />
+            <Route exact path="/account/register" component={Registration} />
           </div>
           </Switch>
       </Router>
