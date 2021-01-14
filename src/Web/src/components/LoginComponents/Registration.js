@@ -17,6 +17,11 @@ const Registration = () => {
             <CardTitle tag="h5">Register New Account</CardTitle>
             <Form onSubmit={e => handleOnSubmit(e)}>
                 <FormGroup className="mb-2 mr-sm-2 mb-sm-0 register-input">
+                    <Label for="username" className="mr-sm-2">Username</Label>
+                    <Input type="username" name="username" id="username" placeholder="Username" {...bind} />
+                    <FormText color="muted">Required.</FormText>
+                </FormGroup>
+                <FormGroup className="mb-2 mr-sm-2 mb-sm-0 register-input">
                     <Label for="email" className="mr-sm-2">Email</Label>
                     <Input type="email" name="email" id="email" placeholder="Email" {...bind} />
                     <FormText color="muted">Required.</FormText>
@@ -35,14 +40,6 @@ const Registration = () => {
                     <Label for="staffUniqueId" className="mr-sm-2">Staff ID</Label>
                     <Input type="text" name="staffUniqueId" id="staffUniqueId" placeholder="Your Staff Id" {...bind} />
                     <FormText color="muted">Required.</FormText>
-                </FormGroup>
-                <FormGroup className="mb-2 mr-sm-2 mb-sm-0 register-input">
-                    <Label for="firstName" className="mr-sm-2">First Name</Label>
-                    <Input type="text" name="firstName" id="firstName" placeholder="John" {...bind} />
-                </FormGroup>
-                <FormGroup className="mb-2 mr-sm-2 mb-sm-0 register-input">
-                    <Label for="lastName" className="mr-sm-2">Last Name</Label>
-                    <Input type="text" name="lastName" id="lastName" placeholder="Smith" {...bind} />
                 </FormGroup>
                 {error.hasError ? 
                 <Alert color="danger">
