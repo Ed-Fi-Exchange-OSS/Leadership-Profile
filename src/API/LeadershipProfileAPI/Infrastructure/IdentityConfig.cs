@@ -72,6 +72,8 @@ namespace LeadershipProfileAPI.Infrastructure
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
+               new IdentityResource("roles", " user roles", new List<string>(){"role"})
+
             };
 
         public static IEnumerable<ApiScope> ApiScopes =>

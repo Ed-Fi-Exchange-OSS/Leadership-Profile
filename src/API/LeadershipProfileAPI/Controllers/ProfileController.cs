@@ -5,7 +5,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using LeadershipProfileAPI.Infrastructure;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
@@ -86,9 +85,13 @@ namespace LeadershipProfileAPI.Controllers
 
         
         [HttpGet("{id}")]
+        //[ClaimCheck("role","Admin")]
+//        [Authorize(Roles = "Admin")]
         public async Task<Models.TeacherCompleteProfile> GetProfile([FromRoute] Guid id)
         {
-            var client = _clientFactory.CreateClient(Constants.ODSApiClient);
+           // var u = User.Claims.ToList();
+
+           var client = _clientFactory.CreateClient(Constants.ODSApiClient);
 
             var query = new Dictionary<string, string>
             {
