@@ -44,16 +44,21 @@ function UseRegistration() {
         Axios.post(apiUrl, registrationInfo).then((response) => {
             if (!unmounted && response.data !== null) {
                 setError(false);
-                console.log(response.data)
             }
         }).catch((error) => {
-            // const errorResponse = error.response.data
-            // console.log(Object.values(errorResponse.errors ));
-            // setError({
-            //     hasError: errorResponse.isError,
-            //     message: Object.values(errorResponse.errors)
-            //         .join(' ')
-            // });
+            const errorInfo = error.response.data;
+            if (errorInfo.message === undefined) {
+                const errors = Object.values(errorInfo.errors).map(error => error.join(" ")).join(" ")
+                setError({
+                    hasError: true,
+                    message: errors
+                });
+            } else {
+                setError({
+                    hasError: true,
+                    message: errorInfo.message
+                });
+            }
             console.error(error.message);
         });
         return () => {

@@ -53,7 +53,7 @@ function UseDirectory() {
     useEffect(() => {
         if (!searchableUrl.current.search) return;
         let unmounted = false;
-        const apiUrl = new URL(`https://localhost:44383/Profile${history.location.search}`);
+        const apiUrl = new URL(`https://localhost:5001/Profile${history.location.search}`);
         Axios.get(apiUrl)
             .then((response) => {
                 if (response.isError) {
