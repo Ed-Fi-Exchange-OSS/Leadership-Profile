@@ -27,6 +27,7 @@ task RemovePublishFolders -description "Removes the publish related folders" {
 
 task Publish -description "Publish the primary projects for distribution" -depends RemovePublishFolders {
 	$minVersion = minver -t v
+	$env:MINVERVERSIONOVERRIDE = $minVersion
 	exec { dotnet publish -c $configuration "$apiProjectFile" -o $publish}
 	pushd -Path $frontendAppFolder
 	exec { npm install }
