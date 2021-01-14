@@ -1,7 +1,8 @@
 include "./psake-build-helpers.ps1"
 
 properties {
-	$configuration = 'Release'
+	$configuration = "Release"
+	$env = "dev"
 	$projectRootDirectory = "$(resolve-path .)"
 	$publish = "$projectRootDirectory/Publish"
 	$productSolution = "$projectRootDirectory/src/API/LeadershipProfileAPI/LeadershipProfileAPI.sln"
@@ -15,6 +16,7 @@ properties {
 	$dbTestdataZipFile = "EdFi_TPDM_v08_20201109.zip"
 	$dbTestdataBakFile = "EdFi_TPDM_v08_20201109.bak"
 	$testDataFolder = "$projectRootDirectory/testdata"
+	$dbName = "EdFi_Ods_Populated_Template"
 }
 
 
@@ -61,8 +63,12 @@ task RecreateTestDatabase -description "Starts a docker container with the test 
 	Start-Sleep -s 10
 	exec { docker exec "$testDatabaseContainerName" mkdir "/var/opt/mssql/backup"}
 	exec { docker cp "$testDataFolder/$dbTestDataBakFile" "${testDatabaseContainerName}:/var/opt/mssql/backup/$dbTestDataBakFile" }
-	$restoreQuery = "RESTORE DATABASE EdFi_Ods_Populated_Template FROM DISK='/var/opt/mssql/backup/$dbTestDataBakFile' WITH MOVE 'EdFi_Ods_Populated_Template_log' TO '/var/opt/mssql/data/EdFi_Ods_Populated_Template_log', MOVE 'EdFi_Ods_Populated_Template' TO '/var/opt/mssql/data/EdFi_Ods_Populated_Template.mdf'"
+	$restoreQuery = "RESTORE DATABASE $dbName FROM DISK='/var/opt/mssql/backup/$dbTestDataBakFile' WITH MOVE 'EdFi_Ods_Populated_Template_log' TO '/var/opt/mssql/data/EdFi_Ods_Populated_Template_log', MOVE 'EdFi_Ods_Populated_Template' TO '/var/opt/mssql/data/EdFi_Ods_Populated_Template.mdf'"
 	$restoreQuery | Out-File "$testDataFolder/restore.sql"
 	exec { docker cp "$testDataFolder/restore.sql" "${testDatabaseContainerName}:/var/opt/mssql/backup/restore.sql" }
 	exec { docker exec "$testDatabaseContainerName" /opt/mssql-tools/bin/sqlcmd -S localhost -U 'sa' -P "$testDatabasePassword" -i '/var/opt/mssql/backup/restore.sql' }
 }
+
+task UpdateTestDatabase -description "Runs the migration scripts on the test database" {
+	Update-Database localhost $testDatabasePort sa $testDatabasePassword $dbName $env
+} 
