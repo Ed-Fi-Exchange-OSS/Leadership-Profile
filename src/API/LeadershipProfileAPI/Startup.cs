@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using IdentityServer4;
 using IdentityServer4.AccessTokenValidation;
 using LeadershipProfileAPI.Data;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -122,17 +124,22 @@ namespace LeadershipProfileAPI
 
             services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<EdFiIdentityDbContext>();
 
-            services.AddIdentityServer(options =>
-            {
-                options.UserInteraction.LoginUrl = "/login";
-                options.UserInteraction.ErrorUrl = "/error";
-            })
+            services.AddIdentityServer()
             .AddInMemoryClients(IdentityConfig.Clients)
             .AddInMemoryIdentityResources(IdentityConfig.IdentityResources)
             .AddInMemoryApiScopes(IdentityConfig.ApiScopes)
             .AddAspNetIdentity<IdentityUser>()
-            //.AddOperationalStore(options => { options.ConfigureDbContext = b => b.UseSqlServer(connectionString); })
             .AddDeveloperSigningCredential();
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Events.OnRedirectToAccessDenied =
+                    options.Events.OnRedirectToLogin = context =>
+                    { 
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        return Task.FromResult<object>(null);
+                    };
+            });
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
