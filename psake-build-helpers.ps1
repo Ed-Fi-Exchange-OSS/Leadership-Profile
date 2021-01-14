@@ -12,8 +12,6 @@ function Exist-Container($name) {
     return $false
 }
 
-function Update-Database($server, $port, $user, $password, $db_name, $env) {
-    $roundhouseConnString="Server=$server,$port;Database=$db_name;User Id=$user;Password=$password;"
-    Write-Host $roundhouseConnString
+function Update-Database($roundhouseConnString) {
     exec { rh -f="./src/API/DatabaseMigrations/scripts" -c="$roundhouseConnString" -dc --env $env --noninteractive  } -workingDirectory .
 }
