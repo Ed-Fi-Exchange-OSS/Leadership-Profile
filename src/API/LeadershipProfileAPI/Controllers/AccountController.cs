@@ -121,10 +121,7 @@ namespace LeadershipProfileAPI.Controllers
 
             result = await _userManager.AddClaimsAsync(user, new Claim[]
             {
-                new (JwtClaimTypes.Name, $"{model.FirstName} {model.LastName}"),
-                new (JwtClaimTypes.GivenName, model.FirstName),
-                new (JwtClaimTypes.FamilyName, model.LastName),
-               // new ("role","Admin") // check db before adding this in 
+                new ("role","Admin") // check db before adding this when we implement roles
 
             });
 
@@ -229,8 +226,6 @@ namespace LeadershipProfileAPI.Controllers
         public string Email { get; set; }
         [Required]
         public string StaffUniqueId { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
         public string ReturnUrl { get; set; }
     }
 
