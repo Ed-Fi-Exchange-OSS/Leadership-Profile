@@ -9,6 +9,12 @@ properties {
 	$apiTestProjectFile = "$projectRootDirectory/src/API/LeadershiProfileAPI.Tests/LeadershipProfileAPI.Tests.csproj"
 	$frontendAppFolder = "$projectRootDirectory/src/Web"
 	$artifactsFolder = "$projectRootDirectory/artifacts"
+	$testDatabasePassword = "yourStrong(!)Password"
+	$testDatabaseContainerName = "LeadershipProfileTestDb"
+	$testDatabasePort = "1435"
+	$dbTestdataZipFile = "EdFi_TPDM_v08_20201109.zip"
+	$dbTestdataBakFile = "EdFi_TPDM_v08_20201109.bak"
+	$testDataFolder = "$projectRootDirectory/testdata"
 }
 
 
@@ -39,3 +45,24 @@ task TestAPI -description "Run API tests" {
 }
 
 task Test -description "Runs all tests" -depends TestFrontend, TestAPI
+
+task RecreateTestDatabase -description "Starts a docker container with the test database" {
+	if (!(Test-Path "$testDataFolder/$dbTestDataZipFile" -PathType Leaf)) {
+		Expand-Archive -Path "$testDataFolder/$dbTestDataZipFile" -DestinationPath "$testDataFolder"
+	}
+
+	if (Exist-Container($testDatabaseContainerName)) {
+		exec { docker stop "$testDatabaseContainerName" }
+		exec { docker rm "$testDatabaseContainerName" }
+	}
+
+	exec { docker run -e 'ACCEPT_EULA=Y' --name "$testDatabaseContainerName" -e "SA_PASSWORD=$testDatabasePassword" -p "${testDatabasePort}:1433" -d "mcr.microsoft.com/mssql/server:2019-latest" }
+	Write-Host "Pausing for DB to come online"
+	Start-Sleep -s 10
+	exec { docker exec "$testDatabaseContainerName" mkdir "/var/opt/mssql/backup"}
+	exec { docker cp "$testDataFolder/$dbTestDataBakFile" "${testDatabaseContainerName}:/var/opt/mssql/backup/$dbTestDataBakFile" }
+	$restoreQuery = "RESTORE DATABASE EdFi_Ods_Populated_Template FROM DISK='/var/opt/mssql/backup/$dbTestDataBakFile' WITH MOVE 'EdFi_Ods_Populated_Template_log' TO '/var/opt/mssql/data/EdFi_Ods_Populated_Template_log', MOVE 'EdFi_Ods_Populated_Template' TO '/var/opt/mssql/data/EdFi_Ods_Populated_Template.mdf'"
+	$restoreQuery | Out-File "$testDataFolder/restore.sql"
+	exec { docker cp "$testDataFolder/restore.sql" "${testDatabaseContainerName}:/var/opt/mssql/backup/restore.sql" }
+	exec { docker exec "$testDatabaseContainerName" /opt/mssql-tools/bin/sqlcmd -S localhost -U 'sa' -P "$testDatabasePassword" -i '/var/opt/mssql/backup/restore.sql' }
+}
