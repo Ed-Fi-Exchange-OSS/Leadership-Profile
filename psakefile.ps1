@@ -19,11 +19,14 @@ properties {
 	$dbName = "EdFi_Ods_Populated_Template"
 }
 
-task Publish -description "Publish the primary projects for distribution" {
-	$minVersion = minver -t v
+task RemovePublishFolders -description "Removes the publish related folders" {
 	remove-directory-silently $publish
 	remove-directory-silently $artifactsFolder
 	remove-directory-silently "$frontendAppFolder/build"
+}
+
+task Publish -description "Publish the primary projects for distribution" -depends RemovePublishFolders {
+	$minVersion = minver -t v
 	exec { dotnet publish -c $configuration "$apiProjectFile" -o $publish}
 	pushd -Path $frontendAppFolder
 	exec { npm install }
@@ -47,14 +50,16 @@ task TestAPI -description "Run API tests" -depends RecreateTestDatabase, UpdateT
 
 task Test -description "Runs all tests" -depends TestFrontend, TestAPI
 
-task RecreateTestDatabase -description "Starts a docker container with the test database" {
+task RemoveDbTestContainer -description "Removes the database test container" {
+	if (Exist-Container($testDatabaseContainerName)) {
+		exec { docker kill "$testDatabaseContainerName" }
+		exec { docker rm "$testDatabaseContainerName" }
+	}
+}
+
+task RecreateTestDatabase -description "Starts a docker container with the test database" -depends RemoveDbTestContainer {
 	if (!(Test-Path "$testDataFolder/$dbTestDataZipFile" -PathType Leaf)) {
 		Expand-Archive -Path "$testDataFolder/$dbTestDataZipFile" -DestinationPath "$testDataFolder"
-	}
-
-	if (Exist-Container($testDatabaseContainerName)) {
-		exec { docker stop "$testDatabaseContainerName" }
-		exec { docker rm "$testDatabaseContainerName" }
 	}
 
 	exec { docker run -e 'ACCEPT_EULA=Y' --name "$testDatabaseContainerName" -e "SA_PASSWORD=$testDatabasePassword" -p "${testDatabasePort}:1433" -d "mcr.microsoft.com/mssql/server:2019-latest" }
@@ -75,4 +80,8 @@ task UpdateTestDatabase -description "Runs the migration scripts on the test dat
 
 task UpdateLocalDatabase -description "Runs the migration scripts on the local database" {
 	Update-Database "Server=localhost;Database=$dbName;Integrated Security=true;"
+}
+
+task Clean -description "Clean back to a fresh state" -depends RemoveDbTestContainer, RemovePublishFolders {
+	dotnet clean $productSolution
 }
