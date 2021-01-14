@@ -79,6 +79,10 @@ task UpdateTestDatabase -description "Runs the migration scripts on the test dat
 	Update-Database $roundhouseConnString
 } 
 
+task RunTestDatabase -description "Runs the docker container that has the test database" {
+	exec { docker start $testDatabaseContainerName }
+}
+
 task UpdateLocalDatabase -description "Runs the migration scripts on the local database" {
 	Update-Database "Server=localhost;Database=$dbName;Integrated Security=true;"
 }
