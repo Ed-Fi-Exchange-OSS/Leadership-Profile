@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using IdentityModel;
 using IdentityServer4;
 using IdentityServer4.Events;
 using IdentityServer4.Extensions;
@@ -50,49 +49,7 @@ namespace LeadershipProfileAPI.Controllers
             _userManager = userManager;
             _dbContext = dbContext;
         }
-        
-        [HttpPost("login")]
-        public async Task<LoginResultModel> Login(LoginInputModel model)
-        {
-            // check if we are in the context of an authorization request
-            var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
 
-            if (!ModelState.IsValid)
-            {
-                return new LoginResultModel();
-            }
-
-            // find user by username
-            var user = await _signInManager.UserManager.FindByNameAsync(model.Username);
-
-            // validate username/password using ASP.NET Identity
-            if (user != null && (await _signInManager.CheckPasswordSignInAsync(user, model.Password, true)) == SignInResult.Success)
-            {
-                await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName, clientId: context?.Client.ClientId));
-
-                // issue authentication cookie with subject ID and username
-                var identityServerUser = new IdentityServerUser(user.Id) { DisplayName = user.UserName };
-                
-                var claims = await _signInManager.UserManager.GetClaimsAsync(user);
-                
-                foreach (var claim in claims)
-                {
-                    identityServerUser.AdditionalClaims.Add(claim);
-                }
-
-                await HttpContext.SignInAsync(identityServerUser, null);
-
-                var vm = new LoginInputModel {Username = model.Username, RememberLogin = model.RememberLogin};
-
-                return new LoginResultModel {ReturnUrl = vm.ReturnUrl, Result = true};
-            }
-
-            await _events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials", clientId: context?.Client.ClientId));
-
-            ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);
-
-            return new LoginResultModel();
-        }
         [HttpPost("register")]
         public async Task<LoginResultModel> Register(RegisterModel model)
         {
@@ -134,86 +91,88 @@ namespace LeadershipProfileAPI.Controllers
             staff.TpdmUsername = user.UserName;
             await _dbContext.SaveChangesAsync();
             
-           // await _signInManager.SignInAsync(user, false).ConfigureAwait(false);
+            // await _signInManager.SignInAsync(user, false).ConfigureAwait(false);
             await Login(new LoginInputModel {Username = user.UserName, Password = model.Password});
             
-            return new LoginResultModel {Result = true, ReturnUrl = model.ReturnUrl};
+            return new LoginResultModel {Result = true};
         
         }
+
+        [HttpPost("login")]
+        public async Task<LoginResultModel> Login(LoginInputModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                throw new ApiExceptionFilter.ApiException("Missing required properties");
+            }
+
+            // find user by username
+            var user = await _signInManager.UserManager.FindByNameAsync(model.Username);
+
+            // validate username/password using ASP.NET Identity
+            if (user != null && (await _signInManager.CheckPasswordSignInAsync(user, model.Password, true)) == SignInResult.Success)
+            {
+                await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName, clientId: "interactive"));
+
+                // issue authentication cookie with subject ID and username
+                var identityServerUser = new IdentityServerUser(user.Id) { DisplayName = user.UserName };
+                
+                var claims = await _signInManager.UserManager.GetClaimsAsync(user);
+                
+                foreach (var claim in claims)
+                {
+                    identityServerUser.AdditionalClaims.Add(claim);
+                }
+
+                await HttpContext.SignInAsync(identityServerUser, null);
+
+                return new LoginResultModel {Result = true};
+            }
+
+            await _events.RaiseAsync(new UserLoginFailureEvent(model.Username, "Invalid credentials", clientId: "interactive"));
+
+            ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);
+
+            return new LoginResultModel {ResultMessage = "Invalid credentials"};
+
+        }
+
         ///// <summary>
         ///// Handle logout page postback
         ///// </summary>
         [HttpPost("logout")]
         public async Task<LoggedOutViewModel> Logout(LogoutInputModel model)
-        {
-            // build a model so the logged out page knows what to display
-            var vm = await BuildLoggedOutViewModelAsync(model.LogoutId);
+        {   
+            var vm = new LoggedOutViewModel{Result = true};
 
-            if (User?.Identity.IsAuthenticated == true)
-            {
-                // delete local authentication cookie
-                await HttpContext.SignOutAsync();
+            if (User?.Identity.IsAuthenticated != true) 
+                return vm;
 
-                // raise the logout event
-                await _events.RaiseAsync(new UserLogoutSuccessEvent(User.GetSubjectId(), User.GetDisplayName()));
-            }
+            if (!User.Identity.Name.ToLower().Equals(model.LogoutId.ToLower()))
+                throw new ApiExceptionFilter.ApiException("Invalid session logout request");
 
-            //// check if we need to trigger sign-out at an upstream identity provider
-            //if (vm.TriggerExternalSignout)
-            //{
-            //    // build a return URL so the upstream provider will redirect back
-            //    // to us after the user has logged out. this allows us to then
-            //    // complete our single sign-out processing.
-            //    string url = Url.Action("Logout", new { logoutId = vm.LogoutId });
-
-            //    // this triggers a redirect to the external provider for sign-out
-            //    var result = SignOut(new AuthenticationProperties { RedirectUri = url }, vm.ExternalAuthenticationScheme);
-
-            //}
+            // delete local authentication cookie
+            await HttpContext.SignOutAsync();
+            
+            ExplicitlyDeleteAuthCookies();
+            // raise the logout event
+            await _events.RaiseAsync(new UserLogoutSuccessEvent(User.GetSubjectId(), User.GetDisplayName()));
 
             return vm;
         }
-        [HttpGet]
-        public UnauthorizedResult AccessDenied()
+
+        private void ExplicitlyDeleteAuthCookies()
         {
-            return Unauthorized();
-        }
-        private async Task<LoggedOutViewModel> BuildLoggedOutViewModelAsync(string logoutId)
-        {
-            // get context information (client name, post logout redirect URI and iframe for federated signout)
-            var logout = await _interaction.GetLogoutContextAsync(logoutId);
+            if (HttpContext.Request.Cookies.Count <= 0)
+                return;
 
-            var vm = new LoggedOutViewModel
+            var siteCookies = HttpContext.Request.Cookies.Where(c => c.Key.Contains(".AspNetCore.")
+                                                                     || c.Key.Contains("Microsoft.Authentication")
+                                                                     || c.Key.Contains("idsrv"));
+            foreach (var cookie in siteCookies)
             {
-                AutomaticRedirectAfterSignOut = AccountOptions.AutomaticRedirectAfterSignOut,
-                PostLogoutRedirectUri = logout?.PostLogoutRedirectUri,
-                ClientName = string.IsNullOrEmpty(logout?.ClientName) ? logout?.ClientId : logout?.ClientName,
-                SignOutIframeUrl = logout?.SignOutIFrameUrl,
-                LogoutId = logoutId
-            };
-
-            if (User?.Identity.IsAuthenticated == true)
-            {
-                var idp = User.FindFirst(JwtClaimTypes.IdentityProvider)?.Value;
-                if (idp != null && idp != IdentityServer4.IdentityServerConstants.LocalIdentityProvider)
-                {
-                    var providerSupportsSignout = await HttpContext.GetSchemeSupportsSignOutAsync(idp);
-                    if (providerSupportsSignout)
-                    {
-                        if (vm.LogoutId == null)
-                        {
-                            // if there's no current logout context, we need to create one
-                            // this captures necessary info from the current logged in user
-                            // before we signout and redirect away to the external IdP for signout
-                            vm.LogoutId = await _interaction.CreateLogoutContextAsync();
-                        }
-
-                        vm.ExternalAuthenticationScheme = idp;
-                    }
-                }
+                Response.Cookies.Delete(cookie.Key);
             }
-
-            return vm;
         }
     }
 
@@ -226,19 +185,16 @@ namespace LeadershipProfileAPI.Controllers
         public string Email { get; set; }
         [Required]
         public string StaffUniqueId { get; set; }
-        public string ReturnUrl { get; set; }
     }
 
     public class LoginResultModel   
     {
         public bool Result { get; set; }
-        public string ReturnUrl { get; set; }
+        public string ResultMessage { get; set; }
     }
 
     public class AccountOptions
     {
-        public static bool AutomaticRedirectAfterSignOut = false;
-
         public static string InvalidCredentialsErrorMessage = "Invalid username or password";
     }
     public class LogoutInputModel
@@ -248,12 +204,7 @@ namespace LeadershipProfileAPI.Controllers
 
     public class LoggedOutViewModel
     {
-        public string PostLogoutRedirectUri { get; set; }
-        public string ClientName { get; set; }
-        public string SignOutIframeUrl { get; set; }
-        public bool AutomaticRedirectAfterSignOut { get; set; }
-        public string LogoutId { get; set; }
-        public string ExternalAuthenticationScheme { get; set; }
+        public bool Result { get; set; }
     }
 
     public class LoginInputModel
@@ -262,7 +213,5 @@ namespace LeadershipProfileAPI.Controllers
         public string Username { get; set; }
         [Required]
         public string Password { get; set; }
-        public bool RememberLogin { get; set; }
-        public string ReturnUrl { get; set; }
     }
 }

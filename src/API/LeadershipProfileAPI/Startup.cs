@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using IdentityServer4;
 using IdentityServer4.AccessTokenValidation;
 using LeadershipProfileAPI.Data;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -32,8 +34,15 @@ namespace LeadershipProfileAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-           
-            services.AddCors(); // Make sure you call this previous to AddMvc
+
+            //  services.AddCors(); // Make sure you call this previous to AddMvc
+            var connectionString = Configuration.GetConnectionString("EdFi");
+
+            services.AddDbContext<EdFiIdentityDbContext>(options => options.UseSqlServer(connectionString));
+            services.AddDbContext<EdFiDbContext>(options => options.UseSqlServer(connectionString));
+            
+            AddAuth(connectionString, services);
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Latest);
 
             services.AddScoped<AuthenticationDelegatingHandler>();
@@ -44,21 +53,13 @@ namespace LeadershipProfileAPI
                 .SetHandlerLifetime(TimeSpan.FromMinutes(handlerLifeTimeInMinutes))
                 .AddHttpMessageHandler<AuthenticationDelegatingHandler>();
 
-
             services.AddControllers();
+
 
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "LeadershipProfileAPI", Version = "v1"});
             });
-
-            var connectionString = Configuration.GetConnectionString("EdFi");
-
-            services.AddDbContext<EdFiIdentityDbContext>(options => options.UseSqlServer(connectionString));
-            services.AddDbContext<EdFiDbContext>(options => options.UseSqlServer(connectionString));
-
-
-            AddAuth(connectionString, services);
         }
 
         private static void AddAuth(string connectionString, IServiceCollection services)
@@ -113,26 +114,32 @@ namespace LeadershipProfileAPI
             {
                 // this defines a CORS policy called "default"
                 options.AddPolicy("default", policy =>
-                {
-                    policy.WithOrigins("https://localhost:5001")
+                {   
+                    policy.WithOrigins("https://localhost:5001", "http://localhost:3000")
                         .AllowAnyHeader()
-                        .AllowAnyMethod();
+                        .AllowAnyMethod()
+                        .AllowCredentials();
                 });
             });
 
             services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<EdFiIdentityDbContext>();
 
-            services.AddIdentityServer(options =>
-            {
-                options.UserInteraction.LoginUrl = "/login";
-                options.UserInteraction.ErrorUrl = "/error";
-            })
+            services.AddIdentityServer()
             .AddInMemoryClients(IdentityConfig.Clients)
             .AddInMemoryIdentityResources(IdentityConfig.IdentityResources)
             .AddInMemoryApiScopes(IdentityConfig.ApiScopes)
             .AddAspNetIdentity<IdentityUser>()
-            //.AddOperationalStore(options => { options.ConfigureDbContext = b => b.UseSqlServer(connectionString); })
             .AddDeveloperSigningCredential();
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Events.OnRedirectToAccessDenied =
+                    options.Events.OnRedirectToLogin = context =>
+                    { 
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        return Task.FromResult<object>(null);
+                    };
+            });
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -142,11 +149,9 @@ namespace LeadershipProfileAPI
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "LeadershipProfileAPI v1"));
 
-                app.UseCors(builder => builder
-                    .AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader());
             }
+
+            app.UseCors("default");
 
             app.UseHttpsRedirection();
 
