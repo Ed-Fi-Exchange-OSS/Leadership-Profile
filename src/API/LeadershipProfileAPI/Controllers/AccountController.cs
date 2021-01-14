@@ -50,7 +50,55 @@ namespace LeadershipProfileAPI.Controllers
             _userManager = userManager;
             _dbContext = dbContext;
         }
+
+        [HttpPost("register")]
+        public async Task<LoginResultModel> Register(RegisterModel model)
+        {
+            var staff = _dbContext.Staff.SingleOrDefault(s => s.StaffUniqueId == model.StaffUniqueId);
+            
+            if(staff == null)
+                throw new ApiExceptionFilter.ApiException("Staff record not found.");
+
+            if (!ModelState.IsValid)
+            {
+                //var errors = ModelState.SelectMany(v => v.Value.Errors);
+                //var errors2 = ModelState.Select(v => v.Value.Errors)
+                //                                .Where(e => e.Count > 0).ToList();
+
+                throw new ApiExceptionFilter.ApiException("Missing important properties");
+            }
+
+            var user = new IdentityUser(model.Username) {Email = model.Email};
+
+            var result = await _userManager.CreateAsync(user, model.Password).ConfigureAwait(false);
+            
+            if (!result.Succeeded)
+            {
+                throw new ApiExceptionFilter.ApiException("Couldn't create a user");
+            }
+
+            result = await _userManager.AddClaimsAsync(user, new Claim[]
+            {
+                new ("role","Admin") // check db before adding this when we implement roles
+
+            });
+
+            if (!result.Succeeded)
+            {
+                throw new ApiExceptionFilter.ApiException("Couldn't create claims");
+            }
+
+            //create relationship with staff
+            staff.TpdmUsername = user.UserName;
+            await _dbContext.SaveChangesAsync();
+            
+            // await _signInManager.SignInAsync(user, false).ConfigureAwait(false);
+            await Login(new LoginInputModel {Username = user.UserName, Password = model.Password});
+            
+            return new LoginResultModel {Result = true, ReturnUrl = model.ReturnUrl};
         
+        }
+
         [HttpPost("login")]
         public async Task<LoginResultModel> Login(LoginInputModel model)
         {
@@ -93,53 +141,7 @@ namespace LeadershipProfileAPI.Controllers
 
             return new LoginResultModel();
         }
-        [HttpPost("register")]
-        public async Task<LoginResultModel> Register(RegisterModel model)
-        {
-            var staff = _dbContext.Staff.SingleOrDefault(s => s.StaffUniqueId == model.StaffUniqueId);
-            
-            if(staff == null)
-                throw new ApiExceptionFilter.ApiException("Staff record not found.");
 
-            if (!ModelState.IsValid)
-            {
-                //var errors = ModelState.SelectMany(v => v.Value.Errors);
-                //var errors2 = ModelState.Select(v => v.Value.Errors)
-                //                                .Where(e => e.Count > 0).ToList();
-
-                throw new ApiExceptionFilter.ApiException("Missing important properties");
-            }
-
-            var user = new IdentityUser(model.Username) {Email = model.Email};
-
-            var result = await _userManager.CreateAsync(user, model.Password).ConfigureAwait(false);
-            
-            if (!result.Succeeded)
-            {
-                throw new ApiExceptionFilter.ApiException("Couldn't create a user");
-            }
-
-            result = await _userManager.AddClaimsAsync(user, new Claim[]
-            {
-                new ("role","Admin") // check db before adding this when we implement roles
-
-            });
-
-            if (!result.Succeeded)
-            {
-                throw new ApiExceptionFilter.ApiException("Couldn't create claims");
-            }
-
-            //create relationship with staff
-            staff.TpdmUsername = user.UserName;
-            await _dbContext.SaveChangesAsync();
-            
-           // await _signInManager.SignInAsync(user, false).ConfigureAwait(false);
-            await Login(new LoginInputModel {Username = user.UserName, Password = model.Password});
-            
-            return new LoginResultModel {Result = true, ReturnUrl = model.ReturnUrl};
-        
-        }
         ///// <summary>
         ///// Handle logout page postback
         ///// </summary>
@@ -149,30 +151,34 @@ namespace LeadershipProfileAPI.Controllers
             // build a model so the logged out page knows what to display
             var vm = await BuildLoggedOutViewModelAsync(model.LogoutId);
 
-            if (User?.Identity.IsAuthenticated == true)
-            {
-                // delete local authentication cookie
-                await HttpContext.SignOutAsync();
+            if (User?.Identity.IsAuthenticated != true) 
+                return vm;
 
-                // raise the logout event
-                await _events.RaiseAsync(new UserLogoutSuccessEvent(User.GetSubjectId(), User.GetDisplayName()));
-            }
-
-            //// check if we need to trigger sign-out at an upstream identity provider
-            //if (vm.TriggerExternalSignout)
-            //{
-            //    // build a return URL so the upstream provider will redirect back
-            //    // to us after the user has logged out. this allows us to then
-            //    // complete our single sign-out processing.
-            //    string url = Url.Action("Logout", new { logoutId = vm.LogoutId });
-
-            //    // this triggers a redirect to the external provider for sign-out
-            //    var result = SignOut(new AuthenticationProperties { RedirectUri = url }, vm.ExternalAuthenticationScheme);
-
-            //}
+            // delete local authentication cookie
+            await HttpContext.SignOutAsync();
+            
+            ExplicitlyDeleteAuthCookies();
+            
+            // raise the logout event
+            await _events.RaiseAsync(new UserLogoutSuccessEvent(User.GetSubjectId(), User.GetDisplayName()));
 
             return vm;
         }
+
+        private void ExplicitlyDeleteAuthCookies()
+        {
+            if (HttpContext.Request.Cookies.Count <= 0)
+                return;
+
+            var siteCookies = HttpContext.Request.Cookies.Where(c => c.Key.Contains(".AspNetCore.")
+                                                                     || c.Key.Contains("Microsoft.Authentication")
+                                                                     || c.Key.Contains("idsrv"));
+            foreach (var cookie in siteCookies)
+            {
+                Response.Cookies.Delete(cookie.Key);
+            }
+        }
+
         [HttpGet]
         public UnauthorizedResult AccessDenied()
         {
