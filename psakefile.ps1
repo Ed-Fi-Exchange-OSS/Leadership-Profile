@@ -19,8 +19,7 @@ properties {
 	$dbName = "EdFi_Ods_Populated_Template"
 }
 
-
-task Publish -description "Publish the primary projects for distribution." {
+task Publish -description "Publish the primary projects for distribution" {
 	$minVersion = minver -t v
 	remove-directory-silently $publish
 	remove-directory-silently $artifactsFolder
@@ -42,7 +41,7 @@ task TestFrontend -description "Run frontend tests" {
 	popd
 }
 
-task TestAPI -description "Run API tests" {
+task TestAPI -description "Run API tests" -depends RecreateTestDatabase, UpdateTestDatabase {
 	exec { dotnet test "$apiTestProjectFile" }
 }
 
@@ -70,5 +69,10 @@ task RecreateTestDatabase -description "Starts a docker container with the test 
 }
 
 task UpdateTestDatabase -description "Runs the migration scripts on the test database" {
-	Update-Database localhost $testDatabasePort sa $testDatabasePassword $dbName $env
+    $roundhouseConnString="Server=localhost,$testDatabasePort;Database=$dbName;User Id=sa;Password=$testDatabasePassword;"
+	Update-Database $roundhouseConnString
 } 
+
+task UpdateLocalDatabase -description "Runs the migration scripts on the local database" {
+	Update-Database "Server=localhost;Database=$dbName;Integrated Security=true;"
+}
