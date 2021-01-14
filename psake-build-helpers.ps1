@@ -13,6 +13,7 @@ function Exist-Container($name) {
 }
 
 function Update-Database($server, $port, $user, $password, $db_name, $env) {
-    $roundhouseConnString="host=$server;port=$port;user id=$user;password=$password;database=$db_name;"
-    exec { rh --dt=postgres -f="./db/" -c="$roundhouseConnString" -dc --env $env --noninteractive  } -workingDirectory .
+    $roundhouseConnString="Server=$server,$port;Database=$db_name;User Id=$user;Password=$password;"
+    Write-Host $roundhouseConnString
+    exec { rh -f="./src/API/DatabaseMigrations/scripts" -c="$roundhouseConnString" -dc --env $env --noninteractive  } -workingDirectory .
 }
