@@ -115,7 +115,9 @@ namespace LeadershipProfileAPI
                 // this defines a CORS policy called "default"
                 options.AddPolicy("default", policy =>
                 {   
-                    policy.WithOrigins("https://localhost:5001", "http://localhost:3000")
+                    policy.WithOrigins("https://localhost:5001", 
+                            "http://localhost",
+                            "http://tpdm.web.internal")
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials();
