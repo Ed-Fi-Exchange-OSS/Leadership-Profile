@@ -25,18 +25,20 @@ function App() {
     <div className="App">
       <Navigation />
       <Router>
-          <Switch>
-          <div className="body">
-            {/* <LoggedInRoute exact path='/account/login' isAuthenticated={authenticated} component={Login} /> */}
-            <Route exact path="/">
-              <Redirect to="/directory?page=1&sortBy=desc&sortField=id" />
-            </Route>
-            <PrivateRoute exact path="/:searchParams" isAuthenticated={authenticated} component={Directory} />
-            <PrivateRoute path="/profile/:id" isAuthenticated={authenticated} component={Profile} />
-            <Route exact path="/account/login" component={Login} />
-            {/* <Route exact path="/account/register" component={Registration} /> */}
-          </div>
-          </Switch>
+          {/* <Switch> */}
+            <React.Fragment>
+              <div className="body">
+                {/* <LoggedInRoute exact path='/account/login' isAuthenticated={authenticated} component={Login} /> */}
+                <Route exact path="/">
+                  <Redirect to="/directory?page=1&sortBy=desc&sortField=id" />
+                </Route>
+                <Route exact path="/:searchParams" isAuthenticated={authenticated} component={Directory} />
+                <Route path="/profile/:id" isAuthenticated={authenticated} component={Profile} />
+                <Route exact path="/account/login" component={Login} />
+                {/* <Route exact path="/account/register" component={Registration} /> */}
+              </div>
+            </React.Fragment>
+          {/* </Switch> */}
       </Router>
     </div>
   );

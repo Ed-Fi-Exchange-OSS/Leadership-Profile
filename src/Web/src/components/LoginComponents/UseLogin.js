@@ -4,7 +4,7 @@ import Axios from 'axios';
 function UseLogin() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [loginInfo, setLoginInfo] = useState({
+    const [logininfo, setLogininfo] = useState({
         email: email,
         password: password
     });
@@ -12,7 +12,7 @@ function UseLogin() {
     const [error, setError] = useState(false);
 
     useEffect(() => {
-        setLoginInfo({
+        setLogininfo({
             email: email,
             password: password
         })
@@ -25,11 +25,11 @@ function UseLogin() {
             fetch(apiUrl, {
                 method: 'POST',
                 mode: 'cors',
-                cache: 'no-cache',
+                // cache: 'cache',
                 credentials: 'include',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
+                    'Content-Type': 'text/plain',
+                    'Accept': 'text/plain',
                     'Cache': 'no-cache',
                 },
                 referrerPolicy: 'origin-when-cross-origin',
@@ -54,7 +54,7 @@ function UseLogin() {
     return {
         setLogin,
         bind: {
-            loginInfo,
+            logininfo,
             onChange: event => {
                 switch (event.target.name) {
                     case 'email':
