@@ -14,11 +14,12 @@ import Login from './components/LoginComponents/Login';
 import Directory from './components/DirectoryComponents/Directory';
 import Profile from './components/ProfileComponents/Profile';
 import Registration from './components/LoginComponents/Registration';
-import authService from './utils/auth-service';
+import AuthService from './utils/auth-service';
 
 function App() {
-  // const isAuthenticated = authService.isAuthenticated();
-  // console.log(isAuthenticated);
+  const { isAuthenticated } = AuthService()
+  const authenticated = isAuthenticated();
+  console.log(authenticated);
 
   return (
     <div className="App">
@@ -26,14 +27,14 @@ function App() {
       <Router>
           <Switch>
           <div className="body">
-            {/* <LoggedInRoute exact path='/account/login' isAuthenticated={isAuthenticated} component={Login} /> */}
+            {/* <LoggedInRoute exact path='/account/login' isAuthenticated={authenticated} component={Login} /> */}
             <Route exact path="/">
               <Redirect to="/directory?page=1&sortBy=desc&sortField=id" />
             </Route>
-            {/* <PrivateRoute exact path="/:searchParams" isAuthenticated={isAuthenticated} component={Directory} />
-            <PrivateRoute path="/profile/:id" isAuthenticated={isAuthenticated} component={Profile} /> */}
+            <PrivateRoute exact path="/:searchParams" isAuthenticated={authenticated} component={Directory} />
+            <PrivateRoute path="/profile/:id" isAuthenticated={authenticated} component={Profile} />
             <Route exact path="/account/login" component={Login} />
-            <Route exact path="/account/register" component={Registration} />
+            {/* <Route exact path="/account/register" component={Registration} /> */}
           </div>
           </Switch>
       </Router>
