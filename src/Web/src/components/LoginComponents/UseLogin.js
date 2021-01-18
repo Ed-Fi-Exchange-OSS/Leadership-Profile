@@ -22,13 +22,21 @@ function UseLogin() {
         if (password !== '' && email !== '') {
             let unmounted = false;
             const apiUrl = new URL(`https://localhost:5001/account/login`);
-            Axios.post(apiUrl, {
+            fetch(apiUrl, {
+                method: 'POST',
+                mode: 'cors',
+                cache: 'no-cache',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Cache': 'no-cache',
+                },
+                referrerPolicy: 'origin-when-cross-origin',
+                body: JSON.stringify({
                 'username': email,
                 'password': password,
-                "rememberLogin": true,
-            }, {
-                withCredentials: true
-            }).then((response) => {
+            })}).then((response) => {
                 if (!unmounted && response.data !== null) {
                     setError(false);
                     setData(response.data);
