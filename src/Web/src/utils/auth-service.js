@@ -4,6 +4,7 @@ function AuthService() {
     function getAuthInfo() {
         // eslint-disable-next-line no-undef
         const authInfo = Cookies.get();
+        console.log(authInfo);
         return authInfo;
     }
 
