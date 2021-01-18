@@ -16,6 +16,44 @@ specific language governing permissions and limitations under the License.
 
 See [NOTICES](NOTICES.md) for additional copyright and license notifications.
 
+## Setting up the development environment
+
+### Required software
+
+* .net 5 sdk (https://dotnet.microsoft.com/download/dotnet/5.0)
+* SQL Server 2019 (https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
+* node.js (https://nodejs.org/)
+* docker
+* powershell
+
+### Setup
+
+* Run the `setup.ps1` powershell script to install the required powershell modules and tools needed to build
+the application.
+* Run `Invoke-Psake DownloadDbTestData` in powershell from the project root folder.
+* Unzip and restore the backup in `testdata/EdFi_TPDM_v08_20201109.zip` to your local SQL Server instance.
+* Run the database migrations by running this powershell command from the project root folder:
+```
+Invoke-Psake UpdateLocalDatabase
+```
+
+## Building the application
+
+From the project root directory, run this powershell command: `Invoke-Psake Publish`.
+This command will create two zip files in the `artifacts` folder:
+
+* LeadershipProfile-API
+* LeadershipProfile-Frontend
+
+## Testing the application
+
+These are the available powershell commands to test the application (run them from the projec root directory):
+
+* `Invoke-Psake TestAPI`: Runs the API related tests. It runs a docker container with a test database and then runs the API
+  test suite.
+* `Invoke-Psake TestFrontend`: Runs the frontend tests.
+* `Invoke-Psake Test`: Runs the all the tests.
+
 ## Running API
 ### Setting the secrets locally for Ed-Fi ODS
 Take a look at Microsoft's recommended way managing secret storage [here](https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets) and follow the steps below:
