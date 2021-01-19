@@ -8,6 +8,7 @@ using LeadershipProfileAPI.Infrastructure;
 using LeadershipProfileAPI.Infrastructure.Auth;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using LeadershipProfileAPI.Infrastructure.Email;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -36,6 +37,7 @@ namespace LeadershipProfileAPI
         {
             //  services.AddCors(); // Make sure you call this previous to AddMvc
             var connectionString = Configuration.GetConnectionString("EdFi");
+            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
 
             services.AddDbContext<EdFiIdentityDbContext>(options => options.UseSqlServer(connectionString));
             services.AddDbContext<EdFiDbContext>(options => options.UseSqlServer(connectionString));
@@ -51,6 +53,8 @@ namespace LeadershipProfileAPI
                     x => { x.BaseAddress = new Uri(Configuration["ODS-API"]); })
                 .SetHandlerLifetime(TimeSpan.FromMinutes(handlerLifeTimeInMinutes))
                 .AddHttpMessageHandler<AuthenticationDelegatingHandler>();
+
+            services.AddTransient<IEmailSender, SmtpSender>();
 
             services.AddControllers();
 
