@@ -108,7 +108,13 @@ namespace LeadershipProfileAPI.Infrastructure
 
                     RedirectUris =           { "https://localhost:5001/login" }, //should be our home page
                     //PostLogoutRedirectUris = { "https://localhost:5001/login" },
-                    AllowedCorsOrigins =     { "https://localhost:5001" },
+                    AllowedCorsOrigins =     {
+                        "https://localhost:5001",
+                        "http://localhost",
+                        "http://tpdm.web.internal/",
+                        "http://tpdm.web.internal",
+                        "https://tpdm.web.internal:5001/"
+                    },
 
                     AllowedScopes =
                     {

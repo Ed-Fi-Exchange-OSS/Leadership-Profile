@@ -21,18 +21,18 @@ function UseLogin() {
     function setLogin(e) {
         if (password !== '' && email !== '') {
             let unmounted = false;
-            const apiUrl = new URL(`https://localhost:5001/account/login`);
+            const apiUrl = new URL(`https://tpdm.web.internal:5001/account/login`);
             fetch(apiUrl, {
                 method: 'POST',
                 mode: 'cors',
-                // cache: 'cache',
+                cache: 'no-cache',
                 credentials: 'include',
                 headers: {
-                    'Content-Type': 'text/plain',
-                    'Accept': 'text/plain',
-                    'Cache': 'no-cache',
+                    'Content-Type': 'application/json',
+                    // 'Accept': 'application/json',
+                    // 'Cache': 'no-cache',
                 },
-                referrerPolicy: 'origin-when-cross-origin',
+                // referrerPolicy: 'origin-when-cross-origin',
                 body: JSON.stringify({
                 'username': email,
                 'password': password,

@@ -117,7 +117,9 @@ namespace LeadershipProfileAPI
                 {   
                     policy.WithOrigins("https://localhost:5001", 
                             "http://localhost",
-                            "http://tpdm.web.internal")
+                            "http://tpdm.web.internal/",
+                            "http://tpdm.web.internal",
+                            "https://tpdm.web.internal:5001/")
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials();
