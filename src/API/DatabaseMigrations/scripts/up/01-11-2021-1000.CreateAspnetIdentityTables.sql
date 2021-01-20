@@ -1,5 +1,5 @@
-USE [EdFi]
-GO
+--USE [EdFi]
+--GO
 /****** Object:  Table [dbo].[AspNetRoleClaims]     ******/
 SET ANSI_NULLS ON
 GO
