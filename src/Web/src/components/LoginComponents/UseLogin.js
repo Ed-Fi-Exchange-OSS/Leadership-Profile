@@ -28,8 +28,8 @@ function UseLogin() {
                 // cache: 'cache',
                 credentials: 'include',
                 headers: {
-                    'Content-Type': 'text/plain',
-                    'Accept': 'text/plain',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
                     'Cache': 'no-cache',
                 },
                 referrerPolicy: 'origin-when-cross-origin',
