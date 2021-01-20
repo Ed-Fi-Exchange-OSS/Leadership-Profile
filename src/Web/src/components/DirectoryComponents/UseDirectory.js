@@ -54,7 +54,7 @@ function UseDirectory() {
         if (!searchableUrl.current.search) return;
         let unmounted = false;
         const apiUrl = new URL(`https://localhost:5001/Profile${history.location.search}`);
-        Axios.get(apiUrl)
+        Axios.get(apiUrl, {withCredentials: true})
             .then((response) => {
                 if (response.isError) {
                     setError(true);
