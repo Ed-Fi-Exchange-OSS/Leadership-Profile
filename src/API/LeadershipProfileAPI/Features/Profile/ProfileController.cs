@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using HttpMethod = System.Net.Http.HttpMethod;
 
-namespace LeadershipProfileAPI.Controllers
+namespace LeadershipProfileAPI.Features.Profile
 {
     [TypeFilter(typeof(ApiExceptionFilter))]
     [ApiController]

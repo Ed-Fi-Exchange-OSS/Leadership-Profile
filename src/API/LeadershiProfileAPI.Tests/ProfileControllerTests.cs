@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using LeadershipProfileAPI.Controllers;
+using LeadershipProfileAPI.Features.Profile;
 using LeadershipProfileAPI.Infrastructure;
 using LeadershipProfileAPI.Tests.Infrastructure;
 using LeadershipProfileAPI.Tests.Infrastructure.Profile;

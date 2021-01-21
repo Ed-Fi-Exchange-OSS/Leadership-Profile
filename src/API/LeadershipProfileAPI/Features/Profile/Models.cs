@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace LeadershipProfileAPI.Controllers
+namespace LeadershipProfileAPI.Features.Profile
 {
     public class Models
     {
