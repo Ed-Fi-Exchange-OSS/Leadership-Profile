@@ -2,17 +2,9 @@ import { useState, useEffect } from 'react';
 
 import AuthService from '../../utils/auth-service';
 
-function UseLogin() {
+function UseLogout() {
     const { login } = AuthService()
-
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [logininfo, setLogininfo] = useState({
-        username: username,
-        password: password
-    });
     const [error, setError] = useState(false);
-    const [redirect, setRedirect] = useState(false);
 
     useEffect(() => {
         setLogininfo({
@@ -40,8 +32,7 @@ function UseLogin() {
             })}).then((response) => {
                 if (!unmounted && response.data !== null) {
                     setError(false);
-                    login(username);
-                    setRedirect(true);
+                    login(true);
                 }
             }).catch(error => {
                 setError(true);
@@ -52,12 +43,6 @@ function UseLogin() {
             };
         }
     }
-
-    if (redirect) return redirectTo();
-
-    function redirectTo() {
-        return <Redirect to="/" />;
-      }      
 
     return {
         setLogin,
@@ -80,4 +65,4 @@ function UseLogin() {
     };
 }
 
-export default UseLogin;
+export default UseLogout;
