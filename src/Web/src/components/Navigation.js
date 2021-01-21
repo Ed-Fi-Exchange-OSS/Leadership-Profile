@@ -13,11 +13,31 @@ import {
   DropdownItem,
 } from 'reactstrap';
 
+import AuthService from '../utils/auth-service';
+
 const Navigation = (props) => {
+  const { isAuthenticated, getAuthInfo } = AuthService();
   const [isOpen, setIsOpen] = useState(false);
-  const [loggedIn, setLoggedIn] = useState(false);
 
   const toggle = () => setIsOpen(!isOpen);
+
+  const logout = () => {
+    const apiUrl = new URL(`https://localhost:5001/account/logout`);
+    fetch(apiUrl, {
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        referrerPolicy: 'origin-when-cross-origin',
+        body: JSON.stringify({
+        'logoutId': getAuthInfo(),
+    })}).then((response) => {
+        console.log(response);
+    }).catch(error => console.error(error)); 
+  }
 
   return (
     <div>
@@ -25,7 +45,7 @@ const Navigation = (props) => {
         <NavbarBrand href="/">TPDM Leadership Portal</NavbarBrand>
         <NavbarToggler onClick={toggle} />
           <Collapse isOpen={isOpen} navbar>
-            {loggedIn ? 
+            {isAuthenticated ? 
             <Nav className="ml-auto">
                 <UncontrolledDropdown nav inNavbar>
                   <DropdownToggle nav caret>
@@ -40,7 +60,7 @@ const Navigation = (props) => {
                         Option 2
                       </DropdownItem>
                       <DropdownItem divider />
-                      <DropdownItem>
+                      <DropdownItem onClick={logout}>
                         Logout
                       </DropdownItem>
                   </DropdownMenu>
@@ -49,7 +69,7 @@ const Navigation = (props) => {
             : 
             <Nav className="ml-auto">
               <NavItem>
-                <NavLink href="/login/">Login</NavLink>
+                <NavLink href="/account/login/">Login</NavLink>
               </NavItem>
             </Nav>}
           </Collapse>

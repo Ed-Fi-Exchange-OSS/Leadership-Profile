@@ -7,7 +7,7 @@ function AuthService() {
         return sessionStorage.getItem('isAuthenticated');
     }
 
-    function logout(username) {
+    function logout() {
         sessionStorage.removeItem('isAuthenticated');
         sessionStorage.removeItem('id');
     }
@@ -17,7 +17,12 @@ function AuthService() {
         return authInfo;
     }
 
-    return { login, logout, isAuthenticated }
+    function getAuthInfo() {
+        const authInfo = sessionStorage.getItem('id');
+        return authInfo;
+    }
+
+    return { login, logout, isAuthenticated, getAuthInfo}
 }
 
 export default AuthService;
