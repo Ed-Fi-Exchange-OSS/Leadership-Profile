@@ -1,0 +1,44 @@
+name: Publish main
+
+on:
+  push:
+    branches: [ main ]
+
+  release:
+    types: [ published ]
+
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET 5
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.102
+    - name: Setup .NET Core 2.1
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 2.1.812
+    - name: Install dependencies
+      shell: pwsh
+      run: ./setup.ps1
+    - name: Test
+      shell: pwsh
+      run: Invoke-psake Test
+    - name: Publish
+      shell: pwsh
+      env:
+        CI: ""
+      run: Invoke-psake Publish
+    - name: Archive artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: App
+        path: |
+          artifacts
