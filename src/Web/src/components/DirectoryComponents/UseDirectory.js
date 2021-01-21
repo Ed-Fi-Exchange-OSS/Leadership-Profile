@@ -57,26 +57,25 @@ function UseDirectory() {
         fetch(apiUrl, {
             method: 'GET',
             mode: 'cors',
-            // cache: 'cache',
             credentials: 'include',
             headers: {
-                'Content-Type': 'text/plain',
-                'Accept': 'text/plain',
-                'Cache': 'no-cache',
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
             },
             referrerPolicy: 'origin-when-cross-origin',
-            }).then((response) => {
+            }).then(response => response.json()
+            ).then((response) => {
                 if (response.isError) {
                     setError(true);
                 }
-                if (!unmounted && response.data !== null) {
-                    if (response.data.profiles !== undefined) {
-                        setData(response.data.profiles);
+                if (!unmounted && response !== null) {
+                    if (response.profiles !== undefined) {
+                        setData(response.profiles);
                     }
                     setPaging({
                         ...paging,
-                        totalSize: response.data.totalCount,
-                        maxPages: Math.ceil(response.data.totalCount / 10),
+                        totalSize: response.totalCount,
+                        maxPages: Math.ceil(response.totalCount / 10),
                     });
                 }
             })

@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
+import { useHistory } from "react-router-dom";
 
 import AuthService from '../../utils/auth-service';
 
 function UseLogin() {
+    const history = useHistory();
     const { login } = AuthService()
 
     const [username, setUsername] = useState('');
@@ -12,7 +14,6 @@ function UseLogin() {
         password: password
     });
     const [error, setError] = useState(false);
-    const [redirect, setRedirect] = useState(false);
 
     useEffect(() => {
         setLogininfo({
@@ -41,7 +42,8 @@ function UseLogin() {
                 if (!unmounted && response.data !== null) {
                     setError(false);
                     login(username);
-                    setRedirect(true);
+                    history.push('/queue?count=10&page=1&sortBy=desc&sortField=id');
+                    history.go(0);
                 }
             }).catch(error => {
                 setError(true);
@@ -51,13 +53,7 @@ function UseLogin() {
                 unmounted = true;
             };
         }
-    }
-
-    if (redirect) return redirectTo();
-
-    function redirectTo() {
-        return <Redirect to="/" />;
-      }      
+    } 
 
     return {
         setLogin,
