@@ -54,8 +54,18 @@ function UseDirectory() {
         if (!searchableUrl.current.search) return;
         let unmounted = false;
         const apiUrl = new URL(`https://localhost:5001/Profile${history.location.search}`);
-        Axios.get(apiUrl)
-            .then((response) => {
+        fetch(apiUrl, {
+            method: 'GET',
+            mode: 'cors',
+            // cache: 'cache',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'text/plain',
+                'Accept': 'text/plain',
+                'Cache': 'no-cache',
+            },
+            referrerPolicy: 'origin-when-cross-origin',
+            }).then((response) => {
                 if (response.isError) {
                     setError(true);
                 }

@@ -19,7 +19,6 @@ import AuthService from './utils/auth-service';
 function App() {
   const { isAuthenticated } = AuthService()
   const authenticated = isAuthenticated();
-  console.log(authenticated);
 
   return (
     <div className="App">
@@ -29,17 +28,17 @@ function App() {
             <React.Fragment>
               <span className="body">
                 <div className="tableBody">
-                {/* <LoggedInRoute exact path='/account/login' isAuthenticated={authenticated} component={Login} /> */}
+                <LoggedInRoute exact path='/account/login' isAuthenticated={authenticated} component={Login} />
                 <Route exact path="/">
                   <Redirect to="/directory?page=1&sortBy=desc&sortField=id" />
                 </Route>
-                <Route exact path="/:searchParams" isAuthenticated={authenticated} component={Directory} />
-                <Route path="/profile/:id" isAuthenticated={authenticated} component={Profile} />
+                <PrivateRoute exact path="/:searchParams" isAuthenticated={authenticated} component={Directory} />
+                <PrivateRoute path="/profile/:id" isAuthenticated={authenticated} component={Profile} />
               </div>
-              <div className="body-background">            
+              {/* <div className="body-background">            
                 <Route exact path="/account/login" component={Login} />
                 <Route exact path="/account/register" component={Registration} />
-              </div>
+              </div> */}
             </span>  
             </React.Fragment>
           {/* </Switch> */}
