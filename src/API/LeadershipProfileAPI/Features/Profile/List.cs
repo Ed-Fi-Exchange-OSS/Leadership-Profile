@@ -1,23 +1,25 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using LeadershipProfileAPI.Data;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
+using System.Reflection;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using LeadershipProfileAPI.Data;
-using Microsoft.EntityFrameworkCore;
+using LeadershipProfileAPI.Data.Models;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace LeadershipProfileAPI.Features.Profile
 {
-    public class List
+    public static class List
     {
         public class Query : IRequest<Response>
         {
-            public int Page { get; set; }
+            public int? Page { get; set; }
             public string SortField { get; set; }
             public string SortBy { get; set; }
             public string Search { get; set; }
@@ -29,7 +31,7 @@ namespace LeadershipProfileAPI.Features.Profile
 
             public IList<TeacherProfile> Profiles { get; set; }
 
-            public int Page { get; set; }
+            public int? Page { get; set; }
         }
 
         public class TeacherProfile
@@ -51,6 +53,7 @@ namespace LeadershipProfileAPI.Features.Profile
         {
             private readonly EdFiDbContext _ctx;
             private readonly IMapper _mapper;
+            private const int PageSize = 10;
 
             public QueryHandler(EdFiDbContext ctx, IMapper mapper)
             {
@@ -60,10 +63,20 @@ namespace LeadershipProfileAPI.Features.Profile
 
             public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
             {
-                var profiles = _ctx.ProfileList.ProjectTo<TeacherProfile>(_mapper.ConfigurationProvider);
+                var query = _ctx.ProfileList.AsQueryable();
+                var profiles = query.ProjectTo<TeacherProfile>(_mapper.ConfigurationProvider);
 
+                TeacherProfile[] items;
                 var count = await profiles.CountAsync(cancellationToken);
-                var items = await profiles.Skip((request.Page - 1) * 10).Take(10).ToArrayAsync(cancellationToken);
+
+                if (request.Page.HasValue)
+                {
+                    items = await profiles.Skip((request.Page.Value - 1) * PageSize).Take(PageSize).ToArrayAsync(cancellationToken);
+                }
+                else
+                {
+                    items = await profiles.ToArrayAsync(cancellationToken);
+                }
 
                 return new Response()
                 {

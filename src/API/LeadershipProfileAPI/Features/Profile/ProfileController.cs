@@ -1,13 +1,14 @@
-﻿using System;
+﻿using LeadershipProfileAPI.Infrastructure;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using LeadershipProfileAPI.Infrastructure;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Logging;
 using HttpMethod = System.Net.Http.HttpMethod;
 
 namespace LeadershipProfileAPI.Features.Profile
@@ -19,66 +20,22 @@ namespace LeadershipProfileAPI.Features.Profile
     {
         private readonly ILogger<ProfileController> _logger;
         private readonly IHttpClientFactory _clientFactory;
+        private readonly IMediator _mediator;
 
-        public ProfileController(ILogger<ProfileController> logger, IHttpClientFactory clientFactory)
+        public ProfileController(ILogger<ProfileController> logger, IHttpClientFactory clientFactory, IMediator mediator)
         {
             _logger = logger;
             _clientFactory = clientFactory;
+            _mediator = mediator;
         }
 
         [HttpGet]
-        public async Task<DirectoryResponse> GetDirectory(
-                [FromQuery] string page,
-                [FromQuery] string sortField,
-                [FromQuery] string sortBy,
-                [FromQuery] string search
+        public async Task<ActionResult> GetDirectory(
+                [FromQuery] List.Query query
             )
         {
-            var intPage = Convert.ToInt32(page);
-            var pageSizeLimit = 10;
-            var offset = (intPage <= 0 ? 0 : intPage - 1) * pageSizeLimit;
-
-            var query = new Dictionary<string, string>
-            {
-                {"offset",$"{offset}"},
-                {"limit",$"{pageSizeLimit}"},
-                {"totalCount",$"{true}"}
-            };
-
-            var client = _clientFactory.CreateClient(Constants.ODSApiClient);
-
-            var staffsRequest = new HttpRequestMessage(HttpMethod.Get,
-                QueryHelpers.AddQueryString($"{Constants.VersionUriFragment}/ed-fi/staffs", query));
-            
-            var response = await GetApiResponse<IList<Models.TeacherProfile>>(client, staffsRequest).ConfigureAwait(false);
-
-            var staffCount = Convert.ToInt32(response.headers.GetHeader("Total-Count"));
-
-            await GetAssociations(client, response.response).ConfigureAwait(false);
-
-            foreach (var teacherProfile in response.response)
-            {
-                teacherProfile.Location = teacherProfile.Addresses.GetLocation();
-                teacherProfile.FullName =
-                    $"{teacherProfile.FirstName} {teacherProfile.MiddleName} {teacherProfile.LastName}";
-            }
-
-            var currentPageProfiles = response.response.AsQueryable();
-            
-            // if (search != null)
-            //     currentPageProfiles = currentPageProfiles
-            //         .Where(x => x.FirstName.ToLowerInvariant().Contains(search) || x.LastName.ToLowerInvariant().Contains(search))
-            //         .AsQueryable();
-
-            if (sortBy != null && sortField != null)
-                currentPageProfiles = Sort(currentPageProfiles, sortField, sortBy).AsQueryable();
-
-            return new DirectoryResponse
-            {
-                TotalCount = staffCount,
-                Profiles = currentPageProfiles.ToArray(),
-                Page = intPage
-            };
+            var result = await _mediator.Send(query);
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
