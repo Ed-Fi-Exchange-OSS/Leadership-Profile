@@ -16,6 +16,7 @@ namespace LeadershipProfileAPI.Data
         public DbSet<ProfilePositionHistory> ProfilePositionHistory { get; set; }
         public DbSet<ProfileCertification> ProfileCertification { get; set; }
         public DbSet<ProfileEducation> ProfileEducation { get; set; }
+        public DbSet<ProfileProfessionalDevelopment> ProfileProfessionalDevelopment { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -40,6 +41,10 @@ namespace LeadershipProfileAPI.Data
 
             modelBuilder.Entity<ProfileEducation>()
                 .ToView("vw_LeadershipProfileEducation", "edfi")
+                .HasNoKey();
+
+            modelBuilder.Entity<ProfileProfessionalDevelopment>()
+                .ToView("vw_LeadershipProfileProfessionalDevelopment", "edfi")
                 .HasNoKey();
         }
     }

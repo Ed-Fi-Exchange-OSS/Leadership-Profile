@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using LeadershipProfileAPI.Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -7,8 +8,6 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
-using Microsoft.AspNetCore.WebUtilities;
 
 namespace LeadershipProfileAPI.Features.Profile
 {
@@ -108,6 +107,11 @@ namespace LeadershipProfileAPI.Features.Profile
                     .ProjectTo<TeacherEducation>(_mapper.ConfigurationProvider).ToArrayAsync(cancellationToken);
 
                 response.Education = education;
+
+                var development = await _ctx.ProfileProfessionalDevelopment.Where(x => x.StaffUniqueId == request.Id)
+                    .ProjectTo<ProfessionalDevelopment>(_mapper.ConfigurationProvider).ToArrayAsync(cancellationToken);
+
+                response.ProfessionalDevelopment = development;
 
                 return response;
             }
