@@ -1,25 +1,49 @@
-import Cookies from 'js-cookie'
+import SecureStorage from 'secure-web-storage';
+import CryptoJS from 'crypto-js';
 
 function AuthService() {
+    const SECRET_KEY = process.env.REACT_APP_ENCRYPTION_SECRET_KEY;
+    console.log(process.env);
+    var secureStorage = new SecureStorage(sessionStorage, {
+        hash: function hash(key) {
+            return key;
+        },
+        encrypt: function encrypt(data) {
+            data = CryptoJS.AES.encrypt(data, SECRET_KEY);
+    
+            data = data.toString();
+    
+            return data;
+        },
+        decrypt: function decrypt(data) {
+            data = CryptoJS.AES.decrypt(data, SECRET_KEY);
+    
+            data = data.toString(CryptoJS.enc.Utf8);
+    
+            return data;
+        }
+    });
+    
     function loginAuth(username) {
-        sessionStorage.setItem('isAuthenticated', true);
-        sessionStorage.setItem('id', username);
+        secureStorage.setItem('isAuthenticated', true);
+        secureStorage.setItem('id', username);
+        console.log(process.env)
         return sessionStorage.getItem('isAuthenticated');
     }
 
     function logoutAuth() {
-        sessionStorage.removeItem('isAuthenticated');
-        sessionStorage.removeItem('id');
+        secureStorage.removeItem('isAuthenticated');
+        secureStorage.removeItem('id');
     }
 
     function isAuthenticated() {
-        let authInfo = sessionStorage.getItem('isAuthenticated');
+        let authInfo = secureStorage.getItem('isAuthenticated');
         authInfo = authInfo === null ? false : authInfo;
         return authInfo;
     }
 
     function getAuthInfo() {
-        const authInfo = sessionStorage.getItem('id');
+        const authInfo = secureStorage.getItem('id');
         return authInfo;
     }
 
