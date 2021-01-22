@@ -13,7 +13,8 @@ function AuthService() {
     }
 
     function isAuthenticated() {
-        const authInfo = sessionStorage.getItem('isAuthenticated');
+        let authInfo = sessionStorage.getItem('isAuthenticated');
+        authInfo = authInfo === null ? false : authInfo;
         return authInfo;
     }
 
