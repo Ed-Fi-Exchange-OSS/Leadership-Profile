@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useHistory } from "react-router-dom";
 import {
   Collapse,
   Navbar,
@@ -16,13 +17,16 @@ import {
 import AuthService from '../utils/auth-service';
 
 const Navigation = (props) => {
-  const { isAuthenticated, getAuthInfo } = AuthService();
+  const { logoutAuth, isAuthenticated, getAuthInfo } = AuthService();
   const [isOpen, setIsOpen] = useState(false);
+  const history = useHistory();
 
   const toggle = () => setIsOpen(!isOpen);
 
   const logout = () => {
     const apiUrl = new URL(`https://localhost:5001/account/logout`);
+    const authInfo = getAuthInfo();
+    console.log(authInfo)
     fetch(apiUrl, {
         method: 'POST',
         mode: 'cors',
@@ -33,9 +37,11 @@ const Navigation = (props) => {
         },
         referrerPolicy: 'origin-when-cross-origin',
         body: JSON.stringify({
-        'logoutId': getAuthInfo(),
+        'logoutId': authInfo,
     })}).then((response) => {
-        console.log(response);
+      logoutAuth();
+      history.push('/account/login');
+      history.go(0);
     }).catch(error => console.error(error)); 
   }
 
@@ -60,7 +66,7 @@ const Navigation = (props) => {
                         Option 2
                       </DropdownItem>
                       <DropdownItem divider />
-                      <DropdownItem onClick={logout}>
+                      <DropdownItem onClick={() => logout()}>
                         Logout
                       </DropdownItem>
                   </DropdownMenu>
