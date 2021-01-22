@@ -37,5 +37,20 @@ namespace LeadershipProfileAPI.Tests.Features.Profile
             positionHistory.StartDate.ShouldBe(DateTime.Parse("2018-01-15"));
             positionHistory.EndDate.ShouldBeNull();
         }
+
+        [Fact]
+        public async Task ShouldGetCertificates()
+        {
+            var profile = await Testing.Send(new Get.Query { Id = "1000001322" });
+
+            profile.ShouldNotBeNull();
+            profile.Certificates.ShouldNotBeEmpty();
+
+            var certificate = profile.Certificates.First();
+            certificate.Type.ShouldBe("Certification");
+            certificate.Description.ShouldBe("Mathematics");
+            certificate.ValidFromDate.ShouldBe(DateTime.Parse("2018-01-19"));
+            certificate.ValidToDate.ShouldBe(DateTime.Parse("2024-01-31"));
+        }
     }
 }

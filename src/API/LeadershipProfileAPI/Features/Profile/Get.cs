@@ -98,6 +98,11 @@ namespace LeadershipProfileAPI.Features.Profile
 
                 response.PositionHistory = positionHistory;
 
+                var certificates = await _ctx.ProfileCertification.Where(x => x.StaffUniqueId == request.Id)
+                    .ProjectTo<Certificate>(_mapper.ConfigurationProvider).ToArrayAsync(cancellationToken);
+
+                response.Certificates = certificates;
+
                 return response;
             }
         }

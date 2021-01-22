@@ -26,6 +26,11 @@ namespace LeadershipProfileAPI.Features.Profile
 
             CreateMap<ProfilePositionHistory, Get.PositionHistory>()
                 .ForMember(dst => dst.SchoolName, opt => opt.MapFrom(x => x.School));
+
+            CreateMap<ProfileCertification, Get.Certificate>()
+                .ForMember(dst => dst.Type, opt => opt.MapFrom(x => x.CredentialType))
+                .ForMember(dst => dst.ValidFromDate, opt => opt.MapFrom(x => x.IssuanceDate))
+                .ForMember(dst => dst.ValidToDate, opt => opt.MapFrom(x => x.ExpirationDate));
         }
 
         private static string GetFullName(string firstName, string middleName, string lastName)
