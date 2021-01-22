@@ -8,6 +8,7 @@ using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace LeadershipProfileAPI.Features.Profile
 {
@@ -67,7 +68,7 @@ namespace LeadershipProfileAPI.Features.Profile
         {
             public string Institution { get; set; } = "Default Institution";
             public string Degree { get; set; } = "Default Degree";
-            public DateTime GraduationDate { get; set; }
+            public DateTime? GraduationDate { get; set; }
             public string Specialization { get; set; } = "Default Specialization";
         }
 
@@ -102,6 +103,11 @@ namespace LeadershipProfileAPI.Features.Profile
                     .ProjectTo<Certificate>(_mapper.ConfigurationProvider).ToArrayAsync(cancellationToken);
 
                 response.Certificates = certificates;
+
+                var education = await _ctx.ProfileEducation.Where(x => x.StaffUniqueId == request.Id)
+                    .ProjectTo<TeacherEducation>(_mapper.ConfigurationProvider).ToArrayAsync(cancellationToken);
+
+                response.Education = education;
 
                 return response;
             }
