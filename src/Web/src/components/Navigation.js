@@ -18,6 +18,7 @@ import AuthService from '../utils/auth-service';
 
 const Navigation = (props) => {
   const { logoutAuth, isAuthenticated, getAuthInfo } = AuthService();
+  const authInfo = getAuthInfo();
   const [isOpen, setIsOpen] = useState(false);
   const history = useHistory();
 
@@ -25,8 +26,6 @@ const Navigation = (props) => {
 
   const logout = () => {
     const apiUrl = new URL(`https://localhost:5001/account/logout`);
-    const authInfo = getAuthInfo();
-    console.log(authInfo)
     fetch(apiUrl, {
         method: 'POST',
         mode: 'cors',
@@ -51,21 +50,14 @@ const Navigation = (props) => {
         <NavbarBrand href="/">TPDM Leadership Portal</NavbarBrand>
         <NavbarToggler onClick={toggle} />
           <Collapse isOpen={isOpen} navbar>
-            {isAuthenticated ? 
+            {isAuthenticated() ? 
             <Nav className="ml-auto">
                 <UncontrolledDropdown nav inNavbar>
                   <DropdownToggle nav caret>
                       <span className="dot"></span>
-                      User's Name
+                      {authInfo}
                   </DropdownToggle>
                   <DropdownMenu right>
-                      <DropdownItem>
-                        Option 1
-                      </DropdownItem>
-                      <DropdownItem>
-                        Option 2
-                      </DropdownItem>
-                      <DropdownItem divider />
                       <DropdownItem onClick={() => logout()}>
                         Logout
                       </DropdownItem>
