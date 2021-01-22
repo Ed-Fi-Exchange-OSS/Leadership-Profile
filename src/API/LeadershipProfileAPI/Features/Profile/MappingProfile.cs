@@ -8,20 +8,33 @@ namespace LeadershipProfileAPI.Features.Profile
         {
             CreateMap<ProfileList, List.TeacherProfile>()
                 .ForMember(dst => dst.Id, opt => opt.Ignore())
-                .ForMember(dst => dst.FullName, opt => opt.MapFrom(x => GetFullName(x)))
+                .ForMember(dst => dst.FullName, opt => opt.MapFrom(x => GetFullName(x.FirstName, x.MiddleName, x.LastSurName)))
                 .ForMember(dst => dst.YearsOfService, opt => opt.MapFrom(x => x.YearsOfService.HasValue ? decimal.ToInt32(x.YearsOfService.Value) : 0));
+
+            CreateMap<ProfileHeader, Get.Response>()
+                .ForMember(dst => dst.Certificates, opt => opt.Ignore())
+                .ForMember(dst => dst.Education, opt => opt.Ignore())
+                .ForMember(dst => dst.PositionHistory, opt => opt.Ignore())
+                .ForMember(dst => dst.ProfessionalDevelopment, opt => opt.Ignore())
+                .ForMember(dst => dst.InterestedInNextRole, opt => opt.MapFrom(x => false))
+                .ForMember(dst => dst.LastName, opt => opt.MapFrom(x => x.LastSurname))
+                .ForMember(dst => dst.FullName, opt => opt.MapFrom(x => GetFullName(x.FirstName, x.MiddleName, x.LastSurname)))
+                .ForMember(dst => dst.District, opt => opt.MapFrom(x => x.Location))
+                .ForMember(dst => dst.Phone, opt => opt.MapFrom(x => x.Telephone))
+                .ForMember(dst => dst.StartDate, opt => opt.Ignore())
+                .ForMember(dst => dst.CurrentPosition, opt => opt.MapFrom(x => x.Position));
         }
 
-        private static string GetFullName(ProfileList pl)
+        private static string GetFullName(string firstName, string middleName, string lastName)
         {
-            var fullName = pl.FirstName;
+            var fullName = firstName;
 
-            if (!string.IsNullOrWhiteSpace(pl.MiddleName))
+            if (!string.IsNullOrWhiteSpace(middleName))
             {
-                fullName += " " + pl.MiddleName;
+                fullName += " " + middleName;
             }
 
-            fullName += " " + pl.LastSurName;
+            fullName += " " + lastName;
 
             return fullName;
         }
