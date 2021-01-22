@@ -99,7 +99,7 @@ namespace LeadershipProfileAPI.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<LoginResultModel> Login(LoginInputModel model)
+        public async Task<ObjectResult> Login(LoginInputModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -126,15 +126,14 @@ namespace LeadershipProfileAPI.Controllers
 
                 await HttpContext.SignInAsync(identityServerUser, null);
 
-                return new LoginResultModel {Result = true};
+                return Ok(new LoginResultModel { Result = true });
             }
 
             await _events.RaiseAsync(new UserLoginFailureEvent(model.Username, "Invalid credentials", clientId: "interactive"));
 
             ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);
 
-            return new LoginResultModel {ResultMessage = "Invalid credentials"};
-
+            return Unauthorized(new LoginResultModel { ResultMessage = "Invalid credentials" });
         }
 
         ///// <summary>
