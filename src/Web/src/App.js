@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   BrowserRouter as Router,
-  Switch,
   Route,
   Redirect
 } from "react-router-dom";
@@ -24,24 +23,17 @@ function App() {
     <div className="App">
       <Navigation />
       <Router>
-          {/* <Switch> */}
-            <React.Fragment>
-              <span className="body">
-                <div className="tableBody">
-                <LoggedInRoute exact path='/account/login' isAuthenticated={authenticated} component={Login} />
-                <Route exact path="/">
-                  <Redirect to="/directory?page=1&sortBy=desc&sortField=id" />
-                </Route>
-                <PrivateRoute exact path="/:searchParams" isAuthenticated={authenticated} component={Directory} />
-                <PrivateRoute path="/profile/:id" isAuthenticated={authenticated} component={Profile} />
-              </div>
-              {/* <div className="body-background">            
-                <Route exact path="/account/login" component={Login} />
-                <Route exact path="/account/register" component={Registration} />
-              </div> */}
-            </span>  
-            </React.Fragment>
-          {/* </Switch> */}
+        <React.Fragment>
+          <div className="body">
+            <LoggedInRoute exact path='/account/login' isAuthenticated={authenticated} component={Login} />
+            <Route exact path="/">
+              <Redirect to="/directory?page=1&sortBy=desc&sortField=id" />
+            </Route>
+            <PrivateRoute exact path="/:searchParams" isAuthenticated={authenticated} component={Directory} />
+            <PrivateRoute path="/profile/:id" isAuthenticated={authenticated} component={Profile} />
+            <Route exact path="/account/register" component={Registration} />
+          </div>
+        </React.Fragment>
       </Router>
     </div>
   );
