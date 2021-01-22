@@ -3,7 +3,6 @@ import CryptoJS from 'crypto-js';
 
 function AuthService() {
     const SECRET_KEY = process.env.REACT_APP_ENCRYPTION_SECRET_KEY;
-    console.log(process.env);
     var secureStorage = new SecureStorage(sessionStorage, {
         hash: function hash(key) {
             return key;
@@ -27,7 +26,6 @@ function AuthService() {
     function loginAuth(username) {
         secureStorage.setItem('isAuthenticated', true);
         secureStorage.setItem('id', username);
-        console.log(process.env)
         return sessionStorage.getItem('isAuthenticated');
     }
 
