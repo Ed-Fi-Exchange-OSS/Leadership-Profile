@@ -67,6 +67,9 @@ const Navigation = (props) => {
             : 
             <Nav className="ml-auto">
               <NavItem>
+                <NavLink href="/account/register/">Register</NavLink>
+              </NavItem>
+              <NavItem>
                 <NavLink href="/account/login/">Login</NavLink>
               </NavItem>
             </Nav>}
