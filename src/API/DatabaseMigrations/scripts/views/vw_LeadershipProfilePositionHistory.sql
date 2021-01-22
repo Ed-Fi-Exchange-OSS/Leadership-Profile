@@ -1,4 +1,4 @@
-CREATE OR ALTER VIEW edfi.LeadershipProfilePositionHistory AS
+CREATE OR ALTER VIEW edfi.vw_LeadershipProfilePositionHistory AS
 SELECT
 	s.StaffUSI,
 	s.StaffUniqueId,
