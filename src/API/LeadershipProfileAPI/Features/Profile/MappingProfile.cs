@@ -23,6 +23,9 @@ namespace LeadershipProfileAPI.Features.Profile
                 .ForMember(dst => dst.Phone, opt => opt.MapFrom(x => x.Telephone))
                 .ForMember(dst => dst.StartDate, opt => opt.Ignore())
                 .ForMember(dst => dst.CurrentPosition, opt => opt.MapFrom(x => x.Position));
+
+            CreateMap<ProfilePositionHistory, Get.PositionHistory>()
+                .ForMember(dst => dst.SchoolName, opt => opt.MapFrom(x => x.School));
         }
 
         private static string GetFullName(string firstName, string middleName, string lastName)

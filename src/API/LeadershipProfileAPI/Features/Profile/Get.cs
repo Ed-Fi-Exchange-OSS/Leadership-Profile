@@ -3,9 +3,11 @@ using LeadershipProfileAPI.Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper.QueryableExtensions;
 
 namespace LeadershipProfileAPI.Features.Profile
 {
@@ -42,7 +44,7 @@ namespace LeadershipProfileAPI.Features.Profile
             public string Role { get; set; } = "Default Role";
             public string SchoolName { get; set; } = "Default School";
             public DateTime StartDate { get; set; }
-            public DateTime EndDate { get; set; }
+            public DateTime? EndDate { get; set; }
         }
 
         public class Certificate
@@ -90,6 +92,11 @@ namespace LeadershipProfileAPI.Features.Profile
                 }
 
                 var response = _mapper.Map<Response>(profileHeader);
+
+                var positionHistory = await _ctx.ProfilePositionHistory.Where(x => x.StaffUniqueId == request.Id)
+                    .ProjectTo<PositionHistory>(_mapper.ConfigurationProvider).ToArrayAsync(cancellationToken);
+
+                response.PositionHistory = positionHistory;
 
                 return response;
             }

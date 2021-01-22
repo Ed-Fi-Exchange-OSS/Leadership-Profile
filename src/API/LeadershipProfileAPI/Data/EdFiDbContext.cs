@@ -13,6 +13,7 @@ namespace LeadershipProfileAPI.Data
         public DbSet<Staff> Staff { get; set; }
         public DbSet<ProfileList> ProfileList { get; set; }
         public DbSet<ProfileHeader> ProfileHeader { get; set; }
+        public DbSet<ProfilePositionHistory> ProfilePositionHistory { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -25,6 +26,10 @@ namespace LeadershipProfileAPI.Data
 
             modelBuilder.Entity<ProfileHeader>()
                 .ToView("vw_LeadershipProfileHeader", "edfi")
+                .HasNoKey();
+
+            modelBuilder.Entity<ProfilePositionHistory>()
+                .ToView("vw_LeadershipProfilePositionHistory", "edfi")
                 .HasNoKey();
         }
     }
