@@ -1,4 +1,4 @@
-CREATE OR ALTER VIEW edfi.vw_LeadershipProfileCertifications AS
+CREATE OR ALTER VIEW edfi.vw_LeadershipProfileCertification AS
 SELECT
 	s.StaffUSI,
 	s.StaffUniqueId,
