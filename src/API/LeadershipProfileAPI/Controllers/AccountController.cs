@@ -140,6 +140,7 @@ namespace LeadershipProfileAPI.Controllers
         ///// Handle logout page postback
         ///// </summary>
         [HttpPost("logout")]
+        [Authorize]
         public async Task<LoggedOutViewModel> Logout(LogoutInputModel model)
         {   
             var vm = new LoggedOutViewModel{Result = true};
