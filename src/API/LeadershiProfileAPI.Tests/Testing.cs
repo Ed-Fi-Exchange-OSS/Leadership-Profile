@@ -20,6 +20,7 @@ namespace LeadershipProfileAPI.Tests
             Configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", true, true)
+                .AddEnvironmentVariables("LPTEST_")
                 .Build();
 
             var startup = new Startup(Configuration);
