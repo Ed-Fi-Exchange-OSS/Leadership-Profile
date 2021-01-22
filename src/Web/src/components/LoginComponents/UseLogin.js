@@ -38,12 +38,15 @@ function UseLogin() {
                 body: JSON.stringify({
                 'username': username,
                 'password': password,
-            })}).then((response) => {
-                if (!unmounted && response.data !== null) {
+            })}).then(response => response.json()
+            ).then((response) => {
+                if (!unmounted && response.result) {
                     setError(false);
                     loginAuth(username);
                     history.push('/queue?count=10&page=1&sortBy=desc&sortField=id');
                     history.go(0);
+                } else {
+                    setError(true);
                 }
             }).catch(error => {
                 setError(true);
