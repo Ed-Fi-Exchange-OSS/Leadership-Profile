@@ -78,19 +78,6 @@ namespace LeadershipProfileAPI.Tests
             });
         }
 
-        public static Task<TResult> Query<TResult>(Func<EdFiDbContext, TResult> query)
-        {
-            var result = default(TResult);
-
-            DbContextScopeExec(db =>
-            {
-                result = query(db);
-                return Task.CompletedTask;
-            });
-
-            return Task.FromResult(result);
-        }
-
         public static Task Send(IRequest request)
         {
             return ScopeExec(sp =>
