@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import Axios from 'axios';
+import { useHistory } from "react-router-dom";
 
 function UseRegistration() {
+    const history = useHistory();
+
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -44,6 +47,8 @@ function UseRegistration() {
         Axios.post(apiUrl, registrationInfo).then((response) => {
             if (!unmounted && response.data !== null) {
                 setError(false);
+                history.push('/queue?count=10&page=1&sortBy=desc&sortField=id');
+                history.go(0);
             }
         }).catch((error) => {
             const errorInfo = error.response.data;
