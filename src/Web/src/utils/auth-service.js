@@ -1,13 +1,13 @@
 import Cookies from 'js-cookie'
 
 function AuthService() {
-    function login(username) {
+    function loginAuth(username) {
         sessionStorage.setItem('isAuthenticated', true);
         sessionStorage.setItem('id', username);
         return sessionStorage.getItem('isAuthenticated');
     }
 
-    function logout() {
+    function logoutAuth() {
         sessionStorage.removeItem('isAuthenticated');
         sessionStorage.removeItem('id');
     }
@@ -22,7 +22,7 @@ function AuthService() {
         return authInfo;
     }
 
-    return { login, logout, isAuthenticated, getAuthInfo}
+    return { loginAuth, logoutAuth, isAuthenticated, getAuthInfo}
 }
 
 export default AuthService;

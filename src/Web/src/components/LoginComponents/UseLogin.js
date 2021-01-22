@@ -5,7 +5,7 @@ import AuthService from '../../utils/auth-service';
 
 function UseLogin() {
     const history = useHistory();
-    const { login } = AuthService()
+    const { loginAuth } = AuthService()
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -41,7 +41,7 @@ function UseLogin() {
             })}).then((response) => {
                 if (!unmounted && response.data !== null) {
                     setError(false);
-                    login(username);
+                    loginAuth(username);
                     history.push('/queue?count=10&page=1&sortBy=desc&sortField=id');
                     history.go(0);
                 }
