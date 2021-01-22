@@ -37,7 +37,7 @@ const Navigation = (props) => {
         referrerPolicy: 'origin-when-cross-origin',
         body: JSON.stringify({
         'logoutId': authInfo,
-    })}).then((response) => {
+    })}).then(() => {
       logoutAuth();
       history.push('/account/login');
       history.go(0);
