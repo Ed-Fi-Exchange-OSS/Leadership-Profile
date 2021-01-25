@@ -86,10 +86,9 @@ namespace LeadershipProfileAPI.Controllers
         
         [HttpGet("{id}")]
         //[ClaimCheck("role","Admin")]
-//        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<Models.TeacherCompleteProfile> GetProfile([FromRoute] Guid id)
-        {
-           // var u = User.Claims.ToList();
+        {  
 
            ;var client = _clientFactory.CreateClient(Constants.ODSApiClient);
 
@@ -97,12 +96,7 @@ namespace LeadershipProfileAPI.Controllers
             {
                 {"id",$"{id}"}
             };
-
-            // var staffRequest = new HttpRequestMessage(HttpMethod.Get,
-            //     QueryHelpers.AddQueryString($"...", query));
-
-            // var response = await GetApiResponse<IList<Models.TeacherCompleteProfile>>(client, staffRequest).ConfigureAwait(false);
-
+          
             return new Models.TeacherCompleteProfile();
         }
 
