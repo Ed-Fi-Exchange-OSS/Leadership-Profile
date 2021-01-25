@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using IdentityServer4;
 using IdentityServer4.AccessTokenValidation;
@@ -26,7 +27,6 @@ namespace LeadershipProfileAPI
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-
         }
 
         public IConfiguration Configuration { get; }
@@ -34,14 +34,13 @@ namespace LeadershipProfileAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             //  services.AddCors(); // Make sure you call this previous to AddMvc
             var connectionString = Configuration.GetConnectionString("EdFi");
 
             services.AddDbContext<EdFiIdentityDbContext>(options => options.UseSqlServer(connectionString));
             services.AddDbContext<EdFiDbContext>(options => options.UseSqlServer(connectionString));
-            
-            AddAuth(connectionString, services);
+
+            AddAuth(services);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Latest);
 
@@ -62,26 +61,29 @@ namespace LeadershipProfileAPI
             });
         }
 
-        private static void AddAuth(string connectionString, IServiceCollection services)
+        private static void AddAuth(IServiceCollection services)
         {
+            var authorityServer = Environment.GetEnvironmentVariable("AuthorityServer");
+            var webClient = Environment.GetEnvironmentVariable("WebClient");
+            var redirectUri = $"{webClient}{Environment.GetEnvironmentVariable("WebClientRedirectUri")}";
+
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = IdentityServerAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                
             }).AddOpenIdConnect("oidc", "TPDM IdentityServer", options =>
             {
                 options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
                 options.SignOutScheme = IdentityServerConstants.SignoutScheme;
                 options.SaveTokens = true; // idserver
 
-                options.Authority = "https://localhost:5001";
+                options.Authority = authorityServer;
                 options.ClientId = "interactive";
                 options.ClientSecret = "secret";
                 options.ResponseType = "code id_token token";
                 options.Scope.Add(IdentityConfig.ApiName);
                 options.Scope.Add("roles");
-                options.ClaimActions.MapUniqueJsonKey("role","role");
+                options.ClaimActions.MapUniqueJsonKey("role", "role");
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     NameClaimType = "name",
@@ -89,7 +91,7 @@ namespace LeadershipProfileAPI
                 };
             }).AddJwtBearer("Bearer", options =>
             {
-                options.Authority = "https://localhost:5001"; //value from environment variable // API
+                options.Authority = authorityServer; //value from environment variable // API
 
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -100,7 +102,7 @@ namespace LeadershipProfileAPI
                 options.RequireHttpsMetadata = false;
             });
 
-            
+
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("ApiScope", policy =>
@@ -114,35 +116,35 @@ namespace LeadershipProfileAPI
             {
                 // this defines a CORS policy called "default"
                 options.AddPolicy("default", policy =>
-                {   
-                    policy.WithOrigins("https://localhost:5001", 
-                            "http://localhost",
-                            "http://tpdm.web.internal")
+                {
+                    policy.WithOrigins(authorityServer, webClient)
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials();
                 });
+
             });
 
             services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<EdFiIdentityDbContext>();
 
             services.AddIdentityServer()
-            .AddInMemoryClients(IdentityConfig.Clients)
-            .AddInMemoryIdentityResources(IdentityConfig.IdentityResources)
-            .AddInMemoryApiScopes(IdentityConfig.ApiScopes)
-            .AddAspNetIdentity<IdentityUser>()
-            .AddDeveloperSigningCredential();
+                .AddInMemoryClients(IdentityConfig.GetClient(redirectUri, new List<string> { authorityServer, webClient }))
+                .AddInMemoryIdentityResources(IdentityConfig.IdentityResources)
+                .AddInMemoryApiScopes(IdentityConfig.ApiScopes)
+                .AddAspNetIdentity<IdentityUser>()
+                .AddDeveloperSigningCredential();
 
             services.ConfigureApplicationCookie(options =>
             {
                 options.Events.OnRedirectToAccessDenied =
                     options.Events.OnRedirectToLogin = context =>
-                    { 
+                    {
                         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                         return Task.FromResult<object>(null);
                     };
             });
         }
+
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -150,7 +152,6 @@ namespace LeadershipProfileAPI
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "LeadershipProfileAPI v1"));
-
             }
 
             app.UseCors("default");
@@ -162,7 +163,7 @@ namespace LeadershipProfileAPI
             app.UseIdentityServer();
 
             app.UseAuthentication();
-        
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
