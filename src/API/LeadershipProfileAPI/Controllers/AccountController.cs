@@ -24,9 +24,6 @@ namespace LeadershipProfileAPI.Controllers
     [AllowAnonymous]
     public class AccountController : ControllerBase
     {
-        private readonly IIdentityServerInteractionService _interaction;
-        private readonly IClientStore _clientStore;
-        private readonly IAuthenticationSchemeProvider _schemeProvider;
         private readonly IEventService _events;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
@@ -41,9 +38,6 @@ namespace LeadershipProfileAPI.Controllers
             UserManager<IdentityUser> userManager,
             EdFiDbContext dbContext)
         {
-            _interaction = interaction;
-            _clientStore = clientStore;
-            _schemeProvider = schemeProvider;
             _events = events;
             _signInManager = signInManager;
             _userManager = userManager;
@@ -59,11 +53,7 @@ namespace LeadershipProfileAPI.Controllers
                 throw new ApiExceptionFilter.ApiException("Staff record not found.");
 
             if (!ModelState.IsValid)
-            {
-                //var errors = ModelState.SelectMany(v => v.Value.Errors);
-                //var errors2 = ModelState.Select(v => v.Value.Errors)
-                //                                .Where(e => e.Count > 0).ToList();
-
+            { 
                 throw new ApiExceptionFilter.ApiException("Missing important properties");
             }
 
@@ -131,7 +121,7 @@ namespace LeadershipProfileAPI.Controllers
 
             await _events.RaiseAsync(new UserLoginFailureEvent(model.Username, "Invalid credentials", clientId: "interactive"));
 
-            ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);
+            ModelState.AddModelError(string.Empty, "Invalid credentials");
 
             return Unauthorized(new LoginResultModel { ResultMessage = "Invalid credentials" });
         }
@@ -193,10 +183,6 @@ namespace LeadershipProfileAPI.Controllers
         public string ResultMessage { get; set; }
     }
 
-    public class AccountOptions
-    {
-        public static string InvalidCredentialsErrorMessage = "Invalid username or password";
-    }
     public class LogoutInputModel
     {
         public string LogoutId { get; set; }
