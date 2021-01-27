@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Nav, NavItem, NavLink} from 'reactstrap';
 
 import ProfileInfo from './ProfileInfo';
@@ -8,8 +8,9 @@ import UseProfile from './UseProfile';
 
 const Profile = () => {
     const [activeComponent, setActiveComponent] = useState("general");
-    const { data } = UseProfile();
-
+    const id = window.location.href.slice(window.location.href.lastIndexOf('/')+1);
+    const { data } = UseProfile(id);
+    
     return (
         <div>
             <ProfileInfo data={data} />
@@ -24,6 +25,7 @@ const Profile = () => {
 
             { activeComponent === "general" && data !== {} ? (
                 <div>
+                    {console.log(data)}
                     <CollapsibleTable title='Education' data={data.education} />
                     <CollapsibleTable title='Position History' data={data.positionHistory} />
                     <CollapsibleTable title='Certifications' data={data.certificates} />

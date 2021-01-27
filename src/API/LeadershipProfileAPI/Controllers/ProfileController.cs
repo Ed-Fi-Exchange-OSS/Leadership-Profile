@@ -91,7 +91,7 @@ namespace LeadershipProfileAPI.Controllers
         {
            // var u = User.Claims.ToList();
 
-           var client = _clientFactory.CreateClient(Constants.ODSApiClient);
+           ;var client = _clientFactory.CreateClient(Constants.ODSApiClient);
 
             var query = new Dictionary<string, string>
             {

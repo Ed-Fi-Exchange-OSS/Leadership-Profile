@@ -42,7 +42,6 @@ const CollapsibleTable = (props) => {
 
     return (
         <div className="profile-collapsible-container">
-            {console.log(data)}
             <h2 className="profile-collapsible-header" onClick={toggle}>
                 <span className="profile-collapsible-icon">{icon}</span>
                 <span>{title}</span>
