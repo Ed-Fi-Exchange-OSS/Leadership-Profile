@@ -1,9 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
+import config from '../../config';
+
 function UseDirectory() {
     const history = useHistory();
     const location = useLocation();
+    const { API_URL, API_CONFIG } = config();
+
     const [data, setData] = useState([]);
     const [error, setError] = useState(false);
 
@@ -52,32 +56,23 @@ function UseDirectory() {
     useEffect(() => {
         if (!searchableUrl.current.search) return;
         let unmounted = false;
-        const apiUrl = new URL(`/profile${history.location.search}`, new URL(process.env.REACT_APP_API_URL));
-        fetch(apiUrl, {
-            method: 'GET',
-            mode: 'cors',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            },
-            referrerPolicy: 'origin-when-cross-origin',
-            }).then(response => response.json()
-            ).then((response) => {
-                if (response.isError) {
-                    setError(true);
+        const apiUrl = new URL(`/profile${history.location.search}`, API_URL);
+        fetch(apiUrl, API_CONFIG('GET')).then(response => response.json()
+        ).then((response) => {
+            if (response.isError) {
+                setError(true);
+            }
+            if (!unmounted && response !== null) {
+                if (response.profiles !== undefined) {
+                    setData(response.profiles);
                 }
-                if (!unmounted && response !== null) {
-                    if (response.profiles !== undefined) {
-                        setData(response.profiles);
-                    }
-                    setPaging({
-                        ...paging,
-                        totalSize: response.totalCount,
-                        maxPages: Math.ceil(response.totalCount / 10),
-                    });
-                }
-            })
+                setPaging({
+                    ...paging,
+                    totalSize: response.totalCount,
+                    maxPages: Math.ceil(response.totalCount / 10),
+                });
+            }
+        })
             .catch(error => {
                 setError(true);
                 console.error(error.message);
@@ -94,7 +89,7 @@ function UseDirectory() {
             page: newPage,
         });
     }
-  
+
     function setColumnSort(category, value) {
         setSort({ category, value });
     }

@@ -1,6 +1,5 @@
 import SecureStorage from 'secure-web-storage';
 import CryptoJS from 'crypto-js';
-import { NavItem } from 'reactstrap';
 
 function AuthService() {
     const SECRET_KEY = process.env.REACT_APP_ENCRYPTION_SECRET_KEY;

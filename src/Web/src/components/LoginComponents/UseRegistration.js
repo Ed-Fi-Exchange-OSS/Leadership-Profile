@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
 
 import AuthService from '../../utils/auth-service';
+import config from '../../config';
 
 function UseRegistration() {
     const history = useHistory();
     const { loginAuth } = AuthService()
+    const { API_URL, API_CONFIG } = config();
 
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
@@ -45,18 +47,9 @@ function UseRegistration() {
 
     async function setRegistration() {
         let unmounted = false;
-        const apiUrl = new URL('/account/register', new URL(process.env.REACT_APP_API_URL));
-        fetch(apiUrl, {
-            method: 'POST',
-            mode: 'cors',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            },
-            referrerPolicy: 'origin-when-cross-origin',
-            body: JSON.stringify(registrationInfo)
-        }).then((response) => {
+        const apiUrl = new URL('/account/register', API_URL);
+        fetch(apiUrl, API_CONFIG("POST", JSON.stringify(registrationInfo))
+        ).then((response) => {
             if (!unmounted && response !== null) {
                 setError(false);
                 loginAuth(username);

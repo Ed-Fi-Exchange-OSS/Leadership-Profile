@@ -57,14 +57,14 @@ const CollapsibleTable = (props) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {data !== undefined ? data.map(row => 
-                            (<tr className="profile-table-body-row">
-                                {Object.keys(categories).map(value => {
-                                    let displayValue = row[`${value}`];
-                                    displayValue = (value.toLowerCase()).includes('date') ? formatDate(displayValue) : displayValue;
-                                    return (<td>{displayValue}</td>)
-                                })}
-                            </tr>)) : ''
+                        {data !== undefined ? data.map(row =>
+                        (<tr className="profile-table-body-row">
+                            {Object.keys(categories).map(value => {
+                                let displayValue = row[`${value}`];
+                                displayValue = (value.toLowerCase()).includes('date') ? formatDate(displayValue) : displayValue;
+                                return (<td>{displayValue}</td>)
+                            })}
+                        </tr>)) : ''
                         }
                     </tbody>
                 </Table>
