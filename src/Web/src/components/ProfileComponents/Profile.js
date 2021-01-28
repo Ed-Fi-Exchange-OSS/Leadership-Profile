@@ -25,7 +25,6 @@ const Profile = () => {
 
             { activeComponent === "general" && data !== {} ? (
                 <div>
-                    {console.log(data)}
                     <CollapsibleTable title='Education' data={data.education} />
                     <CollapsibleTable title='Position History' data={data.positionHistory} />
                     <CollapsibleTable title='Certifications' data={data.certificates} />
