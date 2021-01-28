@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Collapse, Table } from 'reactstrap';
+import { CardTitle, Collapse, Table } from 'reactstrap';
 import { EducationIcon, BriefcaseIcon, ChartIcon, CertificateIcon, DownPointingIcon } from '../Icons';
 
 const educationCategories = { 'institution': 'Institution', 'degree': 'Degree', 'graduationDate': 'Date', 'specialization': 'Specialization' };
@@ -33,12 +33,14 @@ const CollapsibleTable = (props) => {
                 setIcon(<ChartIcon />);
                 setCategories(professionalDevelopmentCategories);
                 break;
+            default:
+                setIcon('');
         }
     }
 
     useEffect(() => {
         setTable(title);
-    }, []);
+    }, [CardTitle]);
 
     return (
         <div className="profile-collapsible-container">
@@ -51,7 +53,7 @@ const CollapsibleTable = (props) => {
                 <Table striped className="profile-collapsible-table">
                     <thead className="profile-table-head">
                         <tr className="profile-table-header-row">
-                            {Object.values(categories).map(category => (<th>{category}</th>))}
+                            {Object.values(categories).map(category => (<th key={category}>{category}</th>))}
                         </tr>
                     </thead>
                     <tbody>
@@ -62,8 +64,7 @@ const CollapsibleTable = (props) => {
                                     displayValue = (value.toLowerCase()).includes('date') ? formatDate(displayValue) : displayValue;
                                     return (<td>{displayValue}</td>)
                                 })}
-                            </tr>)
-                            ) : ''
+                            </tr>)) : ''
                         }
                     </tbody>
                 </Table>

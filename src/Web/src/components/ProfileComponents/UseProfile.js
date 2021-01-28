@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 
 function UseProfile(id) {
     const [data, setData] = useState({});
-    let unmounted = false;
 
     useEffect(() => {
         let unmounted = false;
@@ -14,11 +13,11 @@ function UseProfile(id) {
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
-                'Accept': 'application/json',
+                'Accept': '*/*',
             },
             referrerPolicy: 'origin-when-cross-origin',
-            // }).then(response => response.json()
-        }).then((response) => {
+        }).then(response => response.json()
+        ).then((response) => {
                 if (!unmounted && response.data !== null) {
                     setData(response.data);
                     console.log(response.data)
@@ -31,7 +30,7 @@ function UseProfile(id) {
         return () => {
             unmounted = true;
         };
-    }, []);
+    }, [id]);
 
     return { data };
 }
