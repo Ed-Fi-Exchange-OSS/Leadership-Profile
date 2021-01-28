@@ -1,5 +1,6 @@
 import SecureStorage from 'secure-web-storage';
 import CryptoJS from 'crypto-js';
+import { NavItem } from 'reactstrap';
 
 function AuthService() {
     const SECRET_KEY = process.env.REACT_APP_ENCRYPTION_SECRET_KEY;
@@ -24,25 +25,27 @@ function AuthService() {
     });
     
     function loginAuth(username) {
-        secureStorage.setItem('isAuthenticated', true);
-        secureStorage.setItem('id', username);
-        return sessionStorage.getItem('isAuthenticated');
+        secureStorage.setItem('authInfo', {
+            'isAuthenticated': true,
+            'id': username
+        });
+        return secureStorage.getItem('authInfo');
     }
 
     function logoutAuth() {
-        secureStorage.removeItem('isAuthenticated');
-        secureStorage.removeItem('id');
+        secureStorage.removeItem('authInfo');
     }
 
     function isAuthenticated() {
-        let authInfo = secureStorage.getItem('isAuthenticated');
-        authInfo = authInfo === null ? false : authInfo;
-        return authInfo;
+        const authInfo = secureStorage.getItem('authInfo');
+        const isAuthenticated = authInfo === null || authInfo['isAuthenticated'] === null ? false : authInfo['isAuthenticated'];
+        return isAuthenticated;
     }
 
     function getAuthInfo() {
-        const authInfo = secureStorage.getItem('id');
-        return authInfo;
+        const authInfo = secureStorage.getItem('authInfo');
+        const authId = authInfo === null ? null : authInfo['id']
+        return authId;
     }
 
     return { loginAuth, logoutAuth, isAuthenticated, getAuthInfo}
