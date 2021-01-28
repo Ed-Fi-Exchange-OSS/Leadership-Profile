@@ -14,7 +14,6 @@ function UseProfile(id) {
                 setData(response.data);
             }
         }).catch(error => {
-            // setError(true);
             console.error(error.message);
         });
         return () => {
