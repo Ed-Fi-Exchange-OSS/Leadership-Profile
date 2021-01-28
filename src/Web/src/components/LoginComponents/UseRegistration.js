@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
 
+import AuthService from '../../utils/auth-service';
+
 function UseRegistration() {
     const history = useHistory();
+    const { loginAuth } = AuthService()
 
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
@@ -45,17 +48,18 @@ function UseRegistration() {
         const apiUrl = new URL('/account/register', new URL(process.env.REACT_APP_API_URL));
         fetch(apiUrl, {
             method: 'POST',
-            mode: 'no-cors',
+            mode: 'cors',
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
-                'Accept': 'text/plain',
+                'Accept': 'application/json',
             },
             referrerPolicy: 'origin-when-cross-origin',
             body: JSON.stringify(registrationInfo)
         }).then((response) => {
             if (!unmounted && response !== null) {
                 setError(false);
+                loginAuth(username);
                 history.push('/queue?count=10&page=1&sortBy=desc&sortField=id');
                 history.go(0);
             }
