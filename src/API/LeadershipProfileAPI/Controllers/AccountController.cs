@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
+using System.Collections.Generic;
 
 namespace LeadershipProfileAPI.Controllers
 {   
@@ -44,17 +45,26 @@ namespace LeadershipProfileAPI.Controllers
             _dbContext = dbContext;
         }
 
+        [HttpPost("listTpdmUsers")]
+        public List<Staff> GetlistTpdmUsers()
+        {
+            var staff = _dbContext.Staff.Where(s => s.TpdmUsername.Length > 0).ToList();
+            return staff;
+        }
+
         [HttpPost("register")]
         public async Task<LoginResultModel> Register(RegisterModel model)
         {
-            var staff = _dbContext.Staff.SingleOrDefault(s => s.StaffUniqueId == model.StaffUniqueId);
-            
+            // Query Staff table to get the recerd that match staffUniqueID 
+            var staff = _dbContext.Staff.SingleOrDefault(s => s.StaffUniqueId == model.StaffUniqueId);            
+            // Check if it the staff exist
             if(staff == null)
                 throw new ApiExceptionFilter.ApiException("Staff record not found.");
 
+            // Check if input information is valid
             if (!ModelState.IsValid)
             { 
-                throw new ApiExceptionFilter.ApiException("Missing important properties");
+                throw new ApiExceptionFilter.ApiException("Missing important properties.");
             }
 
             var user = new IdentityUser(model.Username) {Email = model.Email};

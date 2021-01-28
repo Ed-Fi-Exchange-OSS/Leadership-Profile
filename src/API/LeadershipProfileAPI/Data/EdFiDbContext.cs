@@ -12,8 +12,8 @@ namespace LeadershipProfileAPI.Data
         public DbSet<Staff> Staff { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {   
-            modelBuilder.Entity<Staff>().ToTable("Staff", schema:"edfi")
+        {
+            modelBuilder.Entity<Staff>().ToTable("Staff", schema: "edfi")
                 .Property(p=>p.LastName).HasColumnName("LastSurname");
         }
     }
@@ -27,5 +27,6 @@ namespace LeadershipProfileAPI.Data
         public string LastName { get; set; }
         public string StaffUniqueId { get; set; }
         public string TpdmUsername { get; set; }
+        public string PersonalTitlePrefix { get; set; }
     }
 }
