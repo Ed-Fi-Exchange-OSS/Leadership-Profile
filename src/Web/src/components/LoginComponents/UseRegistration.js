@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import Axios from 'axios';
 import { useHistory } from "react-router-dom";
 
 function UseRegistration() {
@@ -43,9 +42,19 @@ function UseRegistration() {
 
     async function setRegistration() {
         let unmounted = false;
-        const apiUrl = new URL(`https://localhost:5001/account/register`);
-        Axios.post(apiUrl, registrationInfo).then((response) => {
-            if (!unmounted && response.data !== null) {
+        const apiUrl = new URL('/account/register', new URL(process.env.REACT_APP_API_URL));
+        fetch(apiUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'text/plain',
+            },
+            referrerPolicy: 'origin-when-cross-origin',
+            body: JSON.stringify(registrationInfo)
+        }).then((response) => {
+            if (!unmounted && response !== null) {
                 setError(false);
                 history.push('/queue?count=10&page=1&sortBy=desc&sortField=id');
                 history.go(0);

@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import Axios from 'axios';
 
 function UseDirectory() {
     const history = useHistory();
@@ -53,7 +52,7 @@ function UseDirectory() {
     useEffect(() => {
         if (!searchableUrl.current.search) return;
         let unmounted = false;
-        const apiUrl = new URL(`https://localhost:5001/Profile${history.location.search}`);
+        const apiUrl = new URL(`/profile${history.location.search}`, new URL(process.env.REACT_APP_API_URL));
         fetch(apiUrl, {
             method: 'GET',
             mode: 'cors',

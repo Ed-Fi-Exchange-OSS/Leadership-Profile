@@ -25,7 +25,7 @@ function UseLogin() {
     function setLogin(e) {
         if (password !== '' && username !== '') {
             let unmounted = false;
-            const apiUrl = new URL(`https://localhost:5001/account/login`);
+            const apiUrl = new URL('/account/login', new URL(process.env.REACT_APP_API_URL));
             fetch(apiUrl, {
                 method: 'POST',
                 mode: 'cors',

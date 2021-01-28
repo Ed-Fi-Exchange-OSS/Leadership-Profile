@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 
 
 function UseProfile(id) {
@@ -7,8 +7,7 @@ function UseProfile(id) {
 
     useEffect(() => {
         let unmounted = false;
-        const apiUrl = new URL(`https://localhost:5001/Profile/${id}`)
-        // const apiUrl = new URL(`Profile/${id}`, process.env.API_URL);
+        const apiUrl = new URL(`/profile/${id}`, new URL(process.env.REACT_APP_API_URL));
         fetch(apiUrl, {
             method: 'GET',
             mode: 'cors',
