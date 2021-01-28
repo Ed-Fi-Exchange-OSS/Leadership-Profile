@@ -50,11 +50,13 @@ function UseRegistration() {
         const apiUrl = new URL('/account/register', API_URL);
         fetch(apiUrl, API_CONFIG("POST", JSON.stringify(registrationInfo))
         ).then((response) => {
-            if (!unmounted && response !== null) {
+            if (!unmounted && response.status !== 200) {
                 setError(false);
                 loginAuth(username);
                 history.push('/queue?count=10&page=1&sortBy=desc&sortField=id');
                 history.go(0);
+            } else {
+                setError(true);
             }
         }).catch((error) => {
             const errorInfo = error.response.data;
