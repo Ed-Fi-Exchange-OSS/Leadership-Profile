@@ -20,11 +20,11 @@ namespace LeadershipProfileAPI.Tests.Features.Profile
 
             var profile = response.Profiles.FirstOrDefault();
 
-            profile.FirstName.ShouldBe("Patricia");
-            profile.LastSurName.ShouldBe("Ramirez");
-            profile.MiddleName.ShouldBe(null);
-            profile.StaffUniqueId.ShouldBe("0132398");
-            profile.Location.ShouldBe("Dallas");
+            profile.FirstName.ShouldBe("Evvy");
+            profile.LastSurName.ShouldBe("Abarough");
+            profile.MiddleName.ShouldBe("Sofia");
+            profile.StaffUniqueId.ShouldBe("1000003995");
+            profile.Location.ShouldBe(null);
         }
     }
 }
