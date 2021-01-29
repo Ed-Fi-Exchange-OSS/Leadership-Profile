@@ -8,13 +8,13 @@
 }
 
 .navbar {
+  background-color: #fff;
   height: 96px;
-  border-bottom: #000 solid 1px;
+  border-bottom: rgba(0, 0, 0, .125) solid 1px;
 }
 
-
 .navbar-brand {
-  color: #000;
+  color: rgb(33, 37, 41);
   height: 32px;
   width: 289px;
   margin-left: 121px;
@@ -332,14 +332,19 @@
 
 /* Login */
 .login-card, .register-card {
-  width: 75%;
+  width: 50%;
   margin: 0 auto;
+}
+
+.login-input, .register-input {
+  padding: 10px;
 }
 
 .login-submit, .register-submit {
   margin-top: 20px;
 }
 
-.login-input, .register-input {
-  padding: 10px;
+.login-submit:hover, .login-submit:focus,  .login-submit:active {
+  background-color: #3466ff;
+  color: white;
 }
