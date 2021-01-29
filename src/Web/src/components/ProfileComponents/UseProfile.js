@@ -9,9 +9,10 @@ function UseProfile(id) {
         let unmounted = false;
         const apiUrl = new URL(`/profile/${id}`, API_URL);
         fetch(apiUrl, API_CONFIG('GET')
-        ).then((response) => {
-            if (!unmounted && response.data !== null) {
-                setData(response.data);
+        ).then(response => response.json())
+        .then((response) => {
+            if (!unmounted && response !== null) {
+                setData(response);
             }
         }).catch(error => {
             console.error(error.message);
