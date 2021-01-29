@@ -71,11 +71,17 @@ namespace LeadershipProfileAPI.Features.Profile
 
                 if (request.Page.HasValue)
                 {
-                    items = await profiles.Skip((request.Page.Value - 1) * PageSize).Take(PageSize).ToArrayAsync(cancellationToken);
+                    items = await profiles.OrderBy(p=>p.LastSurName)
+                                          .ThenBy(p=>p.FirstName)
+                                          .Skip((request.Page.Value - 1) * PageSize)
+                                          .Take(PageSize)
+                                          .ToArrayAsync(cancellationToken);
                 }
                 else
                 {
-                    items = await profiles.ToArrayAsync(cancellationToken);
+                    items = await profiles.OrderBy(p => p.LastSurName)
+                                          .ThenBy(p => p.FirstName)
+                                          .ToArrayAsync(cancellationToken);
                 }
 
                 return new Response()
