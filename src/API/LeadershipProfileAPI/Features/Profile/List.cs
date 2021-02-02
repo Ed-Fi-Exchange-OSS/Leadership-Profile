@@ -11,6 +11,7 @@ using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using LeadershipProfileAPI.Data.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace LeadershipProfileAPI.Features.Profile
@@ -47,18 +48,21 @@ namespace LeadershipProfileAPI.Features.Profile
             public string Institution { get; set; } = "Default Institution";
             public string HighestDegree { get; set; } = "Default Degree";
             public string Major { get; set; } = "Default Major";
+            public bool? Admin { get; set; }
         }
 
         public class QueryHandler : IRequestHandler<Query, Response>
         {
             private readonly EdFiDbContext _ctx;
             private readonly IMapper _mapper;
+            private readonly UserManager<IdentityUser> _userManager;
             private const int PageSize = 10;
 
-            public QueryHandler(EdFiDbContext ctx, IMapper mapper)
+            public QueryHandler(EdFiDbContext ctx, IMapper mapper, UserManager<IdentityUser> userManager)
             {
                 _ctx = ctx;
                 _mapper = mapper;
+                _userManager = userManager;
             }
 
             public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
@@ -82,6 +86,18 @@ namespace LeadershipProfileAPI.Features.Profile
                     items = await profiles.OrderBy(p => p.LastSurName)
                                           .ThenBy(p => p.FirstName)
                                           .ToArrayAsync(cancellationToken);
+                }
+
+                foreach (var profile in items)
+                {
+                    var staff = await _ctx.Staff.SingleOrDefaultAsync(x => x.StaffUniqueId == profile.StaffUniqueId, cancellationToken);
+                    var user = await _userManager.Users.SingleOrDefaultAsync(x => x.UserName == staff.TpdmUsername, cancellationToken);
+                    profile.Admin = false;
+                    if (user != null)
+                    {
+                        var claims = await _userManager.GetClaimsAsync(user);
+                        profile.Admin = claims[0].Value == "Admin";
+                    }
                 }
 
                 return new Response()

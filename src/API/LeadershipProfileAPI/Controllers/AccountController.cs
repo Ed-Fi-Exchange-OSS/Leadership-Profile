@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace LeadershipProfileAPI.Controllers
@@ -152,6 +153,20 @@ namespace LeadershipProfileAPI.Controllers
             await _events.RaiseAsync(new UserLogoutSuccessEvent(User.GetSubjectId(), User.GetDisplayName()));
 
             return vm;
+        }
+
+        [HttpPost("remove-admin")]
+        [Authorize]
+        public async Task<OkResult> RemoveAdminRole(string[] staffUniqueIds)
+        {
+            foreach (var id in staffUniqueIds)
+            {
+                var staff = await _dbContext.Staff.SingleOrDefaultAsync(x => x.StaffUniqueId == id);
+                var user = await _userManager.Users.SingleOrDefaultAsync(x => x.UserName == staff.TpdmUsername);
+                await _userManager.RemoveClaimAsync(user,  new Claim("role", "Admin"));
+            }
+
+            return Ok();
         }
 
         private void ExplicitlyDeleteAuthCookies()
