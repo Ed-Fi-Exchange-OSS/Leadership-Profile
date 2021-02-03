@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using LeadershipProfileAPI.Features.Profile;
@@ -26,21 +27,46 @@ namespace LeadershipProfileAPI.Features.RoleManagement
             _mediator = mediator;
         }
 
-        [HttpPost("add-admin")]
+        [HttpGet("list")]
         [Authorize]
-        public async Task<ActionResult> AddAdminRole(string[] staffUniqueIds)
+        public async Task<ActionResult> List([FromQuery] List.Query query)
         {
-            foreach (var id in staffUniqueIds)
+            var result = await _mediator.Send(query);
+
+            if (result == null)
             {
-                var staff = await _dbContext.Staff.SingleOrDefaultAsync(x => x.StaffUniqueId == id);
-                var user = await _userManager.Users.SingleOrDefaultAsync(x => x.UserName == staff.TpdmUsername);
-                await _userManager.AddClaimsAsync(user, new Claim[]
-                {
-                    new ("role", "Admin")
-                });
+                return NotFound();
             }
 
-            return Ok();
+            return Ok(result);
+        } 
+
+        [HttpPost("add-admin")]
+        [Authorize]
+        public async Task<ActionResult> AddAdminRole(Admin.AddRequest request)
+        {
+            var result = await _mediator.Send(request);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
+        [HttpPost("remove-admin")]
+        [Authorize]
+        public async Task<ActionResult> RemoveAdminRole(Admin.RemoveRequest request)
+        {
+            var result = await _mediator.Send(request);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
         }
     }
 }

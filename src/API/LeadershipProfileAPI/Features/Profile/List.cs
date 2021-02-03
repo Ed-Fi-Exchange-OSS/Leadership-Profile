@@ -48,7 +48,6 @@ namespace LeadershipProfileAPI.Features.Profile
             public string Institution { get; set; } = "Default Institution";
             public string HighestDegree { get; set; } = "Default Degree";
             public string Major { get; set; } = "Default Major";
-            public bool? Admin { get; set; }
         }
 
         public class QueryHandler : IRequestHandler<Query, Response>
@@ -68,9 +67,10 @@ namespace LeadershipProfileAPI.Features.Profile
             public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
             {
                 var query = _ctx.ProfileList.AsQueryable();
+
                 var profiles = query.ProjectTo<TeacherProfile>(_mapper.ConfigurationProvider);
 
-                TeacherProfile[] items;
+                List<TeacherProfile> items;
                 var count = await profiles.CountAsync(cancellationToken);
 
                 if (request.Page.HasValue)
@@ -79,25 +79,13 @@ namespace LeadershipProfileAPI.Features.Profile
                                           .ThenBy(p=>p.FirstName)
                                           .Skip((request.Page.Value - 1) * PageSize)
                                           .Take(PageSize)
-                                          .ToArrayAsync(cancellationToken);
+                                          .ToListAsync(cancellationToken);
                 }
                 else
                 {
                     items = await profiles.OrderBy(p => p.LastSurName)
                                           .ThenBy(p => p.FirstName)
-                                          .ToArrayAsync(cancellationToken);
-                }
-
-                foreach (var profile in items)
-                {
-                    var staff = await _ctx.Staff.SingleOrDefaultAsync(x => x.StaffUniqueId == profile.StaffUniqueId, cancellationToken);
-                    var user = await _userManager.Users.SingleOrDefaultAsync(x => x.UserName == staff.TpdmUsername, cancellationToken);
-                    profile.Admin = false;
-                    if (user != null)
-                    {
-                        var claims = await _userManager.GetClaimsAsync(user);
-                        profile.Admin = claims[0].Value == "Admin";
-                    }
+                                          .ToListAsync(cancellationToken);
                 }
 
                 return new Response()
