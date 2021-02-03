@@ -13,7 +13,9 @@ const ProfileInfo = (props) => {
                 <Col>
                     <table>
                         <thead>
-                            <th colSpan="3"className="profile-card-title">{data.fullName}</th>
+                            <tr>
+                                <th colSpan="3"className="profile-card-title">{data.fullName}</th>
+                            </tr>
                         </thead>
                         <tbody>
                             <tr>

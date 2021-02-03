@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Button } from 'reactstrap';
 import { TableViewIcon, CardViewIcon } from '../Icons';
 import BreadcrumbList from '../Breadcrumb';
 import DirectoryFilters from './DirectoryFilters';

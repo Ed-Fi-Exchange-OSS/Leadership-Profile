@@ -1,5 +1,5 @@
 ﻿using System;
-using LeadershipProfileAPI.Controllers;
+using LeadershipProfileAPI.Features.Profile;
 using Microsoft.Extensions.Logging;
 
 namespace LeadershipProfileAPI.Tests.Infrastructure

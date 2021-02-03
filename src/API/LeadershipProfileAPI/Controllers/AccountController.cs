@@ -105,9 +105,12 @@ namespace LeadershipProfileAPI.Controllers
         {
             var staff = _dbContext.Staff.SingleOrDefault(s => s.StaffUniqueId == model.StaffUniqueId);
             
-            if(staff == null)
+            if (staff == null)
                 throw new ApiExceptionFilter.ApiException("Staff record not found.");
 
+            if (!string.IsNullOrEmpty(staff.TpdmUsername))
+                throw new ApiExceptionFilter.ApiException("Already registered for the staff id.");
+            
             if (!ModelState.IsValid)
             { 
                 throw new ApiExceptionFilter.ApiException("Missing important properties");
