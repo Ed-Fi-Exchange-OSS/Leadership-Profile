@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using IdentityServer4;
 using IdentityServer4.AccessTokenValidation;
 using LeadershipProfileAPI.Data;
-using LeadershipProfileAPI.EmailService;
 using LeadershipProfileAPI.Infrastructure;
 using LeadershipProfileAPI.Infrastructure.Auth;
 using Microsoft.AspNetCore.Authentication;
@@ -61,10 +60,6 @@ namespace LeadershipProfileAPI
                 .SetHandlerLifetime(TimeSpan.FromMinutes(handlerLifeTimeInMinutes))
                 .AddHttpMessageHandler<AuthenticationDelegatingHandler>();
 
-            var emailConfig = Configuration.GetSection("EmailConfiguration")
-                 .Get<EmailConfiguration>();
-            services.AddSingleton(emailConfig);
-            services.AddScoped<IEmailSender, EmailSender>();
             services.AddMediatR(typeof(Startup).Assembly);
             services.AddAutoMapper(typeof(Startup).Assembly);
 

@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
-using LeadershipProfileAPI.EmailService;
+using LeadershipProfileAPI.Infrastructure.Email;
 
 namespace LeadershipProfileAPI.Controllers
 {   
@@ -68,8 +68,8 @@ namespace LeadershipProfileAPI.Controllers
                 var param = new System.Collections.Generic.Dictionary<string, string>() { { "token", token },{ "username",model.Username } };
                 var callback = new System.Uri(Microsoft.AspNetCore.WebUtilities.QueryHelpers.AddQueryString("http://" + Request.Host.Host + "/Account/ResetPassword", param)).ToString();
                 
-                var message = new Message(new string[] { user.Email }, "Reset password token", callback, null);
-                await _emailSender.SendEmailAsync(message);
+                string message = $"<h2>Click the link below to reset your password.</h2><br/><br/><p>{callback}</p>";
+                await _emailSender.SendEmailAsync(user.Email, "Reset Password", message);
 
                 return new ForgotPasswordResultModel() { Result = true, ResultMessage = "An email will be sent to the email address on file in the system." };
             }
@@ -91,13 +91,6 @@ namespace LeadershipProfileAPI.Controllers
             }
 
             return new ResetPasswordResultModel() { Result = true, ResultMessage = "Password changed." };
-        }
-
-        [HttpPost("listTpdmUsers")]
-        public System.Collections.Generic.List<Staff> GetlistTpdmUsers()
-        {
-            var staff = _dbContext.Staff.Where(s => s.TpdmUsername.Length > 0).ToList();
-            return staff;
         }
 
         [HttpPost("register")]
