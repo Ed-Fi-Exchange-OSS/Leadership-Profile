@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
+using LeadershipProfileAPI.EmailService;
 
 namespace LeadershipProfileAPI.Controllers
 {   
@@ -28,6 +29,7 @@ namespace LeadershipProfileAPI.Controllers
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly EdFiDbContext _dbContext;
+        private readonly IEmailSender _emailSender;
 
         public AccountController(
             IIdentityServerInteractionService interaction,
@@ -36,12 +38,66 @@ namespace LeadershipProfileAPI.Controllers
             IEventService events,
             SignInManager<IdentityUser> signInManager,
             UserManager<IdentityUser> userManager,
-            EdFiDbContext dbContext)
+            EdFiDbContext dbContext, 
+            IEmailSender emailSender)
         {
             _events = events;
             _signInManager = signInManager;
             _userManager = userManager;
             _dbContext = dbContext;
+            _emailSender = emailSender;
+        }
+
+        [HttpPost("forgotPassword")]
+        public async Task<ForgotPasswordResultModel> forgotPasswordAsync(ForgotPasswordModel model)
+        {
+            // Gets user by username from Staff table
+            var staff = _dbContext.Staff.SingleOrDefault(s => s.TpdmUsername == model.Username && s.StaffUniqueId == model.StaffUniqueId);
+
+            if (staff == null)
+                throw new ApiExceptionFilter.ApiException("Staff record not found.");
+
+            // Get user by username from ASP.Net table
+            var user = await _signInManager.UserManager.FindByNameAsync(model.Username);
+            
+            try
+            {
+                // Generate token and reset link
+                var token = _userManager.GeneratePasswordResetTokenAsync(user).Result;
+
+                var param = new System.Collections.Generic.Dictionary<string, string>() { { "token", token },{ "username",model.Username } };
+                var callback = new System.Uri(Microsoft.AspNetCore.WebUtilities.QueryHelpers.AddQueryString("http://" + Request.Host.Host + "/Account/ResetPassword", param)).ToString();
+                
+                var message = new Message(new string[] { user.Email }, "Reset password token", callback, null);
+                await _emailSender.SendEmailAsync(message);
+
+                return new ForgotPasswordResultModel() { Result = true, ResultMessage = "An email will be sent to the email address on file in the system." };
+            }
+            catch(System.Exception ex)
+            {
+                return new ForgotPasswordResultModel() { Result = false, ResultMessage = "Email could not be send."};
+            }
+        }
+
+        [HttpPost("resetPassword")]
+        public async Task<ResetPasswordResultModel> resetPasswordAsync(ResetPasswordModel model)
+        {
+            var user = await _signInManager.UserManager.FindByNameAsync(model.Username);
+            var result = _userManager.ResetPasswordAsync(user, model.Token, model.Newpassword).Result;
+
+            if(result.Succeeded == false)
+            {
+                return new ResetPasswordResultModel() { Result = false, ResultMessage = "Reset password failed." };
+            }
+
+            return new ResetPasswordResultModel() { Result = true, ResultMessage = "Password changed." };
+        }
+
+        [HttpPost("listTpdmUsers")]
+        public System.Collections.Generic.List<Staff> GetlistTpdmUsers()
+        {
+            var staff = _dbContext.Staff.Where(s => s.TpdmUsername.Length > 0).ToList();
+            return staff;
         }
 
         [HttpPost("register")]
@@ -164,6 +220,35 @@ namespace LeadershipProfileAPI.Controllers
                 Response.Cookies.Delete(cookie.Key);
             }
         }
+    }
+
+    public class ForgotPasswordModel
+    {
+        [Required]
+        public string Username { get; set; }
+        [Required]
+        public string StaffUniqueId { get; set; }
+    }
+
+    public class ForgotPasswordResultModel
+    {
+        public bool Result { get; set; }
+        public string ResultMessage { get; set; }
+    }
+
+    public class ResetPasswordModel
+    {
+        [Required]
+        public string Username { get; set; }
+        [Required]
+        public string Newpassword { get; set; }
+        [Required]
+        public string Token { get; set; }
+    }
+    public class ResetPasswordResultModel
+    {
+        public bool Result { get; set; }
+        public string ResultMessage { get; set; }
     }
 
     public class RegisterModel  

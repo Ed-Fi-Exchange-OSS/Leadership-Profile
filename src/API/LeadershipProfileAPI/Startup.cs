@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using IdentityServer4;
 using IdentityServer4.AccessTokenValidation;
 using LeadershipProfileAPI.Data;
+using LeadershipProfileAPI.EmailService;
 using LeadershipProfileAPI.Infrastructure;
 using LeadershipProfileAPI.Infrastructure.Auth;
 using Microsoft.AspNetCore.Authentication;
@@ -51,6 +52,11 @@ namespace LeadershipProfileAPI
                     x => { x.BaseAddress = new Uri(Configuration["ODS-API"]); })
                 .SetHandlerLifetime(TimeSpan.FromMinutes(handlerLifeTimeInMinutes))
                 .AddHttpMessageHandler<AuthenticationDelegatingHandler>();
+
+            var emailConfig = Configuration.GetSection("EmailConfiguration")
+                 .Get<EmailConfiguration>();
+            services.AddSingleton(emailConfig);
+            services.AddScoped<IEmailSender, EmailSender>();
 
             services.AddControllers();
 
@@ -125,7 +131,7 @@ namespace LeadershipProfileAPI
 
             });
 
-            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<EdFiIdentityDbContext>();
+            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<EdFiIdentityDbContext>().AddDefaultTokenProviders();
 
             services.AddIdentityServer()
                 .AddInMemoryClients(IdentityConfig.GetClient(redirectUri, new List<string> { authorityServer, webClient }))
@@ -133,6 +139,9 @@ namespace LeadershipProfileAPI
                 .AddInMemoryApiScopes(IdentityConfig.ApiScopes)
                 .AddAspNetIdentity<IdentityUser>()
                 .AddDeveloperSigningCredential();
+
+            services.Configure<DataProtectionTokenProviderOptions>(opt =>
+            opt.TokenLifespan = TimeSpan.FromHours(7));
 
             services.ConfigureApplicationCookie(options =>
             {
