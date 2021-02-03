@@ -25,7 +25,6 @@ See [NOTICES](NOTICES.md) for additional copyright and license notifications.
 * node.js (https://nodejs.org/)
 * docker
 * powershell
-* Papercut for local email testing (https://github.com/ChangemakerStudios/Papercut-SMTP)
 
 ### Setup
 
@@ -53,7 +52,7 @@ These are the available powershell commands to test the application (run them fr
 * `Invoke-Psake TestAPI`: Runs the API related tests. It runs a docker container with a test database and then runs the API
   test suite.
 * `Invoke-Psake TestFrontend`: Runs the frontend tests.
-* `Invoke-Psake Test`: Runs all the tests.
+* `Invoke-Psake Test`: Runs the all the tests.
 
 ## Running API
 ### Setting the secrets locally for Ed-Fi ODS
@@ -111,29 +110,3 @@ If you aren’t satisfied with the build tool and configuration choices, you can
 Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Email
-
-The application is preconfigured to send emails to localhost.
-The recommended tool to test the email sending functionality is Papercut SMTP.
-
-For production, change the EmailSettings configuration block in `appsettings.json`:
-
-```json
-  "EmailSettings": {
-    "Server": "127.0.0.1",
-    "Port": 25,
-    "Sender": "\"Leadership Portal\" <noreply@test.com>",
-    "Username": "",
-    "Password": ""
-  }
-```
-
-Alternatively, you can create a class that implements the `IEmailSender` interface
-in `src/API/LeadershipProfileAPI/Infrastructure/Email/IEmailSender.cs` and register it
-on the `Startup` class instead of the `SmtpSender` class:
-
-```csharp
-  // Replace SmtpSender with your own implementation
-  services.AddTransient<IEmailSender, SmtpSender>();
-```

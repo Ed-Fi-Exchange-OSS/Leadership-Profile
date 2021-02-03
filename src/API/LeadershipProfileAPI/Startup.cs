@@ -1,5 +1,4 @@
 using System;
-using AutoMapper;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using IdentityServer4;
@@ -10,8 +9,6 @@ using LeadershipProfileAPI.Infrastructure;
 using LeadershipProfileAPI.Infrastructure.Auth;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using LeadershipProfileAPI.Infrastructure.Email;
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -38,13 +35,8 @@ namespace LeadershipProfileAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //  services.AddCors(); // Make sure you call this previous to AddMvc
             var connectionString = Configuration.GetConnectionString("EdFi");
-
-            services.AddDbContext<EdFiDbContext>(options => options.UseSqlServer(connectionString));
-
-            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
-
-            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
 
             services.AddDbContext<EdFiIdentityDbContext>(options => options.UseSqlServer(connectionString));
             services.AddDbContext<EdFiDbContext>(options => options.UseSqlServer(connectionString));
@@ -65,10 +57,6 @@ namespace LeadershipProfileAPI
                  .Get<EmailConfiguration>();
             services.AddSingleton(emailConfig);
             services.AddScoped<IEmailSender, EmailSender>();
-            services.AddMediatR(typeof(Startup).Assembly);
-            services.AddAutoMapper(typeof(Startup).Assembly);
-
-            services.AddTransient<IEmailSender, SmtpSender>();
 
             services.AddControllers();
 
@@ -166,17 +154,14 @@ namespace LeadershipProfileAPI
             });
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMapper autoMapper)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "LeadershipProfileAPI v1"));
-            
-                autoMapper.ConfigurationProvider.AssertConfigurationIsValid();
             }
-            app.UseCors("default");
 
             app.UseCors("default");
 

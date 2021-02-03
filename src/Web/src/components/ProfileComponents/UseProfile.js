@@ -1,26 +1,26 @@
 import { useState, useEffect } from 'react';
-import config from '../../config';
+import Axios from 'axios';
 
-function UseProfile(id) {
-    const { API_URL, API_CONFIG } = config();
+function UseProfile() {
     const [data, setData] = useState({});
 
     useEffect(() => {
         let unmounted = false;
-        const apiUrl = new URL(`/profile/${id}`, API_URL);
-        fetch(apiUrl, API_CONFIG('GET')
-        ).then(response => response.json())
-        .then((response) => {
-            if (!unmounted && response !== null) {
-                setData(response);
-            }
-        }).catch(error => {
-            console.error(error.message);
-        });
+        const apiUrl = new URL(`https://localhost:5001/Profile/1ec702ca-3d47-4c75-9f4e-70cae8510bb2`);
+        Axios.get(apiUrl)
+            .then((response) => {
+                if (!unmounted && response.data !== null) {
+                    setData(response.data);
+                }
+            })
+            .catch(error => {
+                // setError(true);
+                console.error(error.message);
+            });
         return () => {
             unmounted = true;
         };
-    }, [id]);
+    }, []);
 
     return { data };
 }

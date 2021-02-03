@@ -24,27 +24,25 @@ function AuthService() {
     });
     
     function loginAuth(username) {
-        secureStorage.setItem('authInfo', {
-            'isAuthenticated': true,
-            'id': username
-        });
-        return secureStorage.getItem('authInfo');
+        secureStorage.setItem('isAuthenticated', true);
+        secureStorage.setItem('id', username);
+        return sessionStorage.getItem('isAuthenticated');
     }
 
     function logoutAuth() {
-        secureStorage.removeItem('authInfo');
+        secureStorage.removeItem('isAuthenticated');
+        secureStorage.removeItem('id');
     }
 
     function isAuthenticated() {
-        const authInfo = secureStorage.getItem('authInfo');
-        const isAuthenticated = authInfo === null || authInfo['isAuthenticated'] === null ? false : authInfo['isAuthenticated'];
-        return isAuthenticated;
+        let authInfo = secureStorage.getItem('isAuthenticated');
+        authInfo = authInfo === null ? false : authInfo;
+        return authInfo;
     }
 
     function getAuthInfo() {
-        const authInfo = secureStorage.getItem('authInfo');
-        const authId = authInfo === null ? null : authInfo['id']
-        return authId;
+        const authInfo = secureStorage.getItem('id');
+        return authInfo;
     }
 
     return { loginAuth, logoutAuth, isAuthenticated, getAuthInfo}

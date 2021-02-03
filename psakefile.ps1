@@ -47,7 +47,6 @@ task TestFrontend -description "Run frontend tests" {
 }
 
 task TestAPI -description "Run API tests" -depends RecreateTestDatabase, UpdateTestDatabase {
-	$env:LPTEST_ConnectionStrings__EdFi = "Server=localhost,$testDatabasePort;Database=$dbName;User Id=sa;Password=$testDatabasePassword;"
 	exec { dotnet test "$apiTestProjectFile" }
 }
 

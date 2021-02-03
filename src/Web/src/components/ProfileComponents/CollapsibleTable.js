@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CardTitle, Collapse, Table } from 'reactstrap';
+import { Collapse, Table } from 'reactstrap';
 import { EducationIcon, BriefcaseIcon, ChartIcon, CertificateIcon, DownPointingIcon } from '../Icons';
 
 const educationCategories = { 'institution': 'Institution', 'degree': 'Degree', 'graduationDate': 'Date', 'specialization': 'Specialization' };
@@ -33,17 +33,16 @@ const CollapsibleTable = (props) => {
                 setIcon(<ChartIcon />);
                 setCategories(professionalDevelopmentCategories);
                 break;
-            default:
-                setIcon('');
         }
     }
 
     useEffect(() => {
         setTable(title);
-    }, [CardTitle]);
+    }, []);
 
     return (
         <div className="profile-collapsible-container">
+            {console.log(data)}
             <h2 className="profile-collapsible-header" onClick={toggle}>
                 <span className="profile-collapsible-icon">{icon}</span>
                 <span>{title}</span>
@@ -53,18 +52,19 @@ const CollapsibleTable = (props) => {
                 <Table striped className="profile-collapsible-table">
                     <thead className="profile-table-head">
                         <tr className="profile-table-header-row">
-                            {Object.values(categories).map(category => (<th key={category}>{category}</th>))}
+                            {Object.values(categories).map(category => (<th>{category}</th>))}
                         </tr>
                     </thead>
                     <tbody>
-                        {data !== undefined ? data.map(row =>
-                        (<tr className="profile-table-body-row">
-                            {Object.keys(categories).map(value => {
-                                let displayValue = row[`${value}`];
-                                displayValue = (value.toLowerCase()).includes('date') ? formatDate(displayValue) : displayValue;
-                                return (<td>{displayValue}</td>)
-                            })}
-                        </tr>)) : ''
+                        {data !== undefined ? data.map(row => 
+                            (<tr className="profile-table-body-row">
+                                {Object.keys(categories).map(value => {
+                                    let displayValue = row[`${value}`];
+                                    displayValue = (value.toLowerCase()).includes('date') ? formatDate(displayValue) : displayValue;
+                                    return (<td>{displayValue}</td>)
+                                })}
+                            </tr>)
+                            ) : ''
                         }
                     </tbody>
                 </Table>

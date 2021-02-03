@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { Nav, NavItem, NavLink} from 'reactstrap';
 
 import ProfileInfo from './ProfileInfo';
@@ -8,9 +8,8 @@ import UseProfile from './UseProfile';
 
 const Profile = () => {
     const [activeComponent, setActiveComponent] = useState("general");
-    const id = window.location.href.slice(window.location.href.lastIndexOf('/')+1);
-    const { data } = UseProfile(id);
-    
+    const { data } = UseProfile();
+
     return (
         <div>
             <ProfileInfo data={data} />

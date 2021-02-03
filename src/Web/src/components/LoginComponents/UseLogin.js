@@ -2,12 +2,10 @@ import { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
 
 import AuthService from '../../utils/auth-service';
-import config from '../../config';
 
 function UseLogin() {
     const history = useHistory();
-    const { loginAuth } = AuthService();
-    const { API_URL, API_CONFIG } = config();
+    const { loginAuth } = AuthService()
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -28,16 +26,25 @@ function UseLogin() {
 		let path = '/account/ForgotPassword';
 		history.push(path);
 		history.go(0);
-    }
-    
+	}
+	
     function setLogin(e) {
         if (password !== '' && username !== '') {
             let unmounted = false;
-            const apiUrl = new URL('/account/login', API_URL);
-            fetch(apiUrl, API_CONFIG('POST', JSON.stringify({
+            const apiUrl = new URL(`https://localhost:5001/account/login`);
+            fetch(apiUrl, {
+                method: 'POST',
+                mode: 'cors',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                referrerPolicy: 'origin-when-cross-origin',
+                body: JSON.stringify({
                 'username': username,
                 'password': password,
-            }))).then(response => response.json()
+            })}).then(response => response.json()
             ).then((response) => {
                 if (!unmounted && response.result) {
                     setError(false);
