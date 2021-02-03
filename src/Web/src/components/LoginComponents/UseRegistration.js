@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react';
-import Axios from 'axios';
 import { useHistory } from "react-router-dom";
+
+import AuthService from '../../utils/auth-service';
+import config from '../../config';
 
 function UseRegistration() {
     const history = useHistory();
+    const { loginAuth } = AuthService()
+    const { API_URL, API_CONFIG } = config();
 
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
@@ -43,12 +47,16 @@ function UseRegistration() {
 
     async function setRegistration() {
         let unmounted = false;
-        const apiUrl = new URL(`https://localhost:5001/account/register`);
-        Axios.post(apiUrl, registrationInfo).then((response) => {
-            if (!unmounted && response.data !== null) {
+        const apiUrl = new URL('/account/register', API_URL);
+        fetch(apiUrl, API_CONFIG("POST", JSON.stringify(registrationInfo))
+        ).then((response) => {
+            if (!unmounted && response.status !== 200) {
                 setError(false);
+                loginAuth(username);
                 history.push('/queue?count=10&page=1&sortBy=desc&sortField=id');
                 history.go(0);
+            } else {
+                setError(true);
             }
         }).catch((error) => {
             const errorInfo = error.response.data;

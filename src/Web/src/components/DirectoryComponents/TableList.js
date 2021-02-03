@@ -69,7 +69,7 @@ const CreateTableList = (props) => {
                             <td>{profile.yearsOfService}</td>
                             <td>{profile.highestDegree}</td>
                             <td>{profile.major}</td>
-                            <td className="profile-table-row"><Link to={`profile/${profile.id}`}><RightPointingIcon /></Link></td>
+                            <td className="profile-table-row"><Link to={`profile/${profile.staffUniqueId}`}><RightPointingIcon /></Link></td>
                         </tr>)) : ''}
                         <tr className="bottom-row">
                             <td colSpan="8">
