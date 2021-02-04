@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
 
+import config from '../../config';
+
 function UseForgotPassword() {
     const history = useHistory();
     const [staffuniqueid, setstaffuniqueid] = useState('');
-	const [username, setUsername] = useState('');
+    const [username, setUsername] = useState('');
+    const { API_URL, API_CONFIG } = config();
     const [error, setError] = useState({
         hasError: false,
         message: ''
@@ -22,7 +25,7 @@ function UseForgotPassword() {
 	
 	function setForgotPassword(e){
 		if (staffuniqueid !== '' && username !== '') {
-			const apiUrl = new URL(`https://localhost:5001/account/forgotPassword`);
+			const apiUrl = new URL('/account/forgotPassword', API_URL);
 			
 			fetch(apiUrl, {
                 method: 'POST',

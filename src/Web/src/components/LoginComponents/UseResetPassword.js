@@ -1,11 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 import { useHistory, useLocation } from "react-router-dom";
 
+import config from '../../config';
+
 function UseResetPassword() {
 	const history = useHistory();
 	
     const [newpassword, setnewpassword] = useState('');
     const [confirmpassword, setconfirmpassword] = useState('');
+    const { API_URL, API_CONFIG } = config();
     const [resetpasswowrdInfo, setresetpasswowrdInfo] = useState({
         newpassword: newpassword,
         confirmpassword: setconfirmpassword
@@ -52,7 +55,7 @@ function UseResetPassword() {
 
 	function setResetPassword(e){
 		if (newpassword !== '' && confirmpassword !== '') {
-			const apiUrl = new URL(`https://localhost:5001/account/resetPassword`);
+			const apiUrl = new URL('/account/resetPassword', API_URL);
             fetch(apiUrl, {
                 method: 'POST',
                 mode: 'cors',

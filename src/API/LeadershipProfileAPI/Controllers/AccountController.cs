@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 using LeadershipProfileAPI.Infrastructure.Email;
+using System.Collections.Generic;
 
 namespace LeadershipProfileAPI.Controllers
 {   
@@ -49,7 +50,7 @@ namespace LeadershipProfileAPI.Controllers
         }
 
         [HttpPost("forgotPassword")]
-        public async Task<ForgotPasswordResultModel> forgotPasswordAsync(ForgotPasswordModel model)
+        public async Task<ForgotPasswordResultModel> RorgotPasswordAsync(ForgotPasswordModel model)
         {
             // Gets user by username from Staff table
             var staff = _dbContext.Staff.SingleOrDefault(s => s.TpdmUsername == model.Username && s.StaffUniqueId == model.StaffUniqueId);
@@ -65,7 +66,7 @@ namespace LeadershipProfileAPI.Controllers
                 // Generate token and reset link
                 var token = _userManager.GeneratePasswordResetTokenAsync(user).Result;
 
-                var param = new System.Collections.Generic.Dictionary<string, string>() { { "token", token },{ "username",model.Username } };
+                var param = new Dictionary<string, string>() { { "token", token },{ "username",model.Username } };
                 var callback = new System.Uri(Microsoft.AspNetCore.WebUtilities.QueryHelpers.AddQueryString("http://" + Request.Host.Host + "/Account/ResetPassword", param)).ToString();
                 
                 string message = $"<h2>Click the link below to reset your password.</h2><br/><br/><p>{callback}</p>";
@@ -80,7 +81,7 @@ namespace LeadershipProfileAPI.Controllers
         }
 
         [HttpPost("resetPassword")]
-        public async Task<ResetPasswordResultModel> resetPasswordAsync(ResetPasswordModel model)
+        public async Task<ResetPasswordResultModel> ResetPasswordAsync(ResetPasswordModel model)
         {
             var user = await _signInManager.UserManager.FindByNameAsync(model.Username);
             var result = _userManager.ResetPasswordAsync(user, model.Token, model.Newpassword).Result;

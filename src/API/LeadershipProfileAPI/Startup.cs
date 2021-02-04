@@ -173,8 +173,6 @@ namespace LeadershipProfileAPI
             }
             app.UseCors("default");
 
-            app.UseCors("default");
-
             app.UseHttpsRedirection();
 
             app.UseRouting();
