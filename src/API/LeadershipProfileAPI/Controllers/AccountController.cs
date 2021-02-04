@@ -62,7 +62,7 @@ namespace LeadershipProfileAPI.Controllers
             var user = await _signInManager.UserManager.FindByNameAsync(model.Username);
             
             // Generate token and reset link
-            var token = _userManager.GeneratePasswordResetTokenAsync(user).Result;
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
             var param = new Dictionary<string, string>() { { "token", token },{ "username",model.Username } };
             var callback = new System.Uri(Microsoft.AspNetCore.WebUtilities.QueryHelpers.AddQueryString("http://" + Request.Host.Host + "/Account/ResetPassword", param)).ToString();
