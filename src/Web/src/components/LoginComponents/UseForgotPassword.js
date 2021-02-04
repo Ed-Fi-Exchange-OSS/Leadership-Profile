@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useHistory } from "react-router-dom";
 
 import config from '../../config';
@@ -11,12 +11,12 @@ function UseForgotPassword() {
     const [error, setError] = useState({
         hasError: false,
         message: ''
-    });
+    });    
     const [success, setSuccess] = useState({
         isSuccess: false,
         message: ""
     });
-	
+    	
 	function goToLogIn() { 
 		let path = '/account/Login';
 		history.push(path);
@@ -27,20 +27,14 @@ function UseForgotPassword() {
 		if (staffuniqueid !== '' && username !== '') {
 			const apiUrl = new URL('/account/forgotPassword', API_URL);
 			
-			fetch(apiUrl, {
-                method: 'POST',
-                mode: 'cors',
-                async: 'true',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-                referrerPolicy: 'origin-when-cross-origin',
-                body: JSON.stringify({
-                'username': username,
-                'staffUniqueId': staffuniqueid,
-            })}).then(response => response.json()
-            ).then((response) => {
+            fetch(apiUrl, API_CONFIG(
+                'POST', JSON.stringify({
+                        'username': username,
+                        'staffUniqueId': staffuniqueid
+                    })
+                )
+            ).then(response => response.json())
+            .then((response) => {
                 if (response.result) {
                     setError({
                         hasError: false,
@@ -51,15 +45,16 @@ function UseForgotPassword() {
                         isSuccess: true,
                         message: "An email will be sent to the email address on file in the system."
                     });
-					setTimeout( () => {history.push('/account/Login'); history.go(0);}, 3000);
-                   
+					setTimeout(() => {
+                        history.push('/account/Login'); 
+                        history.go(0);
+                    }, 3000);                   
                 } else {
                     setError({
                         hasError: true,
                         message: response.resultMessage
                     });
-                    setSuccess
-                    ({
+                    setSuccess({
                         isSuccess: false,
                         message: ""
                     });

@@ -1,11 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 import config from '../../config';
 
 function UseResetPassword() {
-	const history = useHistory();
-	
+	const history = useHistory();	
     const [newpassword, setnewpassword] = useState('');
     const [confirmpassword, setconfirmpassword] = useState('');
     const { API_URL, API_CONFIG } = config();
@@ -20,9 +19,8 @@ function UseResetPassword() {
     const [success, setSuccess] = useState({
         isSuccess: false,
         message: ""
-    });
-	
-    const [url, setUrl] = useState(window.location.href);
+    });	
+    const [url] = useState(window.location.href);
     const searchableUrl = useRef(new URL(url));
 	
     useEffect(() => {
@@ -56,21 +54,16 @@ function UseResetPassword() {
 	function setResetPassword(e){
 		if (newpassword !== '' && confirmpassword !== '') {
 			const apiUrl = new URL('/account/resetPassword', API_URL);
-            fetch(apiUrl, {
-                method: 'POST',
-                mode: 'cors',
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-                referrerPolicy: 'origin-when-cross-origin',
-                body: JSON.stringify({
-                'username': searchableUrl.current.searchParams.get('username'),
-                'newpassword': newpassword,
-                'token': searchableUrl.current.searchParams.get('token'),
-            })}).then(response => response.json()
-            ).then((response) => {
+            
+            fetch(apiUrl, API_CONFIG(
+                'POST', JSON.stringify({
+                        'username': searchableUrl.current.searchParams.get('username'),
+                        'newpassword': newpassword,
+                        'token': searchableUrl.current.searchParams.get('token')
+                    })
+                ) 
+            ).then(response => response.json())
+            .then((response) => {
                 if (response.result) {
                     setError({
                         hasError: false,
@@ -81,7 +74,10 @@ function UseResetPassword() {
                         isSuccess: true,
                         message: "New password accepted."
                     });
-					setTimeout( () => {history.push('/account/Login'); history.go(0);}, 3000);
+					setTimeout(() => {
+                        history.push('/account/Login'); 
+                        history.go(0);
+                    }, 3000);
                 } else {
                     setError({
                         hasError: true,
@@ -100,8 +96,7 @@ function UseResetPassword() {
                 });
                 console.error(error.message);
             });
-            return () => {
-                
+            return () => {                
             };
 		}
 	}

@@ -50,7 +50,7 @@ namespace LeadershipProfileAPI.Controllers
         }
 
         [HttpPost("forgotPassword")]
-        public async Task<ForgotPasswordResultModel> RorgotPasswordAsync(ForgotPasswordModel model)
+        public async Task<ForgotPasswordResultModel> ForgotPasswordAsync(ForgotPasswordModel model)
         {
             // Gets user by username from Staff table
             var staff = _dbContext.Staff.SingleOrDefault(s => s.TpdmUsername == model.Username && s.StaffUniqueId == model.StaffUniqueId);
@@ -84,6 +84,7 @@ namespace LeadershipProfileAPI.Controllers
         public async Task<ResetPasswordResultModel> ResetPasswordAsync(ResetPasswordModel model)
         {
             var user = await _signInManager.UserManager.FindByNameAsync(model.Username);
+
             var result = _userManager.ResetPasswordAsync(user, model.Token, model.Newpassword).Result;
 
             if(result.Succeeded == false)

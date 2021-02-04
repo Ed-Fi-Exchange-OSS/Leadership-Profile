@@ -21,7 +21,7 @@ function UseLogin() {
         setLogininfo({
             username: username,
             password: password
-        })
+        });
     }, [username, password]);
 
 	function goToForgotPassword() { 
@@ -34,10 +34,13 @@ function UseLogin() {
         if (password !== '' && username !== '') {
             let unmounted = false;
             const apiUrl = new URL('/account/login', API_URL);
-            fetch(apiUrl, API_CONFIG('POST', JSON.stringify({
-                'username': username,
-                'password': password,
-            }))).then(response => response.json()
+            fetch(apiUrl, API_CONFIG(
+                    'POST', JSON.stringify({
+                        'username': username,
+                        'password': password,
+                    })
+                )
+            ).then(response => response.json()
             ).then((response) => {
                 if (!unmounted && response.result) {
                     setError(false);
@@ -55,7 +58,7 @@ function UseLogin() {
                 unmounted = true;
             };
         }
-    } 
+    }
 
     return {
         setLogin,
