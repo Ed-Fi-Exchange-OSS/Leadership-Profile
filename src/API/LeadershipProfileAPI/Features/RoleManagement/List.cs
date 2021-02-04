@@ -56,27 +56,19 @@ namespace LeadershipProfileAPI.Features.RoleManagement
                 _userManager = userManager;
             }
 
-            private async Task<bool> GetAdminStatus(string username, CancellationToken cancellationToken)
+            private static void SetAdminStatus(TeacherRoleProfile profile, bool hasAdminClaim)
             {
-                var user = await _userManager.Users.SingleOrDefaultAsync(x =>
-                    x.UserName == username, cancellationToken);
-                if (user != null)
-                {
-                    var claims = await _userManager.GetClaimsAsync(user);
-                    var hasAdminClaim = claims.Any(x => x.Value == "Admin");
-                    return hasAdminClaim;
-                }
-
-                return false;
+                profile.Admin = hasAdminClaim;
             }
 
             public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
             {
-                var query = _ctx.ProfileList.AsQueryable();
-                var profiles = query.ProjectTo<TeacherRoleProfile>(_mapper.ConfigurationProvider);
+                var page = request.Page ?? 0;
+                var query = _ctx.ProfileList.AsQueryable().ProjectTo<TeacherRoleProfile>(_mapper.ConfigurationProvider);
+
                 var staff = _ctx.Staff
                     .Where(x => x.TpdmUsername != null)
-                    .Join(profiles, s => s.StaffUniqueId, t => t.StaffUniqueId, (s, t) => new TeacherRoleProfile
+                    .Join(query, s => s.StaffUniqueId, t => t.StaffUniqueId, (s, t) => new TeacherRoleProfile
                     {
                         StaffUniqueId = t.StaffUniqueId,
                         FirstName = t.FirstName,
@@ -85,39 +77,31 @@ namespace LeadershipProfileAPI.Features.RoleManagement
                         FullName = t.FullName,
                         Location = t.Location,
                         Username = s.TpdmUsername,
-                    });
-
-                foreach (var s in staff)
-                {
-                    var isAdmin = await GetAdminStatus(s.Username, cancellationToken);
-                    s.Admin = isAdmin;
-                }
-
-                var count = await staff.CountAsync(cancellationToken);
-
-                List<TeacherRoleProfile> items;
-                if (request.Page.HasValue)
-                {
-                    items = await staff
-                        .OrderBy(p => p.LastSurName)
-                        .ThenBy(p => p.FirstName)
-                        .Skip((request.Page.Value - 1) * PageSize)
-                        .Take(PageSize)
-                        .ToListAsync(cancellationToken);
-                }
-                else
-                {
-                    items = await staff
-                        .OrderBy(p => p.LastSurName)
-                        .ThenBy(p => p.FirstName)
-                        .ToListAsync(cancellationToken);
-                }
+                    }).OrderBy(p => p.LastSurName)
+                    .ThenBy(p => p.FirstName)
+                    .Skip((page - 1) * PageSize)
+                    .Take(PageSize)
+                    .AsEnumerable()
+                    .Select(async x =>
+                    {
+                        var user = await _userManager.Users.SingleOrDefaultAsync(y =>
+                            y.UserName == x.Username, cancellationToken);
+                        var claims = await _userManager.GetClaimsAsync(user);
+                        if (claims.Count == 0)
+                        {
+                            x.Admin = false;
+                            return x;
+                        }
+                        x.Admin = claims.Any(y => y.Value == "Admin");
+                        return x;
+                    }).Select(x => x.GetAwaiter().GetResult())
+                    .ToList();
 
                 return new Response
                 {
-                    TotalCount = count,
+                    TotalCount = staff.Count,
                     Page = request.Page,
-                    Profiles = items
+                    Profiles = staff
                 };
             }
         }
