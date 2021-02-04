@@ -61,23 +61,16 @@ namespace LeadershipProfileAPI.Controllers
             // Get user by username from ASP.Net table
             var user = await _signInManager.UserManager.FindByNameAsync(model.Username);
             
-            try
-            {
-                // Generate token and reset link
-                var token = _userManager.GeneratePasswordResetTokenAsync(user).Result;
+            // Generate token and reset link
+            var token = _userManager.GeneratePasswordResetTokenAsync(user).Result;
 
-                var param = new Dictionary<string, string>() { { "token", token },{ "username",model.Username } };
-                var callback = new System.Uri(Microsoft.AspNetCore.WebUtilities.QueryHelpers.AddQueryString("http://" + Request.Host.Host + "/Account/ResetPassword", param)).ToString();
+            var param = new Dictionary<string, string>() { { "token", token },{ "username",model.Username } };
+            var callback = new System.Uri(Microsoft.AspNetCore.WebUtilities.QueryHelpers.AddQueryString("http://" + Request.Host.Host + "/Account/ResetPassword", param)).ToString();
                 
-                string message = $"<h2>Click the link below to reset your password.</h2><br/><br/><p>{callback}</p>";
-                await _emailSender.SendEmailAsync(user.Email, "Reset Password", message);
+            string message = $"<h2>Click the link below to reset your password.</h2><br/><br/><p>{callback}</p>";
+            await _emailSender.SendEmailAsync(user.Email, "Reset Password", message);
 
-                return new ForgotPasswordResultModel() { Result = true, ResultMessage = "An email will be sent to the email address on file in the system." };
-            }
-            catch(System.Exception ex)
-            {
-                return new ForgotPasswordResultModel() { Result = false, ResultMessage = "Email could not be send."};
-            }
+            return new ForgotPasswordResultModel() { Result = true, ResultMessage = "An email will be sent to the email address on file in the system." };
         }
 
         [HttpPost("resetPassword")]
@@ -85,7 +78,7 @@ namespace LeadershipProfileAPI.Controllers
         {
             var user = await _signInManager.UserManager.FindByNameAsync(model.Username);
 
-            var result = _userManager.ResetPasswordAsync(user, model.Token, model.Newpassword).Result;
+            var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Newpassword);
 
             if(result.Succeeded == false)
             {
