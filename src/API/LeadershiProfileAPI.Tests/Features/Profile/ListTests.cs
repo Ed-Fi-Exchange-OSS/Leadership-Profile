@@ -26,5 +26,209 @@ namespace LeadershipProfileAPI.Tests.Features.Profile
             profile.StaffUniqueId.ShouldBe("1000003995");
             profile.Location.ShouldBe(null);
         }
+
+        [Fact]
+        public async Task ShouldGetProfileSortedByIdAsc()
+        {
+            var response = await Testing.Send(new List.Query
+            {
+                Page = 1,
+                SortField = "id",
+                SortBy = "asc"
+            });
+
+            var profile = response.Profiles.FirstOrDefault();
+
+            profile.ShouldNotBeNull();
+            profile.StaffUniqueId.ShouldBe("0132398");
+        }
+
+        [Fact]
+        public async Task ShouldGetProfileSortedByNameAsc()
+        {
+
+            var response = await Testing.Send(new List.Query
+            {
+                Page = 1,
+                SortField = "name",
+                SortBy = "asc"
+            });
+
+            var profile = response.Profiles.FirstOrDefault();
+
+            profile.ShouldNotBeNull();
+            profile.LastSurName.ShouldBe("Abarough");
+            profile.FirstName.ShouldBe("Evvy");
+        }
+
+        [Fact]
+        public async Task ShouldGetProfileSortedByLocationAsc()
+        {
+
+            var response = await Testing.Send(new List.Query
+            {
+                Page = 1,
+                SortField = "location",
+                SortBy = "asc"
+            });
+
+            var profile = response.Profiles.FirstOrDefault();
+
+            profile.ShouldNotBeNull();
+            profile.Location.ShouldBe("Arlington");
+        }
+
+        [Fact]
+        public async Task ShouldGetProfileSortedBySchoolAsc()
+        {
+
+            var response = await Testing.Send(new List.Query
+            {
+                Page = 1,
+                SortField = "school",
+                SortBy = "asc"
+            });
+
+            var profile = response.Profiles.FirstOrDefault();
+
+            profile.ShouldNotBeNull();
+            profile.Institution.ShouldBe("Arlington");
+        }
+
+        [Fact]
+        public async Task ShouldGetProfileSortedByYearsOfServiceAsc()
+        {
+
+            var response = await Testing.Send(new List.Query
+            {
+                Page = 1,
+                SortField = "yearsOfService",
+                SortBy = "asc"
+            });
+
+            var profile = response.Profiles.FirstOrDefault();
+
+            profile.ShouldNotBeNull();
+            profile.YearsOfService.ShouldBe(0);
+        }
+
+        [Fact]
+        public async Task ShouldGetProfileSortedByHighestDegreeAsc()
+        {
+
+            var response = await Testing.Send(new List.Query
+            {
+                Page = 1,
+                SortField = "highestDegree",
+                SortBy = "asc"
+            });
+
+            var profile = response.Profiles.FirstOrDefault();
+
+            profile.ShouldNotBeNull();
+            profile.HighestDegree.ShouldBeNull();
+        }
+
+        [Fact]
+        public async Task ShouldGetProfileSortedByIdDesc()
+        {
+            var response = await Testing.Send(new List.Query
+            {
+                Page = 1,
+                SortField = "id",
+                SortBy = "desc"
+            });
+
+            var profile = response.Profiles.FirstOrDefault();
+
+            profile.ShouldNotBeNull();
+            profile.StaffUniqueId.ShouldBe("z.montemayor-banda@lajoyaisd.net");
+        }
+
+        [Fact]
+        public async Task ShouldGetProfileSortedByNameDesc()
+        {
+
+            var response = await Testing.Send(new List.Query
+            {
+                Page = 1,
+                SortField = "name",
+                SortBy = "desc"
+            });
+
+            var profile = response.Profiles.FirstOrDefault();
+
+            profile.ShouldNotBeNull();
+            profile.LastSurName.ShouldBe("Zuniga");
+            profile.FirstName.ShouldBe("Sonia");
+        }
+
+        [Fact]
+        public async Task ShouldGetProfileSortedByLocationDesc()
+        {
+
+            var response = await Testing.Send(new List.Query
+            {
+                Page = 1,
+                SortField = "location",
+                SortBy = "desc"
+            });
+
+            var profile = response.Profiles.FirstOrDefault();
+
+            profile.ShouldNotBeNull();
+            profile.Location.ShouldBe("San Antonio");
+        }
+
+        [Fact]
+        public async Task ShouldGetProfileSortedBySchoolDesc()
+        {
+
+            var response = await Testing.Send(new List.Query
+            {
+                Page = 1,
+                SortField = "school",
+                SortBy = "desc"
+            });
+
+            var profile = response.Profiles.FirstOrDefault();
+
+            profile.ShouldNotBeNull();
+            profile.Institution.ShouldBe("VLASIN");
+        }
+
+        [Fact]
+        public async Task ShouldGetProfileSortedByYearsOfServiceDesc()
+        {
+
+            var response = await Testing.Send(new List.Query
+            {
+                Page = 1,
+                SortField = "yearsOfService",
+                SortBy = "desc"
+            });
+
+            var profile = response.Profiles.FirstOrDefault();
+
+            profile.ShouldNotBeNull();
+            profile.YearsOfService.ShouldBe(0);
+        }
+
+        [Fact]
+        public async Task ShouldGetProfileSortedByHighestDegreeDesc()
+        {
+
+            var response = await Testing.Send(new List.Query
+            {
+                Page = 1,
+                SortField = "highestDegree",
+                SortBy = "desc"
+            });
+
+            var profile = response.Profiles.FirstOrDefault();
+
+            profile.ShouldNotBeNull();
+            profile.HighestDegree.ShouldBeNull();
+        }
     }
 }

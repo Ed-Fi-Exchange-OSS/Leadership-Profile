@@ -1,17 +1,17 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using LeadershipProfileAPI.Data;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
+using System.Linq.Expressions;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using LeadershipProfileAPI.Data;
 using LeadershipProfileAPI.Data.Models;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using LeadershipProfileAPI.Extensions;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace LeadershipProfileAPI.Features.Profile
 {
@@ -36,7 +36,7 @@ namespace LeadershipProfileAPI.Features.Profile
 
         public class TeacherProfile
         {
-            [JsonPropertyName("id")] public string Id { get; set; } = Guid.NewGuid().ToString();
+            [JsonPropertyName("id")] public Guid Id { get; set; }
             [JsonPropertyName("staffUniqueId")] public string StaffUniqueId { get; set; }
             [JsonPropertyName("firstName")] public string FirstName { get; set; }
             [JsonPropertyName("middleName")] public string MiddleName { get; set; }
@@ -65,30 +65,90 @@ namespace LeadershipProfileAPI.Features.Profile
             {
                 var query = _ctx.ProfileList.AsQueryable();
                 var profiles = query.ProjectTo<TeacherProfile>(_mapper.ConfigurationProvider);
+                var isAscending = string.IsNullOrWhiteSpace(request.SortBy) || request.SortBy.Equals("asc");
+                List<Expression<Func<ProfileList, object>>> orderByExpressions = new();
 
-                TeacherProfile[] items;
-                var count = await profiles.CountAsync(cancellationToken);
-
-                if (request.Page.HasValue)
+                switch (request.SortField)
                 {
-                    items = await profiles.OrderBy(p=>p.LastSurName)
-                                          .ThenBy(p=>p.FirstName)
-                                          .Skip((request.Page.Value - 1) * PageSize)
-                                          .Take(PageSize)
-                                          .ToArrayAsync(cancellationToken);
+                    case "id":
+                        orderByExpressions.Add(o => o.StaffUniqueId);
+                        break;
+                    case "name":
+                        orderByExpressions.Add(o => o.LastSurName);
+                        orderByExpressions.Add(o => o.FirstName);
+                        break;
+                    case "location":
+                        if (isAscending)
+                        {
+                            // Push any null values to the end of the collection
+                            orderByExpressions.Add(o => string.IsNullOrEmpty(o.Location));
+                        }
+                        orderByExpressions.Add(o => o.Location);
+                        break;
+                    case "school":
+                        if (isAscending)
+                        {
+                            // Push any null values to the end of the collection
+                            orderByExpressions.Add(o => string.IsNullOrEmpty(o.Institution));
+                        }
+                        orderByExpressions.Add(o => o.Institution);
+                        break;
+                    case "position":
+                        if (isAscending)
+                        {
+                            // Push any null values to the end of the collection
+                            orderByExpressions.Add(o => string.IsNullOrEmpty(o.Position));
+                        }
+                        orderByExpressions.Add(o => o.Position);
+                        break;
+                    case "yearsOfService":
+                        orderByExpressions.Add(o => o.YearsOfService);
+                        break;
+                    case "highestDegree":
+                        if (isAscending)
+                        {
+                            // Push any null values to the end of the collection
+                            orderByExpressions.Add(o => string.IsNullOrEmpty(o.HighestDegree));
+                        }
+                        orderByExpressions.Add(o => o.HighestDegree);
+                        break;
+                    case "major":
+                        if (isAscending)
+                        {
+                            // Push any null values to the end of the collection
+                            orderByExpressions.Add(o => string.IsNullOrEmpty(o.Major));
+                        }
+                        orderByExpressions.Add(o => o.Major);
+                        break;
+                    default:
+                        orderByExpressions.Add(o => o.LastSurName);
+                        orderByExpressions.Add(o => o.FirstName);
+                        break;
+                }
+
+                if (isAscending)
+                {
+                    // Build query
+                    query = query.OrderBy(orderByExpressions);
                 }
                 else
                 {
-                    items = await profiles.OrderBy(p => p.LastSurName)
-                                          .ThenBy(p => p.FirstName)
-                                          .ToArrayAsync(cancellationToken);
+                    // Build query
+                    query = query.OrderByDescending(orderByExpressions);
                 }
+
+                // Project to desired object
+                var results = query
+                    .ProjectTo<TeacherProfile>(_mapper.ConfigurationProvider);
 
                 return new Response()
                 {
-                    TotalCount = count,
+                    TotalCount = await _ctx.ProfileList.CountAsync(cancellationToken),
                     Page = request.Page,
-                    Profiles = items
+                    Profiles = await results
+                        .Skip((request.Page.Value - 1) * PageSize)
+                        .Take(PageSize)
+                        .ToListAsync(cancellationToken)
                 };
             }
         }

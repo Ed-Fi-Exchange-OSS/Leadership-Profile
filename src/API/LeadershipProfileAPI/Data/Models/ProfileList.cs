@@ -7,6 +7,7 @@ namespace LeadershipProfileAPI.Data.Models
 {
     public class ProfileList
     {
+        public Guid Id { get; set; }
         public int StaffUsi { get; set; }
         public string StaffUniqueId { get; set; }
         public string FirstName { get; set; }

@@ -58,19 +58,21 @@ const CreateTableList = (props) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {data !== [] ? data.map(profile => (
-                        <tr key={profile.staffUniqueId}>
-                            <td><span className="dot"></span></td>
-                            <td>{profile.staffUniqueId}</td>
-                            <td>{profile.lastSurname}, {profile.firstName}</td>
-                            <td>{profile.location}</td>
-                            <td>{profile.institution}</td>
-                            <td>Teacher</td>
-                            <td>{profile.yearsOfService}</td>
-                            <td>{profile.highestDegree}</td>
-                            <td>{profile.major}</td>
-                            <td className="profile-table-row"><Link to={`profile/${profile.staffUniqueId}`}><RightPointingIcon /></Link></td>
-                        </tr>)) : ''}
+                    {data !== [] ? 
+                        data.map(profile => (
+                            <tr key={profile.id}>
+                                <td><span className="dot"></span></td>
+                                <td>{profile.staffUniqueId}</td>
+                                <td>{profile.lastSurname}, {profile.firstName}</td>
+                                <td>{profile.location}</td>
+                                <td>{profile.institution}</td>
+                                <td>Teacher</td>
+                                <td>{profile.yearsOfService}</td>
+                                <td>{profile.highestDegree}</td>
+                                <td>{profile.major}</td>
+                                <td className="profile-table-row"><Link to={`profile/${profile.staffUniqueId}`}><RightPointingIcon /></Link></td>
+                            </tr>)) : 
+                            ''}
                         <tr className="bottom-row">
                             <td colSpan="8">
                                 <span>Showing {paging.page}-10 of {paging.totalSize} Users</span>
