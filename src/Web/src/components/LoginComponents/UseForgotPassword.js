@@ -5,8 +5,8 @@ import config from '../../config';
 
 function UseForgotPassword() {
     const history = useHistory();
-    const [staffuniqueid, setstaffuniqueid] = useState('');
-    const [username, setUsername] = useState('');
+    const [staffUniqueId, setStaffUniqueId] = useState('');
+    const [userName, setUserName] = useState('');
     const { API_URL, API_CONFIG } = config();
     const [error, setError] = useState({
         hasError: false,
@@ -16,7 +16,7 @@ function UseForgotPassword() {
         isSuccess: false,
         message: ""
     });
-    	
+
 	function goToLogIn() { 
 		let path = '/account/Login';
 		history.push(path);
@@ -24,13 +24,13 @@ function UseForgotPassword() {
 	}
 	
 	function setForgotPassword(e){
-		if (staffuniqueid !== '' && username !== '') {
+		if (staffUniqueId !== '' && userName !== '') {
 			const apiUrl = new URL('/account/forgotPassword', API_URL);
 			
             fetch(apiUrl, API_CONFIG(
                 'POST', JSON.stringify({
-                        'username': username,
-                        'staffUniqueId': staffuniqueid
+                        'userName': userName,
+                        'staffUniqueId': staffUniqueId
                     })
                 )
             ).then(response => response.json())
@@ -71,11 +71,11 @@ function UseForgotPassword() {
         bind: {
             onChange: event => {
                 switch (event.target.name) {
-                    case 'username':
-                        setUsername(event.target.value);
+                    case 'userName':
+                        setUserName(event.target.value);
                         break;
-                    case 'staffuniqueid':
-                        setstaffuniqueid(event.target.value);
+                    case 'staffUniqueId':
+                        setStaffUniqueId(event.target.value);
                         break;
                     default:
                         console.error('No matching elements');

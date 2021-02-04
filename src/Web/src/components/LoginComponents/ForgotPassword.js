@@ -21,12 +21,12 @@ const ForgotPassword = () => {
                 <CardTitle tag="h5">Forgot Password</CardTitle>
                 <Form onSubmit={e => handleOnSubmit(e)}>
                     <FormGroup className="mb-2 mr-sm-2 mb-sm-0 login-input">
-                        <Label for="staffuniqueid" className="mr-sm-2">Staff Unique ID</Label>
-                        <Input type="staffuniqueid" name="staffuniqueid" id="staffuniqueid" placeholder="Staffuniqueid" {...bind} />
+                        <Label for="staffUniqueId" className="mr-sm-2">Staff Unique ID</Label>
+                        <Input type="staffUniqueId" name="staffUniqueId" id="staffUniqueId" placeholder="Staff Unique Id" {...bind} />
                     </FormGroup>
                     <FormGroup className="mb-2 mr-sm-2 mb-sm-0 login-input">
-                        <Label for="username" className="mr-sm-2">Username</Label>
-                        <Input type="username" name="username" id="username" placeholder="Username" {...bind} />
+                        <Label for="userName" className="mr-sm-2">Username</Label>
+                        <Input type="userName" name="userName" id="userName" placeholder="Username" {...bind} />
                     </FormGroup>
                     {error.hasError ? 
                     <Alert color="danger">

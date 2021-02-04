@@ -8,7 +8,6 @@ function UseRegistration() {
     const history = useHistory();
     const { loginAuth } = AuthService()
     const { API_URL, API_CONFIG } = config();
-
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');

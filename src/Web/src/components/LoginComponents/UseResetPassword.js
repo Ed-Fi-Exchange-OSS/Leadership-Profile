@@ -5,12 +5,12 @@ import config from '../../config';
 
 function UseResetPassword() {
 	const history = useHistory();	
-    const [newpassword, setnewpassword] = useState('');
-    const [confirmpassword, setconfirmpassword] = useState('');
+    const [newPassword, setnewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const { API_URL, API_CONFIG } = config();
-    const [resetpasswowrdInfo, setresetpasswowrdInfo] = useState({
-        newpassword: newpassword,
-        confirmpassword: setconfirmpassword
+    const [resetPasswordInfo, setResetPasswordInfo] = useState({
+        newPassword: newPassword,
+        confirmPassword: setConfirmPassword
     });
     const [error, setError] = useState({
         hasError: false,
@@ -24,7 +24,7 @@ function UseResetPassword() {
     const searchableUrl = useRef(new URL(url));
 	
     useEffect(() => {
-        if (newpassword === confirmpassword) {
+        if (newPassword === confirmPassword) {
             setError({
                 hasError: false,
                 message: ''
@@ -34,9 +34,9 @@ function UseResetPassword() {
                 isSuccess: false,
                 message: ""
             });
-            setresetpasswowrdInfo({
-                newpassword: newpassword,
-                confirmpassword: confirmpassword,
+            setResetPasswordInfo({
+                newPassword: newPassword,
+                confirmPassword: confirmPassword,
             });
         } else {
             setError({
@@ -49,16 +49,16 @@ function UseResetPassword() {
                 message: ""
             });
         }
-    }, [newpassword, confirmpassword]);
+    }, [newPassword, confirmPassword]);
 
 	function setResetPassword(e){
-		if (newpassword !== '' && confirmpassword !== '') {
+		if (newPassword !== '' && confirmPassword !== '') {
 			const apiUrl = new URL('/account/resetPassword', API_URL);
             
             fetch(apiUrl, API_CONFIG(
                 'POST', JSON.stringify({
                         'username': searchableUrl.current.searchParams.get('username'),
-                        'newpassword': newpassword,
+                        'newPassword': newPassword,
                         'token': searchableUrl.current.searchParams.get('token')
                     })
                 ) 
@@ -104,14 +104,14 @@ function UseResetPassword() {
 	return {
 		setResetPassword,
 		bind: {
-            resetpasswowrdInfo,
+            resetPasswordInfo,
             onChange: event => {
                 switch (event.target.name) {
-                    case 'newpassword':
-                        setnewpassword(event.target.value);
+                    case 'newPassword':
+                        setnewPassword(event.target.value);
                         break;
-                    case 'confirmpassword':
-                        setconfirmpassword(event.target.value);
+                    case 'confirmPassword':
+                        setConfirmPassword(event.target.value);
                         break;
                     default:
                         console.error('No matching elements');
