@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
@@ -64,13 +65,13 @@ namespace LeadershipProfileAPI.Controllers
             // Generate token and reset link
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-            var param = new Dictionary<string, string>() { { "token", token },{ "username",model.Username } };
-            var callback = new System.Uri(Microsoft.AspNetCore.WebUtilities.QueryHelpers.AddQueryString("http://" + Request.Host.Host + "/Account/ResetPassword", param)).ToString();
+            var resetPasswordQueryString = new Dictionary<string, string> { { "token", token },{ "username",model.Username } };
+            var callback = new Uri(Microsoft.AspNetCore.WebUtilities.QueryHelpers.AddQueryString("http://" + Request.Host.Host + "/Account/ResetPassword", resetPasswordQueryString)).ToString();
                 
-            string message = $"<h2>Click the link below to reset your password.</h2><br/><br/><p>{callback}</p>";
+            var message = $"<h2>Click the link below to reset your password.</h2><br/><br/><p>{callback}</p>";
             await _emailSender.SendEmailAsync(user.Email, "Reset Password", message);
 
-            return new ForgotPasswordResultModel() { Result = true, ResultMessage = "An email will be sent to the email address on file in the system." };
+            return new ForgotPasswordResultModel { Result = true, ResultMessage = "An email will be sent to the email address on file in the system." };
         }
 
         [HttpPost("resetPassword")]
@@ -78,14 +79,11 @@ namespace LeadershipProfileAPI.Controllers
         {
             var user = await _signInManager.UserManager.FindByNameAsync(model.Username);
 
-            var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Newpassword);
+            var result = await _userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
 
-            if(result.Succeeded == false)
-            {
-                return new ResetPasswordResultModel() { Result = false, ResultMessage = "Reset password failed." };
-            }
-
-            return new ResetPasswordResultModel() { Result = true, ResultMessage = "Password changed." };
+            return result.Succeeded
+                ? new ResetPasswordResultModel {Result = true, ResultMessage = "Password changed."}
+                : new ResetPasswordResultModel {Result = false, ResultMessage = "Reset password failed."};
         }
 
         [HttpPost("register")]
@@ -232,7 +230,7 @@ namespace LeadershipProfileAPI.Controllers
         [Required]
         public string Username { get; set; }
         [Required]
-        public string Newpassword { get; set; }
+        public string NewPassword { get; set; }
         [Required]
         public string Token { get; set; }
     }
