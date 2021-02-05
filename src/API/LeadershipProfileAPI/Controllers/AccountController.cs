@@ -85,6 +85,7 @@ namespace LeadershipProfileAPI.Controllers
                 ? new ResetPasswordResultModel { Result = true, ResultMessage = "Password changed." }
                 : new ResetPasswordResultModel { Result = false, ResultMessage = "Reset password failed." };
         }
+
         [HttpPost("register")]
         public async Task<LoginResultModel> Register(RegisterModel model)
         {
