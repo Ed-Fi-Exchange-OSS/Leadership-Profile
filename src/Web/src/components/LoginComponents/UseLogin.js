@@ -23,24 +23,22 @@ function UseLogin() {
         });
     }, [username, password]);
 
-	function goToForgotPassword() { 
-		let path = '/account/ForgotPassword';
-		history.push(path);
-		history.go(0);
+    function goToForgotPassword() {
+        let path = '/account/ForgotPassword';
+        history.push(path);
+        history.go(0);
     }
-    
+
     function setLogin(e) {
         if (password !== '' && username !== '') {
             let unmounted = false;
             const apiUrl = new URL('/account/login', API_URL);
             fetch(apiUrl, API_CONFIG(
-                    'POST', JSON.stringify({
-                        'username': username,
-                        'password': password,
-                    })
-                )
-            ).then(response => response.json()
-            ).then((response) => {
+                'POST', JSON.stringify({
+                    'username': username,
+                    'password': password,
+                })
+            )).then(response => response.json()).then((response) => {
                 if (!unmounted && response.result) {
                     setError(false);
                     loginAuth(username);
@@ -61,7 +59,7 @@ function UseLogin() {
 
     return {
         setLogin,
-		goToForgotPassword,
+        goToForgotPassword,
         bind: {
             logininfo,
             onChange: event => {

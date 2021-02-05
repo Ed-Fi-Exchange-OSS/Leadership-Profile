@@ -148,7 +148,7 @@ namespace LeadershipProfileAPI
                 .AddDeveloperSigningCredential();
 
             services.Configure<DataProtectionTokenProviderOptions>(opt =>
-                opt.TokenLifespan = TimeSpan.FromHours(Convert.ToDouble(Environment.GetEnvironmentVariable("ForgotPasswordTokenLifeSpan")))
+                opt.TokenLifespan = TimeSpan.FromHours(Convert.ToDouble(Environment.GetEnvironmentVariable("ForgotPasswordTokenLifeSpanHours")))
             );
 
             services.ConfigureApplicationCookie(options =>

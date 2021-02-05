@@ -3,18 +3,18 @@ import { Form, FormGroup, Label, Input, Card, CardBody, CardTitle, Alert } from 
 import UseLogin from './UseLogin';
 
 const Login = () => {
-    const {setLogin, goToForgotPassword, bind, error} = UseLogin();
+    const { setLogin, goToForgotPassword, bind, error } = UseLogin();
 
     const handleOnSubmit = (e) => {
         e.preventDefault();
         setLogin(e);
     };
 
-	const handleOnClick = (e) => {
-		e.preventDefault();
+    const handleOnClick = (e) => {
+        e.preventDefault();
         goToForgotPassword();
-	};
-	
+    };
+
     return (
         <Card className="login-card">
             <CardBody>
