@@ -17,7 +17,7 @@ namespace LeadershipProfileAPI.Features.Profile
 {
     public static class List
     {
-        public class Query : IRequest<Response>
+        public class Query : IRequest<Response> 
         {
             public int? Page { get; set; }
             public string SortField { get; set; }
