@@ -129,8 +129,7 @@ namespace LeadershipProfileAPI.Controllers
             // await _signInManager.SignInAsync(user, false).ConfigureAwait(false);
             await Login(new LoginInputModel {Username = user.UserName, Password = model.Password});
             
-            return new LoginResultModel {Result = true};
-        
+            return new LoginResultModel {Result = true};        
         }
 
         [HttpPost("login")]
