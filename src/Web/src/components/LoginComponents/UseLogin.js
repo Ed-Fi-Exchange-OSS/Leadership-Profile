@@ -24,12 +24,6 @@ function UseLogin() {
         })
     }, [username, password]);
 
-    function goToForgotPassword() {
-        let path = '/account/ForgotPassword';
-        history.push(path);
-        history.go(0);
-    }
-
     function setLogin(e) {
         if (password !== '' && username !== '') {
             let unmounted = false;
@@ -59,7 +53,6 @@ function UseLogin() {
 
     return {
         setLogin,
-        goToForgotPassword,
         bind: {
             logininfo,
             onChange: event => {

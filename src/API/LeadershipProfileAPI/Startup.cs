@@ -138,7 +138,7 @@ namespace LeadershipProfileAPI
 
             });
 
-            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<EdFiIdentityDbContext>().AddDefaultTokenProviders();
+            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<EdFiIdentityDbContext>();
 
             services.AddIdentityServer()
                 .AddInMemoryClients(IdentityConfig.GetClient(redirectUri, new List<string> { authorityServer, webClient }))
@@ -146,10 +146,6 @@ namespace LeadershipProfileAPI
                 .AddInMemoryApiScopes(IdentityConfig.ApiScopes)
                 .AddAspNetIdentity<IdentityUser>()
                 .AddDeveloperSigningCredential();
-            
-            services.Configure<DataProtectionTokenProviderOptions>(opt =>
-                opt.TokenLifespan = TimeSpan.FromHours(Convert.ToDouble(Environment.GetEnvironmentVariable("ForgotPasswordTokenLifeSpanHours")))
-            );
 
             services.ConfigureApplicationCookie(options =>
             {

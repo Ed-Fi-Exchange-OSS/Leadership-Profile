@@ -3,16 +3,11 @@ import { Form, FormGroup, Label, Input, Card, CardBody, CardTitle, Alert } from 
 import UseLogin from './UseLogin';
 
 const Login = () => {
-    const {setLogin, goToForgotPassword, bind, error} = UseLogin();
+    const {setLogin, bind, error} = UseLogin();
 
     const handleOnSubmit = (e) => {
         e.preventDefault();
         setLogin(e);
-    };
-
-    const handleOnClick = (e) => {
-        e.preventDefault();
-        goToForgotPassword();
     };
 
     return (
@@ -34,7 +29,6 @@ const Login = () => {
                 </Alert>
                 : <div></div>}
                 <Input type="submit" value="Submit" className="login-submit" />
-                <a href="#"className="login-submit" onClick={e => handleOnClick(e)}>Forgot Password?</a>
             </Form>
             </CardBody>
         </Card>
