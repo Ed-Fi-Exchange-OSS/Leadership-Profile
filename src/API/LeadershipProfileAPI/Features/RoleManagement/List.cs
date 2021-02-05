@@ -78,7 +78,11 @@ namespace LeadershipProfileAPI.Features.RoleManagement
                         Location = t.Location,
                         Username = s.TpdmUsername,
                     }).OrderBy(p => p.LastSurName)
-                    .ThenBy(p => p.FirstName)
+                    .ThenBy(p => p.FirstName).ToList();
+
+                var totalCount = staff.Count;
+
+                staff = staff.AsEnumerable()
                     .Skip((page - 1) * PageSize)
                     .Take(PageSize)
                     .AsEnumerable()
@@ -94,12 +98,11 @@ namespace LeadershipProfileAPI.Features.RoleManagement
                         }
                         x.Admin = claims.Any(y => y.Value == "Admin");
                         return x;
-                    }).Select(x => x.GetAwaiter().GetResult())
-                    .ToList();
+                    }).Select(x => x.GetAwaiter().GetResult()).ToList();
 
                 return new Response
                 {
-                    TotalCount = staff.Count,
+                    TotalCount = totalCount,
                     Page = request.Page,
                     Profiles = staff
                 };
