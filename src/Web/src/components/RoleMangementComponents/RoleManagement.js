@@ -5,7 +5,7 @@ import PaginationButtons from '../DirectoryComponents/PaginationButtons';
 import UseRoleManagement from './UseRoleManagement';
 
 const RoleManagement = () => {
-    const { data, bind } = UseRoleManagement();
+    const { data, paging, setPaging, OnSubmit, bind } = UseRoleManagement();
 
     return (
         <div>
@@ -18,7 +18,6 @@ const RoleManagement = () => {
                         <th>Username</th>
                         <th>Location</th>
                     </tr>
-                    {console.log(data.profiles !== undefined)}
                     {data.profiles !== undefined && data.profiles !== [] ? data.profiles.map(profile => (
                         <tr key={profile.staffUniqueId}>
                             <td>
@@ -33,7 +32,7 @@ const RoleManagement = () => {
                         </tr>
                     )) : ''}
                 </Table>
-                <Button>Save</Button>
+                <Button onClick={event => OnSubmit(event)}>Save</Button>
             </Form>
             {/* <PaginationButtons paging={paging} setPage={setPage} /> */}
         </div>

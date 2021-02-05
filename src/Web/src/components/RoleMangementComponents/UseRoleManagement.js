@@ -26,43 +26,74 @@ function UseRoleManagement() {
             }       
         }).catch((error) => {
             setError(true);
-            console.error(true);
+            console.error(error);
         });
         return () => {
             unmounted = true;
         };
     }, [paging]);
 
+    //
     function OnAddClick(event) {
         const staffUniqueId = event.target.value;
         const indexOnRemoveList = removeRoleList.indexOf(staffUniqueId);
-        if (removeRoleList.length > 0 && indexOnRemoveList > -1) {
-            setRemoveRoleList(removeRoleList.splice(indexOnRemoveList, 1));
-        } else {
+        // if (removeRoleList.length > 0 && indexOnRemoveList > -1) {
+        //     console.log(removeRoleList.splice(indexOnRemoveList, 1))
+        //     setRemoveRoleList(removeRoleList.splice(indexOnRemoveList, 1));
+        // } else {
             setAddRoleList([...addRoleList, staffUniqueId]);
-        }
+        // }
     }
 
     function OnRemoveClick(event) {
         const staffUniqueId = event.target.value;
         const indexOnAddList = addRoleList.indexOf(staffUniqueId);
-        if (addRoleList.length > 0 && indexOnAddList > -1) {
-            setAddRoleList(addRoleList.splice(indexOnAddList, 1));
-        } else {
+        // if (addRoleList.length > 0 && indexOnAddList > -1) {
+        //     console.log(addRoleList.splice(indexOnAddList, 1))
+        //     setAddRoleList(addRoleList.splice(indexOnAddList, 1));
+        // } else {
             setRemoveRoleList([...removeRoleList, staffUniqueId]);
-        }
+        // }
     }
 
-    function OnSubmit() {
-        
+    async function OnSubmit(event) {
+        event.preventDefault();
+        const addPromise = await AddAdminRoles();
+        const removePromise = await RemoveAdminRoles();
+        Promise.all([addPromise, removePromise])
+        .then(results => console.log(results));
     }
      
     function AddAdminRoles() {
-
+        let unmounted = false;
+        const apiUrl = new URL('/RoleManagement/add-admin', API_URL);
+        fetch(apiUrl, API_CONFIG('POST', JSON.stringify({staffUniqueIds: addRoleList}))
+        ).then(response => response.json())
+        .then((response) => {
+            console.log(response);   
+        }).catch((error) => {
+            setError(true);
+            console.error(error);
+        });
+        return () => {
+            unmounted = true;
+        };
     }
 
     function RemoveAdminRoles() {
-
+        let unmounted = false;
+        const apiUrl = new URL('/RoleManagement/remove-admin', API_URL);
+        fetch(apiUrl, API_CONFIG('POST', JSON.stringify({staffUniqueIds: removeRoleList}))
+        ).then(response => response.json())
+        .then((response) => {
+            console.log(response);   
+        }).catch((error) => {
+            setError(true);
+            console.error(error);
+        });
+        return () => {
+            unmounted = true;
+        };
     }
 
     return {
@@ -73,7 +104,6 @@ function UseRoleManagement() {
         bind: {
             addRoleList,
             onClick: event => {
-                console.log(event.target);
                 switch (event.target.checked) {
                     case true:
                         OnAddClick(event);
