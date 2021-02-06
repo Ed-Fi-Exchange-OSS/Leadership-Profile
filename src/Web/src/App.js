@@ -32,7 +32,7 @@ function App() {
             </Route>
             <PrivateRoute exact path="/:searchParams" isAuthenticated={authenticated} component={Directory} />
             <PrivateRoute path="/profile/:id" isAuthenticated={authenticated} component={Profile} />
-            <PrivateRoute path="/admin/manage-roles" isAuthenticated={authenticated} component={RoleManagement} /> {/* add isAdmin to auth */}
+            <PrivateRoute path="/admin/:searchParams" isAuthenticated={authenticated} component={RoleManagement} /> {/* add isAdmin to auth */}
             <Route exact path="/account/register" component={Registration} />
           </div>
         </React.Fragment>

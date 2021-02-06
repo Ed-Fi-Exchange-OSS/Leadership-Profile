@@ -28,7 +28,7 @@ namespace LeadershipProfileAPI.Features.RoleManagement
         }
 
         [HttpGet("list")]
-        [Authorize]
+        [Authorize(Roles = "Admin")] //make constant
         public async Task<ActionResult> List([FromQuery] List.Query query)
         {
             var result = await _mediator.Send(query);
@@ -42,7 +42,7 @@ namespace LeadershipProfileAPI.Features.RoleManagement
         } 
 
         [HttpPost("add-admin")]
-        [Authorize]
+        [Authorize(Roles = "Admin")] //make constant
         public async Task<ActionResult> AddAdminRole(Admin.AddRequest request)
         {
             var result = await _mediator.Send(request);
@@ -55,8 +55,8 @@ namespace LeadershipProfileAPI.Features.RoleManagement
             return Ok(result);
         }
 
-        [HttpPost("remove-admin")]
-        [Authorize]
+        [HttpDelete("remove-admin")]
+        [Authorize(Roles = "Admin")] //make constant
         public async Task<ActionResult> RemoveAdminRole(Admin.RemoveRequest request)
         {
             var result = await _mediator.Send(request);

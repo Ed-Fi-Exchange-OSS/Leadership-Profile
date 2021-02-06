@@ -1,14 +1,17 @@
-import { Tab } from 'bootstrap';
-import React, { useState } from 'react';
-import { Table, Button, Form, FormGroup, Input } from 'reactstrap';
+import React from 'react';
+import { Table, Button, Form, FormGroup, Input, Alert } from 'reactstrap';
 import PaginationButtons from '../DirectoryComponents/PaginationButtons';
 import UseRoleManagement from './UseRoleManagement';
 
 const RoleManagement = () => {
-    const { data, paging, setPaging, OnSubmit, bind } = UseRoleManagement();
-
+    const { data, paging, SetPage, OnSubmit, error, bind } = UseRoleManagement();
     return (
         <div>
+            {error ?
+                <Alert color="danger">
+                    Unable to load data.
+                </Alert>
+                : ''}
             <Form>
                 <Table>
                     <tr>
@@ -19,7 +22,7 @@ const RoleManagement = () => {
                         <th>Location</th>
                     </tr>
                     {data.profiles !== undefined && data.profiles !== [] ? data.profiles.map(profile => (
-                        <tr key={profile.staffUniqueId}>
+                        <tr key={profile.id}>
                             <td>
                                 <FormGroup>
                                     <Input type="checkbox" defaultChecked={profile.admin} value={profile.staffUniqueId} {...bind} />
@@ -31,10 +34,16 @@ const RoleManagement = () => {
                             <td>{profile.location}</td>
                         </tr>
                     )) : ''}
+                    <tr className="bottom-row">
+                        <td colSpan="4">
+                            <Button onClick={event => OnSubmit(event)}>Save</Button>
+                        </td>
+                        <td colSpan="1" className="pagination-buttons-container">
+                            <PaginationButtons paging={paging} setPage={SetPage} />
+                        </td>
+                    </tr>
                 </Table>
-                <Button onClick={event => OnSubmit(event)}>Save</Button>
             </Form>
-            {/* <PaginationButtons paging={paging} setPage={setPage} /> */}
         </div>
     );
 };

@@ -47,18 +47,13 @@ namespace LeadershipProfileAPI.Features.RoleManagement
             private readonly EdFiDbContext _ctx;
             private readonly IMapper _mapper;
             private readonly UserManager<IdentityUser> _userManager;
-            private const int PageSize = 10;
+            private const int PageSize = 2;
 
             public QueryHandler(EdFiDbContext ctx, IMapper mapper, UserManager<IdentityUser> userManager)
             {
                 _ctx = ctx;
                 _mapper = mapper;
                 _userManager = userManager;
-            }
-
-            private static void SetAdminStatus(TeacherRoleProfile profile, bool hasAdminClaim)
-            {
-                profile.Admin = hasAdminClaim;
             }
 
             public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
@@ -77,7 +72,8 @@ namespace LeadershipProfileAPI.Features.RoleManagement
                         FullName = t.FullName,
                         Location = t.Location,
                         Username = s.TpdmUsername,
-                    }).OrderBy(p => p.LastSurName)
+                    })
+                    .OrderBy(p => p.LastSurName)
                     .ThenBy(p => p.FirstName).ToList();
 
                 var totalCount = staff.Count;
