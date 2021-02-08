@@ -14,6 +14,8 @@ import Directory from './components/DirectoryComponents/Directory';
 import Profile from './components/ProfileComponents/Profile';
 import Registration from './components/LoginComponents/Registration';
 import AuthService from './utils/auth-service';
+import ForgotPassword from './components/LoginComponents/ForgotPassword';
+import ResetPassword from './components/LoginComponents/ResetPassword';
 
 function App() {
   const { isAuthenticated } = AuthService()
@@ -31,7 +33,9 @@ function App() {
             </Route>
             <PrivateRoute exact path="/:searchParams" isAuthenticated={authenticated} component={Directory} />
             <PrivateRoute path="/profile/:id" isAuthenticated={authenticated} component={Profile} />
-            <Route exact path="/account/register" component={Registration} />
+            <Route exact path="/account/register" component={Registration} />            
+            <Route exact path="/account/forgotpassword" component={ForgotPassword} />
+            <Route exact path="/account/resetpassword" component={ResetPassword} />
           </div>
         </React.Fragment>
       </Router>
