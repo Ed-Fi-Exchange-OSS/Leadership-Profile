@@ -69,6 +69,7 @@ namespace LeadershipProfileAPI.Controllers
             var callback = new Uri(Microsoft.AspNetCore.WebUtilities.QueryHelpers.AddQueryString("http://" + Request.Host.Host + "/Account/ResetPassword", resetPasswordQueryString)).ToString();
 
             var message = $"<h2>Click the link below to reset your password.</h2><br/><br/><p>{callback}</p>";
+
             await _emailSender.SendEmailAsync(user.Email, "Reset Password", message);
 
             return new ForgotPasswordResultModel { Result = true, ResultMessage = "An email will be sent to the email address on file in the system." };
