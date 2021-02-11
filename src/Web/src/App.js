@@ -15,6 +15,8 @@ import Profile from './components/ProfileComponents/Profile';
 import Registration from './components/LoginComponents/Registration';
 import AuthService from './utils/auth-service';
 import RoleManagement from './components/RoleMangementComponents/RoleManagement';
+import ForgotPassword from './components/LoginComponents/ForgotPassword';
+import ResetPassword from './components/LoginComponents/ResetPassword';
 
 function App() {
   const { isAuthenticated } = AuthService()
@@ -34,6 +36,9 @@ function App() {
             <PrivateRoute path="/profile/:id" isAuthenticated={authenticated} component={Profile} />
             <PrivateRoute path="/admin/:searchParams" isAuthenticated={authenticated} component={RoleManagement} /> {/* add isAdmin to auth */}
             <Route exact path="/account/register" component={Registration} />
+            <Route exact path="/account/register" component={Registration} />            
+            <Route exact path="/account/forgotpassword" component={ForgotPassword} />
+            <Route exact path="/account/resetpassword" component={ResetPassword} />
           </div>
         </React.Fragment>
       </Router>
