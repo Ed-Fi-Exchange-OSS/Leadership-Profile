@@ -17,7 +17,7 @@ namespace LeadershipProfileAPI.Features.Profile
 {
     public static class List
     {
-        public class Query : IRequest<Response> 
+        public class Query : IRequest<Response>
         {
             public int? Page { get; set; }
             public string SortField { get; set; }
@@ -28,6 +28,8 @@ namespace LeadershipProfileAPI.Features.Profile
         public class Response
         {
             public int TotalCount { get; set; }
+
+            public int PageCount { get; set; }
 
             public IList<TeacherProfile> Profiles { get; set; }
 
@@ -53,102 +55,28 @@ namespace LeadershipProfileAPI.Features.Profile
         {
             private readonly EdFiDbContext _ctx;
             private readonly IMapper _mapper;
-            private const int PageSize = 10;
+            private readonly EdFiDbQueryData _dbQueryData;
 
-            public QueryHandler(EdFiDbContext ctx, IMapper mapper)
+            public QueryHandler(
+                EdFiDbContext ctx, 
+                IMapper mapper,
+                EdFiDbQueryData dbQueryData)
             {
                 _ctx = ctx;
                 _mapper = mapper;
+                _dbQueryData = dbQueryData;
             }
 
             public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
             {
-                var query = _ctx.ProfileList.AsQueryable();
-                var profiles = query.ProjectTo<TeacherProfile>(_mapper.ConfigurationProvider);
-                var isAscending = string.IsNullOrWhiteSpace(request.SortBy) || request.SortBy.Equals("asc");
-                List<Expression<Func<ProfileList, object>>> orderByExpressions = new();
-
-                switch (request.SortField)
-                {
-                    case "id":
-                        orderByExpressions.Add(o => o.StaffUniqueId);
-                        break;
-                    case "name":
-                        orderByExpressions.Add(o => o.LastSurName);
-                        orderByExpressions.Add(o => o.FirstName);
-                        break;
-                    case "location":
-                        if (isAscending)
-                        {
-                            // Push any null values to the end of the collection
-                            orderByExpressions.Add(o => string.IsNullOrEmpty(o.Location));
-                        }
-                        orderByExpressions.Add(o => o.Location);
-                        break;
-                    case "school":
-                        if (isAscending)
-                        {
-                            // Push any null values to the end of the collection
-                            orderByExpressions.Add(o => string.IsNullOrEmpty(o.Institution));
-                        }
-                        orderByExpressions.Add(o => o.Institution);
-                        break;
-                    case "position":
-                        if (isAscending)
-                        {
-                            // Push any null values to the end of the collection
-                            orderByExpressions.Add(o => string.IsNullOrEmpty(o.Position));
-                        }
-                        orderByExpressions.Add(o => o.Position);
-                        break;
-                    case "yearsOfService":
-                        orderByExpressions.Add(o => o.YearsOfService);
-                        break;
-                    case "highestDegree":
-                        if (isAscending)
-                        {
-                            // Push any null values to the end of the collection
-                            orderByExpressions.Add(o => string.IsNullOrEmpty(o.HighestDegree));
-                        }
-                        orderByExpressions.Add(o => o.HighestDegree);
-                        break;
-                    case "major":
-                        if (isAscending)
-                        {
-                            // Push any null values to the end of the collection
-                            orderByExpressions.Add(o => string.IsNullOrEmpty(o.Major));
-                        }
-                        orderByExpressions.Add(o => o.Major);
-                        break;
-                    default:
-                        orderByExpressions.Add(o => o.LastSurName);
-                        orderByExpressions.Add(o => o.FirstName);
-                        break;
-                }
-
-                if (isAscending)
-                {
-                    // Build query
-                    query = query.OrderBy(orderByExpressions);
-                }
-                else
-                {
-                    // Build query
-                    query = query.OrderByDescending(orderByExpressions);
-                }
-
-                // Project to desired object
-                var results = query
-                    .ProjectTo<TeacherProfile>(_mapper.ConfigurationProvider);
+                var list = _dbQueryData.GetProfileList(request.SortBy, request.SortField, request.Page ?? 1);
 
                 return new Response()
                 {
                     TotalCount = await _ctx.ProfileList.CountAsync(cancellationToken),
                     Page = request.Page,
-                    Profiles = await results
-                        .Skip((request.Page.Value - 1) * PageSize)
-                        .Take(PageSize)
-                        .ToListAsync(cancellationToken)
+                    Profiles = await list.ProjectTo<TeacherProfile>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken),
+                    PageCount = await list.CountAsync(cancellationToken: cancellationToken)
                 };
             }
         }
