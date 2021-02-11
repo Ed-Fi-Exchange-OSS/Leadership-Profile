@@ -69,7 +69,7 @@ namespace LeadershipProfileAPI.Features.Profile
 
             public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
             {
-                var list = _dbQueryData.GetProfileList(request.SortBy, request.SortField, request.Page ?? 1);
+                var list = _dbQueryData.GetProfileList(request.SortBy ?? "asc", request.SortField ?? "id", request.Page ?? 1);
 
                 return new Response()
                 {
