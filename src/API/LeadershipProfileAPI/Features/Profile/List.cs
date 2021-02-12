@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using LeadershipProfileAPI.Data;
-using LeadershipProfileAPI.Data.Models;
-using LeadershipProfileAPI.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -54,11 +50,11 @@ namespace LeadershipProfileAPI.Features.Profile
         public class QueryHandler : IRequestHandler<Query, Response>
         {
             private readonly EdFiDbContext _ctx;
-            private readonly IMapper _mapper;
             private readonly EdFiDbQueryData _dbQueryData;
+            private readonly IMapper _mapper;
 
             public QueryHandler(
-                EdFiDbContext ctx, 
+                EdFiDbContext ctx,
                 IMapper mapper,
                 EdFiDbQueryData dbQueryData)
             {
@@ -69,14 +65,16 @@ namespace LeadershipProfileAPI.Features.Profile
 
             public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
             {
-                var list = _dbQueryData.GetProfileList(request.SortBy ?? "asc", request.SortField ?? "id", request.Page ?? 1);
+                var list = _dbQueryData.GetProfileList(request.SortBy ?? "asc", request.SortField ?? "id",
+                    request.Page ?? 1);
 
-                return new Response()
+                return new Response
                 {
                     TotalCount = await _ctx.ProfileList.CountAsync(cancellationToken),
                     Page = request.Page,
-                    Profiles = await list.ProjectTo<TeacherProfile>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken),
-                    PageCount = await list.CountAsync(cancellationToken: cancellationToken)
+                    Profiles = await list.ProjectTo<TeacherProfile>(_mapper.ConfigurationProvider)
+                        .ToListAsync(cancellationToken),
+                    PageCount = await list.CountAsync(cancellationToken)
                 };
             }
         }

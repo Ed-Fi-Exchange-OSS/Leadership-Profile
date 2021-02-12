@@ -18,9 +18,7 @@ namespace LeadershipProfileAPI.Data
         /// </summary>
         /// <param name="edfiDbContext"></param>
         public EdFiDbQueryData(EdFiDbContext edfiDbContext) => _edfiDbContext = edfiDbContext;
-
-        #region ProfileList Members
-
+        
         /// <summary>
         /// Method sends raw SQL to the database and returns a queryable, paginated, collection of ProfileList
         /// objects sorted by a field and direction
@@ -68,7 +66,5 @@ namespace LeadershipProfileAPI.Data
 
             return _edfiDbContext.ProfileList.FromSqlRaw(sql);
         }
-
-        #endregion
     }
 }
