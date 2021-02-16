@@ -9,7 +9,7 @@ function UseRoleManagement() {
     const location = useLocation();
 
     const [url, setUrl] = useState(window.location.href);
-    const [data, setData] = useState({});
+    const [data, setData] = useState([]);
     const [addRoleList, setAddRoleList] = useState([]);
     const [removeRoleList, setRemoveRoleList] = useState([]);
     const [error, setError] = useState(false);
@@ -44,9 +44,10 @@ function UseRoleManagement() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [url]);
 
-    useEffect(() => {
+    useEffect(() => { 
+        console.log("asking for data");
         let unmounted = false;
-        const apiUrl = new URL(`/RoleManagement/list?page=${paging.page}`, API_URL);
+        const apiUrl = new URL(`/userclaims?page=${paging.page}`, API_URL);
         fetch(apiUrl, API_CONFIG('GET'))
             .then(response => response.json())
             .then((response) => {
@@ -100,8 +101,8 @@ function UseRoleManagement() {
      
     function AddAdminRoles() {
         let unmounted = false;
-        const apiUrl = new URL('/RoleManagement/add-admin', API_URL);
-        fetch(apiUrl, API_CONFIG('POST', JSON.stringify({staffUniqueIds: addRoleList})))
+        const apiUrl = new URL('/userclaims', API_URL);
+        fetch(apiUrl, API_CONFIG('POST', JSON.stringify({staffUniqueIds: addRoleList, claimType: "role", claimValue: "Admin"})))
             .then(() => Promise.resolve())
             .catch((error) => {
                 setError(true);
@@ -114,8 +115,8 @@ function UseRoleManagement() {
 
     function RemoveAdminRoles() {
         let unmounted = false;
-        const apiUrl = new URL('/RoleManagement/remove-admin', API_URL);
-        fetch(apiUrl, API_CONFIG('POST', JSON.stringify({staffUniqueIds: removeRoleList})))
+        const apiUrl = new URL('/userclaims', API_URL);
+        fetch(apiUrl, API_CONFIG('DELETE', JSON.stringify({staffUniqueIds: removeRoleList, claimType: "role", claimValue: "Admin"})))
             .then(() => Promise.resolve())
             .catch((error) => {
                 setError(true);

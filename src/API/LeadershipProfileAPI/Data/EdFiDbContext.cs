@@ -18,6 +18,7 @@ namespace LeadershipProfileAPI.Data
         public DbSet<ProfileCertification> ProfileCertification { get; set; }
         public DbSet<ProfileEducation> ProfileEducation { get; set; }
         public DbSet<ProfileProfessionalDevelopment> ProfileProfessionalDevelopment { get; set; }
+        public DbSet<StaffAdmin> StaffAdmins { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -47,6 +48,9 @@ namespace LeadershipProfileAPI.Data
             modelBuilder.Entity<ProfileProfessionalDevelopment>()
                 .ToView("vw_LeadershipProfileProfessionalDevelopment", "edfi")
                 .HasNoKey();
+
+            modelBuilder.Entity<StaffAdmin>()
+                .HasKey(k => k.Id);
         }
     }
 
