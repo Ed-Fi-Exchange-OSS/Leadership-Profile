@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-using LeadershipProfileAPI.Data.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using LeadershipProfileAPI.Data;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace LeadershipProfileAPI.Features.Profile
 {
