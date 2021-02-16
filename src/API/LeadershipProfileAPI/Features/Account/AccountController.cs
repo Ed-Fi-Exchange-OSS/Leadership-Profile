@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
+using LeadershipProfileAPI.Data.Models;
 using LeadershipProfileAPI.Features.Account;
 using LeadershipProfileAPI.Infrastructure;
 using MediatR;
@@ -126,47 +126,5 @@ namespace LeadershipProfileAPI.Controllers
 
             return BadRequest(response);
         }
-    }
-
-    public class ForgotPasswordModel
-    {
-        [Required]
-        public string Username { get; set; }
-        [Required]
-        public string StaffUniqueId { get; set; }
-    }
-
-    public class ResetPasswordModel
-    {
-        [Required]
-        public string Username { get; set; }
-        [Required]
-        public string NewPassword { get; set; }
-        [Required]
-        public string Token { get; set; }
-    }
-
-    public class RegisterModel
-    {
-        [Required]
-        public string Username { get; set; }
-        [Required]
-        public string Password { get; set; }
-        public string Email { get; set; }
-        [Required]
-        public string StaffUniqueId { get; set; }
-    }
-
-    public class LogoutInputModel
-    {
-        public string LogoutId { get; set; }
-    }
-
-    public class LoginInputModel
-    {
-        [Required]
-        public string Username { get; set; }
-        [Required]
-        public string Password { get; set; }
     }
 }
