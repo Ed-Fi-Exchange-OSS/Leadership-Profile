@@ -1,12 +1,5 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using LeadershipProfileAPI.Data;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
@@ -30,6 +23,8 @@ namespace LeadershipProfileAPI.Features.Profile
         {
             public int TotalCount { get; set; }
 
+            public int PageCount { get; set; }
+
             public IList<TeacherProfile> Profiles { get; set; }
 
             public int? Page { get; set; }
@@ -37,7 +32,7 @@ namespace LeadershipProfileAPI.Features.Profile
 
         public class TeacherProfile
         {
-            [JsonPropertyName("id")] public string Id { get; set; } = Guid.NewGuid().ToString();
+            [JsonPropertyName("id")] public Guid Id { get; set; }
             [JsonPropertyName("staffUniqueId")] public string StaffUniqueId { get; set; }
             [JsonPropertyName("firstName")] public string FirstName { get; set; }
             [JsonPropertyName("middleName")] public string MiddleName { get; set; }
@@ -53,46 +48,31 @@ namespace LeadershipProfileAPI.Features.Profile
         public class QueryHandler : IRequestHandler<Query, Response>
         {
             private readonly EdFiDbContext _ctx;
+            private readonly EdFiDbQueryData _dbQueryData;
             private readonly IMapper _mapper;
-            private readonly UserManager<IdentityUser> _userManager;
-            private const int PageSize = 10;
 
-            public QueryHandler(EdFiDbContext ctx, IMapper mapper, UserManager<IdentityUser> userManager)
+            public QueryHandler(
+                EdFiDbContext ctx,
+                IMapper mapper,
+                EdFiDbQueryData dbQueryData)
             {
                 _ctx = ctx;
                 _mapper = mapper;
-                _userManager = userManager;
+                _dbQueryData = dbQueryData;
             }
 
             public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
             {
-                var query = _ctx.ProfileList.AsQueryable();
+                var list = _dbQueryData.GetProfileList(request.SortBy ?? "asc", request.SortField ?? "id",
+                    request.Page ?? 1);
 
-                var profiles = query.ProjectTo<TeacherProfile>(_mapper.ConfigurationProvider);
-
-                List<TeacherProfile> items;
-                var count = await profiles.CountAsync(cancellationToken);
-
-                if (request.Page.HasValue)
+                return new Response
                 {
-                    items = await profiles.OrderBy(p=>p.LastSurName)
-                                          .ThenBy(p=>p.FirstName)
-                                          .Skip((request.Page.Value - 1) * PageSize)
-                                          .Take(PageSize)
-                                          .ToListAsync(cancellationToken);
-                }
-                else
-                {
-                    items = await profiles.OrderBy(p => p.LastSurName)
-                                          .ThenBy(p => p.FirstName)
-                                          .ToListAsync(cancellationToken);
-                }
-
-                return new Response()
-                {
-                    TotalCount = count,
+                    TotalCount = await _ctx.ProfileList.CountAsync(cancellationToken),
                     Page = request.Page,
-                    Profiles = items
+                    Profiles = await list.ProjectTo<TeacherProfile>(_mapper.ConfigurationProvider)
+                        .ToListAsync(cancellationToken),
+                    PageCount = await list.CountAsync(cancellationToken)
                 };
             }
         }
