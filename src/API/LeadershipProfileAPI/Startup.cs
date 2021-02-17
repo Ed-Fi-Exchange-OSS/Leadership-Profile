@@ -63,6 +63,7 @@ namespace LeadershipProfileAPI
             services.AddAutoMapper(typeof(Startup).Assembly);
 
             services.AddTransient<IEmailSender, SmtpSender>();
+            services.AddScoped<EdFiDbQueryData>();
 
             services.AddControllers();
 
