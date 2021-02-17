@@ -1,16 +1,16 @@
 using System;
-using AutoMapper;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using IdentityServer4;
 using IdentityServer4.AccessTokenValidation;
 using LeadershipProfileAPI.Data;
 using LeadershipProfileAPI.Infrastructure;
 using LeadershipProfileAPI.Infrastructure.Auth;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using LeadershipProfileAPI.Infrastructure.Email;
 using MediatR;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -42,8 +42,7 @@ namespace LeadershipProfileAPI
             services.AddDbContext<EdFiDbContext>(options => options.UseSqlServer(connectionString));
 
             services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
-
-            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
+            services.Configure<ApplicationConfiguration>(Configuration.GetSection("ApplicationConfiguration"));
 
             services.AddDbContext<EdFiIdentityDbContext>(options => options.UseSqlServer(connectionString));
             services.AddDbContext<EdFiDbContext>(options => options.UseSqlServer(connectionString));
@@ -67,7 +66,6 @@ namespace LeadershipProfileAPI
             services.AddScoped<EdFiDbQueryData>();
 
             services.AddControllers();
-
 
             services.AddSwaggerGen(c =>
             {
@@ -171,7 +169,7 @@ namespace LeadershipProfileAPI
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "LeadershipProfileAPI v1"));
-            
+
                 autoMapper.ConfigurationProvider.AssertConfigurationIsValid();
             }
             app.UseCors("default");
