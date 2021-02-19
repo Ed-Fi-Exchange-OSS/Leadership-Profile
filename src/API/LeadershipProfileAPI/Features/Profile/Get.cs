@@ -4,6 +4,7 @@ using LeadershipProfileAPI.Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading;
@@ -33,26 +34,35 @@ namespace LeadershipProfileAPI.Features.Profile
             public string Email { get; set; } = "default@email.com";
             public DateTime? StartDate { get; set; }
             public bool InterestedInNextRole { get; set; }
-            public TeacherEducation[] Education { get; set; }
-            public PositionHistory[] PositionHistory { get; set; }
-            public Certificate[] Certificates { get; set; }
-            public ProfessionalDevelopment[] ProfessionalDevelopment { get; set; }
-            public CompetencyRatings CompetencyCategories { get; set; }
+            public ICollection<TeacherEducation> Education { get; set; }
+            public ICollection<PositionHistory> PositionHistory { get; set; }
+            public ICollection<Certificate> Certificates { get; set; }
+            public ICollection<ProfessionalDevelopment> ProfessionalDevelopment { get; set; }
+            public ICollection<CompetencyRatings> Competencies { get; set; }
+            public ICollection<Category> Category { get; set; }
+            public ICollection<SubCategory> SubCategory { get; set; }
+            public ICollection<ScoresByPeriod> ScoresByPeriod { get; set; }
+
         }
 
         public class CompetencyRatings
         {
-            public Category[] Categories {get;set;}
+            public ICollection<Category> Categories {get;set;}
         }
         public class Category
         {
             public string CategoryTitle { get; set; }
-            public SubCriteria[] SubCatCriteria { get; set; }
+            public ICollection<SubCategory> SubCatCriteria { get; set; }
         }
-        public class SubCriteria
+        public class SubCategory
         {
             public string SubCatTitle { get; set; } = "Default Sub Category";
-            public string SubCatNotes { get; set; } = "Default Note";
+            public string SubCatNotes { get; set; } = "Default Note";       
+            public ICollection<ScoresByPeriod> ScoresByPeriod { get; set; }
+        }
+        public class ScoresByPeriod
+        {
+            public string Period { get; set; } = "Default Period";
             public double DistrictMin { get; set; } = 0;
             public double DistrictMax { get; set; } = 0;
             public double DistrictAvg { get; set; } = 0;
@@ -115,156 +125,41 @@ namespace LeadershipProfileAPI.Features.Profile
                 var response = _mapper.Map<Response>(profileHeader);
 
                 var positionHistory = await _ctx.ProfilePositionHistory.Where(x => x.StaffUniqueId == request.Id)
-                    .ProjectTo<PositionHistory>(_mapper.ConfigurationProvider).ToArrayAsync(cancellationToken);
+                    .ProjectTo<PositionHistory>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
 
                 response.PositionHistory = positionHistory;
 
                 var certificates = await _ctx.ProfileCertification.Where(x => x.StaffUniqueId == request.Id)
-                    .ProjectTo<Certificate>(_mapper.ConfigurationProvider).ToArrayAsync(cancellationToken);
+                    .ProjectTo<Certificate>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
 
                 response.Certificates = certificates;
 
                 var education = await _ctx.ProfileEducation.Where(x => x.StaffUniqueId == request.Id)
-                    .ProjectTo<TeacherEducation>(_mapper.ConfigurationProvider).ToArrayAsync(cancellationToken);
+                    .ProjectTo<TeacherEducation>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
 
                 response.Education = education;
 
                 var development = await _ctx.ProfileProfessionalDevelopment.Where(x => x.StaffUniqueId == request.Id)
-                    .ProjectTo<ProfessionalDevelopment>(_mapper.ConfigurationProvider).ToArrayAsync(cancellationToken);
+                    .ProjectTo<ProfessionalDevelopment>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
 
                 response.ProfessionalDevelopment = development;
 
-                // Un comment when View is ready
-                //var competency = await _ctx.ProfileCompetencies.Where(x => x.StaffUniqueId == request.Id)
-                //    .ProjectTo<CompetencyRatings>(_mapper.ConfigurationProvider).ToArrayAsync(cancellationToken);
+                var competencies = await _ctx.ProfileCompetency.Where(x => x.StaffUniqueId == request.Id)
+                    .ProjectTo<CompetencyRatings>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
 
+                var criteria = await _ctx.ProfileCategory
+                    .ProjectTo<Category>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
 
-                var competency = new Get.CompetencyRatings();
+                var subcriteria = await _ctx.ProfileSubCategory
+                    .ProjectTo<SubCategory>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
 
-                competency.Categories = new Get.Category[3];
+                var scores = await _ctx.ProfileScoresByPeriod
+                    .ProjectTo<ScoresByPeriod>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
 
-                competency.Categories[0] = new Get.Category();
-                competency.Categories[0].CategoryTitle = "Passion for Results";
-                competency.Categories[0].SubCatCriteria = new Get.SubCriteria[5];
-
-                competency.Categories[0].SubCatCriteria[0] = new Get.SubCriteria();
-                competency.Categories[0].SubCatCriteria[0].SubCatTitle = "Achievement Oriented";
-                competency.Categories[0].SubCatCriteria[0].SubCatNotes = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
-                competency.Categories[0].SubCatCriteria[0].StaffScore = 4.0;
-                competency.Categories[0].SubCatCriteria[0].DistrictAvg = 4.0;
-                competency.Categories[0].SubCatCriteria[0].DistrictMax = 5.0;
-
-                competency.Categories[0].SubCatCriteria[1] = new Get.SubCriteria();
-                competency.Categories[0].SubCatCriteria[1].SubCatTitle = "Leading for Equitable Outcomes";
-                competency.Categories[0].SubCatCriteria[1].SubCatNotes = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
-                competency.Categories[0].SubCatCriteria[1].StaffScore = 4.25;
-                competency.Categories[0].SubCatCriteria[1].DistrictAvg = 4.0;
-                competency.Categories[0].SubCatCriteria[1].DistrictMax = 5.0;
-
-                competency.Categories[0].SubCatCriteria[2] = new Get.SubCriteria();
-                competency.Categories[0].SubCatCriteria[2].SubCatTitle = "Visionary Leadership";
-                competency.Categories[0].SubCatCriteria[2].SubCatNotes = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
-                competency.Categories[0].SubCatCriteria[2].StaffScore = 3.25;
-                competency.Categories[0].SubCatCriteria[2].DistrictAvg = 4.0;
-                competency.Categories[0].SubCatCriteria[2].DistrictMax = 5.0;
-
-                competency.Categories[0].SubCatCriteria[3] = new Get.SubCriteria();
-                competency.Categories[0].SubCatCriteria[3].SubCatTitle = "subCatTitle 4";
-                competency.Categories[0].SubCatCriteria[3].SubCatNotes = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
-                competency.Categories[0].SubCatCriteria[3].StaffScore = 4.25;
-                competency.Categories[0].SubCatCriteria[3].DistrictAvg = 4.0;
-                competency.Categories[0].SubCatCriteria[3].DistrictMax = 5.0;
-
-                competency.Categories[0].SubCatCriteria[4] = new Get.SubCriteria();
-                competency.Categories[0].SubCatCriteria[4].SubCatTitle = "subCatTitle 5";
-                competency.Categories[0].SubCatCriteria[4].SubCatNotes = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
-                competency.Categories[0].SubCatCriteria[4].StaffScore = 4.25;
-                competency.Categories[0].SubCatCriteria[4].DistrictAvg = 4.0;
-                competency.Categories[0].SubCatCriteria[4].DistrictMax = 5.0;
-
-
-
-                competency.Categories[1] = new Get.Category();
-                competency.Categories[1].CategoryTitle = "Commitment to Growth";
-                competency.Categories[1].SubCatCriteria = new Get.SubCriteria[5];
-
-                competency.Categories[1].SubCatCriteria[0] = new Get.SubCriteria();
-                competency.Categories[1].SubCatCriteria[0].SubCatTitle = "Capacity Development";
-                competency.Categories[1].SubCatCriteria[0].SubCatNotes = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
-                competency.Categories[1].SubCatCriteria[0].StaffScore = 4.25;
-                competency.Categories[1].SubCatCriteria[0].DistrictAvg = 4.0;
-                competency.Categories[1].SubCatCriteria[0].DistrictMax = 5.0;
-                
-                competency.Categories[1].SubCatCriteria[1] = new Get.SubCriteria();
-                competency.Categories[1].SubCatCriteria[1].SubCatTitle = "Values-Driven, Data Informed";
-                competency.Categories[1].SubCatCriteria[1].SubCatNotes = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
-                competency.Categories[1].SubCatCriteria[1].StaffScore = 4.25;
-                competency.Categories[1].SubCatCriteria[1].DistrictAvg = 4.0;
-                competency.Categories[1].SubCatCriteria[1].DistrictMax = 5.0;
-
-                competency.Categories[1].SubCatCriteria[2] = new Get.SubCriteria();
-                competency.Categories[1].SubCatCriteria[2].SubCatTitle = " ";
-                competency.Categories[1].SubCatCriteria[2].SubCatNotes = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
-                competency.Categories[1].SubCatCriteria[2].StaffScore = 4.25;
-                competency.Categories[1].SubCatCriteria[2].DistrictAvg = 4.0;
-                competency.Categories[1].SubCatCriteria[2].DistrictMax = 5.0;
-
-                competency.Categories[1].SubCatCriteria[3] = new Get.SubCriteria();
-                competency.Categories[1].SubCatCriteria[3].SubCatTitle = " ";
-                competency.Categories[1].SubCatCriteria[3].SubCatNotes = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
-                competency.Categories[1].SubCatCriteria[3].StaffScore = 4.25;
-                competency.Categories[1].SubCatCriteria[3].DistrictAvg = 4.0;
-                competency.Categories[1].SubCatCriteria[3].DistrictMax = 5.0;
-
-                competency.Categories[1].SubCatCriteria[4] = new Get.SubCriteria();
-                competency.Categories[1].SubCatCriteria[4].SubCatTitle = " ";
-                competency.Categories[1].SubCatCriteria[4].SubCatNotes = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
-                competency.Categories[1].SubCatCriteria[4].StaffScore = 4.25;
-                competency.Categories[1].SubCatCriteria[4].DistrictAvg = 4.0;
-                competency.Categories[1].SubCatCriteria[4].DistrictMax = 5.0;
-
-
-
-                competency.Categories[2] = new Get.Category();
-                competency.Categories[2].CategoryTitle = "Heart for Otherss";
-                competency.Categories[2].SubCatCriteria = new Get.SubCriteria[5];
-
-                competency.Categories[2].SubCatCriteria[0] = new Get.SubCriteria();
-                competency.Categories[2].SubCatCriteria[0].SubCatTitle = "Recognition of Others";
-                competency.Categories[2].SubCatCriteria[0].SubCatNotes = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
-                competency.Categories[2].SubCatCriteria[0].StaffScore = 4.25;
-                competency.Categories[2].SubCatCriteria[0].DistrictAvg = 4.0;
-                competency.Categories[2].SubCatCriteria[0].DistrictMax = 5.0;
-
-                competency.Categories[2].SubCatCriteria[1] = new Get.SubCriteria();
-                competency.Categories[2].SubCatCriteria[1].SubCatTitle = "Collaborative Relationships";
-                competency.Categories[2].SubCatCriteria[1].SubCatNotes = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
-                competency.Categories[2].SubCatCriteria[1].StaffScore = 4.25;
-                competency.Categories[2].SubCatCriteria[1].DistrictAvg = 4.0;
-                competency.Categories[2].SubCatCriteria[1].DistrictMax = 5.0;
-
-                competency.Categories[2].SubCatCriteria[2] = new Get.SubCriteria();
-                competency.Categories[2].SubCatCriteria[2].SubCatTitle = "Effective Communication";
-                competency.Categories[2].SubCatCriteria[2].SubCatNotes = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
-                competency.Categories[2].SubCatCriteria[2].StaffScore = 4.25;
-                competency.Categories[2].SubCatCriteria[2].DistrictAvg = 4.0;
-                competency.Categories[2].SubCatCriteria[2].DistrictMax = 5.0;
-
-                competency.Categories[2].SubCatCriteria[3] = new Get.SubCriteria();
-                competency.Categories[2].SubCatCriteria[3].SubCatTitle = " ";
-                competency.Categories[2].SubCatCriteria[3].SubCatNotes = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
-                competency.Categories[2].SubCatCriteria[3].StaffScore = 4.25;
-                competency.Categories[2].SubCatCriteria[3].DistrictAvg = 4.0;
-                competency.Categories[2].SubCatCriteria[3].DistrictMax = 5.0;
-
-                competency.Categories[2].SubCatCriteria[4] = new Get.SubCriteria();
-                competency.Categories[2].SubCatCriteria[4].SubCatTitle = " ";
-                competency.Categories[2].SubCatCriteria[4].SubCatNotes = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
-                competency.Categories[2].SubCatCriteria[4].StaffScore = 4.25;
-                competency.Categories[2].SubCatCriteria[4].DistrictAvg = 4.0;
-                competency.Categories[2].SubCatCriteria[4].DistrictMax = 5.0;
-
-                response.CompetencyCategories = competency;
+                response.Competencies = competencies;
+                response.Category = criteria;
+                response.SubCategory = subcriteria;
+                response.ScoresByPeriod = scores;
 
                 return response;
             }

@@ -23,7 +23,10 @@ namespace LeadershipProfileAPI.Features.Profile
                 .ForMember(dst => dst.Phone, opt => opt.MapFrom(x => x.Telephone))
                 .ForMember(dst => dst.StartDate, opt => opt.Ignore())
                 .ForMember(dst => dst.CurrentPosition, opt => opt.MapFrom(x => x.Position))
-                .ForMember(dst => dst.CompetencyCategories, opt => opt.Ignore());
+                .ForMember(dst => dst.Competencies, opt => opt.Ignore())
+                .ForMember(dst => dst.Category, opt => opt.Ignore())
+                .ForMember(dst => dst.SubCategory, opt => opt.Ignore())
+                .ForMember(dst => dst.ScoresByPeriod, opt => opt.Ignore());
 
             CreateMap<ProfilePositionHistory, Get.PositionHistory>()
                 .ForMember(dst => dst.SchoolName, opt => opt.MapFrom(x => x.School));
@@ -45,21 +48,25 @@ namespace LeadershipProfileAPI.Features.Profile
                 .ForMember(dst => dst.Location, opt => opt.Ignore())
                 .ForMember(dst => dst.AlignmentToLeadership, opt => opt.Ignore());
 
-            CreateMap<ProfileCompetencies, Get.CompetencyRatings>()
-                .ForMember(dst => dst.Categories, opt => opt.MapFrom(x => x.ProfileCriterias));
+            CreateMap<ProfileCompetency, Get.CompetencyRatings>()
+                .ForMember(dst => dst.Categories, opt => opt.MapFrom(x => x.Categories));
 
-            CreateMap<ProfileCriteria, Get.Category>()
-                .ForMember(dst => dst.CategoryTitle, opt => opt.MapFrom(x => x.CriteriaTitle))
-                .ForMember(dst => dst.SubCatCriteria, opt => opt.MapFrom(x => x.ProfileSubCriteria));
+            CreateMap<ProfileCategory, Get.Category>()
+                .ForMember(dst => dst.CategoryTitle, opt => opt.MapFrom(x => x.CategoryTitle))
+                .ForMember(dst => dst.SubCatCriteria, opt => opt.MapFrom(x => x.SubCategories));
 
-            CreateMap<ProfileSubCriteria, Get.SubCriteria>()
-                .ForMember(dst => dst.DistrictAvg, opt => opt.MapFrom(x => x.districtAvg))
-                .ForMember(dst => dst.DistrictMax, opt => opt.MapFrom(x => x.districtMax))
-                .ForMember(dst => dst.DistrictMin, opt => opt.MapFrom(x => x.districtMin))
-                .ForMember(dst => dst.StaffScore, opt => opt.MapFrom(x => x.staffScore))
-                .ForMember(dst => dst.StaffScoreNotes, opt => opt.MapFrom(x => x.staffScoreNotes))
-                .ForMember(dst => dst.SubCatNotes, opt => opt.MapFrom(x => x.subCatNotes))
-                .ForMember(dst => dst.SubCatTitle, opt => opt.MapFrom(x => x.subCatTitle));
+            CreateMap<ProfileSubCategory, Get.SubCategory>()
+                .ForMember(dst => dst.SubCatNotes, opt => opt.MapFrom(x => x.SubCatNotes))
+                .ForMember(dst => dst.SubCatTitle, opt => opt.MapFrom(x => x.SubCatTitle))
+                .ForMember(dst => dst.ScoresByPeriod, opt => opt.MapFrom(x => x.ScoresByPeriod));
+
+            CreateMap<ProfileScoresByPeriod, Get.ScoresByPeriod>()
+                .ForMember(dst => dst.DistrictAvg, opt => opt.MapFrom(x => x.DistrictAvg))
+                .ForMember(dst => dst.DistrictMax, opt => opt.MapFrom(x => x.DistrictMax))
+                .ForMember(dst => dst.DistrictMin, opt => opt.MapFrom(x => x.DistrictMin))
+                .ForMember(dst => dst.Period, opt => opt.MapFrom(x => x.Period))
+                .ForMember(dst => dst.StaffScore, opt => opt.MapFrom(x => x.StaffScore))
+                .ForMember(dst => dst.StaffScoreNotes, opt => opt.MapFrom(x => x.StaffScoreNotes));
         }
 
         private static string GetFullName(string firstName, string middleName, string lastName)

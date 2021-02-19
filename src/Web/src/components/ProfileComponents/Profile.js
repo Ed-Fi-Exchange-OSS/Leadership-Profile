@@ -32,7 +32,7 @@ const Profile = () => {
                 </div>
                 ) : activeComponent === "leader" && Object.keys(data).length !== 0 ? (
                     <div>
-                        { (data.competencyCategories.categories).map((obj, i) => {
+                        { (data.category).map((obj, i) => {
                             return (<CollapsibleLeaderOfSelf title={obj.categoryTitle} data={obj}/>)
                             })
                         }
