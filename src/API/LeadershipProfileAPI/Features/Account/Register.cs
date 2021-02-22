@@ -65,7 +65,7 @@ namespace LeadershipProfileAPI.Features.Account
                     if (!string.IsNullOrEmpty(staff.TpdmUsername))
                     {
                         response.Result = false;
-                        response.ResultMessage = "Already registered for the staff id.";
+                        response.ResultMessage = "This Staff ID has already been registered.  Please use the Login screen instead.";
                         return response;
                     }
 
