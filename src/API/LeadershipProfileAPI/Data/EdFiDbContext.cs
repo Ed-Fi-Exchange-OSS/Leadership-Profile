@@ -55,7 +55,7 @@ namespace LeadershipProfileAPI.Data
             modelBuilder.Entity<ProfileCategory>()
                 .HasOne<ProfileCompetency>()
                 .WithMany(o => o.Categories)
-                .HasForeignKey(k => k.CompetenciesId)
+                .HasForeignKey(k => k.CompetencyId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<ProfileSubCategory>()

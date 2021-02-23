@@ -17,7 +17,7 @@ namespace LeadershipProfileAPI.Data.Models
         public int CategoryId { get; set; }
         public string CategoryTitle { get; set; }
         public ICollection<ProfileSubCategory> SubCategories { get; set; }
-        public int CompetenciesId { get; set; }
+        public int CompetencyId { get; set; }
     }
     public class ProfileSubCategory
     {
