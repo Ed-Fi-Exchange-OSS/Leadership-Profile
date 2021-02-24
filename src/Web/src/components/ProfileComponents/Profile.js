@@ -4,6 +4,7 @@ import { Nav, NavItem, NavLink} from 'reactstrap';
 import ProfileInfo from './ProfileInfo';
 import CollapsibleTable from './CollapsibleTable';
 import LeaderOfOrgChart from './LeaderOfOrgChart';
+import EducationTable from './../EducationComponents/EducationTable';
 import UseProfile from './UseProfile';
 
 const Profile = () => {
@@ -25,7 +26,7 @@ const Profile = () => {
 
             { activeComponent === "general" && data !== {} ? (
                 <div>
-                    <CollapsibleTable title='Education' data={data.education} />
+                    <EducationTable title='Education' data={data.education} />
                     <CollapsibleTable title='Position History' data={data.positionHistory} />
                     <CollapsibleTable title='Certifications' data={data.certificates} />
                     <CollapsibleTable title='Professional Development and Learning Experiences' data={data.professionalDevelopment}/>
