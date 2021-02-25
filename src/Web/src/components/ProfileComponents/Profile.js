@@ -5,6 +5,7 @@ import ProfileInfo from './ProfileInfo';
 import CollapsibleTable from './CollapsibleTable';
 import LeaderOfOrgChart from './LeaderOfOrgChart';
 import ProfessionalDevelopmentTable from './../ProfessionalDevelopmentComponents/ProfessionalDevelopmentTable'
+import PositionHistoryTable from '../PositionHistoryComponent/PositionHistoryTable';
 import UseProfile from './UseProfile';
 
 const Profile = () => {
@@ -14,7 +15,7 @@ const Profile = () => {
     
     return (
         <div>
-            <ProfileInfo data={data} />
+            <ProfileInfo data={data}/>
             <Nav className="profile-nav">
                 <NavItem className={activeComponent === "general" ? "current-profile-page nav-option" : "nav-option"}>
                     <NavLink onClick={() => setActiveComponent("general")}>General Info</NavLink>
@@ -24,10 +25,10 @@ const Profile = () => {
                 </NavItem>
             </Nav>
 
-            { activeComponent === "general" && data !== {} ? (
+            {activeComponent === "general" && data !== {} ? (
                 <div>
                     <CollapsibleTable title='Education' data={data.education} />
-                    <CollapsibleTable title='Position History' data={data.positionHistory} />
+                    <PositionHistoryTable title='Position History' data={data.positionHistory} />
                     <CollapsibleTable title='Certifications' data={data.certificates} />
                     <ProfessionalDevelopmentTable title='Professional Development and Learning Experiences' data={data.professionalDevelopment}/>
                 </div>
