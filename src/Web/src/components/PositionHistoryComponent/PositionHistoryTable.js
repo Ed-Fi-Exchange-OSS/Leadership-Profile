@@ -31,16 +31,16 @@ const PositionHistoryTable = (props) => {
                 <Table striped className="profile-collapsible-table">
                     <thead className="profile-table-head">
                         <tr className="profile-table-header-row">
-                            {Object.values(categories).map(category => (<th key={category}>{category}</th>))}
+                            {Object.values(categories).map((category, i) => (<th key={i}>{category}</th>))}
                         </tr>
                     </thead>
                     <tbody>
-                        {data !== undefined ? data.map(row =>
-                        (<tr className="profile-table-body-row">
-                            {Object.keys(categories).map(value => {
+                        {data !== undefined ? data.map((row, i) =>
+                        (<tr key={i} className="profile-table-body-row">
+                            {Object.keys(categories).map((value, i) => {
                                 let displayValue = row[`${value}`];
                                 displayValue = (value.toLowerCase()).includes('date') ? formatDate(displayValue) : displayValue;
-                                return (<td>{displayValue}</td>)
+                                return (<td key={i}>{displayValue}</td>)
                             })}
                         </tr>)) : ''
                         }
