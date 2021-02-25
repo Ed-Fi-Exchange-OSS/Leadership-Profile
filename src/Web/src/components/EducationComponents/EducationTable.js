@@ -35,12 +35,12 @@ const EducationTable = (props) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {data !== undefined ? data.map(row =>
-                        (<tr className="profile-table-body-row">
-                            {Object.keys(categories).map(value => {
+                        {data !== undefined ? data.map((row, i) =>
+                        (<tr key={i} className="profile-table-body-row">
+                            {Object.keys(categories).map((value, i) => {
                                 let displayValue = row[`${value}`];
                                 displayValue = (value.toLowerCase()).includes('date') ? formatDate(displayValue) : displayValue;
-                                return (<td>{displayValue}</td>)
+                                return (<td index={i}>{displayValue}</td>)
                             })}
                         </tr>)) : ''
                         }
