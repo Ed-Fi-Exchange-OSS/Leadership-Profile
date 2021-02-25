@@ -4,6 +4,7 @@ import { Nav, NavItem, NavLink} from 'reactstrap';
 import ProfileInfo from './ProfileInfo';
 import CollapsibleTable from './CollapsibleTable';
 import LeaderOfOrgChart from './LeaderOfOrgChart';
+import ProfessionalDevelopmentTable from './../ProfessionalDevelopmentComponents/ProfessionalDevelopmentTable'
 import CertificationsTable from './../CertificationsComponents/CertificationsTable'
 import EducationTable from './../EducationComponents/EducationTable';
 import PositionHistoryTable from '../PositionHistoryComponent/PositionHistoryTable';
@@ -31,7 +32,7 @@ const Profile = () => {
                     <EducationTable title='Education' data={data.education} />
                     <PositionHistoryTable title='Position History' data={data.positionHistory} />
                     <CertificationsTable title='Certifications' data={data.certificates} />
-                    <CollapsibleTable title='Professional Development and Learning Experiences' data={data.professionalDevelopment}/>
+                    <ProfessionalDevelopmentTable title='Professional Development and Learning Experiences' data={data.professionalDevelopment}/>
                 </div>
                 ) : activeComponent === "leader" ? (
                     <LeaderOfOrgChart />
