@@ -12,6 +12,7 @@ namespace LeadershipProfileAPI.Data
         }
 
         public DbSet<Staff> Staff { get; set; }
+        public DbSet<StaffEducation> StaffEducations { get; set; }
         public DbSet<ProfileList> ProfileList { get; set; }
         public DbSet<ProfileHeader> ProfileHeader { get; set; }
         public DbSet<ProfilePositionHistory> ProfilePositionHistory { get; set; }
@@ -47,6 +48,10 @@ namespace LeadershipProfileAPI.Data
             modelBuilder.Entity<ProfileProfessionalDevelopment>()
                 .ToView("vw_LeadershipProfileProfessionalDevelopment", "edfi")
                 .HasNoKey();
+
+            modelBuilder.Entity<StaffEducation>()
+                .ToView("vw_StaffEducations", "edfi")
+                .HasKey(k => new { k.StaffUsi, k.TeacherPreparationProgramName });
         }
     }
 
