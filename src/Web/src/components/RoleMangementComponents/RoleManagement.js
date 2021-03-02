@@ -5,6 +5,7 @@ import UseRoleManagement from './UseRoleManagement';
 
 const RoleManagement = () => {
     const { data, paging, SetPage, OnSubmit, error, bind } = UseRoleManagement();
+
     return (
         <div>
             {error ?
@@ -25,7 +26,8 @@ const RoleManagement = () => {
                         <tr key={profile.id}>
                             <td>
                                 <FormGroup>
-                                    <Input type="checkbox" defaultChecked={profile.admin} value={profile.staffUniqueId} {...bind} />
+                                    <Input type="checkbox" defaultChecked={profile.isAdmin} 
+                                    value={profile.staffUniqueId} {...bind} />
                                 </FormGroup>
                             </td>
                             <td>{profile.staffUniqueId}</td>

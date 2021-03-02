@@ -4,6 +4,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import config from '../../config';
 
 function UseRoleManagement() {
+
     const { API_URL, API_CONFIG } = config();
     const history = useHistory();
     const location = useLocation();
@@ -12,6 +13,7 @@ function UseRoleManagement() {
     const [data, setData] = useState([]);
     const [addRoleList, setAddRoleList] = useState([]);
     const [removeRoleList, setRemoveRoleList] = useState([]);
+
     const [error, setError] = useState(false);
     const [paging, setPaging] = useState({
         page: 1,
@@ -44,14 +46,31 @@ function UseRoleManagement() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [url]);
 
-    useEffect(() => { 
-        console.log("asking for data");
+    useEffect(() => {
         let unmounted = false;
-        const apiUrl = new URL(`/userclaims?page=${paging.page}`, API_URL);
+        const apiUrl = new URL('/userclaims?page='+paging.page+'', API_URL);
         fetch(apiUrl, API_CONFIG('GET'))
             .then(response => response.json())
             .then((response) => {
                 if (!unmounted && response !== null) {
+
+                    const profiles = {};
+                    var store = localStorage.getItem("userRoleList") === null ? {} : JSON.parse(localStorage.getItem("userRoleList"));
+                    response.profiles.map((e,i)=>{
+                        if(store[e.staffUniqueId] === undefined){
+                            store[e.staffUniqueId] = {
+                                isAdmin: e.isAdmin,
+                                isOriginal: true,
+                                originState: e.isAdmin
+                            }
+                        }    
+                        else{
+                            response.profiles[i].isAdmin = store[e.staffUniqueId].isAdmin
+                        }
+                    });
+
+                    localStorage.setItem("userRoleList", JSON.stringify(store));
+                    
                     setData(response);
                     setPaging({
                         ...paging,
@@ -70,28 +89,46 @@ function UseRoleManagement() {
 
     //
     function OnAddClick(event) {
+        var store = JSON.parse(localStorage.getItem("userRoleList"));
         const staffUniqueId = event.target.value;
-        let stored = JSON.parse(localStorage.getItem('AddAdmin')) ?? [];
-        stored.push(staffUniqueId);
-        localStorage.setItem("AddAdmin", JSON.stringify(stored));
+        store[staffUniqueId].isAdmin = true;
+        localStorage.setItem("userRoleList", JSON.stringify(store));
     }
 
     function OnRemoveClick(event) {
+        var store = JSON.parse(localStorage.getItem("userRoleList"));
         const staffUniqueId = event.target.value;
-        let stored = JSON.parse(localStorage.getItem('RemoveAdmin')) ?? [];
-        stored.push(staffUniqueId);
-        localStorage.setItem("RemoveAdmin", JSON.stringify(stored));
+        store[staffUniqueId].isAdmin = false;
+        localStorage.setItem("userRoleList", JSON.stringify(store));
     }
 
     async function OnSubmit(event) {
         event.preventDefault();
 
-        setRemoveRoleList(localStorage.getItem('AddAdmin'));
-        setAddRoleList(localStorage.getItem('RemoveAdmin'));
+        const addList = [];
+        const removeList = [];
+
+        var store = JSON.parse(localStorage.getItem("userRoleList"));
+
+        Object.keys(store).map((e,i)=>{
+            if(store[e].isAdmin == true && 
+                store[e].isAdmin != store[e].originState)
+            {
+                addList.push(e);
+            }            
+            
+            if(store[e].isAdmin == false && 
+                store[e].isAdmin != store[e].originState)
+            {
+                removeList.push(e);
+            }
+        });
+
+        localStorage.removeItem("userRoleList");
         localStorage.clear();
 
-        const addPromise = await AddAdminRoles();
-        const removePromise = await RemoveAdminRoles();
+        const addPromise = await AddAdminRoles(addList);
+        const removePromise = await RemoveAdminRoles(removeList);
         Promise.all([addPromise, removePromise])
             .then(() => {
                 history.push('/queue?count=10&page=1&sortBy=desc&sortField=id');
@@ -99,10 +136,10 @@ function UseRoleManagement() {
             });
     }
      
-    function AddAdminRoles() {
+    function AddAdminRoles(addList) {
         let unmounted = false;
         const apiUrl = new URL('/userclaims', API_URL);
-        fetch(apiUrl, API_CONFIG('POST', JSON.stringify({staffUniqueIds: addRoleList, claimType: "role", claimValue: "Admin"})))
+        fetch(apiUrl, API_CONFIG('POST', JSON.stringify({staffUniqueIds: addList, claimType: "role", claimValue: "Admin"})))
             .then(() => Promise.resolve())
             .catch((error) => {
                 setError(true);
@@ -113,10 +150,10 @@ function UseRoleManagement() {
         };
     }
 
-    function RemoveAdminRoles() {
+    function RemoveAdminRoles(removeList) {
         let unmounted = false;
         const apiUrl = new URL('/userclaims', API_URL);
-        fetch(apiUrl, API_CONFIG('DELETE', JSON.stringify({staffUniqueIds: removeRoleList, claimType: "role", claimValue: "Admin"})))
+        fetch(apiUrl, API_CONFIG('DELETE', JSON.stringify({staffUniqueIds: removeList, claimType: "role", claimValue: "Admin"})))
             .then(() => Promise.resolve())
             .catch((error) => {
                 setError(true);
@@ -141,7 +178,6 @@ function UseRoleManagement() {
         OnSubmit,
         error,
         bind: {
-            addRoleList,
             onClick: event => {
                 switch (event.target.checked) {
                     case true:
