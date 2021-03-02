@@ -1,5 +1,6 @@
 ﻿using LeadershipProfileAPI.Infrastructure;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Net.Http;
@@ -11,6 +12,7 @@ namespace LeadershipProfileAPI.Features.Profile
     [TypeFilter(typeof(ApiExceptionFilter))]
     [ApiController]
     [Route("[controller]")]
+    [Authorize(Roles = "Admin")]
     public class ProfileController : ControllerBase
     {
         private readonly ILogger<ProfileController> _logger;
