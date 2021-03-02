@@ -38,11 +38,11 @@ namespace LeadershipProfileAPI.Features.Profile
                 .ForMember(dst => dst.Degree, opt => opt.MapFrom(x => x.DegreeAwarded))
                 .ForMember(dst => dst.Specialization, opt => opt.MapFrom(x => x.MajorOrSpecialization));
 
-            CreateMap<ProfileProfessionalDevelopment, Get.ProfessionalDevelopment>()
-                .ForMember(dst => dst.CourseName, opt => opt.MapFrom(x => x.ProfessionalDevelopmentTitle))
-                .ForMember(dst => dst.Date, opt => opt.MapFrom(x => x.AttendanceDate))
-                .ForMember(dst => dst.Location, opt => opt.Ignore())
-                .ForMember(dst => dst.AlignmentToLeadership, opt => opt.Ignore());
+            CreateMap<StaffProfessionalDevelopment, Get.ProfessionalDevelopment>()
+                .ForMember(dst => dst.AttendanceDate, opt => opt.MapFrom(x => x.AttendanceDate))
+                .ForMember(dst => dst.ProfessionalDevelopmentTitle, opt => opt.MapFrom(x => x.ProfessionalDevelopmentTitle))
+                .ForMember(dst => dst.Location, opt => opt.MapFrom(x => x.Location))
+                .ForMember(dst => dst.AlignmentToLeadership, opt => opt.MapFrom(x => x.AlignmentToLeadership));
         }
 
         private static string GetFullName(string firstName, string middleName, string lastName)

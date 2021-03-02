@@ -37,7 +37,7 @@ namespace LeadershipProfileAPI.Features.Profile
             public IEnumerable<TeacherEducation> Education { get; set; }
             public PositionHistory[] PositionHistory { get; set; }
             public Certificate[] Certificates { get; set; }
-            public ProfessionalDevelopment[] ProfessionalDevelopment { get; set; }
+            public IEnumerable<ProfessionalDevelopment> ProfessionalDevelopment { get; set; }
         }
 
         public class PositionHistory
@@ -58,10 +58,10 @@ namespace LeadershipProfileAPI.Features.Profile
 
         public class ProfessionalDevelopment
         {
-            public string CourseName { get; set; } = "Default Course Name";
-            public DateTime Date { get; set; }
-            public string Location { get; set; } = "Default Location";
-            public string AlignmentToLeadership { get; set; } = "Default Alignment";
+            public DateTime AttendanceDate { get; set; }
+            public string ProfessionalDevelopmentTitle { get; set; }
+            public string Location { get; set; }
+            public string AlignmentToLeadership { get; set; }
         }
 
         public class TeacherEducation
@@ -108,10 +108,10 @@ namespace LeadershipProfileAPI.Features.Profile
                     .ProjectTo<TeacherEducation>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);
 
-                var development = await _dbContext.ProfileProfessionalDevelopment.Where(x => x.StaffUniqueId == request.Id)
-                    .ProjectTo<ProfessionalDevelopment>(_mapper.ConfigurationProvider).ToArrayAsync(cancellationToken);
-
-                response.ProfessionalDevelopment = development;
+                response.ProfessionalDevelopment = await _dbContext.StaffProfessionalDevelopments
+                    .Where(o => o.StaffUniqueId == request.Id)
+                    .ProjectTo<ProfessionalDevelopment>(_mapper.ConfigurationProvider)
+                    .ToListAsync(cancellationToken);
 
                 return response;
             }
