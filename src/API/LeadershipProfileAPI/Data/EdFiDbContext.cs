@@ -13,12 +13,13 @@ namespace LeadershipProfileAPI.Data
 
         public DbSet<Staff> Staff { get; set; }
         public DbSet<StaffEducation> StaffEducations { get; set; }
-        public DbSet<StaffProfessionalDevelopment> StaffProfessionalDevelopments { get; set; }
         public DbSet<ProfileList> ProfileList { get; set; }
         public DbSet<ProfileHeader> ProfileHeader { get; set; }
         public DbSet<ProfilePositionHistory> ProfilePositionHistory { get; set; }
         public DbSet<ProfileCertification> ProfileCertification { get; set; }
         public DbSet<ProfileEducation> ProfileEducation { get; set; }
+        public DbSet<ProfileProfessionalDevelopment> ProfileProfessionalDevelopment { get; set; }
+        public DbSet<StaffAdmin> StaffAdmins { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -44,6 +45,13 @@ namespace LeadershipProfileAPI.Data
             modelBuilder.Entity<ProfileEducation>()
                 .ToView("vw_LeadershipProfileEducation", "edfi")
                 .HasNoKey();
+
+            modelBuilder.Entity<ProfileProfessionalDevelopment>()
+                .ToView("vw_LeadershipProfileProfessionalDevelopment", "edfi")
+                .HasNoKey();
+
+            modelBuilder.Entity<StaffAdmin>()
+                .HasKey(k => k.Id);
 
             modelBuilder.Entity<StaffEducation>()
                 .ToView("vw_StaffEducations", "edfi")
