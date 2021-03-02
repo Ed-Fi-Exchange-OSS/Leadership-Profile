@@ -33,11 +33,10 @@ namespace LeadershipProfileAPI.Features.Profile
                 .ForMember(dst => dst.ValidFromDate, opt => opt.MapFrom(x => x.IssuanceDate))
                 .ForMember(dst => dst.ValidToDate, opt => opt.MapFrom(x => x.ExpirationDate));
 
-            CreateMap<ProfileEducation, Get.TeacherEducation>()
-                .ForMember(dst => dst.Institution, opt => opt.Ignore())
-                .ForMember(dst => dst.Degree, opt => opt.MapFrom(x => x.MajorSpecialization))
-                .ForMember(dst => dst.Specialization, opt => opt.MapFrom(x => x.MinorSpecialization))
-                .ForMember(dst => dst.GraduationDate, opt => opt.MapFrom(x => x.EndDate));
+            CreateMap<StaffEducation, Get.TeacherEducation>()
+                .ForMember(dst => dst.Institution, opt => opt.MapFrom(x => x.InstitutionAttended))
+                .ForMember(dst => dst.Degree, opt => opt.MapFrom(x => x.DegreeAwarded))
+                .ForMember(dst => dst.Specialization, opt => opt.MapFrom(x => x.MajorOrSpecialization));
 
             CreateMap<ProfileProfessionalDevelopment, Get.ProfessionalDevelopment>()
                 .ForMember(dst => dst.CourseName, opt => opt.MapFrom(x => x.ProfessionalDevelopmentTitle))
