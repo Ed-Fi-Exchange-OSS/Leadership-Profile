@@ -25,10 +25,10 @@ const RoleManagement = () => {
                     <thead>
                         <tr>
                             <th>Admin</th>
-                            <th>User</th>
                             <th>Staff ID</th>
+                            <th>UserName</th>
                             <th>Name</th>
-                            <th>Username</th>
+                            <th>Location</th>
                         </tr>
                     </thead>
                     <tbody>                        
@@ -41,8 +41,8 @@ const RoleManagement = () => {
                                     </FormGroup>
                                 </td>
                                 <td>{profile.staffUniqueId}</td>
-                                <td>{profile.lastSurname}, {profile.firstName}</td>
                                 <td>{profile.username}</td>
+                                <td>{profile.lastSurname}, {profile.firstName}</td>
                                 <td>{profile.location}</td>
                             </tr>
                         )) : ''}
