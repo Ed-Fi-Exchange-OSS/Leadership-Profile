@@ -348,3 +348,11 @@
   background-color: #3466ff;
   color: white;
 }
+
+/* Role Managment List */
+.role-card-title{
+  width: auto !important;
+}
+.isdamin-checkbox{
+  text-align: center;
+}
