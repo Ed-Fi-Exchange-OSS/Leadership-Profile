@@ -21,7 +21,6 @@ const RoleManagement = () => {
                 </Alert>
                 : ''}
             <Form>
-                <Button size="lg" onClick={event => OnSubmit(event)}>Save</Button>
                 <Table striped className="directory-table">
                     <thead>
                         <tr>
@@ -60,6 +59,8 @@ const RoleManagement = () => {
                         </tr>
                     </tbody>
                 </Table>
+                
+                <Button size="lg" onClick={event => OnSubmit(event)}>Save</Button>
             </Form>
         </div>
     );
