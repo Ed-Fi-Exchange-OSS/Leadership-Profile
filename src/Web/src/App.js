@@ -35,8 +35,7 @@ function App() {
             <PrivateRoute exact path="/:searchParams" isAuthenticated={authenticated} component={Directory} />
             <PrivateRoute path="/profile/:id" isAuthenticated={authenticated} component={Profile} />
             <PrivateRoute path="/admin/:searchParams" isAuthenticated={authenticated} component={RoleManagement} /> {/* add isAdmin to auth */}
-            <Route exact path="/account/register" component={Registration} />
-            <Route exact path="/account/register" component={Registration} />            
+            <Route exact path="/account/register" component={Registration} />         
             <Route exact path="/account/forgotpassword" component={ForgotPassword} />
             <Route exact path="/account/resetpassword" component={ResetPassword} />
           </div>
