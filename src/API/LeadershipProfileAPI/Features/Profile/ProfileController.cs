@@ -1,4 +1,5 @@
-﻿using LeadershipProfileAPI.Infrastructure;
+﻿using LeadershipProfileAPI.Data.Models;
+using LeadershipProfileAPI.Infrastructure;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -41,6 +42,26 @@ namespace LeadershipProfileAPI.Features.Profile
         public async Task<ActionResult> GetProfile([FromRoute] string id, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(new Get.Query {Id = id}, cancellationToken);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
+        [HttpPost("datacorrection")]
+        public async Task<ActionResult> SendDataCorrection(DataCorrectionModel data, CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(new DataCorrection.Command
+            {
+                MessageDescription = data.MessageDescription,
+                MessageSubject = data.MessageSubject,
+                StaffEmail = data.StaffEmail,
+                StaffUniqueId = data.StaffUniqueId,
+                UserFullName = data.UserFullName
+            });
 
             if (result == null)
             {

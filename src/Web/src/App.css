@@ -356,3 +356,8 @@
 .isdamin-checkbox{
   text-align: center;
 }
+
+/* Feedback Modal */
+.label-feedback{
+  font-weight: bold;
+}
