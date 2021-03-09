@@ -42,6 +42,7 @@ namespace LeadershipProfileAPI
             services.AddDbContext<EdFiDbContext>(options => options.UseSqlServer(connectionString));
 
             services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
+            services.Configure<DataCorrectionSettings>(Configuration.GetSection("DataCorrection"));
             services.Configure<ApplicationConfiguration>(Configuration.GetSection("ApplicationConfiguration"));
 
             services.AddDbContext<EdFiIdentityDbContext>(options => options.UseSqlServer(connectionString));
