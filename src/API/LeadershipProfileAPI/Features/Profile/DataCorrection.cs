@@ -64,7 +64,7 @@ namespace LeadershipProfileAPI.Features.Profile
 
                 var message = request.MessageDescription;
 
-                await _emailSender.SendEmailAsync(adminEmail, $"{request.MessageSubject} - {request.StaffUniqueId}", message);
+                await _emailSender.SendEmailAsync(adminEmail, $"{request.MessageSubject}", message);
 
                 return response;
             }

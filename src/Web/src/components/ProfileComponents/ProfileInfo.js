@@ -64,12 +64,14 @@ const ProfileInfo = (props) => {
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                                <td><Button color="primary" onClick={toggle}>Request Data Correction</Button></td>
+                                <td>
+                                 <a href="#" className="modal-link" onClick={toggle}>Request Data Correction</a>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
                     <Modal isOpen={modal} toggle={toggle} fullscreen="sm">
-                        <ModalHeader toggle={toggle}>Feedback</ModalHeader>
+                        <ModalHeader toggle={toggle}>Data Correction Request Form</ModalHeader>
                         <ModalBody>
                             <Form id="feedback-form" onSubmit={e => handleOnSubmit(e)}>
                                 <Input type="hidden" name="staffUniqueId" id="staffUniqueId" value={data.staffUniqueId}></Input>
@@ -77,20 +79,20 @@ const ProfileInfo = (props) => {
                                 <Input type="hidden" name="email" id="email" value={data.email}></Input>
 
                                 <div className="mb-2 mr-sm-2 mb-sm-0">
-                                    <Label for="lblsubject" className="label-feedback mr-sm-2">StaffUniqueId: </Label>
+                                    <Label for="lblsubject" className="label-feedback mr-sm-2">ID: </Label>
                                     <Label for="lblsubject" className="mr-sm-2">{data.staffUniqueId}</Label>
                                 </div>
                                 <div className="mb-2 mr-sm-2 mb-sm-0">
-                                    <Label for="staffsubject" className="label-feedback mr-sm-2">Staff Name: </Label>
+                                    <Label for="staffsubject" className="label-feedback mr-sm-2">Name: </Label>
                                     <Label for="staffsubject" className="mr-sm-2">{data.fullName}</Label>
                                 </div>
                                 <div className="mb-2 mr-sm-2 mb-sm-0">
-                                    <Label for="emailsubject" className="label-feedback mr-sm-2">Staff Email: </Label>
+                                    <Label for="emailsubject" className="label-feedback mr-sm-2">Email: </Label>
                                     <Label for="emailsubject" className="mr-sm-2">{data.email}</Label>
                                 </div>
                                 <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
                                     <Label for="subject" className="label-feedback mr-sm-2">Subject</Label>
-                                    <Input type="text" name="subject" id="subject" {...bind}/>
+                                    <Input type="text" placeholder="" name="subject" id="subject" value="Data Correction Request" {...bind}/>
                                 </FormGroup>
                                 <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
                                     <Label for="messagescontent" className="label-feedback mr-sm-2">Description</Label>

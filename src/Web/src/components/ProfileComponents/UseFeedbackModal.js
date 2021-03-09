@@ -7,7 +7,7 @@ function UseFeedbackModal() {
     const [staffUniqueId, setStaffUniqueId] = useState('');
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
-    const [subject, setSubject] = useState('');
+    const [subject, setSubject] = useState('Data Correction Request');
     const [messageContent, setMessageContent] = useState('');
 
     const [feedbackInfo, setFeedbackInfo] = useState({
