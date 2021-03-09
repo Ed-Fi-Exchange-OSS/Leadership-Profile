@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import config from '../../config';
 
-function UseFeedbackModal() {
+function UseDataCorrectionModal() {
     const { API_URL, API_CONFIG } = config();
 
     const [staffUniqueId, setStaffUniqueId] = useState('');
@@ -76,4 +76,4 @@ function UseFeedbackModal() {
     }
 }
 
-export default UseFeedbackModal;
+export default UseDataCorrectionModal;
