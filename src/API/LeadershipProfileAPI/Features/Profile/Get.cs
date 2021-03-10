@@ -88,34 +88,33 @@ namespace LeadershipProfileAPI.Features.Profile
 
         public class ProfessionalDevelopment
         {
-            public string CourseName { get; set; } = "Default Course Name";
-            public DateTime Date { get; set; }
-            public string Location { get; set; } = "Default Location";
-            public string AlignmentToLeadership { get; set; } = "Default Alignment";
+            public DateTime AttendanceDate { get; set; }
+            public string ProfessionalDevelopmentTitle { get; set; }
+            public string Location { get; set; }
+            public string AlignmentToLeadership { get; set; }
         }
 
         public class TeacherEducation
         {
-            public string Institution { get; set; } = "Default Institution";
-            public string Degree { get; set; } = "Default Degree";
-            public DateTime? GraduationDate { get; set; }
-            public string Specialization { get; set; } = "Default Specialization";
+            public string Degree { get; set; }
+            public string Specialization { get; set; }
+            public string Institution { get; set; }
         }
 
         public class QueryHandler : IRequestHandler<Query, Response>
         {
-            private readonly EdFiDbContext _ctx;
+            private readonly EdFiDbContext _dbContext;
             private readonly IMapper _mapper;
 
-            public QueryHandler(EdFiDbContext ctx, IMapper mapper)
+            public QueryHandler(EdFiDbContext dbContext, IMapper mapper)
             {
-                _ctx = ctx;
+                _dbContext = dbContext;
                 _mapper = mapper;
             }
 
             public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
             {
-                var profileHeader = await _ctx.ProfileHeader.FirstOrDefaultAsync(x => x.StaffUniqueId == request.Id, cancellationToken);
+                var profileHeader = await _dbContext.ProfileHeader.FirstOrDefaultAsync(x => x.StaffUniqueId == request.Id, cancellationToken);
 
                 if (profileHeader == null)
                 {
@@ -124,25 +123,25 @@ namespace LeadershipProfileAPI.Features.Profile
 
                 var response = _mapper.Map<Response>(profileHeader);
 
-                var positionHistory = await _ctx.ProfilePositionHistory.Where(x => x.StaffUniqueId == request.Id)
-                    .ProjectTo<PositionHistory>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
+                var positionHistory = await _dbContext.ProfilePositionHistory.Where(x => x.StaffUniqueId == request.Id)
+                    .ProjectTo<PositionHistory>(_mapper.ConfigurationProvider).ToArrayAsync(cancellationToken);
 
                 response.PositionHistory = positionHistory;
 
-                var certificates = await _ctx.ProfileCertification.Where(x => x.StaffUniqueId == request.Id)
-                    .ProjectTo<Certificate>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
+                var certificates = await _dbContext.ProfileCertification.Where(x => x.StaffUniqueId == request.Id)
+                    .ProjectTo<Certificate>(_mapper.ConfigurationProvider).ToArrayAsync(cancellationToken);
 
                 response.Certificates = certificates;
 
-                var education = await _ctx.ProfileEducation.Where(x => x.StaffUniqueId == request.Id)
-                    .ProjectTo<TeacherEducation>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
+                response.Education = await _dbContext.StaffEducations
+                    .Where(o => o.StaffUniqueId == request.Id)
+                    .ProjectTo<TeacherEducation>(_mapper.ConfigurationProvider)
+                    .ToListAsync(cancellationToken);
 
-                response.Education = education;
-
-                var development = await _ctx.ProfileProfessionalDevelopment.Where(x => x.StaffUniqueId == request.Id)
-                    .ProjectTo<ProfessionalDevelopment>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
-
-                response.ProfessionalDevelopment = development;
+                response.ProfessionalDevelopment = await _dbContext.StaffProfessionalDevelopments
+                    .Where(o => o.StaffUniqueId == request.Id)
+                    .ProjectTo<ProfessionalDevelopment>(_mapper.ConfigurationProvider)
+                    .ToListAsync(cancellationToken);
 
                 var competencies = await _ctx.ProfileCompetency.Where(x => x.StaffUniqueId == request.Id)
                     .ProjectTo<CompetencyRatings>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);

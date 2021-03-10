@@ -12,11 +12,14 @@ namespace LeadershipProfileAPI.Data
         }
 
         public DbSet<Staff> Staff { get; set; }
+        public DbSet<StaffEducation> StaffEducations { get; set; }
         public DbSet<ProfileList> ProfileList { get; set; }
         public DbSet<ProfileHeader> ProfileHeader { get; set; }
         public DbSet<ProfilePositionHistory> ProfilePositionHistory { get; set; }
         public DbSet<ProfileCertification> ProfileCertification { get; set; }
         public DbSet<ProfileEducation> ProfileEducation { get; set; }
+        public DbSet<StaffProfessionalDevelopment> StaffProfessionalDevelopments { get; set; }
+        public DbSet<StaffAdmin> StaffAdmins { get; set; }
         public DbSet<ProfileProfessionalDevelopment> ProfileProfessionalDevelopment { get; set; }
         public DbSet<ProfileCompetency> ProfileCompetency { get; set; }
         public DbSet<ProfileCategory> ProfileCategory { get; set; }
@@ -51,40 +54,6 @@ namespace LeadershipProfileAPI.Data
             modelBuilder.Entity<ProfileProfessionalDevelopment>()
                 .ToView("vw_LeadershipProfileProfessionalDevelopment", "edfi")
                 .HasNoKey();
-
-            modelBuilder.Entity<ProfileCategory>()
-                .HasOne<ProfileCompetency>()
-                .WithMany(o => o.Categories)
-                .HasForeignKey(k => k.CompetencyId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<ProfileSubCategory>()
-                .HasOne<ProfileCategory>()
-                .WithMany(o => o.SubCategories)
-                .HasForeignKey(k => k.CategoryId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<ProfileScoresByPeriod>()
-                .HasOne<ProfileSubCategory>()
-                .WithMany(o => o.ScoresByPeriod)
-                .HasForeignKey(k => k.SubCategoryId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<ProfileCompetency>()
-                .ToTable("ProfileCompetency")
-                .HasKey(k => k.CompetencyId);
-
-            modelBuilder.Entity<ProfileCategory>()
-                .ToTable("ProfileCategory")
-                .HasKey(k => k.CategoryId);
-
-            modelBuilder.Entity<ProfileSubCategory>()
-                .ToTable("ProfileSubCategory")
-                .HasKey(k => k.SubCategoryId);
-
-            modelBuilder.Entity<ProfileScoresByPeriod>()
-                .ToTable("ProfileScoresByPeriod")
-                .HasKey(k => k.ScoresByPeriodId);
         }
     }
 

@@ -10,7 +10,6 @@ import ErrorMessage from '../ErrorMessage';
 const Directory = () => {
     const [activeComponent, setActiveComponent] = useState("table");
     const { setColumnSort, sort, data, paging, setPage, search, setSearchValue, error } = UseDirectory();
-
     return (
         <div>
             <div className='directory-div'>
@@ -19,12 +18,12 @@ const Directory = () => {
                     <BreadcrumbList currentPage="home" />
                     <div className="view-style-buttons">
                         <span className="view-style-label">View Style</span>
-                        <a role="button" color="primary" className="btn btn-primary view-style-button-first view-style-button" onClick={() => setActiveComponent("table")}>
+                        <button color="primary" className="btn btn-primary view-style-button-first view-style-button" onClick={() => setActiveComponent("table")}>
                             <TableViewIcon />
-                        </a>
-                        <a role="button" color="primary" className="btn btn-primary view-style-button" onClick={() => setActiveComponent("card")}>
+                        </button>
+                        <button  color="primary" className="btn btn-primary view-style-button" onClick={() => setActiveComponent("card")}>
                             <CardViewIcon />
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>

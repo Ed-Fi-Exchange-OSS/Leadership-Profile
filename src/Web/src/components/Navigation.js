@@ -44,6 +44,11 @@ const Navigation = (props) => {
     }).catch(error => console.error(error)); 
   }
 
+  const userRoles = () => {
+    history.push('/admin/');
+    history.go(0);
+  }
+
   return (
     <div>
       <Navbar expand="md">
@@ -58,6 +63,9 @@ const Navigation = (props) => {
                       {authInfo}
                   </DropdownToggle>
                   <DropdownMenu right>
+                      <DropdownItem onClick={() => userRoles()}>
+                        User Roles
+                      </DropdownItem>
                       <DropdownItem onClick={() => logout()}>
                         Logout
                       </DropdownItem>

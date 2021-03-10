@@ -68,6 +68,11 @@ namespace LeadershipProfileAPI.Features.Profile
                 .ForMember(dst => dst.Period, opt => opt.MapFrom(x => x.Period))
                 .ForMember(dst => dst.StaffScore, opt => opt.MapFrom(x => x.StaffScore))
                 .ForMember(dst => dst.StaffScoreNotes, opt => opt.MapFrom(x => x.StaffScoreNotes));
+            CreateMap<StaffProfessionalDevelopment, Get.ProfessionalDevelopment>()
+                .ForMember(dst => dst.AttendanceDate, opt => opt.MapFrom(x => x.AttendanceDate))
+                .ForMember(dst => dst.ProfessionalDevelopmentTitle, opt => opt.MapFrom(x => x.ProfessionalDevelopmentTitle))
+                .ForMember(dst => dst.Location, opt => opt.MapFrom(x => x.Location))
+                .ForMember(dst => dst.AlignmentToLeadership, opt => opt.MapFrom(x => x.AlignmentToLeadership));
         }
 
         private static string GetFullName(string firstName, string middleName, string lastName)

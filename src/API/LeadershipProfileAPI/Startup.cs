@@ -42,6 +42,7 @@ namespace LeadershipProfileAPI
             services.AddDbContext<EdFiDbContext>(options => options.UseSqlServer(connectionString));
 
             services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
+            services.Configure<DataCorrectionSettings>(Configuration.GetSection("DataCorrection"));
             services.Configure<ApplicationConfiguration>(Configuration.GetSection("ApplicationConfiguration"));
 
             services.AddDbContext<EdFiIdentityDbContext>(options => options.UseSqlServer(connectionString));
@@ -69,7 +70,8 @@ namespace LeadershipProfileAPI
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "LeadershipProfileAPI", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo {Title = "LeadershipProfileAPI", Version = "v1"});
+                c.CustomSchemaIds(type => type.ToString());
             });
         }
 
