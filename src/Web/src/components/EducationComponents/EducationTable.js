@@ -39,7 +39,7 @@ const EducationTable = (props) => {
                         (<tr key={i} className="profile-table-body-row">
                             {Object.keys(categories).map((value, i) => {
                                 let displayValue = row[`${value}`];
-                                displayValue = (value.toLowerCase()).includes('date') ? formatDate(displayValue) : displayValue;
+                                displayValue = (value.toLowerCase()).includes('date') ? formatDate(new Date()) : displayValue;
                                 return (<td index={i}>{displayValue}</td>)
                             })}
                         </tr>)) : ''

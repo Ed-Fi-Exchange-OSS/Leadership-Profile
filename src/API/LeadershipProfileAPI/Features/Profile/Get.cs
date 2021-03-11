@@ -34,10 +34,10 @@ namespace LeadershipProfileAPI.Features.Profile
             public string Email { get; set; } = "default@email.com";
             public DateTime? StartDate { get; set; }
             public bool InterestedInNextRole { get; set; }
-            public ICollection<TeacherEducation> Education { get; set; }
-            public ICollection<PositionHistory> PositionHistory { get; set; }
-            public ICollection<Certificate> Certificates { get; set; }
-            public ICollection<ProfessionalDevelopment> ProfessionalDevelopment { get; set; }
+            public IList<TeacherEducation> Education { get; set; }
+            public IList<PositionHistory> PositionHistory { get; set; }
+            public IList<Certificate> Certificates { get; set; }
+            public IList<ProfessionalDevelopment> ProfessionalDevelopment { get; set; }
             public IList<CompetencyRatings> Competencies { get; set; }
             public IList<Category> Category { get; set; }
             public IList<SubCategory> SubCategory { get; set; }
@@ -124,12 +124,12 @@ namespace LeadershipProfileAPI.Features.Profile
                 var response = _mapper.Map<Response>(profileHeader);
 
                 var positionHistory = await _dbContext.ProfilePositionHistory.Where(x => x.StaffUniqueId == request.Id)
-                    .ProjectTo<PositionHistory>(_mapper.ConfigurationProvider).ToArrayAsync(cancellationToken);
+                    .ProjectTo<PositionHistory>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
 
                 response.PositionHistory = positionHistory;
 
                 var certificates = await _dbContext.ProfileCertification.Where(x => x.StaffUniqueId == request.Id)
-                    .ProjectTo<Certificate>(_mapper.ConfigurationProvider).ToArrayAsync(cancellationToken);
+                    .ProjectTo<Certificate>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
 
                 response.Certificates = certificates;
 
@@ -143,16 +143,16 @@ namespace LeadershipProfileAPI.Features.Profile
                     .ProjectTo<ProfessionalDevelopment>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);
 
-                var competencies = await _ctx.ProfileCompetency.Where(x => x.StaffUniqueId == request.Id)
+                var competencies = await _dbContext.ProfileCompetency.Where(x => x.StaffUniqueId == request.Id)
                     .ProjectTo<CompetencyRatings>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
 
-                var criteria = await _ctx.ProfileCategory
+                var criteria = await _dbContext.ProfileCategory
                     .ProjectTo<Category>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
 
-                var subcriteria = await _ctx.ProfileSubCategory
+                var subcriteria = await _dbContext.ProfileSubCategory
                     .ProjectTo<SubCategory>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
 
-                var scores = await _ctx.ProfileScoresByPeriod
+                var scores = await _dbContext.ProfileScoresByPeriod
                     .ProjectTo<ScoresByPeriod>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
 
                 if (competencies.Count == 0)
@@ -908,11 +908,11 @@ namespace LeadershipProfileAPI.Features.Profile
                 {
                     response.ProfessionalDevelopment.Add(new ProfessionalDevelopment()
                     {
-                        Date = DateTime.Now,
-                        CourseName = "Course Name",
+                        ProfessionalDevelopmentTitle = "Course Name",
+                        AttendanceDate = new DateTime(2019, 6, 10),
                         AlignmentToLeadership = "Default Aligment",
                         Location = "Default Location"
-                    });
+                    });;
                 }
 
                 if (response.Certificates.Count == 0)
@@ -940,16 +940,14 @@ namespace LeadershipProfileAPI.Features.Profile
                     {
                         Degree = "Bachelor",
                         Institution = "Institute",
-                        Specialization = "Education",
-                        GraduationDate = new DateTime(2017, 6, 1)
+                        Specialization = "Education"
                     });
 
                     response.Education.Add(new TeacherEducation()
                     {
                         Degree = "Master",
                         Institution = "Institute",
-                        Specialization = "Psicology",
-                        GraduationDate = new DateTime(2018, 6, 1)
+                        Specialization = "Psicology"
                     });
                 }
                 

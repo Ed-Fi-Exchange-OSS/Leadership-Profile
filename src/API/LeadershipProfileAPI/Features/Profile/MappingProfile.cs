@@ -37,18 +37,6 @@ namespace LeadershipProfileAPI.Features.Profile
                 .ForMember(dst => dst.ValidFromDate, opt => opt.MapFrom(x => x.IssuanceDate))
                 .ForMember(dst => dst.ValidToDate, opt => opt.MapFrom(x => x.ExpirationDate));
 
-            CreateMap<ProfileEducation, Get.TeacherEducation>()
-                .ForMember(dst => dst.Institution, opt => opt.Ignore())
-                .ForMember(dst => dst.Degree, opt => opt.MapFrom(x => x.MajorSpecialization))
-                .ForMember(dst => dst.Specialization, opt => opt.MapFrom(x => x.MinorSpecialization))
-                .ForMember(dst => dst.GraduationDate, opt => opt.MapFrom(x => x.EndDate));
-
-            CreateMap<ProfileProfessionalDevelopment, Get.ProfessionalDevelopment>()
-                .ForMember(dst => dst.CourseName, opt => opt.MapFrom(x => x.ProfessionalDevelopmentTitle))
-                .ForMember(dst => dst.Date, opt => opt.MapFrom(x => x.AttendanceDate))
-                .ForMember(dst => dst.Location, opt => opt.Ignore())
-                .ForMember(dst => dst.AlignmentToLeadership, opt => opt.Ignore());
-
             CreateMap<ProfileCompetency, Get.CompetencyRatings>()
                 .ForMember(dst => dst.Categories, opt => opt.MapFrom(x => x.Categories));
 
@@ -68,6 +56,12 @@ namespace LeadershipProfileAPI.Features.Profile
                 .ForMember(dst => dst.Period, opt => opt.MapFrom(x => x.Period))
                 .ForMember(dst => dst.StaffScore, opt => opt.MapFrom(x => x.StaffScore))
                 .ForMember(dst => dst.StaffScoreNotes, opt => opt.MapFrom(x => x.StaffScoreNotes));
+
+            CreateMap<StaffEducation, Get.TeacherEducation>()
+                .ForMember(dst => dst.Institution, opt => opt.MapFrom(x => x.InstitutionAttended))
+                .ForMember(dst => dst.Degree, opt => opt.MapFrom(x => x.DegreeAwarded))
+                .ForMember(dst => dst.Specialization, opt => opt.MapFrom(x => x.MajorOrSpecialization));
+
             CreateMap<StaffProfessionalDevelopment, Get.ProfessionalDevelopment>()
                 .ForMember(dst => dst.AttendanceDate, opt => opt.MapFrom(x => x.AttendanceDate))
                 .ForMember(dst => dst.ProfessionalDevelopmentTitle, opt => opt.MapFrom(x => x.ProfessionalDevelopmentTitle))
