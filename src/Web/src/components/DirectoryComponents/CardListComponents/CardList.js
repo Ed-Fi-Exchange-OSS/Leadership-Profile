@@ -23,25 +23,7 @@ const CardList = (props) => {
                         e.map((ee, ii) => {
                             return (
                             <Col sm="4">
-                                <Card>
-                                    <Row>
-                                        <Col sm="2">
-                                            <DefaultProfile></DefaultProfile>
-                                        </Col>
-                                        <Col>
-                                            <CardTitle tag="h5">{ee.fullName}</CardTitle>
-                                            <CardText><MailIcon /> arivera@mesquite.edu</CardText>
-                                            <CardText><PhoneIcon /> 111-222-3333</CardText>
-                                            <Row>
-                                                <CardText><PersonIcon /> Teacher</CardText>
-                                                <CardText><GeoIcon /> Mesquite</CardText>
-                                            </Row>
-                                        </Col>
-                                        <Col sm="1">
-                                            <RightPointingIcon />
-                                        </Col>
-                                    </Row>
-                                </Card>
+                                <CardProfile data={data}></CardProfile>
                             </Col>
                             );
                         })
