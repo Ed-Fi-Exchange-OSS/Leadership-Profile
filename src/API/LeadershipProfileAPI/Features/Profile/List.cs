@@ -45,6 +45,8 @@ namespace LeadershipProfileAPI.Features.Profile
             public string Institution { get; set; } = "Default Institution";
             public string HighestDegree { get; set; } = "Default Degree";
             public string Major { get; set; } = "Default Major";
+            public string Email { get; set; }
+            public string Telephone { get; set; }
         }
 
         public class QueryHandler : IRequestHandler<Query, Response>
