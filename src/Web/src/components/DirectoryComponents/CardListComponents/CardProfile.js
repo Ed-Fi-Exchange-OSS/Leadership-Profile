@@ -9,25 +9,25 @@ const CardProfile = (props) => {
 
     return(
         <Card>
-            <Row>
+            <Row sm="3">
                 <Col sm="2">
                     <DefaultProfile></DefaultProfile>
                 </Col>
-                <Col>
+                <Col sm="9">
                     <CardTitle tag="h5">{data.fullName}</CardTitle>
                     <CardText><MailIcon />{data.email}</CardText>
                     <CardText><PhoneIcon />{data.telePhone}</CardText>
-                    <Row>
-                        <Col>
-                            <CardText><PersonIcon />{data.highestDegree}</CardText>
-                        </Col>
-                        <Col>
-                            <CardText><GeoIcon />{data.location}</CardText>
-                        </Col>
-                    </Row>
                 </Col>
                 <Col sm="1">
                     <RightPointingIcon />
+                </Col>
+            </Row>
+            <Row>
+                <Col sm={{ size:3, offset:2}}>
+                    <CardText><PersonIcon />{data.highestDegree}</CardText>
+                </Col>
+                <Col>
+                    <CardText><GeoIcon />{data.location}</CardText>
                 </Col>
             </Row>
         </Card>
