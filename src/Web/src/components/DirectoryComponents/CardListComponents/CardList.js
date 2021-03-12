@@ -1,78 +1,54 @@
 import React from 'react';
 import { MailIcon, PhoneIcon, PersonIcon, GeoIcon, RightPointingIcon } from '../../Icons';
 import { Card, CardTitle, CardText, Row, Col } from 'reactstrap';
+import { DefaultProfile } from '../../Images';
 
 // Will use recursion through the data. Card written multiple times right now for visual purposes 
-const CardList = () => {
-    // const [, setActiveComponent] = useState("table");
+const CardList = (props) => {
+    
+    const {data} = props;
+    const dataTable = [];
+
+    for(var i = 0; i <= data.length; i = i+3)
+    {
+        dataTable.push(data.splice(i, i+3));
+    }
 
     return (
         <div>
-            <Row>
-                <Col sm="4">
-                    <Card body onClick="">
-                        <Row>
-                            <Col sm="2">
-                                <img width="50px" height="50px" alt="profile" src="https://hips.hearstapps.com/countryliving.cdnds.net/17/47/1511194376-cavachon-puppy-christmas.jpg" className="rounded-circle" />
+            {dataTable.map((e,i) => {
+                return(
+                <Row>
+                    {                        
+                        e.map((ee, ii) => {
+                            return (
+                            <Col sm="4">
+                                <Card>
+                                    <Row>
+                                        <Col sm="2">
+                                            <DefaultProfile></DefaultProfile>
+                                        </Col>
+                                        <Col>
+                                            <CardTitle tag="h5">{ee.fullName}</CardTitle>
+                                            <CardText><MailIcon /> arivera@mesquite.edu</CardText>
+                                            <CardText><PhoneIcon /> 111-222-3333</CardText>
+                                            <Row>
+                                                <CardText><PersonIcon /> Teacher</CardText>
+                                                <CardText><GeoIcon /> Mesquite</CardText>
+                                            </Row>
+                                        </Col>
+                                        <Col sm="1">
+                                            <RightPointingIcon />
+                                        </Col>
+                                    </Row>
+                                </Card>
                             </Col>
-                            <Col>
-                                <CardTitle tag="h5">Dr. Angela Rivera</CardTitle>
-                                <CardText><MailIcon /> arivera@mesquite.edu</CardText>
-                                <CardText><PhoneIcon /> 111-222-3333</CardText>
-                                <Row>
-                                    <CardText><PersonIcon /> Teacher</CardText>
-                                    <CardText><GeoIcon /> Mesquite</CardText>
-                                </Row>
-                            </Col>
-                            <Col sm="1">
-                                <RightPointingIcon />
-                            </Col>
-                        </Row>
-                    </Card>
-                </Col>
-                <Col sm="4">
-                    <Card body>
-                        <Row>
-                            <Col sm="2">
-                                <img width="50px" height="50px" alt="profile" src="https://hips.hearstapps.com/countryliving.cdnds.net/17/47/1511194376-cavachon-puppy-christmas.jpg" className="rounded-circle" />
-                            </Col>
-                            <Col>
-                                <CardTitle tag="h5">Dr. Angela Rivera</CardTitle>
-                                <CardText><MailIcon /> arivera@mesquite.edu</CardText>
-                                <CardText><PhoneIcon /> 111-222-3333</CardText>
-                                <Row>
-                                    <CardText><PersonIcon /> Teacher</CardText>
-                                    <CardText><GeoIcon /> Mesquite</CardText>
-                                </Row>
-                            </Col>
-                            <Col sm="1">
-                                <RightPointingIcon />
-                            </Col>
-                        </Row>
-                    </Card>
-                </Col>
-                <Col sm="4">
-                    <Card body>
-                        <Row>
-                            <Col sm="2">
-                                <img width="50px" height="50px" alt="profile" src="https://hips.hearstapps.com/countryliving.cdnds.net/17/47/1511194376-cavachon-puppy-christmas.jpg" className="rounded-circle" />
-                            </Col>
-                            <Col>
-                                <CardTitle tag="h5">Dr. Angela Rivera</CardTitle>
-                                <CardText><MailIcon /> arivera@mesquite.edu</CardText>
-                                <CardText><PhoneIcon /> 111-222-3333</CardText>
-                                <Row>
-                                    <CardText><PersonIcon /> Teacher</CardText>
-                                    <CardText><GeoIcon /> Mesquite</CardText>
-                                </Row>
-                            </Col>
-                            <Col sm="1">
-                                <RightPointingIcon />
-                            </Col>
-                        </Row>
-                    </Card>
-                </Col>
-            </Row>
+                            );
+                        })
+                    }
+                </Row>
+                );
+            })}
         </div>
     );
 }
