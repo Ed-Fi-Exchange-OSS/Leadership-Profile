@@ -9,11 +9,17 @@ const CardList = (props) => {
 
     return (
         <div>
-            <CardGroup className>
-                <CardProfile data={data[0]}></CardProfile>
-                <CardProfile data={data[1]}></CardProfile>
-                <CardProfile  data={data[2]}></CardProfile>
-            </CardGroup>
+            <Row>
+                <Col>
+                    <CardProfile data={data[0]}></CardProfile>
+                </Col>
+                <Col>
+                    <CardProfile data={data[1]}></CardProfile>
+                </Col>
+                <Col>
+                    <CardProfile  data={data[2]}></CardProfile>
+                </Col>
+            </Row>
         </div>
     );
 }
