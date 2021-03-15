@@ -21,16 +21,13 @@ namespace LeadershipProfileAPI.Data
         public DbSet<ProfileEducation> ProfileEducation { get; set; }
         public DbSet<StaffProfessionalDevelopment> StaffProfessionalDevelopments { get; set; }
         public DbSet<StaffAdmin> StaffAdmins { get; set; }
-        public DbSet<ProfileCompetency> ProfileCompetency { get; set; }
-        public DbSet<ProfileCategory> ProfileCategory { get; set; }
-        public DbSet<ProfileSubCategory> ProfileSubCategory { get; set; }
-        public DbSet<ProfileScoresByPeriod> ProfileScoresByPeriod { get; set; }
+        //public DbSet<ProfileCompetency> ProfileCompetency { get; set; }
+        //public DbSet<ProfileCategory> ProfileCategory { get; set; }
+        //public DbSet<ProfileSubCategory> ProfileSubCategory { get; set; }
+        //public DbSet<ProfileScoresByPeriod> ProfileScoresByPeriod { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-
             modelBuilder.Entity<Staff>().ToTable("Staff", schema: "edfi")
                .Property(p => p.LastName).HasColumnName("LastSurname");
 
@@ -65,42 +62,39 @@ namespace LeadershipProfileAPI.Data
                 .ToView("vw_StaffProfessionalDevelopment", "edfi")
                 .HasKey(k => new { k.StaffUsi, k.ProfessionalDevelopmentTitle });
 
-            modelBuilder.Entity<ProfileCategory>()
-               .HasOne<ProfileCompetency>()
-               .WithMany(o => o.Categories)
-               .HasForeignKey(k => k.CompetencyId)
-               .OnDelete(DeleteBehavior.Cascade);
+            //modelBuilder.Entity<ProfileCategory>()
+            //   .HasOne<ProfileCompetency>()
+            //   .WithMany(o => o.Categories)
+            //   .HasForeignKey(k => k.CompetencyId)
+            //   .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<ProfileSubCategory>()
-                .HasOne<ProfileCategory>()
-                .WithMany(o => o.SubCategories)
-                .HasForeignKey(k => k.CategoryId)
-                .OnDelete(DeleteBehavior.Cascade);
+            //modelBuilder.Entity<ProfileSubCategory>()
+            //    .HasOne<ProfileCategory>()
+            //    .WithMany(o => o.SubCategories)
+            //    .HasForeignKey(k => k.CategoryId)
+            //    .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<ProfileScoresByPeriod>()
-                .HasOne<ProfileSubCategory>()
-                .WithMany(o => o.ScoresByPeriod)
-                .HasForeignKey(k => k.SubCategoryId)
-                .OnDelete(DeleteBehavior.Cascade);
+            //modelBuilder.Entity<ProfileScoresByPeriod>()
+            //    .HasOne<ProfileSubCategory>()
+            //    .WithMany(o => o.ScoresByPeriod)
+            //    .HasForeignKey(k => k.SubCategoryId)
+            //    .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<ProfileCompetency>()
-                .ToTable("ProfileCompetency")
-                .HasKey(k => k.CompetencyId);
+            //modelBuilder.Entity<ProfileCompetency>()
+            //    .ToTable("ProfileCompetency")
+            //    .HasKey(k => k.CompetencyId);
 
-            modelBuilder.Entity<ProfileCategory>()
-                .ToTable("ProfileCategory")
-                .HasKey(k => k.CategoryId);
+            //modelBuilder.Entity<ProfileCategory>()
+            //    .ToTable("ProfileCategory")
+            //    .HasKey(k => k.CategoryId);
 
-            modelBuilder.Entity<ProfileSubCategory>()
-                .ToTable("ProfileSubCategory")
-                .HasKey(k => k.SubCategoryId);
+            //modelBuilder.Entity<ProfileSubCategory>()
+            //    .ToTable("ProfileSubCategory")
+            //    .HasKey(k => k.SubCategoryId);
 
-            modelBuilder.Entity<ProfileScoresByPeriod>()
-                .ToTable("ProfileScoresByPeriod")
-                .HasKey(k => k.ScoresByPeriodId);
-
-            stopwatch.Stop();
-            var time = stopwatch.ElapsedMilliseconds;
+            //modelBuilder.Entity<ProfileScoresByPeriod>()
+            //    .ToTable("ProfileScoresByPeriod")
+            //    .HasKey(k => k.ScoresByPeriodId);
         }
     }
 

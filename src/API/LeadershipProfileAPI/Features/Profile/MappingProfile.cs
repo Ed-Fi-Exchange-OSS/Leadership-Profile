@@ -39,25 +39,25 @@ namespace LeadershipProfileAPI.Features.Profile
                 .ForMember(dst => dst.ValidFromDate, opt => opt.MapFrom(x => x.IssuanceDate))
                 .ForMember(dst => dst.ValidToDate, opt => opt.MapFrom(x => x.ExpirationDate));
 
-            CreateMap<ProfileCompetency, Get.CompetencyRatings>()
-                .ForMember(dst => dst.Categories, opt => opt.MapFrom(x => x.Categories));
+            //CreateMap<ProfileCompetency, Get.CompetencyRatings>()
+            //    .ForMember(dst => dst.Categories, opt => opt.MapFrom(x => x.Categories));
 
-            CreateMap<ProfileCategory, Get.Category>()
-                .ForMember(dst => dst.CategoryTitle, opt => opt.MapFrom(x => x.CategoryTitle))
-                .ForMember(dst => dst.SubCatCriteria, opt => opt.MapFrom(x => x.SubCategories));
+            //CreateMap<ProfileCategory, Get.Category>()
+            //    .ForMember(dst => dst.CategoryTitle, opt => opt.MapFrom(x => x.CategoryTitle))
+            //    .ForMember(dst => dst.SubCatCriteria, opt => opt.MapFrom(x => x.SubCategories));
 
-            CreateMap<ProfileSubCategory, Get.SubCategory>()
-                .ForMember(dst => dst.SubCatNotes, opt => opt.MapFrom(x => x.SubCatNotes))
-                .ForMember(dst => dst.SubCatTitle, opt => opt.MapFrom(x => x.SubCatTitle))
-                .ForMember(dst => dst.ScoresByPeriod, opt => opt.MapFrom(x => x.ScoresByPeriod));
+            //CreateMap<ProfileSubCategory, Get.SubCategory>()
+            //    .ForMember(dst => dst.SubCatNotes, opt => opt.MapFrom(x => x.SubCatNotes))
+            //    .ForMember(dst => dst.SubCatTitle, opt => opt.MapFrom(x => x.SubCatTitle))
+            //    .ForMember(dst => dst.ScoresByPeriod, opt => opt.MapFrom(x => x.ScoresByPeriod));
 
-            CreateMap<ProfileScoresByPeriod, Get.ScoresByPeriod>()
-                .ForMember(dst => dst.DistrictAvg, opt => opt.MapFrom(x => x.DistrictAvg))
-                .ForMember(dst => dst.DistrictMax, opt => opt.MapFrom(x => x.DistrictMax))
-                .ForMember(dst => dst.DistrictMin, opt => opt.MapFrom(x => x.DistrictMin))
-                .ForMember(dst => dst.Period, opt => opt.MapFrom(x => x.Period))
-                .ForMember(dst => dst.StaffScore, opt => opt.MapFrom(x => x.StaffScore))
-                .ForMember(dst => dst.StaffScoreNotes, opt => opt.MapFrom(x => x.StaffScoreNotes));
+            //CreateMap<ProfileScoresByPeriod, Get.ScoresByPeriod>()
+            //    .ForMember(dst => dst.DistrictAvg, opt => opt.MapFrom(x => x.DistrictAvg))
+            //    .ForMember(dst => dst.DistrictMax, opt => opt.MapFrom(x => x.DistrictMax))
+            //    .ForMember(dst => dst.DistrictMin, opt => opt.MapFrom(x => x.DistrictMin))
+            //    .ForMember(dst => dst.Period, opt => opt.MapFrom(x => x.Period))
+            //    .ForMember(dst => dst.StaffScore, opt => opt.MapFrom(x => x.StaffScore))
+            //    .ForMember(dst => dst.StaffScoreNotes, opt => opt.MapFrom(x => x.StaffScoreNotes));
 
             CreateMap<StaffEducation, Get.TeacherEducation>()
                 .ForMember(dst => dst.Institution, opt => opt.MapFrom(x => x.InstitutionAttended))
