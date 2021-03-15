@@ -44,7 +44,7 @@ const DataCorrectionModal = (props) => {
                         </div>
                         <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
                             <Label for="subject" className="label-feedback mr-sm-2">Subject</Label>
-                            <Input type="text" name="subject" id="subject" {...bind}/>
+                            <Input type="text" name="subject" id="subject" value="Data Correction Request" {...bind}/>
                         </FormGroup>
                         <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
                             <Label for="messagescontent" className="label-feedback mr-sm-2">Description</Label>
