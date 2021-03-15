@@ -349,6 +349,18 @@
   color: white;
 }
 
+/*Leader of Self */
+.top-buffer { 
+  margin-top:20px; 
+}
+.scores-box{
+  border: 1px solid #ccc!important;
+  border-radius: 16px;
+  background-color: #fbfbfb;
+  text-align: center;
+  font-size: x-small;
+}
+
 /* Role Managment List */
 .role-card-title{
   width: auto !important;

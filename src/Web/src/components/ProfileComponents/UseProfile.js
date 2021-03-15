@@ -4,9 +4,10 @@ import config from '../../config';
 function UseProfile(id) {
     const { API_URL, API_CONFIG } = config();
     const [data, setData] = useState({});
-
+    
     useEffect(() => {
         let unmounted = false;
+
         const apiUrl = new URL(`/profile/${id}`, API_URL);
         fetch(apiUrl, API_CONFIG('GET')
         ).then(response => response.json())

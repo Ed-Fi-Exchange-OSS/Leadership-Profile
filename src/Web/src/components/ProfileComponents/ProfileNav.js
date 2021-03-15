@@ -8,7 +8,7 @@ const ProfileNav = (props) => {
                 <NavLink href="#">General Info</NavLink>
             </NavItem>
             <NavItem>
-                <NavLink href="#">Leader of Org</NavLink>
+                <NavLink href="#">Leader of Self</NavLink>
             </NavItem>
         </Nav>)
 }
