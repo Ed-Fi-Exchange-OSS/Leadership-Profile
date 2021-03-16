@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { set } from 'js-cookie';
+import React, { useRef, useState } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Label, Input, Form, FormGroup } from 'reactstrap';
 import UseDataCorrectionModal from './UseDataCorrectionModal';
 
@@ -9,11 +10,17 @@ const DataCorrectionModal = (props) => {
     const [modal, setModal] = useState(isOpen);
     const toggle = () => setModal(!modal); 
 
+    const staffUniqueId = useRef(null);
+    const fullName = useRef(null);
+    const email = useRef(null);
+    const phone = useRef(null);
+
     const handleOnSubmit = (e) => {
         e.preventDefault();
-        const data = {"sui": e.currentTarget[0].value,
-            "fullname": e.currentTarget[1].value,
-            "email": e.currentTarget[2].value}
+        const data = {"sui": staffUniqueId.current.props.value,
+            "fullname": fullName.current.props.value,
+            "email": email.current.props.value,
+            "phone": phone.current.props.value}
         sendFeedback(data);
 
         setModal(false);
@@ -26,25 +33,27 @@ const DataCorrectionModal = (props) => {
                 <ModalHeader toggle={toggle}>Feedback</ModalHeader>
                 <ModalBody>
                     <Form id="feedback-form" onSubmit={e => handleOnSubmit(e)}>
-                        <Input type="hidden" name="staffUniqueId" id="staffUniqueId" value={data.staffUniqueId}></Input>
-                        <Input type="hidden" name="fullName" id="fullName" value={data.fullName}></Input>
-                        <Input type="hidden" name="email" id="email" value={data.email}></Input>
-
-                        <div className="mb-2 mr-sm-2 mb-sm-0">
+                        <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
                             <Label for="lblsubject" className="label-feedback mr-sm-2">StaffUniqueId: </Label>
                             <Label for="lblsubject" className="mr-sm-2">{data.staffUniqueId}</Label>
-                        </div>
-                        <div className="mb-2 mr-sm-2 mb-sm-0">
+                            <Input type="hidden" ref={staffUniqueId} name="staffUniqueId" id="staffUniqueId" value={data.staffUniqueId} {...bind}></Input>
+                        </FormGroup>
+                        <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
                             <Label for="staffsubject" className="label-feedback mr-sm-2">Staff Name: </Label>
                             <Label for="staffsubject" className="mr-sm-2">{data.fullName}</Label>
-                        </div>
-                        <div className="mb-2 mr-sm-2 mb-sm-0">
+                            <Input type="hidden" ref={fullName} name="fullName" id="fullName" value={data.fullName} {...bind}></Input>
+                        </FormGroup>
+                        <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
                             <Label for="emailsubject" className="label-feedback mr-sm-2">Staff Email: </Label>
                             <Label for="emailsubject" className="mr-sm-2">{data.email}</Label>
-                        </div>
+                            <Input type="hidden" ref={email} name="email" id="email" value={data.email} {...bind}></Input>
+                        </FormGroup>
+                        <FormGroup>
+                            <Input type="hidden" ref={phone} name="phone" id="phone" value={data.phone} {...bind}></Input>
+                        </FormGroup>
                         <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
                             <Label for="subject" className="label-feedback mr-sm-2">Subject</Label>
-                            <Input type="text" name="subject" id="subject" {...bind}/>
+                            <Input type="text" name="subject" id="subject" value="Data Correction Request" {...bind}/>
                         </FormGroup>
                         <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
                             <Label for="messagescontent" className="label-feedback mr-sm-2">Description</Label>

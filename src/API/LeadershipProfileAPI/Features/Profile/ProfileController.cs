@@ -60,7 +60,8 @@ namespace LeadershipProfileAPI.Features.Profile
                 MessageSubject = data.MessageSubject,
                 StaffEmail = data.StaffEmail,
                 StaffUniqueId = data.StaffUniqueId,
-                UserFullName = data.UserFullName
+                UserFullName = data.UserFullName,
+                Telephone = data.Telephone
             });
 
             if (result == null)
