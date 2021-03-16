@@ -35,9 +35,39 @@ namespace LeadershipProfileAPI.Features.Profile
             public DateTime? StartDate { get; set; }
             public bool InterestedInNextRole { get; set; }
             public IEnumerable<TeacherEducation> Education { get; set; }
-            public PositionHistory[] PositionHistory { get; set; }
-            public Certificate[] Certificates { get; set; }
+            public IEnumerable<PositionHistory> PositionHistory { get; set; }
+            public IEnumerable<Certificate> Certificates { get; set; }
             public IEnumerable<ProfessionalDevelopment> ProfessionalDevelopment { get; set; }
+            public IEnumerable<CompetencyRatings> Competencies { get; set; }
+            public IEnumerable<Category> Category { get; set; }
+            public IEnumerable<SubCategory> SubCategory { get; set; }
+            public IEnumerable<ScoresByPeriod> ScoresByPeriod { get; set; }
+
+        }
+
+        public class CompetencyRatings
+        {
+            public IList<Category> Categories {get;set;}
+        }
+        public class Category
+        {
+            public string CategoryTitle { get; set; }
+            public IList<SubCategory> SubCatCriteria { get; set; }
+        }
+        public class SubCategory
+        {
+            public string SubCatTitle { get; set; } = "Default Sub Category";
+            public string SubCatNotes { get; set; } = "Default Note";       
+            public IList<ScoresByPeriod> ScoresByPeriod { get; set; }
+        }
+        public class ScoresByPeriod
+        {
+            public string Period { get; set; } = "Default Period";
+            public double DistrictMin { get; set; } = 0;
+            public double DistrictMax { get; set; } = 0;
+            public double DistrictAvg { get; set; } = 0;
+            public double StaffScore { get; set; } = 0;
+            public string StaffScoreNotes { get; set; } = "Default Note";
         }
 
         public class PositionHistory
@@ -94,12 +124,12 @@ namespace LeadershipProfileAPI.Features.Profile
                 var response = _mapper.Map<Response>(profileHeader);
 
                 var positionHistory = await _dbContext.ProfilePositionHistory.Where(x => x.StaffUniqueId == request.Id)
-                    .ProjectTo<PositionHistory>(_mapper.ConfigurationProvider).ToArrayAsync(cancellationToken);
+                    .ProjectTo<PositionHistory>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
 
                 response.PositionHistory = positionHistory;
 
                 var certificates = await _dbContext.ProfileCertification.Where(x => x.StaffUniqueId == request.Id)
-                    .ProjectTo<Certificate>(_mapper.ConfigurationProvider).ToArrayAsync(cancellationToken);
+                    .ProjectTo<Certificate>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
 
                 response.Certificates = certificates;
 
@@ -112,6 +142,18 @@ namespace LeadershipProfileAPI.Features.Profile
                     .Where(o => o.StaffUniqueId == request.Id)
                     .ProjectTo<ProfessionalDevelopment>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);
+
+                //var competencies = await _dbContext.ProfileCompetency.Where(x => x.StaffUniqueId == request.Id)
+                //    .ProjectTo<CompetencyRatings>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
+
+                //var criteria = await _dbContext.ProfileCategory
+                //    .ProjectTo<Category>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
+
+                //var subcriteria = await _dbContext.ProfileSubCategory
+                //    .ProjectTo<SubCategory>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
+
+                //var scores = await _dbContext.ProfileScoresByPeriod
+                //    .ProjectTo<ScoresByPeriod>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
 
                 return response;
             }
