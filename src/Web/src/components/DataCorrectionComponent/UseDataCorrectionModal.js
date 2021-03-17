@@ -34,6 +34,7 @@ function UseDataCorrectionModal() {
         feedbackInfo["staffUniqueId"] = data.sui;
         feedbackInfo["UserFullName"] = data.fullname;
         feedbackInfo["StaffEmail"] = data.email;
+        feedbackInfo["Telephone"] = data.phone;
 
         const apiUrl = new URL('/profile/datacorrection', API_URL);
         fetch(apiUrl, API_CONFIG('POST', JSON.stringify(feedbackInfo)))

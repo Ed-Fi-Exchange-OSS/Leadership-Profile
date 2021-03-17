@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,6 +22,7 @@ namespace LeadershipProfileAPI.Features.Profile
             public string StaffEmail { get; set; }
             public string MessageSubject { get; set; }
             public string MessageDescription { get; set; }
+            public string Telephone { get; set; }
         }
 
         public class Response
@@ -62,7 +64,14 @@ namespace LeadershipProfileAPI.Features.Profile
 
                 var adminEmail = _configSettings.AdminEmail;
 
-                var message = request.MessageDescription;
+                var title = "<h1 style=\"color: #4485b8;\">Leadership Profile - Data Correction Request Email</h1>";
+                var staffIdMessage = $"<p><strong style=\"color: #000;\">From Staff ID: </strong> {request.StaffUniqueId} </p>";
+                var staffPhone = $"<p><strong style=\"color: #000;\">Staff Phone: </strong> {request.Telephone} </p>";
+                var staffEmail = $"<p><strong style=\"color: #000;\">Staff Email: </strong> {request.StaffEmail} </p>";
+                var details = "<h4>Details: </h4>";
+                var description = $"<p>{request.MessageDescription} </p>";
+
+                var message = new StringBuilder().Append(title).Append(staffIdMessage).Append(staffPhone).Append(staffEmail).Append(details).Append(description).ToString();
 
                 await _emailSender.SendEmailAsync(adminEmail, $"{request.MessageSubject}", message);
 

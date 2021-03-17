@@ -12,5 +12,6 @@ namespace LeadershipProfileAPI.Data.Models
         public string StaffEmail { get; set; }
         public string MessageSubject { get; set; }
         public string MessageDescription { get; set; }
+        public string Telephone { get; set; }
     }
 }
