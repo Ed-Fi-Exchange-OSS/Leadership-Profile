@@ -59,7 +59,7 @@ function UseResetPassword() {
                     'POST', JSON.stringify({
                         'username': searchableUrl.current.searchParams.get('username'),
                         'newPassword': newPassword,
-                        'token': searchableUrl.current.searchParams.get('token')
+                        'token': window.location.search.split('token=')[1]
                     })
                 )).then(response => response.json())
                 .then((response) => {

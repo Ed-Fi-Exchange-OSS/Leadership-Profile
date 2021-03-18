@@ -7,6 +7,6 @@ namespace LeadershipProfileAPI.Infrastructure
 {
     public class ApplicationConfiguration
     {
-        public string WebApplicationUrl { get; set; }
+        public string ResetPasswordBaseUrl { get; set; }
     }
 }
