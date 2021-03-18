@@ -377,3 +377,8 @@
 .modal-link{
   font-size: small;
 }
+
+/* Card Profile */
+.card-spacing{
+  margin-bottom: 30px;
+}
