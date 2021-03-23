@@ -13,7 +13,7 @@ namespace LeadershipProfileAPI.Controllers.WebControls.DropDownList.Degrees
     [TypeFilter(typeof(ApiExceptionFilter))]
     [Route("api/webcontrols/dropdownlist/degrees")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class DegreesController : ControllerBase
     {
         private readonly ILogger<DegreesController> _logger;

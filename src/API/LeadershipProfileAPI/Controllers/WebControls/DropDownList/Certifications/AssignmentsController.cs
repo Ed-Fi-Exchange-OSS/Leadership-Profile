@@ -13,7 +13,7 @@ namespace LeadershipProfileAPI.Controllers.WebControls.DropDownList.Certificatio
     [TypeFilter(typeof(ApiExceptionFilter))]
     [Route("api/webcontrols/dropdownlist/certifications")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class CertificationsController : ControllerBase
     {
         private readonly ILogger<CertificationsController> _logger;

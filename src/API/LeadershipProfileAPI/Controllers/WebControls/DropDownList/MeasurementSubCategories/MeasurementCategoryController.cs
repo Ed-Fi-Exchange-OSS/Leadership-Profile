@@ -11,7 +11,7 @@ namespace LeadershipProfileAPI.Controllers.WebControls.DropDownList.MeasurementS
     [TypeFilter(typeof(ApiExceptionFilter))]
     [Route("api/webcontrols/dropdownlist/measurementsubcategories")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class MeasurementSubCategoryController : ControllerBase
     {
         private readonly ILogger<MeasurementSubCategoryController> _logger;

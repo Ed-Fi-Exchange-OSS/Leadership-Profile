@@ -13,7 +13,7 @@ namespace LeadershipProfileAPI.Controllers.WebControls.DropDownList.Assignments
     [TypeFilter(typeof(ApiExceptionFilter))]
     [Route("api/webcontrols/dropdownlist/assignments")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class AssignmentsController : ControllerBase
     {
         private readonly ILogger<AssignmentsController> _logger;
