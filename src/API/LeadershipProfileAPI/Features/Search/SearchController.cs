@@ -1,11 +1,10 @@
-﻿using LeadershipProfileAPI.Data.Models.ProfileSearchRequest;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using LeadershipProfileAPI.Data.Models.ProfileSearchRequest;
 using LeadershipProfileAPI.Infrastructure;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace LeadershipProfileAPI.Features.Search
 {

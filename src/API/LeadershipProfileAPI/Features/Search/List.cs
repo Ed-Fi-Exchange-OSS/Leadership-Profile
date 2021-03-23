@@ -1,12 +1,12 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using LeadershipProfileAPI.Data;
 using LeadershipProfileAPI.Data.Models.ProfileSearchRequest;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace LeadershipProfileAPI.Features.Search
 {
@@ -65,13 +65,13 @@ namespace LeadershipProfileAPI.Features.Search
             {
                 var results = _dbQueryData.GetSearchResults(
                     request.SearchRequestBody,
-                    request.SortBy ?? "asc", 
-                    request.SortField ?? "id", 
+                    request.SortBy ?? "asc",
+                    request.SortField ?? "id",
                     request.Page ?? 1);
 
-                var list = await results.AnyAsync(cancellationToken) 
-                    ? await results.ProjectTo<SearchResult>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken) 
-                    : new List<SearchResult>();
+                var list = await results
+                    .ProjectTo<SearchResult>(_mapper.ConfigurationProvider)
+                    .ToListAsync(cancellationToken);
 
                 return new Response
                 {

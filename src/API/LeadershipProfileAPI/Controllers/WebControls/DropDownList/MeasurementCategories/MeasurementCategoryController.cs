@@ -1,10 +1,10 @@
-﻿using LeadershipProfileAPI.Infrastructure;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using LeadershipProfileAPI.Infrastructure;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace LeadershipProfileAPI.Controllers.WebControls.DropDownList.MeasurementCategories
 {

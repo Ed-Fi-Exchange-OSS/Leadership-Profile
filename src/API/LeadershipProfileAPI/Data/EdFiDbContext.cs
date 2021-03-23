@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using LeadershipProfileAPI.Data.Models;
 using LeadershipProfileAPI.Data.Models.ListItem;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +21,7 @@ namespace LeadershipProfileAPI.Data
         public DbSet<ProfileEducation> ProfileEducation { get; set; }
         public DbSet<StaffProfessionalDevelopment> StaffProfessionalDevelopments { get; set; }
         public DbSet<StaffAdmin> StaffAdmins { get; set; }
-        public DbSet<StaffSearch> StaffSearch { get; set; }
+        public DbSet<StaffSearch> StaffSearches { get; set; }
         public DbSet<ListItemAssignment> ListItemAssignments { get; set; }
         public DbSet<ListItemCategory> ListItemCategories { get; set; }
         public DbSet<ListItemCertification> ListItemCertifications { get; set; }

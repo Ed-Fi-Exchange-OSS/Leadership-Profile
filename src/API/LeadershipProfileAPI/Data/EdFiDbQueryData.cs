@@ -95,11 +95,11 @@ namespace LeadershipProfileAPI.Data
 
             var sql = $@"
                 select
-                    StaffUsi
+                     StaffUsi
                     ,StaffUniqueId
                     ,FirstName
                     ,MiddleName
-                    ,LastSurName
+                    ,LastSurname
                     ,FullName
                     ,YearsOfService
 	                ,Assignment
@@ -114,7 +114,7 @@ namespace LeadershipProfileAPI.Data
                 fetch next {pageSize} rows only
             ";
 
-            return _edfiDbContext.StaffSearch.FromSqlRaw(sql);
+            return _edfiDbContext.StaffSearches.FromSqlRaw(sql);
         }
     }
 }
