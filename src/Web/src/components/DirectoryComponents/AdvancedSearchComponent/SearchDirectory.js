@@ -1,23 +1,22 @@
 import React, { useState } from 'react';
-import { TableViewIcon, CardViewIcon } from '../Icons';
-import BreadcrumbList from '../Breadcrumb';
-import DirectoryFilters from './DirectoryFilters';
-import TableList from './TableList';
-import CardList from './CardListComponents/CardList';
-import UseDirectory from './UseDirectory';
-import ErrorMessage from '../ErrorMessage';
+import { TableViewIcon, CardViewIcon } from '../../Icons';
+import BreadcrumbList from '../../Breadcrumb';
+import TableList from './../TableList';
+import CardList from './../CardListComponents/CardList';
+import UseSearchDirectory from './UseSearchDirectory';
+import ErrorMessage from '../../ErrorMessage';
+import AdvancedSearch from './AdvancedSearch';
 
-const Directory = () => {
+const SearchDirectory = () => {
     const [activeComponent, setActiveComponent] = useState("table");
-    const { setColumnSort, sort, data, paging, setPage, search, setSearchValue, error } = UseDirectory();
+    const { setColumnSort, sort, data, paging, setPage, search, setSearchValue, error } = UseSearchDirectory();
     return (
         <div>
             <div className='directory-div'>
-                <h2 className='directory-title'>Directory</h2>
+                <h2 className=''>Search Directory</h2>
                 <div className="directory-subtitle-controls">
                     <BreadcrumbList currentPage="home" />
                     <div className="view-style-buttons">
-                        <span className="view-style-label">View Style</span>
                         <button color="primary" className="btn btn-primary view-style-button-first view-style-button" onClick={() => setActiveComponent("table")}>
                             <TableViewIcon />
                         </button>
@@ -27,8 +26,8 @@ const Directory = () => {
                     </div>
                 </div>
             </div>
-            <DirectoryFilters search={search} setSearchValue={setSearchValue} />
-            
+            <AdvancedSearch/>
+            <br/>
             { error ? <ErrorMessage /> : '' }
             { activeComponent === "table" ? (
                 <TableList sort={sort} data={data} setColumnSort={setColumnSort} paging={paging} setPage={setPage} />
@@ -41,4 +40,4 @@ const Directory = () => {
     );
 }
 
-export default Directory;
+export default SearchDirectory;

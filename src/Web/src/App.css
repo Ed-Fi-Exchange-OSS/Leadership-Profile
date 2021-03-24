@@ -382,3 +382,14 @@
 .card-spacing{
   margin-bottom: 30px;
 }
+
+/* Advanced Search filter box */
+.advanced-filters-container{
+  border-radius: 4px;
+  background-color: #A6C1FF;
+  padding: 24px 10px;
+}
+
+.advanced-search-row{
+  margin-bottom:30px;
+}
