@@ -48,7 +48,9 @@ namespace LeadershipProfileAPI
             services.AddDbContext<EdFiIdentityDbContext>(options => options.UseSqlServer(connectionString));
             services.AddDbContext<EdFiDbContext>(options => options.UseSqlServer(connectionString));
 
-            AddAuth(services);
+            // Implement appropriate auth for your organization
+            AddAuth(services); // Using a database for your aspnet users
+            //AddAADAuth(services); // Using AAD for your users
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Latest);
 
@@ -70,8 +72,79 @@ namespace LeadershipProfileAPI
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo {Title = "LeadershipProfileAPI", Version = "v1"});
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "LeadershipProfileAPI", Version = "v1" });
                 c.CustomSchemaIds(type => type.ToString());
+            });
+        }
+
+        /// <summary>
+        /// Method for implementing Azure Active Directory authorization
+        /// </summary>
+        /// <param name="services"></param>
+        private void AddAADAuth(IServiceCollection services)
+        {
+            services.AddAuthentication()
+                .AddOpenIdConnect("aad", "Azure AD", options =>
+                {
+                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                    options.SignOutScheme = IdentityServerConstants.SignoutScheme;
+
+                    options.Authority = $"https://login.windows.net/{Configuration["AADAuthTenantId"]}";
+                    options.ClientId = $"{Configuration["AADAuthClientId"]}";
+                    options.ResponseType = Microsoft.IdentityModel.Protocols.OpenIdConnect.OpenIdConnectResponseType.IdToken;
+                    options.CallbackPath = "/signin-aad";
+                    options.SignedOutCallbackPath = "/signout-callback-aad";
+                    options.RemoteSignOutPath = "/signout-aad";
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        NameClaimType = "name",
+                        RoleClaimType = "role"
+                    };
+                }).AddJwtBearer("Bearer", options =>
+                {
+                    options.Authority = "https://localhost:5100";
+
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateAudience = false,
+                        RoleClaimType = "role"
+                    };
+
+                    options.RequireHttpsMetadata = false;
+                });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ApiScope", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("scope", IdentityConfig.ApiName);
+                });
+            });
+
+            services.AddCors(options =>
+            {
+                // this defines a CORS policy called "default"
+                options.AddPolicy("default", policy =>
+                {
+                    policy.WithOrigins("https://localhost:5100", "http://localhost")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                });
+
+            });
+
+            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<EdFiIdentityDbContext>().AddDefaultTokenProviders();
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Events.OnRedirectToAccessDenied =
+                    options.Events.OnRedirectToLogin = context =>
+                    {
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        return Task.FromResult<object>(null);
+                    };
             });
         }
 
