@@ -93,6 +93,7 @@ namespace LeadershipProfileAPI.Data
                     { "rating", "rating"}
                 };
 
+            // Implement the view in SQL, call it here
             var sql = $@"
                 select
                      StaffUsi
@@ -109,12 +110,105 @@ namespace LeadershipProfileAPI.Data
                     ,RatingSubCategory
                     ,Rating
                 from edfi.vw_StaffSearch
+                {(clauseConditions(body))}
                 order by case when {fieldMapping[sortField]} is null then 1 else 0 end, {fieldMapping[sortField]} {sortBy}
                 offset {((currentPage - 1) * pageSize)} rows
                 fetch next {pageSize} rows only
             ";
 
             return _edfiDbContext.StaffSearches.FromSqlRaw(sql);
+        }
+
+        private string clauseConditions(ProfileSearchRequestBody body)
+        {
+            var yearConditions = clauseYears(body.MinYears, body.MaxYears);
+            var assignmentsConditions = clauseAssignments(body.Assignments);
+            var certificatesConditions = clauseCertifications(body.Certifications);
+            var degreesConditions = clauseDegrees(body.Degrees);
+            var ratingsConditions = clauseRatings(body.Ratings);
+
+            var conditions = new List<string>();
+
+            if (!string.IsNullOrWhiteSpace(yearConditions))
+            {
+                conditions.Add(yearConditions);
+            }
+
+            if (!string.IsNullOrWhiteSpace(assignmentsConditions))
+            {
+                conditions.Add(assignmentsConditions);
+            }
+
+            if (!string.IsNullOrWhiteSpace(certificatesConditions))
+            {
+                conditions.Add(certificatesConditions);
+            }
+
+            if (!string.IsNullOrWhiteSpace(degreesConditions))
+            {
+                conditions.Add(degreesConditions);
+            }
+
+            if (!string.IsNullOrWhiteSpace(ratingsConditions))
+            {
+                conditions.Add(ratingsConditions);
+            }
+
+            // Join the strings and separate them with 'and'
+            var whereCondition = string.Join(" and ", conditions);
+
+            if (!string.IsNullOrWhiteSpace(whereCondition))
+            {
+                return $"where {whereCondition}";
+            }
+
+            return "--where excluded, no conditions provided";
+        }
+
+        private string clauseYears(int min, int max) => $""; // Provide the condition being searched for matching your schema. Example: "(y.YearsOfService >= min and y.YearsOfService <= max)"
+
+        private string clauseAssignments(ProfileSearchRequestAssignments assignments)
+        {
+            if (assignments != null)
+            {
+                // Provide the condition being searched for matching your schema. Examples: "(a.StartDate = '1982-07-14')" or "(a.StartDate = '1982-07-14' and a.PositionId IN (5432, 234, 5331, 34))"
+                return $"";
+            }
+
+            return string.Empty;
+        }
+
+        private string clauseCertifications(ProfileSearchRequestCertifications certifications)
+        {
+            if (certifications != null)
+            {
+                // Provide the condition being searched for matching your schema. Examples: "(c.IssueDate = '2017-04-23')" or "(c.IssueDate = '2017-04-23' and c.CerfificationId IN (234, 12, 98))"
+                return $"";
+            }
+
+            return string.Empty;
+        }
+
+        private string clauseDegrees(ProfileSearchRequestDegrees degrees)
+        {
+            if (degrees != null)
+            {
+                // Provide the condition being searched for matching your schema. Example: "(d.DegreeId = 68)"
+                return $"";
+            }
+
+            return string.Empty;
+        }
+
+        private string clauseRatings(ProfileSearchRequestRatings ratings)
+        {
+            if (ratings != null)
+            {
+                // Provide the condition being searched for matching your schema. Examples: "(r.Rating = 3)" or "(r.Rating = 3 and r.RatingCateogryId = 45)"
+                return $"";
+            }
+
+            return string.Empty;
         }
     }
 }

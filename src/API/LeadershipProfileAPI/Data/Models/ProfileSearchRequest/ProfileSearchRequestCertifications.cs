@@ -4,7 +4,7 @@ namespace LeadershipProfileAPI.Data.Models.ProfileSearchRequest
 {
     public class ProfileSearchRequestCertifications
     {
-        public object IssueDate { get; set; }
+        public string IssueDate { get; set; }
         public ICollection<int> Values { get; set; }
     }
 }
