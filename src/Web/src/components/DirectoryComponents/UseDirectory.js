@@ -98,7 +98,13 @@ function UseDirectory() {
     //     setSearch(value);
     // }
 
-    return { setColumnSort, setSort, sort, data, paging, setPage, error }
+    function goToAdvancedSearch(){
+        let path = '/advanced/search?page=1&sortBy=desc&sortField=id';
+        history.push(path);
+        history.go(0);
+    }
+
+    return { setColumnSort, setSort, sort, data, paging, setPage, error,goToAdvancedSearch }
 }
 
 export default UseDirectory;
