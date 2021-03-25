@@ -2,6 +2,7 @@
 using System.Linq;
 using LeadershipProfileAPI.Data.Models;
 using LeadershipProfileAPI.Data.Models.ProfileSearchRequest;
+using LeadershipProfileAPI.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeadershipProfileAPI.Data
@@ -110,7 +111,7 @@ namespace LeadershipProfileAPI.Data
                     ,RatingSubCategory
                     ,Rating
                 from edfi.vw_StaffSearch
-                {(clauseConditions(body))}
+                {(ClauseConditions(body))}
                 order by case when {fieldMapping[sortField]} is null then 1 else 0 end, {fieldMapping[sortField]} {sortBy}
                 offset {((currentPage - 1) * pageSize)} rows
                 fetch next {pageSize} rows only
@@ -119,40 +120,21 @@ namespace LeadershipProfileAPI.Data
             return _edfiDbContext.StaffSearches.FromSqlRaw(sql);
         }
 
-        private string clauseConditions(ProfileSearchRequestBody body)
+        private static string ClauseConditions(ProfileSearchRequestBody body)
         {
-            var yearConditions = clauseYears(body.MinYears, body.MaxYears);
-            var assignmentsConditions = clauseAssignments(body.Assignments);
-            var certificatesConditions = clauseCertifications(body.Certifications);
-            var degreesConditions = clauseDegrees(body.Degrees);
-            var ratingsConditions = clauseRatings(body.Ratings);
+            var yearConditions = ClauseYears(body.MinYears, body.MaxYears);
+            var assignmentsConditions = ClauseAssignments(body.Assignments);
+            var certificatesConditions = ClauseCertifications(body.Certifications);
+            var degreesConditions = ClauseDegrees(body.Degrees);
+            var ratingsConditions = ClauseRatings(body.Ratings);
 
             var conditions = new List<string>();
 
-            if (!string.IsNullOrWhiteSpace(yearConditions))
-            {
-                conditions.Add(yearConditions);
-            }
-
-            if (!string.IsNullOrWhiteSpace(assignmentsConditions))
-            {
-                conditions.Add(assignmentsConditions);
-            }
-
-            if (!string.IsNullOrWhiteSpace(certificatesConditions))
-            {
-                conditions.Add(certificatesConditions);
-            }
-
-            if (!string.IsNullOrWhiteSpace(degreesConditions))
-            {
-                conditions.Add(degreesConditions);
-            }
-
-            if (!string.IsNullOrWhiteSpace(ratingsConditions))
-            {
-                conditions.Add(ratingsConditions);
-            }
+            conditions.AddIfNotNullOrWhiteSpace(yearConditions);
+            conditions.AddIfNotNullOrWhiteSpace(assignmentsConditions);
+            conditions.AddIfNotNullOrWhiteSpace(certificatesConditions);
+            conditions.AddIfNotNullOrWhiteSpace(degreesConditions);
+            conditions.AddIfNotNullOrWhiteSpace(ratingsConditions);
 
             // Join the strings and separate them with 'and'
             var whereCondition = string.Join(" and ", conditions);
@@ -165,47 +147,48 @@ namespace LeadershipProfileAPI.Data
             return "--where excluded, no conditions provided";
         }
 
-        private string clauseYears(int min, int max) => $""; // Provide the condition being searched for matching your schema. Example: "(y.YearsOfService >= min and y.YearsOfService <= max)"
+        // Provide the condition being searched for matching your schema. Example: "(y.YearsOfService >= min and y.YearsOfService <= max)"
+        private static string ClauseYears(int min, int max) => $"({(min > 0 ? $"staffService.YearsOfService >= {min}" : "")}{(min > 0 && max > 0 ? " and " : "")}{(max > 0 ? $"staffService.YearsOfService <= {max}" : "")})"; 
 
-        private string clauseAssignments(ProfileSearchRequestAssignments assignments)
+        private static string ClauseAssignments(ProfileSearchRequestAssignments assignments)
         {
             if (assignments != null)
             {
                 // Provide the condition being searched for matching your schema. Examples: "(a.StartDate = '1982-07-14')" or "(a.StartDate = '1982-07-14' and a.PositionId IN (5432, 234, 5331, 34))"
-                return $"";
+                return $"({(!string.IsNullOrWhiteSpace(assignments.StartDate) ? $"a.StartDate = cast({assignments.StartDate} as date)" : "")}{(!string.IsNullOrWhiteSpace(assignments.StartDate) && assignments.Values.Any() ? " and " : "")}{(assignments.Values.Any() ? $"a.KleinStaffClassificationDescriptorId in ({string.Join(",", assignments.Values)})" : "")})";
             }
 
             return string.Empty;
         }
 
-        private string clauseCertifications(ProfileSearchRequestCertifications certifications)
+        private static string ClauseCertifications(ProfileSearchRequestCertifications certifications)
         {
             if (certifications != null)
             {
                 // Provide the condition being searched for matching your schema. Examples: "(c.IssueDate = '2017-04-23')" or "(c.IssueDate = '2017-04-23' and c.CerfificationId IN (234, 12, 98))"
-                return $"";
+                return $"({(!string.IsNullOrWhiteSpace(certifications.IssueDate) ? $"c.IssuanceDate = cast({certifications.IssueDate} as date)" : "")}{(!string.IsNullOrWhiteSpace(certifications.IssueDate) && certifications.Values.Any() ? " and " : "")}{(certifications.Values.Any() ? $"c.CredentialFieldDescriptorId in ({string.Join(",", certifications.Values)})" : "")})";
             }
 
             return string.Empty;
         }
 
-        private string clauseDegrees(ProfileSearchRequestDegrees degrees)
+        private static string ClauseDegrees(ProfileSearchRequestDegrees degrees)
         {
             if (degrees != null)
             {
                 // Provide the condition being searched for matching your schema. Example: "(d.DegreeId = 68)"
-                return $"";
+                return $"({(degrees.Values.Any() ? $"d.LevelOfDegreeAwardedDescriptorId in ({string.Join(",", degrees.Values)})" : "")})";
             }
 
             return string.Empty;
         }
 
-        private string clauseRatings(ProfileSearchRequestRatings ratings)
+        private static string ClauseRatings(ProfileSearchRequestRatings ratings)
         {
             if (ratings != null)
             {
                 // Provide the condition being searched for matching your schema. Examples: "(r.Rating = 3)" or "(r.Rating = 3 and r.RatingCateogryId = 45)"
-                return $"";
+                return $"({(ratings.CategoryId > 0 ? $"mr.Category = {ratings.CategoryId}" : "")}{(ratings.CategoryId > 0 && ratings.Score > 0 ? " and " : "")}{(ratings.Score > 0 ? $"pm.Score = {ratings.Score}" : "")})";
             }
 
             return string.Empty;
