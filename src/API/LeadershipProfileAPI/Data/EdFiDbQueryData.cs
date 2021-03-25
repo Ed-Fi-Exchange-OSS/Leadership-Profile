@@ -2,6 +2,7 @@
 using System.Linq;
 using LeadershipProfileAPI.Data.Models;
 using LeadershipProfileAPI.Data.Models.ProfileSearchRequest;
+using LeadershipProfileAPI.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeadershipProfileAPI.Data
@@ -110,7 +111,7 @@ namespace LeadershipProfileAPI.Data
                     ,RatingSubCategory
                     ,Rating
                 from edfi.vw_StaffSearch
-                {(clauseConditions(body))}
+                {(ClauseConditions(body))}
                 order by case when {fieldMapping[sortField]} is null then 1 else 0 end, {fieldMapping[sortField]} {sortBy}
                 offset {((currentPage - 1) * pageSize)} rows
                 fetch next {pageSize} rows only
@@ -119,40 +120,21 @@ namespace LeadershipProfileAPI.Data
             return _edfiDbContext.StaffSearches.FromSqlRaw(sql);
         }
 
-        private string clauseConditions(ProfileSearchRequestBody body)
+        private static string ClauseConditions(ProfileSearchRequestBody body)
         {
-            var yearConditions = clauseYears(body.MinYears, body.MaxYears);
-            var assignmentsConditions = clauseAssignments(body.Assignments);
-            var certificatesConditions = clauseCertifications(body.Certifications);
-            var degreesConditions = clauseDegrees(body.Degrees);
-            var ratingsConditions = clauseRatings(body.Ratings);
+            var yearConditions = ClauseYears(body.MinYears, body.MaxYears);
+            var assignmentsConditions = ClauseAssignments(body.Assignments);
+            var certificatesConditions = ClauseCertifications(body.Certifications);
+            var degreesConditions = ClauseDegrees(body.Degrees);
+            var ratingsConditions = ClauseRatings(body.Ratings);
 
             var conditions = new List<string>();
 
-            if (!string.IsNullOrWhiteSpace(yearConditions))
-            {
-                conditions.Add(yearConditions);
-            }
-
-            if (!string.IsNullOrWhiteSpace(assignmentsConditions))
-            {
-                conditions.Add(assignmentsConditions);
-            }
-
-            if (!string.IsNullOrWhiteSpace(certificatesConditions))
-            {
-                conditions.Add(certificatesConditions);
-            }
-
-            if (!string.IsNullOrWhiteSpace(degreesConditions))
-            {
-                conditions.Add(degreesConditions);
-            }
-
-            if (!string.IsNullOrWhiteSpace(ratingsConditions))
-            {
-                conditions.Add(ratingsConditions);
-            }
+            conditions.AddIfNotNullOrWhiteSpace(yearConditions);
+            conditions.AddIfNotNullOrWhiteSpace(assignmentsConditions);
+            conditions.AddIfNotNullOrWhiteSpace(certificatesConditions);
+            conditions.AddIfNotNullOrWhiteSpace(degreesConditions);
+            conditions.AddIfNotNullOrWhiteSpace(ratingsConditions);
 
             // Join the strings and separate them with 'and'
             var whereCondition = string.Join(" and ", conditions);
@@ -165,9 +147,10 @@ namespace LeadershipProfileAPI.Data
             return "--where excluded, no conditions provided";
         }
 
-        private string clauseYears(int min, int max) => $""; // Provide the condition being searched for matching your schema. Example: "(y.YearsOfService >= min and y.YearsOfService <= max)"
+        // Provide the condition being searched for matching your schema. Example: "(y.YearsOfService >= min and y.YearsOfService <= max)"
+        private static string ClauseYears(int min, int max) => $""; // Provide the condition being searched for matching your schema. Example: "(y.YearsOfService >= min and y.YearsOfService <= max)"
 
-        private string clauseAssignments(ProfileSearchRequestAssignments assignments)
+        private static string ClauseAssignments(ProfileSearchRequestAssignments assignments)
         {
             if (assignments != null)
             {
@@ -178,7 +161,7 @@ namespace LeadershipProfileAPI.Data
             return string.Empty;
         }
 
-        private string clauseCertifications(ProfileSearchRequestCertifications certifications)
+        private static string ClauseCertifications(ProfileSearchRequestCertifications certifications)
         {
             if (certifications != null)
             {
@@ -189,7 +172,7 @@ namespace LeadershipProfileAPI.Data
             return string.Empty;
         }
 
-        private string clauseDegrees(ProfileSearchRequestDegrees degrees)
+        private static string ClauseDegrees(ProfileSearchRequestDegrees degrees)
         {
             if (degrees != null)
             {
@@ -200,7 +183,7 @@ namespace LeadershipProfileAPI.Data
             return string.Empty;
         }
 
-        private string clauseRatings(ProfileSearchRequestRatings ratings)
+        private static string ClauseRatings(ProfileSearchRequestRatings ratings)
         {
             if (ratings != null)
             {
