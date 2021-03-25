@@ -155,43 +155,18 @@ function UseAdvancedSearch(){
         ).then(response => response.json())
         .then((response) => {
             if (!unmounted && response !== null) {
-
-                var catSubCAtArr = [    
-                    {
-                        "CategoryId": 767,
-                        "Category": "RELATIONSHIP DRIVEN",
-                        "SubCategory": "Leading from our values including integrity, gratitude, humility, and kindness"
-                    },
-                    {
-                        "CategoryId": 776,
-                        "Category": "TECHNICAL SKILLS",
-                        "SubCategory": "Create and enforce consistent school-wide discipline practices to create a safe, inclusive, and learning-focused environment"
-                    },
-                    {
-                        "CategoryId": 766,
-                        "Category": "PROMISE 2 PURPOSE INVESTOR",
-                        "SubCategory": "Consistently displaying a sense of possibility, optimism, and hope"
-                    },
-                    {
-                        "CategoryId": 772,
-                        "Category": "STUDENT FOCUSED",
-                        "SubCategory": "Demonstrating a deep understanding of High Quality Teaching"
-                    }
-                ];
-
-                if(response.categories.length == 0){
-                    response.categories = catSubCAtArr;
+                if(response.categories.length != 0){                        
+                    var newResponse = [];
+                    response.categories.forEach(element => {
+                        newResponse.push({
+                            "text": element.Category,
+                            "value": element.CategoryId,
+                            "selected": false
+                        })
+                    });
+                    setCategories(newResponse);
                 }
 
-                var newResponse = [];
-                response.categories.forEach(element => {
-                    newResponse.push({
-                        "text": element.Category,
-                        "value": element.CategoryId,
-                        "selected": false
-                    })
-                });
-                setCategories(newResponse);
             }
         }).catch(error => {
             console.error(error.message);
@@ -202,54 +177,6 @@ function UseAdvancedSearch(){
     }
 
     function GetSubCategories(categorieId){
-        var catSubCAtArr = [    
-            {
-                "CategoryId": 767,
-                "Category": "RELATIONSHIP DRIVEN",
-                "SubCategory": "Leading from our values including integrity, gratitude, humility, and kindness"
-            },
-            {
-                "CategoryId": 776,
-                "Category": "TECHNICAL SKILLS",
-                "SubCategory": "Create and enforce consistent school-wide discipline practices to create a safe, inclusive, and learning-focused environment"
-            },
-            {
-                "CategoryId": 766,
-                "Category": "PROMISE 2 PURPOSE INVESTOR",
-                "SubCategory": "Consistently displaying a sense of possibility, optimism, and hope"
-            },
-            {
-                "CategoryId": 772,
-                "Category": "STUDENT FOCUSED",
-                "SubCategory": "Demonstrating a deep understanding of High Quality Teaching"
-            },
-            {
-                "CategoryId": 767,
-                "Category": "RELATIONSHIP DRIVEN",
-                "SubCategory": "Establishing a culture of trust, partnership, and collaboration"
-            },
-            {
-                "CategoryId": 755,
-                "Category": "FOREVER LEARNER",
-                "SubCategory": "Always seeking opportunities to continuously learn and grow"
-            },
-            {
-                "CategoryId": 776,
-                "Category": "TECHNICAL SKILLS",
-                "SubCategory": "Enforce state and district policies, and create & implement school-specific procedures as appropriate (e.g., entrance and dismissal procedures, master schedules, cafeteria procedures, transition procedures and protocols) to ensure the safety and success of all students and staff"
-            }        
-        ];
-        var newResponse = [];
-        catSubCAtArr.forEach(element => {
-            newResponse.push({
-                "text": element.SubCategory,
-                "value": element.SubCategory,
-                "selected": false
-            })
-        });
-
-        setSubCategories(newResponse);
-
         let unmounted = false;
         const apiUrl = new URL(`api/webcontrols/dropdownlist/measurementsubcategories`, API_URL);
         fetch(apiUrl, API_CONFIG('GET')
@@ -257,17 +184,16 @@ function UseAdvancedSearch(){
         .then((response) => {
             if (!unmounted && response !== null) {                
                 if(response.subCategories.length == 0){
-                    response.subCategories = catSubCAtArr;
+                    var newResponse = [];
+                    response.subCategories.forEach(element => {
+                        newResponse.push({
+                            "text": element.Category,
+                            "value": element.CategoryId,
+                            "selected": false
+                        })
+                    });
+                    setSubCategories(newResponse);                    
                 }
-                var newResponse = [];
-                response.subCategories.forEach(element => {
-                    newResponse.push({
-                        "text": element.Category,
-                        "value": element.CategoryId,
-                        "selected": false
-                    })
-                });
-                setSubCategories(newResponse);
             }
         }).catch(error => {
             console.error(error.message);

@@ -219,8 +219,9 @@ const AdvancedSearch = (props) =>
         <div>
             <div className="advanced-filters-container">         
                 <div className="col-md-12 row advanced-search-row">
-                    <h5 className="col-md-2" style={{"font-weight": "bold"}}>Years of Service</h5>
-                    <div className="col-md-5 row">
+                    <div className="col-md-1"></div>
+                    <span className="col-md-2" style={{"font-weight": "bold"}}>Years of Service</span>
+                    <div className="col-md-7 row">
                         <div className="col-md-6 row">
                             <Label className="col-md-6">Min Years</Label>
                             <Input className="col-md-6"  onChange={event => setMinYears(event.target.value)} type="number" value={minYears}/>
@@ -231,15 +232,14 @@ const AdvancedSearch = (props) =>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div className="advanced-filters-container">
                 <div className="col-md-12 row advanced-search-row">
-                    <h5 className="col-md-2" style={{"font-weight": "bold"}}>Education</h5>
+                    <div className="col-md-1"></div>
+                    <span className="col-md-2" style={{"font-weight": "bold"}}>Education</span>
                     <div className="col-md-5 row">
-                        <Label className="col-md-3">Degree</Label>
+                        {/* <Label className="col-md-3">Degree</Label> */}
                         <UncontrolledDropdown className="col-md-4">
                             <DropdownToggle caret>
-                                Select
+                                Degree
                             </DropdownToggle>
                             <DropdownMenu modifiers={modifiers} right>{
                                 Object.keys(degrees).length !== 0 ? (
@@ -258,10 +258,10 @@ const AdvancedSearch = (props) =>
                         </UncontrolledDropdown>
                     </div>
                     <div className="col-md-5 row" style={{"display": "none"}}>
-                        <Label className="col-md-6">Specialization</Label>
+                        {/* <Label className="col-md-6">Specialization</Label> */}
                         <UncontrolledDropdown className="col-md-6">
                             <DropdownToggle caret>
-                                Select
+                                Specialization
                             </DropdownToggle>
                             <DropdownMenu modifiers={modifiers} right>
                                 {
@@ -276,15 +276,15 @@ const AdvancedSearch = (props) =>
                         </UncontrolledDropdown>
                     </div>
                 </div>
-            </div>
-            <div className="advanced-filters-container">
+
                 <div className="col-md-12 row advanced-search-row">
-                    <h5 className="col-md-2" style={{"font-weight": "bold"}}>Position History</h5>
-                    <div className="col-md-5 row">
-                        <Label className="col-md-3">Role</Label>
-                        <UncontrolledDropdown className="col-md-4">
+                    <div className="col-md-1"></div>
+                    <span className="col-md-2" style={{"font-weight": "bold"}}>Position History</span>
+                    <div className="col-md-4 row">
+                        {/* <Label className="col-md-3">Role</Label> */}
+                        <UncontrolledDropdown className="col-md-8">
                             <DropdownToggle caret>
-                                Select
+                                Assignments
                             </DropdownToggle>
                             <DropdownMenu modifiers={modifiers} right>
                                 {
@@ -304,20 +304,19 @@ const AdvancedSearch = (props) =>
                             </DropdownMenu>
                         </UncontrolledDropdown>
                     </div>
-                    <div className="col-md-5 row">
+                    <div className="col-md-4 row">
                         <Label className="col-md-3">Start Date</Label>
-                        <Input className="col-md-3" onChange={event => setPositionStartDate(event.target.value)} value={positionStartDate} type="date"></Input>
+                        <Input className="col-md-5" onChange={event => setPositionStartDate(event.target.value)} value={positionStartDate} type="date"></Input>
                     </div>
                 </div>
-            </div>
-            <div className="advanced-filters-container">
                 <div className="col-md-12 row advanced-search-row">
-                    <h5 className="col-md-2" style={{"font-weight": "bold"}}>Certification</h5>
-                    <div className="col-md-5 row">
-                        <Label className="col-md-3">Description</Label>
+                    <div className="col-md-1"></div>
+                    <span className="col-md-2" style={{"font-weight": "bold"}}>Certification</span>
+                    <div className="col-md-4 row">
+                        {/* <Label className="col-md-3">Description</Label> */}
                         <UncontrolledDropdown className="col-md-4">
                             <DropdownToggle caret>
-                                Select
+                                Certification
                             </DropdownToggle>
                             <DropdownMenu modifiers={modifiers} right>
                                 {
@@ -336,16 +335,15 @@ const AdvancedSearch = (props) =>
                             </DropdownMenu>
                         </UncontrolledDropdown>
                     </div>
-                    <div className="col-md-5 row">
+                    <div className="col-md-4 row">
                         <Label className="col-md-3">Issurance Date</Label>
-                        <Input className="col-md-3" onChange={event => setIssuranceDate(event.target.value)} value={issuranceDate} type="date"></Input>
+                        <Input className="col-md-5" onChange={event => setIssuranceDate(event.target.value)} value={issuranceDate} type="date"></Input>
                     </div>
                 </div>
-            </div>
-            <div className="advanced-filters-container">
                 <div className="col-md-12 row advanced-search-row">
-                    <h5 className="col-md-2" style={{"font-weight": "bold"}}>Ratings</h5>
-                    <div className="col-md-3 row">
+                    <div className="col-md-1"></div>
+                    <span className="col-md-2" style={{"font-weight": "bold"}}>Ratings</span>
+                    <div className="col-md-2 row">
                         <Label className="col-md-3">Score</Label>
                         <Input className="col-md-6"  onChange={event => setRateScore(event.target.value)} type="number" value={rateScore}/>
                     </div>
@@ -372,7 +370,7 @@ const AdvancedSearch = (props) =>
                         </UncontrolledDropdown>
                     </div>
                     <div className="col-md-3 row">
-                        <Label className="col-md-6">Sub Category</Label>
+                        <Label className="col-md-4">Sub Category</Label>
                         <UncontrolledDropdown className="col-md-6" setActiveFromChild>
                             <DropdownToggle caret>
                                 {lastClickedSub}
@@ -394,10 +392,10 @@ const AdvancedSearch = (props) =>
                         </UncontrolledDropdown>
                     </div>
                 </div>
-            </div>
-            <div className="advanced-filters-container">
+                
                 <div className="col-md-12 row advanced-search-row">
-                    <Input type="button" className="col-md-2" value="Execute Search" onClick={() => {SendFilter()}}/>
+                    <div className="col-md-2"></div>
+                    <Input type="button" className="col-md-2 btn-info" value="Execute Search" onClick={() => {SendFilter()}}/>
                     <Input type="button" className="col-md-1 offset-md-1" value="Clear" onClick={() => {ClearFilters()}}/>
                 </div>
             </div>
