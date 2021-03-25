@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using LeadershipProfileAPI.Data;
+using LeadershipProfileAPI.Data.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -38,36 +39,7 @@ namespace LeadershipProfileAPI.Features.Profile
             public IEnumerable<PositionHistory> PositionHistory { get; set; }
             public IEnumerable<Certificate> Certificates { get; set; }
             public IEnumerable<ProfessionalDevelopment> ProfessionalDevelopment { get; set; }
-            public IEnumerable<CompetencyRatings> Competencies { get; set; }
-            public IEnumerable<Category> Category { get; set; }
-            public IEnumerable<SubCategory> SubCategory { get; set; }
-            public IEnumerable<ScoresByPeriod> ScoresByPeriod { get; set; }
-
-        }
-
-        public class CompetencyRatings
-        {
-            public IList<Category> Categories {get;set;}
-        }
-        public class Category
-        {
-            public string CategoryTitle { get; set; }
-            public IList<SubCategory> SubCatCriteria { get; set; }
-        }
-        public class SubCategory
-        {
-            public string SubCatTitle { get; set; } = "Default Sub Category";
-            public string SubCatNotes { get; set; } = "Default Note";       
-            public IList<ScoresByPeriod> ScoresByPeriod { get; set; }
-        }
-        public class ScoresByPeriod
-        {
-            public string Period { get; set; } = "Default Period";
-            public double DistrictMin { get; set; } = 0;
-            public double DistrictMax { get; set; } = 0;
-            public double DistrictAvg { get; set; } = 0;
-            public double StaffScore { get; set; } = 0;
-            public string StaffScoreNotes { get; set; } = "Default Note";
+            public IEnumerable<StaffPerformanceMeasure> PerformanceMeasures { get; set; }
         }
 
         public class PositionHistory
@@ -80,10 +52,10 @@ namespace LeadershipProfileAPI.Features.Profile
 
         public class Certificate
         {
-            public string Description { get; set; } = "Default Certificate";
-            public string Type { get; set; } = "Default Type";
-            public DateTime ValidFromDate { get; set; }
-            public DateTime ValidToDate { get; set; }
+            public string Description { get; set; }
+            public string CredentialType { get; set; }
+            public DateTime IssuanceDate { get; set; }
+            public DateTime? ExpirationDate { get; set; }
         }
 
         public class ProfessionalDevelopment
@@ -101,15 +73,30 @@ namespace LeadershipProfileAPI.Features.Profile
             public string Institution { get; set; }
         }
 
+        public class StaffMeasures
+        {
+            public string Category { get; set; }
+            public string SubCateogry { get; set; }
+            public int Year { get; set; }
+            public decimal DistrictMin { get; set; }
+            public decimal DistrictMax { get; set; }
+            public decimal DistrictAvg { get; set; }
+            public decimal Score { get; set; }
+        }
+
         public class QueryHandler : IRequestHandler<Query, Response>
         {
             private readonly EdFiDbContext _dbContext;
+            private readonly EdFiDbQueryData _dbQueryData;
             private readonly IMapper _mapper;
 
-            public QueryHandler(EdFiDbContext dbContext, IMapper mapper)
+            public QueryHandler(EdFiDbContext dbContext,
+                IMapper mapper,
+                EdFiDbQueryData dbQueryData)
             {
                 _dbContext = dbContext;
                 _mapper = mapper;
+                _dbQueryData = dbQueryData;
             }
 
             public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
@@ -123,15 +110,13 @@ namespace LeadershipProfileAPI.Features.Profile
 
                 var response = _mapper.Map<Response>(profileHeader);
 
-                var positionHistory = await _dbContext.ProfilePositionHistory.Where(x => x.StaffUniqueId == request.Id)
+                response.PositionHistory = await _dbContext.ProfilePositionHistory.Where(x => x.StaffUniqueId == request.Id)
                     .ProjectTo<PositionHistory>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
 
-                response.PositionHistory = positionHistory;
-
-                var certificates = await _dbContext.ProfileCertification.Where(x => x.StaffUniqueId == request.Id)
-                    .ProjectTo<Certificate>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
-
-                response.Certificates = certificates;
+                response.Certificates = await _dbContext.StaffCertificates
+                    .Where(o => o.StaffUniqueId == request.Id)
+                    .ProjectTo<Certificate>(_mapper.ConfigurationProvider)
+                    .ToListAsync(cancellationToken);
 
                 response.Education = await _dbContext.StaffEducations
                     .Where(o => o.StaffUniqueId == request.Id)
@@ -143,17 +128,8 @@ namespace LeadershipProfileAPI.Features.Profile
                     .ProjectTo<ProfessionalDevelopment>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);
 
-                //var competencies = await _dbContext.ProfileCompetency.Where(x => x.StaffUniqueId == request.Id)
-                //    .ProjectTo<CompetencyRatings>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
-
-                //var criteria = await _dbContext.ProfileCategory
-                //    .ProjectTo<Category>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
-
-                //var subcriteria = await _dbContext.ProfileSubCategory
-                //    .ProjectTo<SubCategory>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
-
-                //var scores = await _dbContext.ProfileScoresByPeriod
-                //    .ProjectTo<ScoresByPeriod>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
+                response.PerformanceMeasures = _dbQueryData
+                    .GetStaffPerformanceMeasures(profileHeader.StaffUsi, DateTime.Now.Year);
 
                 return response;
             }

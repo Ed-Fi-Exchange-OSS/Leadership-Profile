@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { CardTitle, Collapse, Table } from 'reactstrap';
 import { ChartIcon, DownPointingIcon } from '../Icons';
 
-const professionalDevelopmentCategories = { 'courseName': 'Course name', 'date': 'Date', 'location': 'Location', 'alignmentToLeadership': 'Alignment to leadership definition' };
+const professionalDevelopmentCategories = { 'professionalDevelopmentTitle': 'Course name', 'attendanceDate': 'Date', 'location': 'Location', 'alignmentToLeadership': 'Alignment to leadership definition' };
 
 const ProfessionalDevelopmentTable = (props) => {
     const { title, data } = props;

@@ -6,10 +6,5 @@ namespace LeadershipProfileAPI.Tests.Data.Models
 {
     public class ProfileProfessionalDevelopmentTests
     {
-        [Fact]
-        public async Task ShouldGetProfessionalDevelopment()
-        {
-            await Testing.DbContextScopeExec(ctx => ctx.StaffProfessionalDevelopments.AnyAsync());
-        }
     }
 }

@@ -1,62 +1,120 @@
 CREATE OR ALTER VIEW edfi.vw_LeadershipProfileList AS
-with staff_school (StaffUSI, School, Position) AS
-(
-    SELECT seoaa.StaffUSI, eo.NameOfInstitution, d.ShortDescription
-    FROM edfi.StaffEducationOrganizationAssignmentAssociation seoaa
-    INNER JOIN edfi.EducationOrganization eo ON eo.EducationOrganizationId = seoaa.EducationOrganizationId
-    INNER JOIN edfi.Descriptor d ON d.DescriptorId = seoaa.StaffClassificationDescriptorId
-    WHERE seoaa.EndDate IS NULL OR seoaa.EndDate >= GETUTCDATE()
-    GROUP BY seoaa.StaffUSI, eo.NameOfInstitution, d.ShortDescription
-),
-staff_email (StaffUSI, Email) AS (
-    SELECT StaffUSI, Email FROM 
-    (SELECT StaffUSI, ElectronicMailAddress Email, ROW_NUMBER () OVER (PARTITION BY StaffUSI ORDER BY ElectronicMailTypeDescriptorId) RowNumber
-    FROM edfi.StaffElectronicMail
-    ) se WHERE se.RowNumber = 1
-),
-staff_telephone (StaffUSI, Telephone) AS (
-    SELECT StaffUSI, TelephoneNumber FROM
-    (
-        SELECT 
-        StaffUSI,
-        TelephoneNumber,
-        ROW_NUMBER() OVER (PARTITION BY StaffUSI ORDER BY TelephoneNumberTypeDescriptorId) RowNumber
-        FROM edfi.StaffTelephone st
-    ) st WHERE st.RowNumber = 1
-),
-staff_major (StaffUSI, Major) AS (
-	SELECT StaffUSI, MajorSpecialization FROM (
-		SELECT
-			s.StaffUSI,
-			tcds.MajorSpecialization,
-			tcds.EndDate,
-			ROW_NUMBER() OVER (PARTITION BY s.StaffUSI ORDER BY tcds.EndDate DESC) RowNumber
-		FROM edfi.Staff s
-		INNER JOIN tpdm.TeacherCandidate tc ON tc.PersonId = s.PersonId
-		INNER JOIN tpdm.TeacherCandidateDegreeSpecialization tcds ON tcds.TeacherCandidateIdentifier = tc.TeacherCandidateIdentifier
-		WHERE tcds.EndDate IS NOT NULL
-		GROUP BY s.StaffUSI, s.StaffUniqueId, tcds.MajorSpecialization, tcds.MinorSpecialization, tcds.EndDate
-	) m WHERE m.RowNumber = 1
+with staffDegrees as (
+    select
+         pp.StaffUSI
+        ,st.StaffUniqueId
+        ,pp.MajorSpecialization
+        ,CASE
+            WHEN
+                da.CodeValue IN ('Masters', 'Master', 'M.ED', 'MED', 'MS', 'MA')
+                OR da.CodeValue LIKE 'MA-%'
+                OR da.CodeValue LIKE 'Master%'
+                OR da.CodeValue LIKE 'MBA%'
+                OR da.CodeValue LIKE 'M. Ed%'
+                OR da.CodeValue LIKE 'MA %'
+                OR da.CodeValue LIKE 'MA-%'
+                OR da.CodeValue LIKE 'MS %'
+                OR da.CodeValue LIKE 'MS-%'		
+            THEN 'Masters'
+
+            WHEN 
+                da.CodeValue IN ('BACHELORS', 'BFA', 'BA', 'BS') 
+                OR da.CodeValue LIKE 'Bach%'
+                OR da.CodeValue LIKE 'B.A.%'
+                OR da.CodeValue LIKE 'BA %'
+                OR da.CodeValue LIKE 'B.S.%'
+                OR da.CodeValue LIKE 'BS %'
+            THEN 'Bachelors'
+
+            WHEN 
+                da.CodeValue IN ('CERT', 'HVACR CERTIFIED', 'TEACHING CERTIFICATION') 
+                OR da.CodeValue LIKE 'Certif%'			
+            THEN 'Certificate'
+
+            WHEN 
+                da.CodeValue IN ('DOCTORATE', 'ED.D.')
+                OR da.CodeValue LIKE 'DOCTOR%'
+            THEN 'Doctorate'
+
+            WHEN 
+                da.CodeValue IN ('Associates', 'Assoc', 'Associates') 
+                OR da.CodeValue LIKE 'Assoc%'
+            THEN 'Associates'
+
+            WHEN 
+                da.CodeValue IN ('NO DEGREE', 'None', 'N/A') 
+            THEN 'No Degree'
+
+        ELSE 'Other'
+        END as Degree
+    from extension.StaffTeacherPreparationProgram as pp
+    left join edfi.Staff as st ON st.StaffUSI = pp.StaffUSI
+    join extension.LevelOfDegreeAwardedDescriptor as lda ON lda.LevelOfDegreeAwardedDescriptorId = pp.LevelOfDegreeAwardedDescriptorId
+    join edfi.Descriptor as da ON da.DescriptorId = lda.LevelOfDegreeAwardedDescriptorId
 )
+, staffDegreeSeq as (
+    select
+        StaffUSI
+        ,StaffUniqueId
+        ,MajorSpecialization as Major
+        ,Degree
+        ,CASE
+            WHEN Degree = 'Other' THEN -1
+            WHEN Degree = 'No Degree' THEN 0
+            WHEN Degree = 'Certificate' THEN 1
+            WHEN Degree = 'Associates' THEN 2
+            WHEN Degree = 'Bachelors' THEN 3
+            WHEN Degree = 'Masters' THEN 4
+            WHEN Degree = 'Doctorate' THEN 5
+        ELSE 0
+        END as [Sequence]
+    from staffDegrees
+)
+, staffHighestDegree as (
+    select 
+         StaffUsi
+        ,max([Sequence]) as [Sequence]
+    from staffDegreeSeq
+    group by StaffUSI
+)
+,staffService as (
+    select
+         StaffUsi
+        ,sum(FLOOR(DATEDIFF(DAY, KleinHireDate, COALESCE(KleinEndDate, getdate()) )/365.0 * 4) / 4) as YearsOfService
+    from extension.KleinStaffEmployment
+    group by StaffUsi
+)
+,staffAssignments as (
+    select
+        ksa.StaffUSI
+        ,st.StaffUniqueId
+        ,d.CodeValue as [Role]
+        ,eo.NameOfInstitution as School
+    from extension.KleinStaffAssignment as ksa
+    left join edfi.Descriptor as d on d.DescriptorId = ksa.KleinStaffClassificationDescriptorId
+    left join edfi.EducationOrganization as eo on eo.EducationOrganizationId = ksa.EducationOrganizationId
+    left join edfi.Staff as st on st.StaffUSI = ksa.StaffUSI
+    where ksa.KleinEndDate is NULL -- current assignment has null end date
+)
+
 SELECT
-	s.StaffUSI,
-	s.StaffUniqueId,
-	FirstName,
-	MiddleName,
-	LastSurname,
-	sa.City Location,
-	ss.School Institution,
-	s.YearsOfPriorTeachingExperience YearsOfService,
-	hd.ShortDescription HighestDegree,
-	se.Email,
-	ss.Position,
-	st.Telephone,
-	sm.Major
-FROM edfi.Staff s
-LEFT JOIN edfi.StaffAddress sa ON sa.StaffUSI = s.StaffUSI
-LEFT JOIN staff_school ss ON ss.StaffUSI = s.StaffUSI
-LEFT JOIN edfi.Descriptor highest_education ON highest_Education.DescriptorId = s.HighestCompletedLevelOfEducationDescriptorId
-LEFT JOIN staff_email se ON se.StaffUSI = s.StaffUSI
-LEFT JOIN edfi.Descriptor hd ON hd.DescriptorId = s.HighestCompletedLevelOfEducationDescriptorId
-LEFT JOIN staff_telephone st ON st.StaffUSI = s.StaffUSI
-LEFT JOIN staff_major sm ON sm.StaffUSI = s.StaffUSI
+	 s.StaffUSI
+	,s.StaffUniqueId
+	,s.FirstName
+	,s.MiddleName
+	,s.LastSurname
+	,null as Location
+    ,sa.School as Institution
+    ,staffService.YearsOfService
+	,sds.Degree as [HighestDegree]
+	,em.ElectronicMailAddress as [Email]
+    ,sa.Role as Position
+	,st.TelephoneNumber as [Telephone]
+	,sds.Major
+FROM edfi.Staff as s
+left join edfi.StaffElectronicMail as em on em.StaffUSI = s.StaffUSI
+left join edfi.StaffTelephone as st on st.StaffUSI = s.StaffUSI
+left join staffHighestDegree as hd on hd.StaffUSI = s.StaffUSI 
+join staffDegreeSeq as sds on sds.[Sequence] = hd.[Sequence] and sds.StaffUSI = hd.StaffUSI
+left join staffService on staffService.StaffUSI = s.StaffUSI
+left join staffAssignments as sa on sa.StaffUSI = s.StaffUSI

@@ -30,7 +30,7 @@ function App() {
           <div className="body">
             <LoggedInRoute exact path='/account/login' isAuthenticated={authenticated} component={Login} />
             <Route exact path="/">
-              <Redirect to="/directory?page=1&sortBy=desc&sortField=id" />
+              <Redirect to="/directory?page=1&sortBy=asc&sortField=id" />
             </Route>
             <PrivateRoute exact path="/:searchParams" isAuthenticated={authenticated} component={Directory} />
             <PrivateRoute path="/profile/:id" isAuthenticated={authenticated} component={Profile} />

@@ -54,9 +54,9 @@ WITH theBasis AS (
 		, StaffTeacherPreparationProgram.GPA
 		, ProgramCategorization.[ProgramType]
 
-	FROM tpdm.StaffTeacherPreparationProgram
+	FROM extension.StaffTeacherPreparationProgram
 	LEFT JOIN edfi.Staff theStaff ON theStaff.StaffUSI = StaffTeacherPreparationProgram.StaffUSI
-	JOIN tpdm.LevelOfDegreeAwardedDescriptor ON 
+	JOIN extension.LevelOfDegreeAwardedDescriptor ON 
 		LevelOfDegreeAwardedDescriptor.LevelOfDegreeAwardedDescriptorId
 		= StaffTeacherPreparationProgram.LevelOfDegreeAwardedDescriptorId
 	JOIN EdFi.Descriptor DegreesAwarded ON
@@ -67,7 +67,7 @@ WITH theBasis AS (
 			Descriptor.CodeValue [ProgramType]
 			, Descriptor.Description
 			, StaffTeacherPreparationProgram.TeacherPreparationProgramTypeDescriptorId 
-		FROM tpdm.StaffTeacherPreparationProgram
+		FROM extension.StaffTeacherPreparationProgram
 		JOIN EdFi.Descriptor ON
 			Descriptor.DescriptorId = StaffTeacherPreparationProgram.TeacherPreparationProgramTypeDescriptorId 
 	)ProgramCategorization

@@ -56,7 +56,7 @@ function UseDirectory() {
     useEffect(() => {
         if (!searchableUrl.current.search) return;
         let unmounted = false;
-        const apiUrl = new URL(`/profile${history.location.search}`, API_URL);
+        const apiUrl = new URL(API_URL.href + `/profile${history.location.search}`);
         fetch(apiUrl, API_CONFIG('GET')).then(response => response.json()
         ).then((response) => {
             if (response.isError) {
@@ -80,7 +80,6 @@ function UseDirectory() {
         return () => {
             unmounted = true;
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [url]);
 
     function setPage(newPage) {
@@ -93,10 +92,6 @@ function UseDirectory() {
     function setColumnSort(category, value) {
         setSort({ category, value });
     }
-
-    // function setSearchValue(value) {
-    //     setSearch(value);
-    // }
 
     return { setColumnSort, setSort, sort, data, paging, setPage, error }
 }

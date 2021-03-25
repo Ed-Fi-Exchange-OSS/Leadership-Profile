@@ -47,7 +47,7 @@ function UseRegistration() {
 
     async function setRegistration() {
         let unmounted = false;
-        const apiUrl = new URL('/account/register', API_URL);
+        const apiUrl = new URL(API_URL.href + '/account/register');
         fetch(apiUrl, API_CONFIG("POST", JSON.stringify(registrationInfo))
         ).then((response) => {
             if (!unmounted && response.status === 200) {

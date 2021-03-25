@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { CardTitle, Collapse, Table } from 'reactstrap';
 import { CertificateIcon, DownPointingIcon } from '../Icons';
 
-const certificateCategories = { 'description': 'Description', 'type': 'Type', 'validFromDate': 'Valid from', 'validToDate': 'Valid to' };
+const certificateCategories = { 'description': 'Description', 'credentialType': 'Type', 'issuanceDate': 'Issuance Date', 'expirationDate': 'Expiration Date' };
 
 const CertificationsTable = (props) => {
     const { title, data } = props;

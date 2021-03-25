@@ -1,43 +1,39 @@
 CREATE OR ALTER VIEW edfi.vw_LeadershipProfileHeader AS
-with staff_school (StaffUSI, School, Position) AS
-(
-    SELECT seoaa.StaffUSI, eo.NameOfInstitution, d.ShortDescription
-    FROM edfi.StaffEducationOrganizationAssignmentAssociation seoaa
-    INNER JOIN edfi.EducationOrganization eo ON eo.EducationOrganizationId = seoaa.EducationOrganizationId
-    INNER JOIN edfi.Descriptor d ON d.DescriptorId = seoaa.StaffClassificationDescriptorId
-    WHERE seoaa.EndDate IS NULL OR seoaa.EndDate >= GETUTCDATE()
-    GROUP BY seoaa.StaffUSI, eo.NameOfInstitution, d.ShortDescription
-),
-staff_email (StaffUSI, Email) AS (
-    SELECT StaffUSI, Email FROM 
-    (SELECT StaffUSI, ElectronicMailAddress Email, ROW_NUMBER () OVER (PARTITION BY StaffUSI ORDER BY ElectronicMailTypeDescriptorId) RowNumber
-    FROM edfi.StaffElectronicMail
-    ) se WHERE se.RowNumber = 1
-),
-staff_telephone (StaffUSI, Telephone) AS (
-    SELECT StaffUSI, TelephoneNumber FROM
-    (
-        SELECT 
-        StaffUSI,
-        TelephoneNumber,
-        ROW_NUMBER() OVER (PARTITION BY StaffUSI ORDER BY TelephoneNumberTypeDescriptorId) RowNumber
-        FROM edfi.StaffTelephone st
-    ) st WHERE st.RowNumber = 1
+with staffService as (
+    select
+         StaffUsi
+        ,sum(FLOOR(DATEDIFF(DAY, KleinHireDate, COALESCE(KleinEndDate, getdate()) )/365.0 * 4) / 4) as YearsOfService
+    from extension.KleinStaffEmployment
+    group by StaffUsi
 )
+,staffAssignments as (
+    select
+        ksa.StaffUSI
+        ,st.StaffUniqueId
+        ,d.CodeValue as [Role]
+        ,eo.NameOfInstitution as School
+    from extension.KleinStaffAssignment as ksa
+    left join edfi.Descriptor as d on d.DescriptorId = ksa.KleinStaffClassificationDescriptorId
+    left join edfi.EducationOrganization as eo on eo.EducationOrganizationId = ksa.EducationOrganizationId
+    left join edfi.Staff as st on st.StaffUSI = ksa.StaffUSI
+    where ksa.KleinEndDate is NULL -- current assignment has null end date
+)
+
 SELECT
-s.StaffUSI,
-s.StaffUniqueId,
-FirstName,
-MiddleName,
-LastSurname,
-sa.City Location,
-ss.School,
-s.YearsOfPriorTeachingExperience YearsOfService,
-se.Email,
-ss.Position,
-st.Telephone
-FROM edfi.Staff s
-LEFT JOIN edfi.StaffAddress sa ON sa.StaffUSI = s.StaffUSI
-LEFT JOIN staff_school ss ON ss.StaffUSI = s.StaffUSI
-LEFT JOIN staff_email se ON se.StaffUSI = s.StaffUSI
-LEFT JOIN staff_telephone st ON st.StaffUSI = s.StaffUSI
+	 s.StaffUSI
+	,s.StaffUniqueId
+	,s.FirstName
+	,s.MiddleName
+	,s.LastSurname
+    ,null as Location
+    ,assignments.School
+    ,staffService.YearsOfService
+	,em.ElectronicMailAddress as [Email]
+    ,assignments.Role as Position
+	,st.TelephoneNumber as Telephone
+FROM edfi.Staff as s
+LEFT JOIN edfi.StaffAddress as sa ON sa.StaffUSI = s.StaffUSI
+left join edfi.StaffTelephone as st on st.StaffUSI = s.StaffUSI
+left join edfi.StaffElectronicMail as em on em.StaffUSI = s.StaffUSI
+left join staffService on staffService.StaffUSI = s.StaffUSI
+left join staffAssignments as assignments on assignments.StaffUSI = s.StaffUSI

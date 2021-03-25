@@ -1,12 +1,12 @@
 CREATE OR ALTER VIEW edfi.vw_LeadershipProfilePositionHistory AS
-SELECT
-	s.StaffUSI,
-	s.StaffUniqueId,
-    d.ShortDescription 'Role',
-    eo.NameOfInstitution School, 
-    seoaa.BeginDate StartDate,
-    seoaa.EndDate 
-FROM edfi.StaffEducationOrganizationAssignmentAssociation seoaa
-INNER JOIN edfi.EducationOrganization eo ON eo.EducationOrganizationId = seoaa.EducationOrganizationId
-INNER JOIN edfi.Descriptor d ON d.DescriptorId = seoaa.StaffClassificationDescriptorId
-INNER JOIN edfi.Staff s ON s.StaffUSI = seoaa.StaffUSI
+select
+	 ksa.StaffUSI
+	,st.StaffUniqueId
+	,d.CodeValue as [Role]
+	,eo.NameOfInstitution as School
+	,ksa.KleinBeginDate as StartDate
+	,ksa.KleinEndDate as [EndDate]
+from extension.KleinStaffAssignment as ksa
+left join edfi.Descriptor as d on d.DescriptorId = ksa.KleinStaffClassificationDescriptorId
+left join edfi.EducationOrganization as eo on eo.EducationOrganizationId = ksa.EducationOrganizationId
+left join edfi.Staff as st on st.StaffUSI = ksa.StaffUSI

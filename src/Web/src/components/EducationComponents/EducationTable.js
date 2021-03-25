@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { CardTitle, Collapse, Table } from 'reactstrap';
 import { EducationIcon, DownPointingIcon } from '../Icons';
 
-const educationCategories = { 'institution': 'Institution', 'degree': 'Degree', 'graduationDate': 'Date', 'specialization': 'Specialization' };
+const educationCategories = { 'institution': 'Institution', 'degree': 'Degree', 'specialization': 'Specialization' };
 
 const EducationTable = (props) => {
     const { title, data } = props;

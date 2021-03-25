@@ -15,17 +15,19 @@ import {
 } from 'reactstrap';
 
 import AuthService from '../utils/auth-service';
+import config from '../config';
 
 const Navigation = (props) => {
   const { logoutAuth, isAuthenticated, getAuthInfo } = AuthService();
   const authInfo = getAuthInfo();
   const [isOpen, setIsOpen] = useState(false);
   const history = useHistory();
+  const { API_URL, API_CONFIG } = config();
 
   const toggle = () => setIsOpen(!isOpen);
 
   const logout = () => {
-    const apiUrl = new URL(`https://localhost:5001/account/logout`);
+    const apiUrl = new URL(API_URL.href + '/account/logout');
     fetch(apiUrl, {
         method: 'POST',
         mode: 'cors',
@@ -39,7 +41,7 @@ const Navigation = (props) => {
         'logoutId': authInfo,
     })}).then(() => {
       logoutAuth();
-      history.push('/account/login');
+        history.push(new URL(API_URL.href + '/account/login').href);
       history.go(0);
     }).catch(error => console.error(error)); 
   }
