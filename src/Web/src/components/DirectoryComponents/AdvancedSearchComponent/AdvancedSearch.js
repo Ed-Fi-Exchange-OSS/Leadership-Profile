@@ -5,8 +5,9 @@ import UseAdvancedSearch from './UseAdvancedSearch';
 
 const AdvancedSearch = (props) =>
 {
-    const {degrees, assignment, certifications, categories,
-        setDegrees, setAssignment, setCertifications, setCategories } = UseAdvancedSearch();
+    const {degrees, assignment, certifications, categories, subCategories,
+        setDegrees, setAssignment, setCertifications, setCategories,
+        setSubCategories, GetSubCategories } = UseAdvancedSearch();
 
     const listSpeciaizations = {};
     const [listSubCategories, getListSubCategories] = useState([]);
@@ -38,6 +39,8 @@ const AdvancedSearch = (props) =>
     };
 
     function OnClickCat(e){
+        setLastClickedCat(e.target.innerText);
+
         let newCategories = [...categories];
         newCategories.forEach((element,i) => {
             if(element.value == e.currentTarget.value){
@@ -48,13 +51,24 @@ const AdvancedSearch = (props) =>
             }
         });
         setCategories(newCategories);
-    //   UpDateSubCategories(e.target.value);
+        UpDateSubCategories(e.currentTarget.value);
     }
     function OnClickSub(e){
-      setLastClickedSub(e.target.innerText)
+        setLastClickedSub(e.target.innerText);
+
+        let newSubCategories = [...subCategories];
+        newSubCategories.forEach((element,i) => {
+            if(element.value == e.currentTarget.value){
+                element.selected = true;
+            }
+            else{
+                element.selected = false;
+            }
+        });
+        setSubCategories(newSubCategories);
     }
     function UpDateSubCategories(categorieId){
-    //   getListSubCategories(GetSubCategories(categorieId));
+        GetSubCategories(categorieId);
     }
     function Certification_OnChange(e){
         let newCertification = [...certifications];
@@ -83,9 +97,6 @@ const AdvancedSearch = (props) =>
         });
         setDegrees(newdegrees);
     }
-
-
-
     function Specialization_OnChange(e){
         // if(filterSpecializations.indexOf(e.currentTarget.value) != -1){
         //     let newfilterSpecializations = [...filterSpecializations];
@@ -101,7 +112,6 @@ const AdvancedSearch = (props) =>
         //     setFilterSpecialization(newfilterSpecializations);
         // }
     }
-
     function SendFilter(){
         var filterDegrees = [];
         if(Object.keys(degrees).length !== 0){
@@ -133,12 +143,32 @@ const AdvancedSearch = (props) =>
             });
         }   
 
+        var catId = 0;
+        if(Object.keys(categories).length !== 0){
+            categories.forEach((e) => {
+                if(e.selected == true)
+                {
+                    catId = e.value;
+                }
+            });
+        } 
+
+        var subCatId = "";
+        if(Object.keys(subCategories).length !== 0){
+            subCategories.forEach((e) => {
+                if(e.selected == true)
+                {
+                    subCatId = e.value;
+                }
+            });
+        } 
+
         var filters = {
             "MinYears": minYears,
             "MaxYears": maxYears,
             "Ratings": {
-              "CategoryId": 0,
-              "SubCategory": "",
+              "CategoryId": catId,
+              "SubCategory": subCatId,
               "Score": rateScore
             },
             "Certifications": {
@@ -153,7 +183,7 @@ const AdvancedSearch = (props) =>
               "Values": filterDegrees
             }
         }
-        // ApplyFilter(filters);
+        
         props.directoryCallback(filters);
     }
     function ClearFilters(){
@@ -186,176 +216,192 @@ const AdvancedSearch = (props) =>
     }
 
     return(
-        <div className="advanced-filters-container">         
-            <div className="col-md-12 row advanced-search-row">
-                <h4 className="col-md-2">Years of Service</h4>
-                <div className="col-md-5 row">
-                    <div className="col-md-6 row">
-                        <Label className="col-md-6">Min Years</Label>
-                        <Input className="col-md-6"  onChange={event => setMinYears(event.target.value)} type="number" value={minYears}/>
+        <div>
+            <div className="advanced-filters-container">         
+                <div className="col-md-12 row advanced-search-row">
+                    <h5 className="col-md-2" style={{"font-weight": "bold"}}>Years of Service</h5>
+                    <div className="col-md-5 row">
+                        <div className="col-md-6 row">
+                            <Label className="col-md-6">Min Years</Label>
+                            <Input className="col-md-6"  onChange={event => setMinYears(event.target.value)} type="number" value={minYears}/>
+                        </div>
+                        <div className="col-md-6 row">
+                            <Label className="col-md-6">Max Years</Label>
+                            <Input className="col-md-6"  onChange={event => setMaxYears(event.target.value)} type="number" value={maxYears}/>
+                        </div>
                     </div>
-                    <div className="col-md-6 row">
-                        <Label className="col-md-6">Max Years</Label>
-                        <Input className="col-md-6"  onChange={event => setMaxYears(event.target.value)} type="number" value={maxYears}/>
-                    </div>
-                </div>
-            </div>   
-            <div className="col-md-12 row advanced-search-row">
-                <h4 className="col-md-2">Education</h4>
-                <div className="col-md-5 row">
-                    <Label className="col-md-3">Degree</Label>
-                    <UncontrolledDropdown className="col-md-4">
-                        <DropdownToggle caret>
-                            Select
-                        </DropdownToggle>
-                        <DropdownMenu modifiers={modifiers} right>{
-                            Object.keys(degrees).length !== 0 ? (
-                                degrees.map((eduElement, index) => {
-                                    return(
-                                    <div><input type="checkbox" 
-                                    onChange={e => {Degree_OnChange(e)}} 
-                                    value={eduElement.value}
-                                    checked={eduElement.checked}
-                                    />
-                                    <Label>{eduElement.text}</Label></div>)
-                                 })
-                            ): ("")
-                        }
-                        </DropdownMenu>
-                    </UncontrolledDropdown>
-                </div>
-                <div className="col-md-5 row" style={{"display": "none"}}>
-                    <Label className="col-md-6">Specialization</Label>
-                    <UncontrolledDropdown className="col-md-6">
-                        <DropdownToggle caret>
-                            Select
-                        </DropdownToggle>
-                        <DropdownMenu modifiers={modifiers} right>
-                            {
-                                // listSpeciaizations.degrees.map((eduElement, index) => {
-                                //     return(<div><input type="checkbox"
-                                //     onChange={e => {Specialization_OnChange(e)}}
-                                //     value={eduElement.value}/>
-                                //     <Label>{eduElement.text}</Label></div>)
-                                // })
-                            }
-                        </DropdownMenu>
-                    </UncontrolledDropdown>
                 </div>
             </div>
-            <div className="col-md-12 row advanced-search-row">
-                <h4 className="col-md-2">Position History</h4>
-                <div className="col-md-5 row">
-                    <Label className="col-md-3">Role</Label>
-                    <UncontrolledDropdown className="col-md-4">
-                        <DropdownToggle caret>
-                            Select
-                        </DropdownToggle>
-                        <DropdownMenu modifiers={modifiers} right>
-                            {
-                                Object.keys(assignment).length !== 0 ? (
-                                    assignment.map((positElement, index) => {
+            <div className="advanced-filters-container">
+                <div className="col-md-12 row advanced-search-row">
+                    <h5 className="col-md-2" style={{"font-weight": "bold"}}>Education</h5>
+                    <div className="col-md-5 row">
+                        <Label className="col-md-3">Degree</Label>
+                        <UncontrolledDropdown className="col-md-4">
+                            <DropdownToggle caret>
+                                Select
+                            </DropdownToggle>
+                            <DropdownMenu modifiers={modifiers} right>{
+                                Object.keys(degrees).length !== 0 ? (
+                                    degrees.map((eduElement, index) => {
                                         return(
                                         <div><input type="checkbox" 
-                                        name="desc1" 
-                                        value={positElement.value}
-                                        checked={positElement.checked}
-                                        onChange={e => {Position_OnChange(e)}}
+                                        onChange={e => {Degree_OnChange(e)}} 
+                                        value={eduElement.value}
+                                        checked={eduElement.checked}
                                         />
-                                        <Label>{positElement.text}</Label></div>)
+                                        <Label>{eduElement.text}</Label></div>)
                                     })
                                 ): ("")
                             }
-                        </DropdownMenu>
-                    </UncontrolledDropdown>
-                </div>
-                <div className="col-md-5 row">
-                    <Label className="col-md-3">Start Date</Label>
-                    <Input className="col-md-3" onChange={event => setPositionStartDate(event.target.value)} value={positionStartDate} type="date"></Input>
-                </div>
-            </div>
-            <div className="col-md-12 row advanced-search-row">
-                <h4 className="col-md-2">Certification</h4>
-                <div className="col-md-5 row">
-                    <Label className="col-md-3">Description</Label>
-                    <UncontrolledDropdown className="col-md-4">
-                        <DropdownToggle caret>
-                            Select
-                        </DropdownToggle>
-                        <DropdownMenu modifiers={modifiers} right>
-                            {
-                                Object.keys(certifications).length !== 0 ? (
-                                    certifications.map((certElement, index) => {
-                                        return(<div><input type="checkbox" 
-                                        name={certElement.value} 
-                                        value={certElement.value}
-                                        checked={certElement.checked}
-                                        onChange={e => {Certification_OnChange(e)}}
-                                        />
-                                        <Label>{certElement.text}</Label></div>)
-                                    })
-                                ) : ("")
-                            }
-                        </DropdownMenu>
-                    </UncontrolledDropdown>
-                </div>
-                <div className="col-md-5 row">
-                    <Label className="col-md-3">Issurance Date</Label>
-                    <Input className="col-md-3" onChange={event => setIssuranceDate(event.target.value)} value={issuranceDate} type="date"></Input>
+                            </DropdownMenu>
+                        </UncontrolledDropdown>
+                    </div>
+                    <div className="col-md-5 row" style={{"display": "none"}}>
+                        <Label className="col-md-6">Specialization</Label>
+                        <UncontrolledDropdown className="col-md-6">
+                            <DropdownToggle caret>
+                                Select
+                            </DropdownToggle>
+                            <DropdownMenu modifiers={modifiers} right>
+                                {
+                                    // listSpeciaizations.degrees.map((eduElement, index) => {
+                                    //     return(<div><input type="checkbox"
+                                    //     onChange={e => {Specialization_OnChange(e)}}
+                                    //     value={eduElement.value}/>
+                                    //     <Label>{eduElement.text}</Label></div>)
+                                    // })
+                                }
+                            </DropdownMenu>
+                        </UncontrolledDropdown>
+                    </div>
                 </div>
             </div>
-            <div className="col-md-12 row advanced-search-row">
-                <h4 className="col-md-2">Ratings</h4>
-                <div className="col-md-3 row">
-                    <Label className="col-md-3">Score</Label>
-                    <Input className="col-md-6"  onChange={event => setRateScore(event.target.value)} type="number" value={rateScore}/>
-                </div>
-                <div className="col-md-3 row">
-                    <Label className="col-md-4">Category</Label>
-                    <UncontrolledDropdown className="col-md-6" setActiveFromChild>
-                        <DropdownToggle caret>
-                            {lastClickedCat}
-                        </DropdownToggle>
-                        <DropdownMenu modifiers={modifiers} persist={false}>
-                            <DropdownItem value="0" key={"cat-1"} onClick={OnClickCat}>Select</DropdownItem>
-                            {
-                                Object.keys(categories).length !== 0 ? (
-                                    categories.map((catElement, index) => {
-                                        return(
-                                            <DropdownItem key={"cat" + index} onClick={OnClickCat} value={catElement.value} active={catElement.selected}>
-                                                {catElement.text}
-                                            </DropdownItem>
-                                        )
-                                    })
-                                ): ("")
-                            }
-                        </DropdownMenu>
-                    </UncontrolledDropdown>
-                </div>
-                <div className="col-md-3 row"  style={{"display": "none"}}>
-                    <Label className="col-md-6">Sub Category</Label>
-                    <UncontrolledDropdown className="col-md-6" setActiveFromChild>
-                        <DropdownToggle caret>
-                            {lastClickedSub}
-                        </DropdownToggle>
-                        <DropdownMenu modifiers={modifiers}>
-                            <DropdownItem value="0" onClick={OnClickSub}>Select</DropdownItem>
-                            {listSubCategories.map((catElement, index) => {
-                                return(
-                                    <DropdownItem value={catElement.SubCategory} onClick={OnClickSub}>
-                                        {catElement.SubCategory}
-                                    </DropdownItem>
-                                )
-                            })}
-                        </DropdownMenu>
-                    </UncontrolledDropdown>
+            <div className="advanced-filters-container">
+                <div className="col-md-12 row advanced-search-row">
+                    <h5 className="col-md-2" style={{"font-weight": "bold"}}>Position History</h5>
+                    <div className="col-md-5 row">
+                        <Label className="col-md-3">Role</Label>
+                        <UncontrolledDropdown className="col-md-4">
+                            <DropdownToggle caret>
+                                Select
+                            </DropdownToggle>
+                            <DropdownMenu modifiers={modifiers} right>
+                                {
+                                    Object.keys(assignment).length !== 0 ? (
+                                        assignment.map((positElement, index) => {
+                                            return(
+                                            <div><input type="checkbox" 
+                                            name="desc1" 
+                                            value={positElement.value}
+                                            checked={positElement.checked}
+                                            onChange={e => {Position_OnChange(e)}}
+                                            />
+                                            <Label>{positElement.text}</Label></div>)
+                                        })
+                                    ): ("")
+                                }
+                            </DropdownMenu>
+                        </UncontrolledDropdown>
+                    </div>
+                    <div className="col-md-5 row">
+                        <Label className="col-md-3">Start Date</Label>
+                        <Input className="col-md-3" onChange={event => setPositionStartDate(event.target.value)} value={positionStartDate} type="date"></Input>
+                    </div>
                 </div>
             </div>
-            <div className="col-md-12 row">
-                <Input type="button" className="col-md-2" value="Execute Search" onClick={() => {SendFilter()}}/>
-                <Input type="button" className="col-md-1 offset-md-1" value="Clear" onClick={() => {ClearFilters()}}/>
+            <div className="advanced-filters-container">
+                <div className="col-md-12 row advanced-search-row">
+                    <h5 className="col-md-2" style={{"font-weight": "bold"}}>Certification</h5>
+                    <div className="col-md-5 row">
+                        <Label className="col-md-3">Description</Label>
+                        <UncontrolledDropdown className="col-md-4">
+                            <DropdownToggle caret>
+                                Select
+                            </DropdownToggle>
+                            <DropdownMenu modifiers={modifiers} right>
+                                {
+                                    Object.keys(certifications).length !== 0 ? (
+                                        certifications.map((certElement, index) => {
+                                            return(<div><input type="checkbox" 
+                                            name={certElement.value} 
+                                            value={certElement.value}
+                                            checked={certElement.checked}
+                                            onChange={e => {Certification_OnChange(e)}}
+                                            />
+                                            <Label>{certElement.text}</Label></div>)
+                                        })
+                                    ) : ("")
+                                }
+                            </DropdownMenu>
+                        </UncontrolledDropdown>
+                    </div>
+                    <div className="col-md-5 row">
+                        <Label className="col-md-3">Issurance Date</Label>
+                        <Input className="col-md-3" onChange={event => setIssuranceDate(event.target.value)} value={issuranceDate} type="date"></Input>
+                    </div>
+                </div>
             </div>
-        </div>
+            <div className="advanced-filters-container">
+                <div className="col-md-12 row advanced-search-row">
+                    <h5 className="col-md-2" style={{"font-weight": "bold"}}>Ratings</h5>
+                    <div className="col-md-3 row">
+                        <Label className="col-md-3">Score</Label>
+                        <Input className="col-md-6"  onChange={event => setRateScore(event.target.value)} type="number" value={rateScore}/>
+                    </div>
+                    <div className="col-md-3 row">
+                        <Label className="col-md-4">Category</Label>
+                        <UncontrolledDropdown className="col-md-6" setActiveFromChild>
+                            <DropdownToggle caret>
+                                {lastClickedCat}
+                            </DropdownToggle>
+                            <DropdownMenu modifiers={modifiers} persist={false}>
+                                <DropdownItem value="0" key={"cat-1"} onClick={OnClickCat}>Select</DropdownItem>
+                                {
+                                    Object.keys(categories).length !== 0 ? (
+                                        categories.map((catElement, index) => {
+                                            return(
+                                                <DropdownItem key={"cat" + index} onClick={OnClickCat} value={catElement.value} active={catElement.selected}>
+                                                    {catElement.text}
+                                                </DropdownItem>
+                                            )
+                                        })
+                                    ): ("")
+                                }
+                            </DropdownMenu>
+                        </UncontrolledDropdown>
+                    </div>
+                    <div className="col-md-3 row">
+                        <Label className="col-md-6">Sub Category</Label>
+                        <UncontrolledDropdown className="col-md-6" setActiveFromChild>
+                            <DropdownToggle caret>
+                                {lastClickedSub}
+                            </DropdownToggle>
+                            <DropdownMenu modifiers={modifiers}>
+                                <DropdownItem value="0" onClick={OnClickSub}>Select</DropdownItem>
+                                {
+                                    Object.keys(subCategories).length !== 0 ? (
+                                        subCategories.map((catElement, index) => {
+                                            return(
+                                                <DropdownItem value={catElement.value} onClick={OnClickSub} active={catElement.selected}>
+                                                    {catElement.text}
+                                                </DropdownItem>
+                                            )
+                                        })
+                                    ): ("")
+                                }
+                            </DropdownMenu>
+                        </UncontrolledDropdown>
+                    </div>
+                </div>
+            </div>
+            <div className="advanced-filters-container">
+                <div className="col-md-12 row advanced-search-row">
+                    <Input type="button" className="col-md-2" value="Execute Search" onClick={() => {SendFilter()}}/>
+                    <Input type="button" className="col-md-1 offset-md-1" value="Clear" onClick={() => {ClearFilters()}}/>
+                </div>
+            </div>
+        </div>        
     )
 }
 

@@ -90,7 +90,7 @@ const CreateTableList = (props) => {
                             <td className="profile-table-row"><Link to={`../profile/${profile.staffUniqueId}`}><RightPointingIcon /></Link></td>
                         </tr>)) : ''}
                         <tr className="bottom-row">
-                            <td colSpan="8">
+                            <td colSpan="11">
                                 <span>Showing {paging.page}-10 of {paging.totalSize} Users</span>
                             </td>
                             <td colSpan="2" className="pagination-buttons-container">
