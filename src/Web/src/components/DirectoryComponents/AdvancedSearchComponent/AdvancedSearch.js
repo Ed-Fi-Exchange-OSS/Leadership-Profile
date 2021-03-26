@@ -1,6 +1,6 @@
 import { Button } from 'bootstrap';
 import React, { useState, useRef } from 'react';
-import { UncontrolledDropdown, DropdownItem, DropdownMenu, DropdownToggle, Label, Input } from 'reactstrap';
+import { UncontrolledDropdown, DropdownItem, DropdownMenu, DropdownToggle, Label, Input, Table, Row, Col } from 'reactstrap';
 import UseAdvancedSearch from './UseAdvancedSearch';
 
 const AdvancedSearch = (props) =>
@@ -12,8 +12,8 @@ const AdvancedSearch = (props) =>
     const listSpeciaizations = {};
     const [listSubCategories, getListSubCategories] = useState([]);
 
-    const [lastClickedCat, setLastClickedCat] = useState('Select');
-    const [lastClickedSub, setLastClickedSub] = useState('Select');
+    const [lastClickedCat, setLastClickedCat] = useState('Select Category');
+    const [lastClickedSub, setLastClickedSub] = useState('Select SubCategory');
 
     const [positionStartDate, setPositionStartDate] = useState("");
     const [issuranceDate, setIssuranceDate] = useState("");
@@ -32,6 +32,7 @@ const AdvancedSearch = (props) =>
               ...data.styles,
               overflow: 'auto',
               maxHeight: '300px',
+              vw: '500px'
               },
           };
           },
@@ -216,190 +217,245 @@ const AdvancedSearch = (props) =>
     }
 
     return(
-        <div>
-            <div className="advanced-filters-container">         
-                <div className="col-md-12 row advanced-search-row">
-                    <div className="col-md-1"></div>
-                    <span className="col-md-2" style={{"font-weight": "bold"}}>Years of Service</span>
-                    <div className="col-md-7 row">
-                        <div className="col-md-6 row">
-                            <Label className="col-md-6">Min Years</Label>
-                            <Input className="col-md-6"  onChange={event => setMinYears(event.target.value)} type="number" value={minYears}/>
+        <div className="container advanced-filters-container">
+            <div className="row">
+                <div className="col">
+                    <div className="row">
+                        <div className="col">
+                            <div className="row control-spacing">
+                                <div className="col-5">
+                                    <h5>Position History</h5>
+                                </div>
+                                <div className="col">
+                                    <div className="row mb-2">
+                                        <div className="col">
+                                            <UncontrolledDropdown>
+                                                <DropdownToggle className="advanced-search-dropdown-button" caret>
+                                                    Select Assignments
+                                                </DropdownToggle>
+                                                <DropdownMenu modifiers={modifiers} right>
+                                                    {
+                                                        Object.keys(assignment).length !== 0 ? (
+                                                            assignment.map((positElement, index) => {
+                                                                return(
+                                                                <div><input type="checkbox"                                                                 
+                                                                style={{"display": "inline"}}
+                                                                name="desc1" 
+                                                                value={positElement.value}
+                                                                checked={positElement.checked}
+                                                                onChange={e => {Position_OnChange(e)}}
+                                                                />
+                                                                <Label style={{"display": "inline"}}>{positElement.text}</Label></div>)
+                                                            })
+                                                        ): ("")
+                                                    }
+                                                </DropdownMenu>
+                                            </UncontrolledDropdown>
+                                        </div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="col">
+                                            <table>
+                                                <tr>
+                                                    <td style={{"width": "100px"}}>
+                                                        <Label>Start Date</Label>    
+                                                    </td>
+                                                    <td>
+                                                        <Input onChange={event => setPositionStartDate(event.target.value)} 
+                                                        value={positionStartDate} className="date-picker-sm" type="date"></Input>
+                                                    </td>
+                                                </tr>
+                                            </table>                                        
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="row control-spacing">
+                                <div className="col-5">
+                                    <h5>Certificates</h5>
+                                </div>
+                                <div className="col">
+                                    <div className="row mb-2">
+                                        <div className="col">
+                                            <UncontrolledDropdown>
+                                                <DropdownToggle className="advanced-search-dropdown-button" caret>
+                                                    Select Certification
+                                                </DropdownToggle>
+                                                <DropdownMenu modifiers={modifiers} right>
+                                                    {
+                                                        Object.keys(certifications).length !== 0 ? (
+                                                            certifications.map((certElement, index) => {
+                                                                return(<div>
+                                                                    <input type="checkbox" 
+                                                                    style={{"display": "inline"}}
+                                                                    name={certElement.value} 
+                                                                    value={certElement.value}
+                                                                    checked={certElement.checked}
+                                                                    onChange={e => {Certification_OnChange(e)}}
+                                                                    />
+                                                                    <Label style={{"display": "inline"}}>{certElement.text}</Label>
+                                                                </div>)
+                                                            })
+                                                        ) : ("")
+                                                    }
+                                                </DropdownMenu>
+                                            </UncontrolledDropdown>
+                                        </div>
+                                    </div>
+                                    <div className="row mb-2">
+                                        <div className="col">
+                                            <table>
+                                                <tr>
+                                                    <td style={{"width": "100px"}}>
+                                                        <Label>Issue Date</Label>                                                        
+                                                    </td>
+                                                    <td>
+                                                        <Input onChange={event => setIssuranceDate(event.target.value)} 
+                                                value={issuranceDate} className="date-picker-sm" type="date"></Input>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="row control-spacing">
+                                <div className="col-5">
+                                    <h5>Education</h5>
+                                </div>
+                                <div className="col">
+                                    <div className="row">
+                                        <div className="col">
+                                            <UncontrolledDropdown>
+                                                <DropdownToggle className="advanced-search-dropdown-button" caret>
+                                                    Select Degree
+                                                </DropdownToggle>
+                                                <DropdownMenu modifiers={modifiers} right>{
+                                                    Object.keys(degrees).length !== 0 ? (
+                                                        degrees.map((eduElement, index) => {
+                                                            return(
+                                                            <div><input type="checkbox"                                                             
+                                                            style={{"display": "inline"}}
+                                                            onChange={e => {Degree_OnChange(e)}} 
+                                                            value={eduElement.value}
+                                                            checked={eduElement.checked}
+                                                            />
+                                                            <Label style={{"display": "inline"}}>{eduElement.text}</Label></div>)
+                                                        })
+                                                    ): ("")
+                                                }
+                                                </DropdownMenu>
+                                            </UncontrolledDropdown>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div className="col-md-6 row">
-                            <Label className="col-md-6">Max Years</Label>
-                            <Input className="col-md-6"  onChange={event => setMaxYears(event.target.value)} type="number" value={maxYears}/>
+                    </div>
+                </div>
+                <div className="col">
+                    <div className="row">
+                        <div className="col">
+                            <div className="row mt-4">
+                                <div className="col-5">
+                                    <h5>Ratings</h5>
+                                </div>
+                                <div className="col">
+                                    <div className="row mb-2">
+                                        <div className="col">
+                                            <UncontrolledDropdown setActiveFromChild>
+                                                <DropdownToggle className="advanced-search-dropdown-button" caret>
+                                                    {lastClickedCat}
+                                                </DropdownToggle>
+                                                <DropdownMenu modifiers={modifiers} persist={false}>
+                                                    <DropdownItem value="0" key={"cat-1"} onClick={OnClickCat}>Select</DropdownItem>
+                                                    {
+                                                        Object.keys(categories).length !== 0 ? (
+                                                            categories.map((catElement, index) => {
+                                                                return(
+                                                                    <DropdownItem key={"cat" + index} onClick={OnClickCat} value={catElement.value} active={catElement.selected}>
+                                                                        {catElement.text}
+                                                                    </DropdownItem>
+                                                                )
+                                                            })
+                                                        ): ("")
+                                                    }
+                                                </DropdownMenu>
+                                            </UncontrolledDropdown>
+                                        </div>
+                                    </div>
+                                    <div className="row mb-2">
+                                        <div className="col">
+                                            <UncontrolledDropdown setActiveFromChild>
+                                                <DropdownToggle className="advanced-search-dropdown-button" caret>
+                                                    {lastClickedSub}
+                                                </DropdownToggle>
+                                                <DropdownMenu modifiers={modifiers}>
+                                                    <DropdownItem value="0" onClick={OnClickSub}>Select SubCategory</DropdownItem>
+                                                    {
+                                                        Object.keys(subCategories).length !== 0 ? (
+                                                            subCategories.map((catElement, index) => {
+                                                                return(
+                                                                    <DropdownItem value={catElement.value} onClick={OnClickSub} active={catElement.selected}>
+                                                                        {catElement.text}
+                                                                    </DropdownItem>
+                                                                )
+                                                            })
+                                                        ): ("")
+                                                    }
+                                                </DropdownMenu>
+                                            </UncontrolledDropdown>                                   
+                                        </div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="col-2">
+                                            <Label>Score</Label>
+                                        </div>
+                                        <div className="col-5">
+                                            <Input onChange={event => setRateScore(event.target.value)} type="number" 
+                                            value={rateScore}/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="row mt-5">
+                                <div className="col-5">
+                                    <h5>Years Of Service</h5>
+                                </div>
+                                <div className="col">
+                                    <div className="row mb-2">
+                                        <div className="col-2">
+                                            <Label>Min</Label>
+                                        </div>
+                                        <div className="col-5">
+                                            <Input  onChange={event => setMinYears(event.target.value)} 
+                                            type="number" value={minYears}/>
+                                        </div>
+                                    </div>
+                                    <div className="row mb-2">
+                                        <div className="col-2">
+                                            <Label>Max</Label>
+                                        </div>
+                                        <div className="col-5">
+                                            <Input onChange={event => setMaxYears(event.target.value)} 
+                                            type="number" value={maxYears}/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div className="col-md-12 row advanced-search-row">
-                    <div className="col-md-1"></div>
-                    <span className="col-md-2" style={{"font-weight": "bold"}}>Education</span>
-                    <div className="col-md-5 row">
-                        {/* <Label className="col-md-3">Degree</Label> */}
-                        <UncontrolledDropdown className="col-md-4">
-                            <DropdownToggle caret>
-                                Degree
-                            </DropdownToggle>
-                            <DropdownMenu modifiers={modifiers} right>{
-                                Object.keys(degrees).length !== 0 ? (
-                                    degrees.map((eduElement, index) => {
-                                        return(
-                                        <div><input type="checkbox" 
-                                        onChange={e => {Degree_OnChange(e)}} 
-                                        value={eduElement.value}
-                                        checked={eduElement.checked}
-                                        />
-                                        <Label>{eduElement.text}</Label></div>)
-                                    })
-                                ): ("")
-                            }
-                            </DropdownMenu>
-                        </UncontrolledDropdown>
-                    </div>
-                    <div className="col-md-5 row" style={{"display": "none"}}>
-                        {/* <Label className="col-md-6">Specialization</Label> */}
-                        <UncontrolledDropdown className="col-md-6">
-                            <DropdownToggle caret>
-                                Specialization
-                            </DropdownToggle>
-                            <DropdownMenu modifiers={modifiers} right>
-                                {
-                                    // listSpeciaizations.degrees.map((eduElement, index) => {
-                                    //     return(<div><input type="checkbox"
-                                    //     onChange={e => {Specialization_OnChange(e)}}
-                                    //     value={eduElement.value}/>
-                                    //     <Label>{eduElement.text}</Label></div>)
-                                    // })
-                                }
-                            </DropdownMenu>
-                        </UncontrolledDropdown>
-                    </div>
-                </div>
-
-                <div className="col-md-12 row advanced-search-row">
-                    <div className="col-md-1"></div>
-                    <span className="col-md-2" style={{"font-weight": "bold"}}>Position History</span>
-                    <div className="col-md-4 row">
-                        {/* <Label className="col-md-3">Role</Label> */}
-                        <UncontrolledDropdown className="col-md-8">
-                            <DropdownToggle caret>
-                                Assignments
-                            </DropdownToggle>
-                            <DropdownMenu modifiers={modifiers} right>
-                                {
-                                    Object.keys(assignment).length !== 0 ? (
-                                        assignment.map((positElement, index) => {
-                                            return(
-                                            <div><input type="checkbox" 
-                                            name="desc1" 
-                                            value={positElement.value}
-                                            checked={positElement.checked}
-                                            onChange={e => {Position_OnChange(e)}}
-                                            />
-                                            <Label>{positElement.text}</Label></div>)
-                                        })
-                                    ): ("")
-                                }
-                            </DropdownMenu>
-                        </UncontrolledDropdown>
-                    </div>
-                    <div className="col-md-4 row">
-                        <Label className="col-md-3">Start Date</Label>
-                        <Input className="col-md-5" onChange={event => setPositionStartDate(event.target.value)} value={positionStartDate} type="date"></Input>
-                    </div>
-                </div>
-                <div className="col-md-12 row advanced-search-row">
-                    <div className="col-md-1"></div>
-                    <span className="col-md-2" style={{"font-weight": "bold"}}>Certification</span>
-                    <div className="col-md-4 row">
-                        {/* <Label className="col-md-3">Description</Label> */}
-                        <UncontrolledDropdown className="col-md-4">
-                            <DropdownToggle caret>
-                                Certification
-                            </DropdownToggle>
-                            <DropdownMenu modifiers={modifiers} right>
-                                {
-                                    Object.keys(certifications).length !== 0 ? (
-                                        certifications.map((certElement, index) => {
-                                            return(<div><input type="checkbox" 
-                                            name={certElement.value} 
-                                            value={certElement.value}
-                                            checked={certElement.checked}
-                                            onChange={e => {Certification_OnChange(e)}}
-                                            />
-                                            <Label>{certElement.text}</Label></div>)
-                                        })
-                                    ) : ("")
-                                }
-                            </DropdownMenu>
-                        </UncontrolledDropdown>
-                    </div>
-                    <div className="col-md-4 row">
-                        <Label className="col-md-3">Issurance Date</Label>
-                        <Input className="col-md-5" onChange={event => setIssuranceDate(event.target.value)} value={issuranceDate} type="date"></Input>
-                    </div>
-                </div>
-                <div className="col-md-12 row advanced-search-row">
-                    <div className="col-md-1"></div>
-                    <span className="col-md-2" style={{"font-weight": "bold"}}>Ratings</span>
-                    <div className="col-md-2 row">
-                        <Label className="col-md-3">Score</Label>
-                        <Input className="col-md-6"  onChange={event => setRateScore(event.target.value)} type="number" value={rateScore}/>
-                    </div>
-                    <div className="col-md-3 row">
-                        <Label className="col-md-4">Category</Label>
-                        <UncontrolledDropdown className="col-md-6" setActiveFromChild>
-                            <DropdownToggle caret>
-                                {lastClickedCat}
-                            </DropdownToggle>
-                            <DropdownMenu modifiers={modifiers} persist={false}>
-                                <DropdownItem value="0" key={"cat-1"} onClick={OnClickCat}>Select</DropdownItem>
-                                {
-                                    Object.keys(categories).length !== 0 ? (
-                                        categories.map((catElement, index) => {
-                                            return(
-                                                <DropdownItem key={"cat" + index} onClick={OnClickCat} value={catElement.value} active={catElement.selected}>
-                                                    {catElement.text}
-                                                </DropdownItem>
-                                            )
-                                        })
-                                    ): ("")
-                                }
-                            </DropdownMenu>
-                        </UncontrolledDropdown>
-                    </div>
-                    <div className="col-md-3 row">
-                        <Label className="col-md-4">Sub Category</Label>
-                        <UncontrolledDropdown className="col-md-6" setActiveFromChild>
-                            <DropdownToggle caret>
-                                {lastClickedSub}
-                            </DropdownToggle>
-                            <DropdownMenu modifiers={modifiers}>
-                                <DropdownItem value="0" onClick={OnClickSub}>Select</DropdownItem>
-                                {
-                                    Object.keys(subCategories).length !== 0 ? (
-                                        subCategories.map((catElement, index) => {
-                                            return(
-                                                <DropdownItem value={catElement.value} onClick={OnClickSub} active={catElement.selected}>
-                                                    {catElement.text}
-                                                </DropdownItem>
-                                            )
-                                        })
-                                    ): ("")
-                                }
-                            </DropdownMenu>
-                        </UncontrolledDropdown>
-                    </div>
-                </div>
-                
-                <div className="col-md-12 row advanced-search-row">
-                    <div className="col-md-2"></div>
-                    <Input type="button" className="col-md-2 btn-info" value="Execute Search" onClick={() => {SendFilter()}}/>
-                    <Input type="button" className="col-md-1 offset-md-1" value="Clear" onClick={() => {ClearFilters()}}/>
                 </div>
             </div>
-        </div>        
+            <div className="row mt-4 mb-2">
+                <div className="col text-center">
+                    <Input type="button" className="btn btn-primary w-50" value="Execute Search" onClick={() => {SendFilter()}}/>          
+                </div>
+                <div className="col text-center">
+                    <Input type="button" className="btn btn-light w-50" value="Clear" onClick={() => {ClearFilters()}}/>      
+                </div>
+            </div>        
+        </div>   
     )
 }
 

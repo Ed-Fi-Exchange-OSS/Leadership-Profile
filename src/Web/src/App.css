@@ -386,13 +386,34 @@
 /* Advanced Search filter box */
 .advanced-filters-container{
   border-radius: 4px;
-  background-color: #A6C1FF;
+  background-color: #DAE1F2;
   /* padding: 24px 10px; */
-  padding: 1px;
-  margin-bottom: 15px;
+  padding: 5px;
+  /* margin-bottom: 15px; */
 }
 
 .advanced-search-row{
   margin-bottom:15px;
   margin-top: 15px;
+}
+
+.advanced-search-dropdown-button{
+  width: 200px;
+}
+.filters-table{
+  width: 100%;
+    border-spacing: 1em;
+    border-collapse: separate;
+}
+h5{
+  text-align: right;
+}
+
+.control-spacing{
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+.date-picker-sm{
+  font-size: 12px !important;
 }
