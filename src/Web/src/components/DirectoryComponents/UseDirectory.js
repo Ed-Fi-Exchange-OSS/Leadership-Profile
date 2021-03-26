@@ -31,7 +31,6 @@ function UseDirectory() {
             setPaging({ ...paging, page: searchParams.get('page') });
             setSort({ category: searchParams.get('sortField'), value: searchParams.get('sortBy') });
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [history.action, history.location]);
 
     useEffect(() => {
@@ -43,14 +42,12 @@ function UseDirectory() {
         searchableUrl.current.searchParams.set('sortBy', sort.value);
         searchableUrl.current.searchParams.sort();
         setUrl(searchableUrl.current.href);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sort, paging.page]);
 
     useEffect(() => {
         searchableUrl.current.textContent = new URL(url);
         if (searchableUrl.current.search === location.search || !searchableUrl.current.search) return;
         history.push(`directory${searchableUrl.current.search}`);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [url]);
 
     useEffect(() => {
@@ -94,12 +91,8 @@ function UseDirectory() {
         setSort({ category, value });
     }
 
-    // function setSearchValue(value) {
-    //     setSearch(value);
-    // }
-
     function goToAdvancedSearch(){
-        let path = '/advanced/search?page=1&sortBy=desc&sortField=id';
+        let path = '/advanced/search?page=1&sortBy=asc&sortField=id';
         history.push(path);
         history.go(0);
     }

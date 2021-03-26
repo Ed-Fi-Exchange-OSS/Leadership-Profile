@@ -39,60 +39,7 @@ function UseAdvancedSearch(){
     async function GetSpeciaizations(){
 
         var specializations = {
-            "degrees": [
-            {
-                "text": "AA",
-                "value": 4388
-            },
-            {
-                "text": "BA",
-                "value": 4389
-            },
-            {
-                "text": "BS",
-                "value": 4390
-            },
-            {
-                "text": "MA",
-                "value": 4391
-            },
-            {
-                "text": "MA+45",
-                "value": 4392
-            },
-            {
-                "text": "None",
-                "value": 4393
-            },
-            {
-                "text": "PhD",
-                "value": 4394
-            },
-            {
-                "text": "Associates",
-                "value": 4395
-            },
-            {
-                "text": "Bachelors",
-                "value": 4396
-            },
-            {
-                "text": "Masters",
-                "value": 4397
-            },
-            {
-                "text": "Associate's",
-                "value": 11769
-            },
-            {
-                "text": "Bachelor's",
-                "value": 11770
-            },
-            {
-                "text": "Master's",
-                "value": 11771
-            }
-            ]
+            "degrees": []
         };
 
         return specializations;

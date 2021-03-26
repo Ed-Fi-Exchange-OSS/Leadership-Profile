@@ -21,14 +21,6 @@ const SearchDirectory = () => {
                 <h2 className=''>Search Directory</h2>
                 <div className="directory-subtitle-controls">
                     <BreadcrumbList currentPage="home" />
-                    {/* <div className="view-style-buttons">
-                        <button color="primary" className="btn btn-primary view-style-button-first view-style-button" onClick={() => setActiveComponent("table")}>
-                            <TableViewIcon />
-                        </button>
-                        <button  color="primary" className="btn btn-primary view-style-button" onClick={() => setActiveComponent("card")}>
-                            <CardViewIcon />
-                        </button>
-                    </div> */}
                 </div>
             </div>
             <AdvancedSearch directoryCallback = {callbackAdvancedSearch}/>

@@ -98,21 +98,6 @@ const AdvancedSearch = (props) =>
         });
         setDegrees(newdegrees);
     }
-    function Specialization_OnChange(e){
-        // if(filterSpecializations.indexOf(e.currentTarget.value) != -1){
-        //     let newfilterSpecializations = [...filterSpecializations];
-        //     if(e.currentTarget.checked == false)
-        //     {
-        //         newfilterSpecializations.splice(filterSpecializations.indexOf(e.currentTarget.value), 1)
-        //     }
-        //     setFilterSpecialization(newfilterSpecializations);
-        // }
-        // else{
-        //     let newfilterSpecializations = [...filterSpecializations];
-        //     newfilterSpecializations.push(e.currentTarget.value);
-        //     setFilterSpecialization(newfilterSpecializations);
-        // }
-    }
     function SendFilter(){
         var filterDegrees = [];
         if(Object.keys(degrees).length !== 0){

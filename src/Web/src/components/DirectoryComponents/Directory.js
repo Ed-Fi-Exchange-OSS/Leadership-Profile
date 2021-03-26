@@ -23,7 +23,6 @@ const Directory = () => {
                 <div className="directory-subtitle-controls">
                     <BreadcrumbList currentPage="home" />
                     <div className="view-style-buttons">
-                        {/* <span className="view-style-label">View Style</span> */}
                         <a href="#"className="login-submit" onClick={e => handleOnClick(e)}>Advanced Search</a>
                         <button color="primary" className="btn btn-primary view-style-button-first view-style-button" onClick={() => setActiveComponent("table")}>
                             <TableViewIcon />
