@@ -1,5 +1,5 @@
 function config() {
-    const API_URL = process.env.NODE_ENV !== 'production' ? new URL('https://localhost:5100') : new URL('#{LPApiUrl}');
+    const API_URL = process.env.NODE_ENV !== 'production' ? new URL('https://localhost:5100/api') : new URL('https://localhost:5100/api');
     const API_CONFIG = (method, body=null) => { 
         return {
             method: method,
