@@ -17,7 +17,6 @@ function UseLogin() {
         password: password
     });
     const [error, setError] = useState(false);
-    console.log(process.env.NODE_ENV );
 
     useEffect(() => {
         setLogininfo({
@@ -54,7 +53,7 @@ function UseLogin() {
                     {
                         setError(false);
                         loginAuth(username); 
-                        history.push('/queue?count=10&page=1&sortBy=desc&sortField=id');
+                        history.push('/queue?count=10&page=1&sortBy=asc&sortField=id');
                         history.go(0);
                     }
                     else 
