@@ -1,0 +1,86 @@
+﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using LeadershipProfileAPI.Data;
+using LeadershipProfileAPI.Data.Models.ProfileSearchRequest;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+
+namespace LeadershipProfileAPI.Features.Search
+{
+    public class List
+    {
+        public class Query : IRequest<Response>
+        {
+            public int? Page { get; set; }
+            public string SortField { get; set; }
+            public string SortBy { get; set; }
+            public ProfileSearchRequestBody SearchRequestBody { get; set; }
+        }
+
+        public class Response
+        {
+            public int TotalCount { get; set; }
+
+            public int PageCount { get; set; }
+
+            public IList<SearchResult> Results { get; set; }
+
+            public int? Page { get; set; }
+        }
+
+        public class SearchResult
+        {
+            public int StaffUsi { get; set; }
+            public string StaffUniqueId { get; set; }
+            public string FirstName { get; set; }
+            public string MiddleName { get; set; }
+            public string LastSurName { get; set; }
+            public string FullName { get; set; }
+            public int YearsOfService { get; set; }
+            public string Certification { get; set; }
+            public string Assignment { get; set; }
+            public string Degree { get; set; }
+            public string RatingCategory { get; set; }
+            public string RatingSubCategory { get; set; }
+            public decimal Rating { get; set; }
+        }
+
+        public class QueryHandler : IRequestHandler<Query, Response>
+        {
+            private readonly EdFiDbContext _dbContext;
+            private readonly EdFiDbQueryData _dbQueryData;
+            private readonly IMapper _mapper;
+
+            public QueryHandler(EdFiDbContext dbContext, EdFiDbQueryData dbQueryData, IMapper mapper)
+            {
+                _dbContext = dbContext;
+                _dbQueryData = dbQueryData;
+                _mapper = mapper;
+            }
+
+            public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
+            {
+                var results = _dbQueryData.GetSearchResults(
+                    request.SearchRequestBody,
+                    request.SortBy ?? "asc",
+                    request.SortField ?? "id",
+                    request.Page ?? 1);
+
+                var list = await results
+                    .ProjectTo<SearchResult>(_mapper.ConfigurationProvider)
+                    .ToListAsync(cancellationToken);
+
+                return new Response
+                {
+                    TotalCount = await _dbContext.ProfileList.CountAsync(cancellationToken),
+                    Page = request.Page,
+                    Results = list,
+                    PageCount = await results.CountAsync(cancellationToken)
+                };
+            }
+        }
+    }
+}

@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using LeadershipProfileAPI.Data.Models;
+using LeadershipProfileAPI.Data.Models.ProfileSearchRequest;
+using LeadershipProfileAPI.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeadershipProfileAPI.Data
@@ -68,80 +70,129 @@ namespace LeadershipProfileAPI.Data
             return _edfiDbContext.ProfileList.FromSqlRaw(sql);
         }
 
-        public IEnumerable<StaffPerformanceMeasure> GetStaffPerformanceMeasures(int staffUsi, int startingYear, int numberOfYears = 5)
+        /// <summary>
+        /// Method sends raw SQL to the database and returns a queryable, paginated, collection of Staff records
+        /// matching the criteria and sorted by a field and direction
+        /// </summary>
+        /// <param name="sortBy">Direction to sort the data</param>
+        /// <param name="sortField">Field to sort data on</param>
+        /// <param name="currentPage">When paginating the data, which page of data should be returned</param>
+        /// <param name="pageSize">The number of records returned in the result</param>
+        /// <returns></returns>
+        public IQueryable<StaffSearch> GetSearchResults(ProfileSearchRequestBody body, string sortBy = "asc", string sortField = "name", int currentPage = 1, int pageSize = 10)
         {
-            var list = new List<StaffPerformanceMeasure>();
+            // Map the UI sorted field name to a table field name
+            var fieldMapping = new Dictionary<string, string>
+                {
+                    { "id", "StaffUniqueId" },
+                    { "name", "LastSurName" },
+                    { "yearsOfService", "YearsOfService" },
+                    { "certification", "Certification" },
+                    { "assignment", "Assignment" },
+                    { "degree", "Degree" },
+                    { "ratingCategory", "RatingCategory" },
+                    { "ratingSubCategory", "RatingSubCategory" },
+                    { "rating", "rating"}
+                };
 
-            for (int i = 0; i < numberOfYears; i++)
-            {
-                var sql = $@"
-                with allMeasures as (
-	                select
-		                 pm.PersonBeingReviewedStaffUSI as StaffUsi
-		                ,pm.TpdmRubricTypeDescriptorId as Category
-		                ,pm.TpdmRubricTitle as SubCategory
-		                ,pm.Score
-		                ,cast(pm.PerformanceMeasureComment as varchar(1000)) as Comments
-		                ,pm.ActualDateOfPerformanceMeasure as MeasureDate
-	                from extension.PerformanceMeasure as pm
-	                where year(pm.ActualDateOfPerformanceMeasure) = {startingYear - i}
-                )
-                , mostrecent as (
-	                select
-		                 StaffUsi
-		                ,Category
-		                ,SubCategory
-		                ,max(MeasureDate) as MeasureDate
-	                from allMeasures
-	                group by 
-		                 Category
-		                ,SubCategory
-		                ,StaffUsi
-                )
-                , rubric as (
-	                select 
-		                 de.CodeValue as MeasureCategory
-		                ,de.DescriptorID
-	                from edfi.Descriptor as de
-	                join extension.RubricTypeDescriptor as rtd on rtd.RubricTypeDescriptorID = de.DescriptorID
-                )
-                ,district as (
-	                select
-		                 pm.TpdmRubricTypeDescriptorId
-		                ,pm.TpdmRubricTitle
-		                ,min(cast(pm.Score as decimal(5,2))) as DistrictMin
-		                ,max(cast(pm.Score as decimal(5,2))) as DistrictMax
-		                ,cast(avg(cast(pm.Score as decimal(5,2))) as decimal(5,2)) as DistrictAvg
-	                from extension.PerformanceMeasure as pm
-	                group by pm.TpdmRubricTypeDescriptorId, pm.TpdmRubricTitle
-                )
-
+            // Implement the view in SQL, call it here
+            var sql = $@"
                 select
-	                 mr.StaffUsi
-	                ,ru.MeasureCategory as Category
-	                ,mr.SubCategory
-	                ,year(mr.MeasureDate) as [Year]
-	                ,di.DistrictMin
-	                ,di.DistrictMax
-	                ,di.DistrictAvg
-	                ,cast(pm.Score as decimal(5,2)) as Score
-	                ,pm.PerformanceMeasureComment
-	                ,mr.MeasureDate
-                from extension.PerformanceMeasure as pm
-                inner join mostrecent as mr on mr.Category = pm.TpdmRubricTypeDescriptorId
-	                and mr.SubCategory = pm.TpdmRubricTitle
-	                and mr.StaffUsi = pm.PersonBeingReviewedStaffUSI
-	                and mr.MeasureDate = pm.ActualDateOfPerformanceMeasure
-                left join rubric as ru on ru.DescriptorId = pm.TpdmRubricTypeDescriptorId
-                left join district as di on di.TpdmRubricTypeDescriptorId = pm.TpdmRubricTypeDescriptorId and di.TpdmRubricTitle = pm.TpdmRubricTitle
-                where mr.StaffUsi = {staffUsi}
-                order by Category, SubCategory, year(mr.MeasureDate)
+                     StaffUsi
+                    ,StaffUniqueId
+                    ,FirstName
+                    ,MiddleName
+                    ,LastSurname
+                    ,FullName
+                    ,YearsOfService
+	                ,Assignment
+                    ,Certification
+                    ,Degree
+                    ,RatingCategory
+                    ,RatingSubCategory
+                    ,Rating
+                from edfi.vw_StaffSearch
+                {(ClauseConditions(body))}
+                order by case when {fieldMapping[sortField]} is null then 1 else 0 end, {fieldMapping[sortField]} {sortBy}
+                offset {((currentPage - 1) * pageSize)} rows
+                fetch next {pageSize} rows only
             ";
 
-                list.AddRange(_edfiDbContext.StaffPerformanceMeasures.FromSqlRaw(sql).ToList());
+            return _edfiDbContext.StaffSearches.FromSqlRaw(sql);
+        }
+
+        private static string ClauseConditions(ProfileSearchRequestBody body)
+        {
+            var yearConditions = ClauseYears(body.MinYears, body.MaxYears);
+            var assignmentsConditions = ClauseAssignments(body.Assignments);
+            var certificatesConditions = ClauseCertifications(body.Certifications);
+            var degreesConditions = ClauseDegrees(body.Degrees);
+            var ratingsConditions = ClauseRatings(body.Ratings);
+
+            var conditions = new List<string>();
+
+            conditions.AddIfNotNullOrWhiteSpace(yearConditions);
+            conditions.AddIfNotNullOrWhiteSpace(assignmentsConditions);
+            conditions.AddIfNotNullOrWhiteSpace(certificatesConditions);
+            conditions.AddIfNotNullOrWhiteSpace(degreesConditions);
+            conditions.AddIfNotNullOrWhiteSpace(ratingsConditions);
+
+            // Join the strings and separate them with 'and'
+            var whereCondition = string.Join(" and ", conditions);
+
+            if (!string.IsNullOrWhiteSpace(whereCondition))
+            {
+                return $"where {whereCondition}";
             }
 
-            return list;
+            return "--where excluded, no conditions provided";
+        }
+
+        // Provide the condition being searched for matching your schema. Example: "(y.YearsOfService >= min and y.YearsOfService <= max)"
+        private static string ClauseYears(int min, int max) => $""; // Provide the condition being searched for matching your schema. Example: "(y.YearsOfService >= min and y.YearsOfService <= max)"
+
+        private static string ClauseAssignments(ProfileSearchRequestAssignments assignments)
+        {
+            if (assignments != null)
+            {
+                // Provide the condition being searched for matching your schema. Examples: "(a.StartDate = '1982-07-14')" or "(a.StartDate = '1982-07-14' and a.PositionId IN (5432, 234, 5331, 34))"
+                return $"";
+            }
+
+            return string.Empty;
+        }
+
+        private static string ClauseCertifications(ProfileSearchRequestCertifications certifications)
+        {
+            if (certifications != null)
+            {
+                // Provide the condition being searched for matching your schema. Examples: "(c.IssueDate = '2017-04-23')" or "(c.IssueDate = '2017-04-23' and c.CerfificationId IN (234, 12, 98))"
+                return $"";
+            }
+
+            return string.Empty;
+        }
+
+        private static string ClauseDegrees(ProfileSearchRequestDegrees degrees)
+        {
+            if (degrees != null)
+            {
+                // Provide the condition being searched for matching your schema. Example: "(d.DegreeId = 68)"
+                return $"";
+            }
+
+            return string.Empty;
+        }
+
+        private static string ClauseRatings(ProfileSearchRequestRatings ratings)
+        {
+            if (ratings != null)
+            {
+                // Provide the condition being searched for matching your schema. Examples: "(r.Rating = 3)" or "(r.Rating = 3 and r.RatingCateogryId = 45)"
+                return $"";
+            }
+
+            return string.Empty;
         }
     }
 }

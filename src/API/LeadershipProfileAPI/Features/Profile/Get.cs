@@ -42,6 +42,31 @@ namespace LeadershipProfileAPI.Features.Profile
             public IEnumerable<StaffPerformanceMeasure> PerformanceMeasures { get; set; }
         }
 
+        public class CompetencyRatings
+        {
+            public IList<Category> Categories { get; set; }
+        }
+        public class Category
+        {
+            public string CategoryTitle { get; set; }
+            public IList<SubCategory> SubCatCriteria { get; set; }
+        }
+        public class SubCategory
+        {
+            public string SubCatTitle { get; set; } = "Default Sub Category";
+            public string SubCatNotes { get; set; } = "Default Note";
+            public IList<ScoresByPeriod> ScoresByPeriod { get; set; }
+        }
+        public class ScoresByPeriod
+        {
+            public string Period { get; set; } = "Default Period";
+            public double DistrictMin { get; set; } = 0;
+            public double DistrictMax { get; set; } = 0;
+            public double DistrictAvg { get; set; } = 0;
+            public double StaffScore { get; set; } = 0;
+            public string StaffScoreNotes { get; set; } = "Default Note";
+        }
+
         public class PositionHistory
         {
             public string Role { get; set; } = "Default Role";

@@ -1,5 +1,6 @@
 ﻿using System;
 using LeadershipProfileAPI.Data.Models;
+using LeadershipProfileAPI.Data.Models.ListItem;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeadershipProfileAPI.Data
@@ -17,12 +18,38 @@ namespace LeadershipProfileAPI.Data
         public DbSet<ProfileHeader> ProfileHeader { get; set; }
         public DbSet<ProfilePositionHistory> ProfilePositionHistory { get; set; }
         public DbSet<StaffAdmin> StaffAdmins { get; set; }
+        public DbSet<StaffSearch> StaffSearches { get; set; }
+        public DbSet<ListItemAssignment> ListItemAssignments { get; set; }
+        public DbSet<ListItemCategory> ListItemCategories { get; set; }
+        public DbSet<ListItemCertification> ListItemCertifications { get; set; }
+        public DbSet<ListItemDegree> ListItemDegrees { get; set; }
+        public DbSet<ListItemSubCategory> ListItemSubCategories { get; set; }
         public DbSet<StaffCertificate> StaffCertificates { get; set; }
         public DbSet<StaffPerformanceMeasure> StaffPerformanceMeasures { get; set; }
         public DbSet<StaffProfessionalDevelopment> StaffProfessionalDevelopments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<ListItemAssignment>()
+                .ToView("vw_ListAllAssignments", "edfi")
+                .HasNoKey();
+
+            modelBuilder.Entity<ListItemCategory>()
+                .ToView("vw_ListAllCategories", "edfi")
+                .HasNoKey();
+
+            modelBuilder.Entity<ListItemCertification>()
+                .ToView("vw_ListAllCertifications", "edfi")
+                .HasNoKey();
+
+            modelBuilder.Entity<ListItemDegree>()
+                .ToView("vw_ListAllDegrees", "edfi")
+                .HasNoKey();
+
+            modelBuilder.Entity<ListItemSubCategory>()
+                .ToView("vw_ListAllSubCategories", "edfi")
+                .HasNoKey();
+
             modelBuilder.Entity<Staff>().ToTable("Staff", schema: "edfi")
                 .Property(p => p.LastName).HasColumnName("LastSurname");
 
@@ -45,16 +72,13 @@ namespace LeadershipProfileAPI.Data
                 .ToView("vw_StaffEducations", "edfi")
                 .HasKey(k => new { k.StaffUsi, k.TeacherPreparationProgramName });
 
-            modelBuilder.Entity<StaffPerformanceMeasure>()
-                .HasKey(k => new { k.StaffUsi, k.Category, k.SubCategory, k.MeasureDate });
-
             modelBuilder.Entity<StaffProfessionalDevelopment>()
                 .ToView("vw_StaffProfessionalDevelopment", "edfi")
                 .HasKey(k => new { k.StaffUsi, k.ProfessionalDevelopmentTitle });
 
-            modelBuilder.Entity<StaffCertificate>()
-                .ToView("vw_LeadershipProfileCertification", "edfi")
-                .HasKey(k => new { k.StaffUsi, k.Description });
+            modelBuilder.Entity<StaffSearch>()
+                .ToView("vw_StaffSearch", "edfi")
+                .HasNoKey();
         }
     }
 
