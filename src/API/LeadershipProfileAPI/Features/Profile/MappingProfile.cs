@@ -40,7 +40,8 @@ namespace LeadershipProfileAPI.Features.Profile
 
             CreateMap<StaffProfessionalDevelopment, Get.ProfessionalDevelopment>();
 
-            CreateMap<StaffPerformanceMeasure, Get.StaffMeasures>();
+            CreateMap<StaffPerformanceMeasure, Get.StaffMeasures>()
+                .ForMember(d => d.SubCateogry, o => o.MapFrom(x => x.SubCategory));
         }
 
         private static string GetFullName(string firstName, string middleName, string lastName)
