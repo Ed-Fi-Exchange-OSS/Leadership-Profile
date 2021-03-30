@@ -13,8 +13,9 @@ import {
   DropdownMenu,
   DropdownItem,
 } from 'reactstrap';
-
+import { HeaderLogo } from './images'
 import AuthService from '../utils/auth-service';
+import config from '../config';
 
 const Navigation = (props) => {
   const { logoutAuth, isAuthenticated, getAuthInfo } = AuthService();
@@ -22,6 +23,8 @@ const Navigation = (props) => {
   const [isOpen, setIsOpen] = useState(false);
   const history = useHistory();
 
+  const {SCHOOL_HEADER} = config();
+  
   const toggle = () => setIsOpen(!isOpen);
 
   const logout = () => {
@@ -52,7 +55,7 @@ const Navigation = (props) => {
   return (
     <div>
       <Navbar expand="md">
-        <NavbarBrand href="/">TPDM Leadership Portal</NavbarBrand>
+        <NavbarBrand href="/"><HeaderLogo/> {SCHOOL_HEADER}</NavbarBrand>
         <NavbarToggler onClick={toggle} />
           <Collapse isOpen={isOpen} navbar>
             {isAuthenticated() ? 
