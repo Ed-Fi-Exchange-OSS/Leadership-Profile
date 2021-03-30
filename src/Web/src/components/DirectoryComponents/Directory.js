@@ -9,7 +9,13 @@ import ErrorMessage from '../ErrorMessage';
 
 const Directory = () => {
     const [activeComponent, setActiveComponent] = useState("table");
-    const { setColumnSort, sort, data, paging, setPage, search, setSearchValue, error } = UseDirectory();
+    const { setColumnSort, sort, data, paging, setPage, search, setSearchValue, error, goToAdvancedSearch } = UseDirectory();
+    
+    const handleOnClick = (e) => {
+        e.preventDefault();
+        goToAdvancedSearch();
+    };
+    
     return (
         <div>
             <div className='directory-div'>
@@ -17,7 +23,7 @@ const Directory = () => {
                 <div className="directory-subtitle-controls">
                     <BreadcrumbList currentPage="home" />
                     <div className="view-style-buttons">
-                        <span className="view-style-label">View Style</span>
+                        <a href="#"className="login-submit" onClick={e => handleOnClick(e)}>Advanced Search</a>
                         <button color="primary" className="btn btn-primary view-style-button-first view-style-button" onClick={() => setActiveComponent("table")}>
                             <TableViewIcon />
                         </button>
@@ -28,6 +34,7 @@ const Directory = () => {
                 </div>
             </div>
             <DirectoryFilters search={search} setSearchValue={setSearchValue} />
+            
             { error ? <ErrorMessage /> : '' }
             { activeComponent === "table" ? (
                 <TableList sort={sort} data={data} setColumnSort={setColumnSort} paging={paging} setPage={setPage} />

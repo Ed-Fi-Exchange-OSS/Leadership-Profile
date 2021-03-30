@@ -41,7 +41,7 @@ namespace LeadershipProfileAPI.Features.Profile
         [HttpGet("{id}")]
         public async Task<ActionResult> GetProfile([FromRoute] string id, CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(new Get.Query {Id = id}, cancellationToken);
+            var result = await _mediator.Send(new Get.Query { Id = id }, cancellationToken);
 
             if (result == null)
             {

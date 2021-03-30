@@ -67,7 +67,7 @@ namespace LeadershipProfileAPI.Infrastructure.Auth
             };
 
             requestToken.Content.Headers.ContentType =
-                new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded") {CharSet = "UTF-8"};
+                new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded") { CharSet = "UTF-8" };
             requestToken.Headers.TryAddWithoutValidation("Authorization", $"Basic {encodedPair}");
 
             var authApi = _clientFactory.CreateClient();
