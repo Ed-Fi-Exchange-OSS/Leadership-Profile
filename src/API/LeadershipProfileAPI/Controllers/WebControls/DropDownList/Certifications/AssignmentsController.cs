@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 namespace LeadershipProfileAPI.Controllers.WebControls.DropDownList.Certifications
 {
     [TypeFilter(typeof(ApiExceptionFilter))]
-    [Route("api/webcontrols/dropdownlist/certifications")]
+    [Route("webcontrols/dropdownlist/certifications")]
     [ApiController]
     [Authorize]
     public class CertificationsController : ControllerBase

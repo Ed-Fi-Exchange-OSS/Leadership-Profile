@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 namespace LeadershipProfileAPI.Controllers.WebControls.DropDownList.MeasurementCategories
 {
     [TypeFilter(typeof(ApiExceptionFilter))]
-    [Route("api/webcontrols/dropdownlist/measurementcategories")]
+    [Route("webcontrols/dropdownlist/measurementcategories")]
     [ApiController]
     [Authorize]
     public class MeasurementCategoryController : ControllerBase
