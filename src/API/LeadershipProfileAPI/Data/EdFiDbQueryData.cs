@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using LeadershipProfileAPI.Data.Models;
 using LeadershipProfileAPI.Data.Models.ProfileSearchRequest;
 using LeadershipProfileAPI.Extensions;
