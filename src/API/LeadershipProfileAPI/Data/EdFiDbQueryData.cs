@@ -227,7 +227,7 @@ namespace LeadershipProfileAPI.Data
 
         private static string ClauseAssignments(ProfileSearchRequestAssignments assignments)
         {
-            if (assignments != null)
+            if (assignments != null && (!string.IsNullOrWhiteSpace(assignments.StartDate) || assignments.Values.Any()))
             {
                 // Provide the condition being searched for matching your schema. Examples: "(a.StartDate = '1982-07-14')" or "(a.StartDate = '1982-07-14' and a.PositionId IN (5432, 234, 5331, 34))"
                 return $"({(!string.IsNullOrWhiteSpace(assignments.StartDate) ? $"a.StartDate = cast({assignments.StartDate} as date)" : "")}{(!string.IsNullOrWhiteSpace(assignments.StartDate) && assignments.Values.Any() ? " and " : "")}{(assignments.Values.Any() ? $"a.KleinStaffClassificationDescriptorId in ({string.Join(",", assignments.Values)})" : "")})";
@@ -238,7 +238,7 @@ namespace LeadershipProfileAPI.Data
 
         private static string ClauseCertifications(ProfileSearchRequestCertifications certifications)
         {
-            if (certifications != null)
+            if (certifications != null && (!string.IsNullOrWhiteSpace(certifications.IssueDate) || certifications.Values.Any()))
             {
                 // Provide the condition being searched for matching your schema. Examples: "(c.IssueDate = '2017-04-23')" or "(c.IssueDate = '2017-04-23' and c.CerfificationId IN (234, 12, 98))"
                 return $"({(!string.IsNullOrWhiteSpace(certifications.IssueDate) ? $"c.IssuanceDate = cast({certifications.IssueDate} as date)" : "")}{(!string.IsNullOrWhiteSpace(certifications.IssueDate) && certifications.Values.Any() ? " and " : "")}{(certifications.Values.Any() ? $"c.CredentialFieldDescriptorId in ({string.Join(",", certifications.Values)})" : "")})";
@@ -249,7 +249,7 @@ namespace LeadershipProfileAPI.Data
 
         private static string ClauseDegrees(ProfileSearchRequestDegrees degrees)
         {
-            if (degrees != null)
+            if (degrees != null && degrees.Values.Any())
             {
                 // Provide the condition being searched for matching your schema. Example: "(d.DegreeId = 68)"
                 return $"({(degrees.Values.Any() ? $"d.LevelOfDegreeAwardedDescriptorId in ({string.Join(",", degrees.Values)})" : "")})";
@@ -260,7 +260,7 @@ namespace LeadershipProfileAPI.Data
 
         private static string ClauseRatings(ProfileSearchRequestRatings ratings)
         {
-            if (ratings != null)
+            if (ratings != null && ratings.Score > 0)
             {
                 // Provide the condition being searched for matching your schema. Examples: "(r.Rating = 3)" or "(r.Rating = 3 and r.RatingCateogryId = 45)"
                 return $"({(ratings.CategoryId > 0 ? $"mr.Category = {ratings.CategoryId}" : "")}{(ratings.CategoryId > 0 && ratings.Score > 0 ? " and " : "")}{(ratings.Score > 0 ? $"pm.Score = {ratings.Score}" : "")})";
