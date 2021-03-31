@@ -178,10 +178,10 @@ namespace LeadershipProfileAPI.Data
                     ,FirstName
                     ,MiddleName
                     ,LastSurname
-                    ,FullName
+                    ,'' as FullName
                     ,YearsOfService
-	                ,Assignment
-                    ,Certification
+	                ,Position
+                    ,Certificate
                     ,Degree
                     ,RatingCategory
                     ,RatingSubCategory
