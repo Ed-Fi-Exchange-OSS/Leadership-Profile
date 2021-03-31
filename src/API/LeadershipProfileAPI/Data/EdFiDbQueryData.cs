@@ -223,14 +223,14 @@ namespace LeadershipProfileAPI.Data
         }
 
         // Provide the condition being searched for matching your schema. Example: "(y.YearsOfService >= min and y.YearsOfService <= max)"
-        private static string ClauseYears(int min, int max) => $""; // Provide the condition being searched for matching your schema. Example: "(y.YearsOfService >= min and y.YearsOfService <= max)"
+        private static string ClauseYears(int min, int max) => $"({(min > 0 ? $"staffService.YearsOfService >= {min}" : "")}{(min > 0 && max > 0 ? " and " : "")}{(max > 0 ? $"staffService.YearsOfService <= {max}" : "")})";
 
         private static string ClauseAssignments(ProfileSearchRequestAssignments assignments)
         {
             if (assignments != null)
             {
                 // Provide the condition being searched for matching your schema. Examples: "(a.StartDate = '1982-07-14')" or "(a.StartDate = '1982-07-14' and a.PositionId IN (5432, 234, 5331, 34))"
-                return $"";
+                return $"({(!string.IsNullOrWhiteSpace(assignments.StartDate) ? $"a.StartDate = cast({assignments.StartDate} as date)" : "")}{(!string.IsNullOrWhiteSpace(assignments.StartDate) && assignments.Values.Any() ? " and " : "")}{(assignments.Values.Any() ? $"a.KleinStaffClassificationDescriptorId in ({string.Join(",", assignments.Values)})" : "")})";
             }
 
             return string.Empty;
@@ -241,7 +241,7 @@ namespace LeadershipProfileAPI.Data
             if (certifications != null)
             {
                 // Provide the condition being searched for matching your schema. Examples: "(c.IssueDate = '2017-04-23')" or "(c.IssueDate = '2017-04-23' and c.CerfificationId IN (234, 12, 98))"
-                return $"";
+                return $"({(!string.IsNullOrWhiteSpace(certifications.IssueDate) ? $"c.IssuanceDate = cast({certifications.IssueDate} as date)" : "")}{(!string.IsNullOrWhiteSpace(certifications.IssueDate) && certifications.Values.Any() ? " and " : "")}{(certifications.Values.Any() ? $"c.CredentialFieldDescriptorId in ({string.Join(",", certifications.Values)})" : "")})";
             }
 
             return string.Empty;
@@ -252,7 +252,7 @@ namespace LeadershipProfileAPI.Data
             if (degrees != null)
             {
                 // Provide the condition being searched for matching your schema. Example: "(d.DegreeId = 68)"
-                return $"";
+                return $"({(degrees.Values.Any() ? $"d.LevelOfDegreeAwardedDescriptorId in ({string.Join(",", degrees.Values)})" : "")})";
             }
 
             return string.Empty;
@@ -263,7 +263,7 @@ namespace LeadershipProfileAPI.Data
             if (ratings != null)
             {
                 // Provide the condition being searched for matching your schema. Examples: "(r.Rating = 3)" or "(r.Rating = 3 and r.RatingCateogryId = 45)"
-                return $"";
+                return $"({(ratings.CategoryId > 0 ? $"mr.Category = {ratings.CategoryId}" : "")}{(ratings.CategoryId > 0 && ratings.Score > 0 ? " and " : "")}{(ratings.Score > 0 ? $"pm.Score = {ratings.Score}" : "")})";
             }
 
             return string.Empty;
