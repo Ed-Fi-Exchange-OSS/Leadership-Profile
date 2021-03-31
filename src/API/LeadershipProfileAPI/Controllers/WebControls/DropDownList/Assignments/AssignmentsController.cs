@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 namespace LeadershipProfileAPI.Controllers.WebControls.DropDownList.Assignments
 {
     [TypeFilter(typeof(ApiExceptionFilter))]
-    [Route("api/webcontrols/dropdownlist/assignments")]
+    [Route("webcontrols/dropdownlist/assignments")]
     [ApiController]
     [Authorize]
     public class AssignmentsController : ControllerBase
