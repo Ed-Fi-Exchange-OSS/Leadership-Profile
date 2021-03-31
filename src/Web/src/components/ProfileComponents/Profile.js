@@ -17,7 +17,7 @@ const Profile = () => {
     const { data, losMapping } = UseProfile(id);
 
     const losMappingResult = [];
-    if(data.performanceMeasures != undefined){
+    if (data.performanceMeasures != undefined) {
         losMappingResult = losMapping(data.performanceMeasures); 
     }
     
