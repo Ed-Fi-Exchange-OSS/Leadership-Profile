@@ -17,16 +17,18 @@ namespace LeadershipProfileAPI.Data
         public DbSet<ProfileList> ProfileList { get; set; }
         public DbSet<ProfileHeader> ProfileHeader { get; set; }
         public DbSet<ProfilePositionHistory> ProfilePositionHistory { get; set; }
+        public DbSet<ProfileCertification> ProfileCertification { get; set; }
+        public DbSet<ProfileEducation> ProfileEducation { get; set; }
         public DbSet<StaffAdmin> StaffAdmins { get; set; }
+        public DbSet<StaffCertificate> StaffCertificates { get; set; }
+        public DbSet<StaffPerformanceMeasure> StaffPerformanceMeasures { get; set; }
+        public DbSet<StaffProfessionalDevelopment> StaffProfessionalDevelopments { get; set; }
         public DbSet<StaffSearch> StaffSearches { get; set; }
         public DbSet<ListItemAssignment> ListItemAssignments { get; set; }
         public DbSet<ListItemCategory> ListItemCategories { get; set; }
         public DbSet<ListItemCertification> ListItemCertifications { get; set; }
         public DbSet<ListItemDegree> ListItemDegrees { get; set; }
         public DbSet<ListItemSubCategory> ListItemSubCategories { get; set; }
-        public DbSet<StaffCertificate> StaffCertificates { get; set; }
-        public DbSet<StaffPerformanceMeasure> StaffPerformanceMeasures { get; set; }
-        public DbSet<StaffProfessionalDevelopment> StaffProfessionalDevelopments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -65,6 +67,14 @@ namespace LeadershipProfileAPI.Data
                 .ToView("vw_LeadershipProfilePositionHistory", "edfi")
                 .HasNoKey();
 
+            modelBuilder.Entity<ProfileCertification>()
+                .ToView("vw_LeadershipProfileCertification", "edfi")
+                .HasNoKey();
+
+            modelBuilder.Entity<ProfileEducation>()
+                .ToView("vw_LeadershipProfileEducation", "edfi")
+                .HasNoKey();
+
             modelBuilder.Entity<StaffAdmin>()
                 .HasKey(k => k.Id);
 
@@ -72,9 +82,16 @@ namespace LeadershipProfileAPI.Data
                 .ToView("vw_StaffEducations", "edfi")
                 .HasKey(k => new { k.StaffUsi, k.TeacherPreparationProgramName });
 
+            modelBuilder.Entity<StaffPerformanceMeasure>()
+                .HasKey(k => new { k.StaffUsi, k.Category, k.SubCategory, k.MeasureDate });
+
             modelBuilder.Entity<StaffProfessionalDevelopment>()
                 .ToView("vw_StaffProfessionalDevelopment", "edfi")
                 .HasKey(k => new { k.StaffUsi, k.ProfessionalDevelopmentTitle });
+
+            modelBuilder.Entity<StaffCertificate>()
+                .ToView("vw_LeadershipProfileCertification", "edfi")
+                .HasKey(k => new { k.StaffUsi, k.Description });
 
             modelBuilder.Entity<StaffSearch>()
                 .ToView("vw_StaffSearch", "edfi")
