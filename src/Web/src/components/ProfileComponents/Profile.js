@@ -15,12 +15,12 @@ const Profile = () => {
     const [activeComponent, setActiveComponent] = useState("general");
     const id = window.location.href.slice(window.location.href.lastIndexOf('/')+1);
     const { data, losMapping } = UseProfile(id);
-    var losMappingResult = null;
 
-    if (data.performanceMeasures != undefined) {
+    const losMappingResult = [];
+    if(data.performanceMeasures != undefined){
         losMappingResult = losMapping(data.performanceMeasures); 
     }
- 
+    
     return (
         <div>
             <ProfileInfo data={data}/>
@@ -40,14 +40,15 @@ const Profile = () => {
                     <CertificationsTable title='Certifications' data={data.certificates} />
                     <ProfessionalDevelopmentTable title='Professional Development and Learning Experiences' data={data.professionalDevelopment}/>
                 </div>
-                ) : activeComponent === "leader" && losMappingResult !== null !== 0 ? (
+                ) : activeComponent === "leader" && losMappingResult.length !== 0 ? (
                     <div>
-                        { (losMappingResult).map((obj, i) => {
+                        {
+                            (losMappingResult).map((obj, i) => {
                             return (<CollapsibleLeaderOfSelf title={obj.categoryTitle} data={obj}/>)
                             })
-                        }
+                        }                        
                     </div>
-                ) : '' }
+                ) : ( <p>No data avilable.</p>) }
         </div >
     );
 }
