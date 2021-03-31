@@ -180,8 +180,8 @@ namespace LeadershipProfileAPI.Data
                     ,LastSurname
                     ,'' as FullName
                     ,YearsOfService
-	                ,Position
-                    ,Certificate
+	                ,Assignment
+                    ,Certification
                     ,Degree
                     ,RatingCategory
                     ,RatingSubCategory
