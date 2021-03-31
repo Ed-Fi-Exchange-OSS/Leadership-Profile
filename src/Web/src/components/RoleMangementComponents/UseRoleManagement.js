@@ -131,7 +131,7 @@ function UseRoleManagement() {
         const removePromise = await RemoveAdminRoles(removeList);
         Promise.all([addPromise, removePromise])
             .then(() => {
-                history.push('/queue?count=10&page=1&sortBy=desc&sortField=id');
+                history.push('/queue?count=10&page=1&sortBy=asc&sortField=id');
                 history.go(0);
             });
     }
