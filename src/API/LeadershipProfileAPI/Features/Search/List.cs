@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -63,22 +64,22 @@ namespace LeadershipProfileAPI.Features.Search
 
             public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
             {
-                var results = _dbQueryData.GetSearchResults(
+                var results = await _dbQueryData.GetSearchResultsAsync(
                     request.SearchRequestBody,
                     request.SortBy ?? "asc",
                     request.SortField ?? "id",
                     request.Page ?? 1);
 
-                var list = await results
+                var list = results.AsQueryable()
                     .ProjectTo<SearchResult>(_mapper.ConfigurationProvider)
-                    .ToListAsync(cancellationToken);
+                    .ToList();
 
                 return new Response
                 {
                     TotalCount = await _dbContext.ProfileList.CountAsync(cancellationToken),
                     Page = request.Page,
                     Results = list,
-                    PageCount = await results.CountAsync(cancellationToken)
+                    PageCount = results.Count
                 };
             }
         }
