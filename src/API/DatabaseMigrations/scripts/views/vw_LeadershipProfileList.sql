@@ -115,6 +115,6 @@ FROM edfi.Staff as s
 left join edfi.StaffElectronicMail as em on em.StaffUSI = s.StaffUSI
 left join edfi.StaffTelephone as st on st.StaffUSI = s.StaffUSI
 left join staffHighestDegree as hd on hd.StaffUSI = s.StaffUSI 
-join staffDegreeSeq as sds on sds.[Sequence] = hd.[Sequence] and sds.StaffUSI = hd.StaffUSI
+left join staffDegreeSeq as sds on sds.[Sequence] = hd.[Sequence] and sds.StaffUSI = hd.StaffUSI
 left join staffService on staffService.StaffUSI = s.StaffUSI
 left join staffAssignments as sa on sa.StaffUSI = s.StaffUSI

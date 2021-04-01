@@ -303,6 +303,7 @@ namespace LeadershipProfileAPI.Data
                     ,s.FirstName
                     ,s.MiddleName
                     ,s.LastSurname
+                    ,'' as FullName
 
                     ,staffService.YearsOfService
 
