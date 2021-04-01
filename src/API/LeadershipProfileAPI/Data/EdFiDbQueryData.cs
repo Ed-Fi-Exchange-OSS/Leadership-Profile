@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using LeadershipProfileAPI.Data.Models;
 using LeadershipProfileAPI.Data.Models.ProfileSearchRequest;
 using LeadershipProfileAPI.Extensions;
@@ -154,7 +155,7 @@ namespace LeadershipProfileAPI.Data
         /// <param name="currentPage">When paginating the data, which page of data should be returned</param>
         /// <param name="pageSize">The number of records returned in the result</param>
         /// <returns></returns>
-        public IQueryable<StaffSearch> GetSearchResults(ProfileSearchRequestBody body, string sortBy = "asc", string sortField = "name", int currentPage = 1, int pageSize = 10)
+        public async Task<IList<StaffSearch>> GetSearchResultsAsync(ProfileSearchRequestBody body, string sortBy = "asc", string sortField = "name", int currentPage = 1, int pageSize = 10)
         {
             // Map the UI sorted field name to a table field name
             var fieldMapping = new Dictionary<string, string>
@@ -172,7 +173,7 @@ namespace LeadershipProfileAPI.Data
 
             // Implement the view in SQL, call it here
             var sql = $@"
-                with staffService as (
+                ;with staffService as (
                     select
                          StaffUsi
                         ,sum(FLOOR(DATEDIFF(DAY, KleinHireDate, COALESCE(KleinEndDate, getdate()) )/365.0 * 4) / 4) as YearsOfService
@@ -315,26 +316,26 @@ namespace LeadershipProfileAPI.Data
 
                     ,ru.MeasureCategory as RatingCategory
                     ,mr.SubCategory as RatingSubCategory
-                    ,cast(pm.Score as decimal(5,2)) as Rating
+                    ,cast(coalesce(pm.Score, 0.0) as decimal(5,2)) as Rating
 
                 from edfi.Staff as s
                 left join staffService on staffService.StaffUSI = s.StaffUSI
-                join assignments as a on a.StaffUSI = s.StaffUSI
-                join certifications as c on c.StaffUSI = s.StaffUSI
-                join degress as d on d.StaffUSI = s.StaffUSI
-                join extension.PerformanceMeasure as pm on pm.PersonBeingReviewedStaffUSI = s.StaffUSI
-                    inner join mostrecent as mr on mr.Category = pm.TpdmRubricTypeDescriptorId
-                        and mr.SubCategory = pm.TpdmRubricTitle
-                        and mr.StaffUsi = pm.PersonBeingReviewedStaffUSI
-                        and mr.MeasureDate = pm.ActualDateOfPerformanceMeasure
-                    left join rubric as ru on ru.DescriptorId = pm.TpdmRubricTypeDescriptorId
+                left join assignments as a on a.StaffUSI = s.StaffUSI
+                left join certifications as c on c.StaffUSI = s.StaffUSI
+                left join degress as d on d.StaffUSI = s.StaffUSI
+                left join extension.PerformanceMeasure as pm on pm.PersonBeingReviewedStaffUSI = s.StaffUSI
+                left join mostrecent as mr on mr.Category = pm.TpdmRubricTypeDescriptorId
+                    and mr.SubCategory = pm.TpdmRubricTitle
+                    and mr.StaffUsi = pm.PersonBeingReviewedStaffUSI
+                    and mr.MeasureDate = pm.ActualDateOfPerformanceMeasure
+                left join rubric as ru on ru.DescriptorId = pm.TpdmRubricTypeDescriptorId
                 {(ClauseConditions(body))}
                 order by case when {fieldMapping[sortField]} is null then 1 else 0 end, {fieldMapping[sortField]} {sortBy}
                 offset {((currentPage - 1) * pageSize)} rows
                 fetch next {pageSize} rows only
             ";
 
-            return _edfiDbContext.StaffSearches.FromSqlRaw(sql);
+            return await _edfiDbContext.StaffSearches.FromSqlRaw(sql).ToListAsync();
         }
         private static string ClauseConditions(ProfileSearchRequestBody body)
         {
@@ -363,8 +364,16 @@ namespace LeadershipProfileAPI.Data
             return "--where excluded, no conditions provided";
         }
 
-        // Provide the condition being searched for matching your schema. Example: "(y.YearsOfService >= min and y.YearsOfService <= max)"
-        private static string ClauseYears(int min, int max) => $"({(min > 0 ? $"staffService.YearsOfService >= {min}" : "")}{(min > 0 && max > 0 ? " and " : "")}{(max > 0 ? $"staffService.YearsOfService <= {max}" : "")})";
+        private static string ClauseYears(int min, int max)
+        {
+            if (min > 0 || max > 0)
+            {
+                // Provide the condition being searched for matching your schema. Example: "(y.YearsOfService >= min and y.YearsOfService <= max)"
+                return $"({(min > 0 ? $"staffService.YearsOfService >= {min}" : "")}{(min > 0 && max > 0 ? " and " : "")}{(max > 0 ? $"staffService.YearsOfService <= {max}" : "")})";
+            }
+
+            return string.Empty;
+        }
 
         private static string ClauseAssignments(ProfileSearchRequestAssignments assignments)
         {
