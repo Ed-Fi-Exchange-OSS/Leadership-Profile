@@ -3,7 +3,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-CREATE   VIEW [edfi].[vw_ListAllPerformanceCategories] AS
+CREATE   VIEW [edfi].[vw_ListAllCategories] AS
 
 select distinct
      d.CodeValue as [Text]
