@@ -13,7 +13,7 @@ import {
   DropdownMenu,
   DropdownItem,
 } from 'reactstrap';
-
+import { HeaderLogo } from './images'
 import AuthService from '../utils/auth-service';
 import config from '../config';
 
@@ -22,12 +22,13 @@ const Navigation = (props) => {
   const authInfo = getAuthInfo();
   const [isOpen, setIsOpen] = useState(false);
   const history = useHistory();
-  const { API_URL, API_CONFIG } = config();
 
+  const {SCHOOL_HEADER} = config();
+  
   const toggle = () => setIsOpen(!isOpen);
 
   const logout = () => {
-    const apiUrl = new URL(API_URL.href + '/account/logout');
+      const apiUrl = new URL(API_URL.href + '/account/logout');
     fetch(apiUrl, {
         method: 'POST',
         mode: 'cors',
@@ -54,7 +55,7 @@ const Navigation = (props) => {
   return (
     <div>
       <Navbar expand="md">
-        <NavbarBrand href="/">TPDM Leadership Portal</NavbarBrand>
+        <NavbarBrand href="/"><HeaderLogo/> {SCHOOL_HEADER}</NavbarBrand>
         <NavbarToggler onClick={toggle} />
           <Collapse isOpen={isOpen} navbar>
             {isAuthenticated() ? 
