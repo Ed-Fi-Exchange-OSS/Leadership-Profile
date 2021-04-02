@@ -21,7 +21,8 @@ const Navigation = (props) => {
   const { logoutAuth, isAuthenticated, getAuthInfo } = AuthService();
   const authInfo = getAuthInfo();
   const [isOpen, setIsOpen] = useState(false);
-  const history = useHistory();
+  const history = useHistory(); 
+  const { API_URL } = config();
 
   const {SCHOOL_HEADER} = config();
   
