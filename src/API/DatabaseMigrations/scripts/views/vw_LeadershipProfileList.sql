@@ -80,7 +80,7 @@ with staffDegrees as (
 ,staffService as (
     select
          StaffUsi
-        ,sum(FLOOR(DATEDIFF(DAY, KleinHireDate, COALESCE(KleinEndDate, getdate()) )/365.0 * 4) / 4) as YearsOfService
+        ,cast(sum(FLOOR(DATEDIFF(DAY, KleinHireDate, COALESCE(KleinEndDate, getdate()) )/365.0 * 4) / 4) as decimal(5,2)) as YearsOfService
     from extension.KleinStaffEmployment
     group by StaffUsi
 )

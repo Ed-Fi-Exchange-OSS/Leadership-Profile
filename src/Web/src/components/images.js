@@ -5,7 +5,7 @@ const DefaultProfile = () =>
     src={process.env.PUBLIC_URL + "/images/generic-profile.png"} />
 
 const HeaderLogo = () => 
-    <img alt="header-logo" src={process.env.PUBLIC_URL + "/images/header-logo.png"}/>
+    <img alt="header-logo" src={process.env.PUBLIC_URL + "/images/header-logo.jpg"}/>
 export{
     DefaultProfile,
     HeaderLogo

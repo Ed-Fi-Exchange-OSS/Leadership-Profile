@@ -40,11 +40,11 @@ namespace LeadershipProfileAPI.Features.Profile
             [JsonPropertyName("middleName")] public string MiddleName { get; set; }
             [JsonPropertyName("lastSurname")] public string LastSurName { get; set; }
             [JsonPropertyName("fullName")] public string FullName { get; set; }
-            public string Location { get; set; } = "Default Location";
-            public int YearsOfService { get; set; }
-            public string Institution { get; set; } = "Default Institution";
-            public string HighestDegree { get; set; } = "Default Degree";
-            public string Major { get; set; } = "Default Major";
+            public string Location { get; set; }
+            public decimal YearsOfService { get; set; }
+            public string Institution { get; set; }
+            public string HighestDegree { get; set; }
+            public string Major { get; set; }
             public string Email { get; set; }
             public string Telephone { get; set; }
         }
@@ -67,15 +67,13 @@ namespace LeadershipProfileAPI.Features.Profile
 
             public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
             {
-                var list = _dbQueryData.GetProfileList(request.SortBy ?? "asc", request.SortField ?? "id",
-                    request.Page ?? 1);
+                var list = _dbQueryData.GetProfileList(request.SortBy ?? "asc", request.SortField ?? "id", request.Page ?? 1);
 
                 return new Response
                 {
                     TotalCount = await _ctx.ProfileList.CountAsync(cancellationToken),
                     Page = request.Page,
-                    Profiles = await list.ProjectTo<TeacherProfile>(_mapper.ConfigurationProvider)
-                        .ToListAsync(cancellationToken),
+                    Profiles = await list.ProjectTo<TeacherProfile>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken),
                     PageCount = await list.CountAsync(cancellationToken)
                 };
             }
