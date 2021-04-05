@@ -10,7 +10,7 @@ namespace LeadershipProfileAPI.Features.Profile
             CreateMap<ProfileList, List.TeacherProfile>()
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(x => Guid.NewGuid())) // Create Guid until Staff.Id is available from the vw_LeadershipProfileList
                 .ForMember(dst => dst.FullName, opt => opt.MapFrom(x => GetFullName(x.FirstName, x.MiddleName, x.LastSurName)))
-                .ForMember(dst => dst.YearsOfService, opt => opt.MapFrom(x => x.YearsOfService.HasValue ? decimal.ToInt32(x.YearsOfService.Value) : 0))
+                .ForMember(dst => dst.YearsOfService, opt => opt.MapFrom(x => x.YearsOfService ?? 0))
                 .ForMember(dst => dst.Email, opt => opt.MapFrom(x => x.Email))
                 .ForMember(dst => dst.Telephone, opt => opt.MapFrom(x => x.Telephone));
 
