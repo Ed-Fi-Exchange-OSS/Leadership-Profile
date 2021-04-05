@@ -71,9 +71,15 @@ namespace LeadershipProfileAPI.Features.Profile
                 var details = "<h4>Details: </h4>";
                 var description = $"<p>{request.MessageDescription} </p>";
 
-                var message = new StringBuilder().Append(title).Append(staffIdMessage).Append(staffPhone).Append(staffEmail).Append(details).Append(description).ToString();
-
-                await _emailSender.SendEmailAsync(adminEmail, $"{request.MessageSubject}", message);
+                try
+                {
+                    await _emailSender.SendEmailAsync(adminEmail, $"{request.MessageSubject}", $"{title}{staffIdMessage}{staffPhone}{staffEmail}{details}{description}");
+                }
+                catch (Exception ex)
+                {
+                    response.Result = false;
+                    response.ResultMessage = ex.Message;
+                }
 
                 return response;
             }
