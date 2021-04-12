@@ -73,8 +73,8 @@ const CreateTableList = (props) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {data !== [] ? data.map(profile => (
-                        <tr key={profile.id}>
+                    {data !== [] ? data.map((profile, index) => (
+                        <tr key={index}>
                             <td><span className="dot"></span></td>
                             <td>{profile.staffUniqueId}</td>
                             <td>{profile.lastSurName}, {profile.firstName}</td>
