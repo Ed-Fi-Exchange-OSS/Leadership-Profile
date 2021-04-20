@@ -1,26 +1,28 @@
-import React from 'react';
-import { MailIcon, PhoneIcon, PersonIcon, GeoIcon, RightPointingIcon } from '../../Icons';
-import { Card, CardTitle, CardText, Row, Col } from 'reactstrap';
-import CardProfile from './CardProfile';
+import React from "react";
+import CardProfile from "./CardProfile";
+import PaginationDetails from "../PaginationDetails";
+import PaginationButtons from "../PaginationButtons";
 
 const CardList = (props) => {
-    
-    const {data} = props;
-    return (
+  const { data, paging, setPage } = props;
+
+  return (
+    <>
+      <div class="card-layout">
+        {data.map((profile, index) => {
+          return <CardProfile key={index} data={profile}></CardProfile>;
+        })}
+      </div>
+      <div class="card-pagination-grid">
         <div>
-            {
-                <Row key="1" className="col-md-12">
-                    { 
-                    data.map((profile, index) =>{
-                        return(
-                            <CardProfile data={profile}></CardProfile>
-                        );
-                    })
-                }
-                </Row>               
-            }
+          <PaginationDetails paging={paging} />
         </div>
-    );
-}
+        <td className="pagination-buttons-container">
+          <PaginationButtons paging={paging} setPage={setPage} />
+        </td>
+      </div>
+    </>
+  );
+};
 
 export default CardList;

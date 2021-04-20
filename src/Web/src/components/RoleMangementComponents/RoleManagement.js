@@ -3,6 +3,7 @@ import { Table, Button, Form, FormGroup, Input, Alert } from 'reactstrap';
 import PaginationButtons from '../DirectoryComponents/PaginationButtons';
 import UseRoleManagement from './UseRoleManagement';
 import BreadcrumbList from '../Breadcrumb';
+import PaginationDetails from '../DirectoryComponents/PaginationDetails'
 
 const RoleManagement = () => {
     const { data, paging, SetPage, OnSubmit, error, bind } = UseRoleManagement();
@@ -51,7 +52,7 @@ const RoleManagement = () => {
                                 <Button onClick={event => OnSubmit(event)}>Save</Button>
                             </td> */}
                             <td colSpan="4">
-                                <span>Showing {paging.page}-10 of {paging.totalSize} Users</span>
+                                <PaginationDetails paging={paging} />
                             </td>
                             <td colSpan="1" className="pagination-buttons-container">
                                 <PaginationButtons paging={paging} setPage={SetPage} />

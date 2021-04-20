@@ -59,9 +59,7 @@ function UseSearchDirectory() {
             fetch(apiUrl, API_CONFIG('POST', JSON.stringify(filters)))
                 .then(response => response.json())
                 .then((response) => {
-                if (response.isError) {
-                    setError(true);
-                }
+                setError(response.isError);
                 if (!unmounted && response !== null) {
                     if (response.results !== undefined) {
                         setData(response.results);
