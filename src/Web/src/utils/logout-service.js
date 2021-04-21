@@ -1,13 +1,15 @@
 import AuthService from '../utils/auth-service';
 import { useHistory } from 'react-router-dom';
+import config from '../config';
 
 function LogoutService() {
     const history = useHistory();
     const { logoutAuth, getAuthInfo } = AuthService();
     const authInfo = getAuthInfo();
+    const { API_URL } = config();
 
     function logout() {
-        const apiUrl = new URL(`https://localhost:5001/account/logout`);
+        const apiUrl = new URL(API_URL.href + '/account/logout');
         fetch(apiUrl, {
             method: 'POST',
             mode: 'cors',
