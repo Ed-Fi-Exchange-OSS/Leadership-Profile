@@ -2,11 +2,13 @@ import { useState, useEffect, useRef } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
 import config from '../../config';
+import LogoutService from '../../utils/logout-service';
 
 function UseDirectory() {
     const history = useHistory();
     const location = useLocation();
     const { API_URL, API_CONFIG } = config();
+    const { logout } = LogoutService();
 
     const [data, setData] = useState([]);
     const [error, setError] = useState(false);
@@ -54,12 +56,24 @@ function UseDirectory() {
         if (!searchableUrl.current.search) return;
         let unmounted = false;
         const apiUrl = new URL(API_URL.href + `/profile${history.location.search}`);
-        fetch(apiUrl, API_CONFIG('GET')).then(response => response.json()
-        ).then((response) => {
-            if (response.isError) {
-                setError(true);
+        fetch(apiUrl, API_CONFIG('GET'))
+        .then((response) => {
+
+            if (!response.ok) {
+                if (response.status === 401) {
+                    logout();
+                } else {
+                    setError(true);
+                }
+                return;
             }
-            if (!unmounted && response !== null) {
+
+            setError(response.isError);
+            
+            response.json().then((response) => {
+                if (response.isError) {
+                setError({isError:true, description: 'Error processing response'});
+                } else if (!unmounted && response !== null) {
                 if (response.profiles !== undefined) {
                     setData(response.profiles);
                 }
@@ -68,12 +82,13 @@ function UseDirectory() {
                     totalSize: response.totalCount,
                     maxPages: Math.ceil(response.totalCount / 10),
                 });
-            }
-        })
-            .catch(error => {
-                setError(true);
-                console.error(error.message);
+                }
             });
+        })
+        .catch((error) => {
+            setError({isError:true, description: error.message});
+        console.error(error.message);
+      });
         return () => {
             unmounted = true;
         };
