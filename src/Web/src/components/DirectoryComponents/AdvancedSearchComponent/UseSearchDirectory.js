@@ -2,11 +2,13 @@ import { useState, useEffect, useRef } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
 import config from '../../../config';
+import LogoutService from '../../../utils/logout-service';
 
 function UseSearchDirectory() {
     const history = useHistory();
     const location = useLocation();
     const { API_URL, API_CONFIG } = config();
+    const { logout } = LogoutService();
 
     const [data, setData] = useState([]);
     const [error, setError] = useState(false);
@@ -57,23 +59,32 @@ function UseSearchDirectory() {
             let unmounted = false;
             const apiUrl = new URL(API_URL.href + `/search${history.location.search}`);
             fetch(apiUrl, API_CONFIG('POST', JSON.stringify(filters)))
-                .then(response => response.json())
-                .then((response) => {
-                if (response.isError) {
-                    setError(true);
-                }
-                if (!unmounted && response !== null) {
-                    if (response.results !== undefined) {
-                        setData(response.results);
+            .then((response) => {
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        logout();
+                    } else {
+                        setError(true);
                     }
-                    setPaging({
-                        ...paging,
-                        totalSize: response.totalCount,
-                        maxPages: Math.ceil(response.totalCount / 10),
-                    });
+                    return;
                 }
+    
+                setError(false);
+                
+                response.json().then((response) => {
+                    if (!unmounted && response !== null) {
+                        if (response.results !== undefined) {
+                            setData(response.results);
+                        }
+                        setPaging({
+                            ...paging,
+                            totalSize: response.totalCount,
+                            maxPages: Math.ceil(response.totalCount / 10),
+                        });
+                    }
+                });
             })
-            .catch(error => {
+            .catch((error) => {
                 setError(true);
                 console.error(error.message);
             });

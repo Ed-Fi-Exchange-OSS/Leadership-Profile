@@ -58,7 +58,6 @@ function UseDirectory() {
         const apiUrl = new URL(API_URL.href + `/profile${history.location.search}`);
         fetch(apiUrl, API_CONFIG('GET'))
         .then((response) => {
-
             if (!response.ok) {
                 if (response.status === 401) {
                     logout();
@@ -68,27 +67,25 @@ function UseDirectory() {
                 return;
             }
 
-            setError(response.isError);
+            setError(false);
             
             response.json().then((response) => {
-                if (response.isError) {
-                setError({isError:true, description: 'Error processing response'});
-                } else if (!unmounted && response !== null) {
-                if (response.profiles !== undefined) {
-                    setData(response.profiles);
-                }
-                setPaging({
-                    ...paging,
-                    totalSize: response.totalCount,
-                    maxPages: Math.ceil(response.totalCount / 10),
-                });
+                if (!unmounted && response !== null) {
+                    if (response.profiles !== undefined) {
+                        setData(response.profiles);
+                    }
+                    setPaging({
+                        ...paging,
+                        totalSize: response.totalCount,
+                        maxPages: Math.ceil(response.totalCount / 10),
+                    });
                 }
             });
         })
         .catch((error) => {
-            setError({isError:true, description: error.message});
-        console.error(error.message);
-      });
+            setError(true);
+            console.error(error.message);
+        });
         return () => {
             unmounted = true;
         };
