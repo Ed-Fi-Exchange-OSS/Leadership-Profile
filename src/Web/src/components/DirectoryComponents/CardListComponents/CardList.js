@@ -15,7 +15,7 @@ const CardList = (props) => {
       </div>
       <div class="card-pagination-grid">
         <div>
-          <PaginationDetails paging={paging} />
+          <PaginationDetails paging={paging} count={data?.length} />
         </div>
         <td className="pagination-buttons-container">
           <PaginationButtons paging={paging} setPage={setPage} />

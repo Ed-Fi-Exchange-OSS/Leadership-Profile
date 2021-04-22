@@ -92,7 +92,7 @@ const CreateTableList = (props) => {
                         </tr>)) : ''}
                         <tr className="bottom-row">
                             <td colSpan="11">
-                                <PaginationDetails paging={paging} />
+                                <PaginationDetails paging={paging} count={data?.length} />
                             </td>
                             <td colSpan="2" className="pagination-buttons-container">
                                 <PaginationButtons paging={paging} setPage={setPage} />

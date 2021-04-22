@@ -52,7 +52,7 @@ const RoleManagement = () => {
                                 <Button onClick={event => OnSubmit(event)}>Save</Button>
                             </td> */}
                             <td colSpan="4">
-                                <PaginationDetails paging={paging} />
+                                <PaginationDetails paging={paging} count={data?.length} />
                             </td>
                             <td colSpan="1" className="pagination-buttons-container">
                                 <PaginationButtons paging={paging} setPage={SetPage} />
