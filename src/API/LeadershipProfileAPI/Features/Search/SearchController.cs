@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using LeadershipProfileAPI.Data.Models.ProfileSearchRequest;
 using LeadershipProfileAPI.Infrastructure;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -11,7 +12,7 @@ namespace LeadershipProfileAPI.Features.Search
     [TypeFilter(typeof(ApiExceptionFilter))]
     [ApiController]
     [Route("search")]
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class SearchController : ControllerBase
     {
         private readonly ILogger<SearchController> _logger;
