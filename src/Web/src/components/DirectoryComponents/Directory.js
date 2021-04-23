@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { TableViewIcon, CardViewIcon } from '../Icons';
 import BreadcrumbList from '../Breadcrumb';
-import DirectoryFilters from './DirectoryFilters';
 import TableList from './TableList';
 import CardList from './CardListComponents/CardList';
 import UseDirectory from './UseDirectory';
@@ -33,7 +32,6 @@ const Directory = () => {
                     </div>
                 </div>
             </div>
-            <DirectoryFilters search={search} setSearchValue={setSearchValue} />
             
             { error ? <ErrorMessage /> : '' }
             { activeComponent === "table" ? (
