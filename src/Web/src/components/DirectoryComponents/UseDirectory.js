@@ -2,11 +2,13 @@ import { useState, useEffect, useRef } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
 import config from '../../config';
+import LogoutService from '../../utils/logout-service';
 
 function UseDirectory() {
     const history = useHistory();
     const location = useLocation();
     const { API_URL, API_CONFIG } = config();
+    const { logout } = LogoutService();
 
     const [data, setData] = useState([]);
     const [error, setError] = useState(false);
@@ -54,26 +56,36 @@ function UseDirectory() {
         if (!searchableUrl.current.search) return;
         let unmounted = false;
         const apiUrl = new URL(API_URL.href + `/profile${history.location.search}`);
-        fetch(apiUrl, API_CONFIG('GET')).then(response => response.json()
-        ).then((response) => {
-            if (response.isError) {
-                setError(true);
-            }
-            if (!unmounted && response !== null) {
-                if (response.profiles !== undefined) {
-                    setData(response.profiles);
+        fetch(apiUrl, API_CONFIG('GET'))
+        .then((response) => {
+            if (!response.ok) {
+                if (response.status === 401) {
+                    logout();
+                } else {
+                    setError(true);
                 }
-                setPaging({
-                    ...paging,
-                    totalSize: response.totalCount,
-                    maxPages: Math.ceil(response.totalCount / 10),
-                });
+                return;
             }
-        })
-            .catch(error => {
-                setError(true);
-                console.error(error.message);
+
+            setError(false);
+            
+            response.json().then((response) => {
+                if (!unmounted && response !== null) {
+                    if (response.profiles !== undefined) {
+                        setData(response.profiles);
+                    }
+                    setPaging({
+                        ...paging,
+                        totalSize: response.totalCount,
+                        maxPages: Math.ceil(response.totalCount / 10),
+                    });
+                }
             });
+        })
+        .catch((error) => {
+            setError(true);
+            console.error(error.message);
+        });
         return () => {
             unmounted = true;
         };
