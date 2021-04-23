@@ -7,25 +7,25 @@ const CardProfile = (props) => {
     const {data} = props;
 
     return(
-        <div class="card-grid">
-            <div class="card-profile">
+        <div className="card-grid">
+            <div className="card-profile">
                 <DefaultProfile></DefaultProfile>
             </div>
-            <div class="card-link">
+            <div className="card-link">
                 <Link to={`profile/${data.staffUniqueId}`}><RightPointingIcon /></Link>
             </div>
-            <div class="card-contact">
-                <h4 class="card-content">{data.fullName}</h4>
-                <div class="card-content"><MailIcon />{data.email}</div>
-                <div class="card-content"><PhoneIcon />{data.telePhone}</div>
+            <div className="card-contact">
+                <h4 className="card-content">{data.fullName}</h4>
+                <div className="card-content"><MailIcon />{data.email}</div>
+                <div className="card-content"><PhoneIcon />{data.telePhone}</div>
             </div>
-            <div class="card-seperator divider">
+            <div className="card-seperator divider">
             </div>
-            <div class="card-person">
-                <div class="card-content"><PersonIcon />{data.highestDegree}</div>
+            <div className="card-person">
+                <div className="card-content"><PersonIcon />{data.highestDegree}</div>
             </div>
-            <div class="card-geo">
-                <div class="card-content"><GeoIcon />{data.location}</div>
+            <div className="card-geo">
+                <div className="card-content"><GeoIcon />{data.location}</div>
             </div>
         </div>
     )

@@ -8,12 +8,12 @@ const CardList = (props) => {
 
   return (
     <>
-      <div class="card-layout">
+      <div className="card-layout">
         {data.map((profile, index) => {
           return <CardProfile key={index} data={profile}></CardProfile>;
         })}
       </div>
-      <div class="card-pagination-grid">
+      <div className="card-pagination-grid">
         <div>
           <PaginationDetails paging={paging} count={data?.length} />
         </div>
