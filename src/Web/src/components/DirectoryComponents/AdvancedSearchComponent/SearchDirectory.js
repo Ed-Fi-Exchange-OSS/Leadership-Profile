@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { TableViewIcon, CardViewIcon } from '../../Icons';
 import BreadcrumbList from '../../Breadcrumb';
 import AdvancedTableList from './AdvancedTableList';
 import CardList from './../CardListComponents/CardList';
@@ -29,7 +28,7 @@ const SearchDirectory = () => {
             { activeComponent === "table" ? (
                 <AdvancedTableList sort={sort} data={data} setColumnSort={setColumnSort} paging={paging} setPage={setPage} />
             ) : activeComponent === "card" ? (
-                <CardList data={data}/>
+                <CardList data={data} paging={paging} setPage={setPage} />
             ) : null (
                 <div />
             )}

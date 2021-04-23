@@ -39,7 +39,7 @@ const Directory = () => {
             { activeComponent === "table" ? (
                 <TableList sort={sort} data={data} setColumnSort={setColumnSort} paging={paging} setPage={setPage} />
             ) : activeComponent === "card" ? (
-                <CardList data={data} />
+                <CardList data={data} paging={paging} setPage={setPage} />
             ) : null (
                 <div />
             )}

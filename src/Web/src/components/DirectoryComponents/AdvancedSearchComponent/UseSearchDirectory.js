@@ -92,7 +92,7 @@ function UseSearchDirectory() {
                 unmounted = true;
             };
         }
-    }, [filters]);
+    }, [filters, url]);
 
     function setPage(newPage) {
         setPaging({
