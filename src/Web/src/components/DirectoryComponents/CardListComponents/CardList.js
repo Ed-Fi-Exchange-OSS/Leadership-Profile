@@ -17,9 +17,9 @@ const CardList = (props) => {
         <div>
           <PaginationDetails paging={paging} count={data?.length} />
         </div>
-        <td className="pagination-buttons-container">
+        <div className="pagination-buttons-container">
           <PaginationButtons paging={paging} setPage={setPage} />
-        </td>
+        </div>
       </div>
     </>
   );
