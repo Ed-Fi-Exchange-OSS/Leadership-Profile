@@ -3,8 +3,13 @@ import PropTypes from 'prop-types';
 
 const PaginationButtons = (props) => {
   const { paging, setPage } = props;
-  const { page, maxPages } = paging;
+  const { page, maxPages, totalSize } = paging;
   const intPage = parseInt(page, 0);
+
+  if (totalSize == 0) {
+    return (<div></div>)
+  }
+
   return (
     <div className="pagination-button-div">
       {/* eslint-disable */}
