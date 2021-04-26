@@ -152,6 +152,10 @@ namespace LeadershipProfileAPI
                 opt.TokenLifespan = TimeSpan.FromHours(Convert.ToDouble(Environment.GetEnvironmentVariable("ForgotPasswordTokenLifeSpanHours")))
             );
 
+            services.Configure<SecurityStampValidatorOptions>(opt =>
+                opt.ValidationInterval = TimeSpan.FromHours(Convert.ToDouble(Environment.GetEnvironmentVariable("ValidTokenLifeSpanHours")))
+            );
+
             services.ConfigureApplicationCookie(options =>
             {
                 options.Events.OnRedirectToAccessDenied =
