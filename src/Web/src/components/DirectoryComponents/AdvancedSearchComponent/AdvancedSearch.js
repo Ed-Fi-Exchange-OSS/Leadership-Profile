@@ -201,6 +201,15 @@ const AdvancedSearch = (props) =>
         setRateScore(0);
     }
 
+    function setIntegersOnly(setter, value) {
+        const regex = /^[0-9\b]+$/;
+        
+        if (regex.test(value)) {
+            value = parseInt(value, 10);
+            setter(value);
+        }
+    }
+
     return(
         <div className="container advanced-filters-container">
             <div className="row">
@@ -413,8 +422,7 @@ const AdvancedSearch = (props) =>
                                             <Label>Min</Label>
                                         </div>
                                         <div className="col-5">
-                                            <Input  onChange={event => setMinYears(event.target.value)} 
-                                            type="number" value={minYears}/>
+                                            <Input type="number" min="0" step="1" value={minYears} onChange={event => {setIntegersOnly(setMinYears, event.target.value);}} />
                                         </div>
                                     </div>
                                     <div className="row mb-2">
@@ -422,8 +430,7 @@ const AdvancedSearch = (props) =>
                                             <Label>Max</Label>
                                         </div>
                                         <div className="col-5">
-                                            <Input onChange={event => setMaxYears(event.target.value)} 
-                                            type="number" value={maxYears}/>
+                                            <Input type="number" min="0" step="1" value={maxYears} onChange={event => {setIntegersOnly(setMaxYears, event.target.value);}} />
                                         </div>
                                     </div>
                                 </div>
