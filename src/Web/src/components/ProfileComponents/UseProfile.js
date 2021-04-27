@@ -90,7 +90,7 @@ function UseProfile(id) {
     useEffect(() => {
         let unmounted = false;
 
-        const apiUrl = new URL(API_URL.href + `/profile/${id}`);
+        const apiUrl = new URL(API_URL + `profile/${id}`);
         fetch(apiUrl, API_CONFIG('GET')
         ).then(response => response.json())
         .then((response) => {

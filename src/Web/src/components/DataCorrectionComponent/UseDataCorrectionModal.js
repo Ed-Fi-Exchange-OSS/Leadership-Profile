@@ -36,7 +36,7 @@ function UseDataCorrectionModal() {
         feedbackInfo["StaffEmail"] = data.email;
         feedbackInfo["Telephone"] = data.phone;
 
-        const apiUrl = new URL(API_URL.href + '/profile/datacorrection');
+        const apiUrl = new URL(API_URL + 'profile/datacorrection');
         fetch(apiUrl, API_CONFIG('POST', JSON.stringify(feedbackInfo)))
         .then((response) => {
             unmounted = true;

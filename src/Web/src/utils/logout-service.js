@@ -9,7 +9,7 @@ function LogoutService() {
     const { API_URL } = config();
 
     function logout() {
-        const apiUrl = new URL(API_URL.href + '/account/logout');
+        const apiUrl = new URL(API_URL + 'account/logout');
         fetch(apiUrl, {
             method: 'POST',
             mode: 'cors',

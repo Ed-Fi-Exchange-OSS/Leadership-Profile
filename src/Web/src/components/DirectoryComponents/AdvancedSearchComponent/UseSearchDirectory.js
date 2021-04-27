@@ -57,7 +57,7 @@ function UseSearchDirectory() {
         if(filters !== undefined){
             if (!searchableUrl.current.search) return;
             let unmounted = false;
-            const apiUrl = new URL(API_URL.href + `/search${history.location.search}`);
+            const apiUrl = new URL(API_URL + `search${history.location.search}`);
             fetch(apiUrl, API_CONFIG('POST', JSON.stringify(filters)))
             .then((response) => {
                 if (!response.ok) {
