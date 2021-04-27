@@ -113,6 +113,8 @@ namespace LeadershipProfileAPI.Features.Profile
                 response.PositionHistory = await _dbContext.ProfilePositionHistory.Where(x => x.StaffUniqueId == request.Id)
                     .ProjectTo<PositionHistory>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
 
+                response.StartDate = response.PositionHistory.Max(x => x.StartDate);
+
                 response.Certificates = await _dbContext.StaffCertificates
                     .Where(o => o.StaffUniqueId == request.Id)
                     .ProjectTo<Certificate>(_mapper.ConfigurationProvider)
