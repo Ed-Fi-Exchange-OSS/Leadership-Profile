@@ -48,7 +48,7 @@ function UseRoleManagement() {
 
     useEffect(() => {
         let unmounted = false;
-        const apiUrl = new URL(API_URL.href + '/userclaims?page=' + paging.page);
+        const apiUrl = new URL(API_URL + 'userclaims?page=' + paging.page);
         fetch(apiUrl, API_CONFIG('GET'))
             .then(response => response.json())
             .then((response) => {
@@ -138,7 +138,7 @@ function UseRoleManagement() {
      
     function AddAdminRoles(addList) {
         let unmounted = false;
-        const apiUrl = new URL(API_URL.href + '/userclaims');
+        const apiUrl = new URL(API_URL + 'userclaims');
         fetch(apiUrl, API_CONFIG('POST', JSON.stringify({staffUniqueIds: addList, claimType: "role", claimValue: "Admin"})))
             .then(() => Promise.resolve())
             .catch((error) => {
@@ -152,7 +152,7 @@ function UseRoleManagement() {
 
     function RemoveAdminRoles(removeList) {
         let unmounted = false;
-        const apiUrl = new URL(API_URL.href + '/userclaims');
+        const apiUrl = new URL(API_URL + 'userclaims');
         fetch(apiUrl, API_CONFIG('DELETE', JSON.stringify({staffUniqueIds: removeList, claimType: "role", claimValue: "Admin"})))
             .then(() => Promise.resolve())
             .catch((error) => {

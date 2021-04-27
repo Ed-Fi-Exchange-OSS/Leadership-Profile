@@ -1,5 +1,6 @@
 function config() {
-    const API_URL = process.env.NODE_ENV !== 'production' ? new URL('https://localhost:5100/api') : new URL('https://localhost:5100/api');
+    var getUrl = window.location;
+    const API_URL = process.env.NODE_ENV === 'production' ? new URL(`${getUrl.protocol}//${getUrl.host}/api/`) : new URL('https://localhost:5100/');
     const API_CONFIG = (method, body=null) => { 
         return {
             method: method,

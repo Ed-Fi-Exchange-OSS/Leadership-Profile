@@ -53,7 +53,7 @@ function UseResetPassword() {
 
     function setResetPassword(e) {
         if (newPassword !== '' && confirmPassword !== '') {
-            const apiUrl = new URL(API_URL.href + '/account/resetPassword');
+            const apiUrl = new URL(API_URL + 'account/resetPassword');
 
             fetch(apiUrl, API_CONFIG(
                     'POST', JSON.stringify({

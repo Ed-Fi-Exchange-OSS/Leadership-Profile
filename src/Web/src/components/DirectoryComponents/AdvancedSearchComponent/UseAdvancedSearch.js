@@ -13,7 +13,7 @@ function UseAdvancedSearch(){
 
     async function GetDegrees(){
         let unmounted = false;
-        const apiUrl = new URL(API_URL.href + `/webcontrols/dropdownlist/degrees`);
+        const apiUrl = new URL(API_URL + `webcontrols/dropdownlist/degrees`);
         fetch(apiUrl, API_CONFIG('GET')
         ).then(response => response.json())
         .then((response) => {
@@ -47,7 +47,7 @@ function UseAdvancedSearch(){
 
     async function GetPositionHistory(){
         let unmounted = false;
-        const apiUrl = new URL(API_URL.href + `/webcontrols/dropdownlist/assignments`);
+        const apiUrl = new URL(API_URL + `webcontrols/dropdownlist/assignments`);
         fetch(apiUrl, API_CONFIG('GET')
         ).then(response => response.json())
         .then((response) => {
@@ -72,7 +72,7 @@ function UseAdvancedSearch(){
 
     async function GetCertifications(){
         let unmounted = false;
-        const apiUrl = new URL(API_URL.href + `/webcontrols/dropdownlist/certifications`);
+        const apiUrl = new URL(API_URL + `webcontrols/dropdownlist/certifications`);
         fetch(apiUrl, API_CONFIG('GET')
         ).then(response => response.json())
         .then((response) => {
@@ -97,7 +97,7 @@ function UseAdvancedSearch(){
 
     async function GetCatergories(){
         let unmounted = false;
-        const apiUrl = new URL(API_URL.href + `/webcontrols/dropdownlist/measurementcategories`);
+        const apiUrl = new URL(API_URL + `webcontrols/dropdownlist/measurementcategories`);
         fetch(apiUrl, API_CONFIG('GET')
         ).then(response => response.json())
         .then((response) => {
@@ -125,7 +125,7 @@ function UseAdvancedSearch(){
 
     function GetSubCategories(categorieId){
         let unmounted = false;
-        const apiUrl = new URL(API_URL.href + `/webcontrols/dropdownlist/measurementsubcategories`);
+        const apiUrl = new URL(API_URL + `webcontrols/dropdownlist/measurementsubcategories`);
         fetch(apiUrl, API_CONFIG('GET')
         ).then(response => response.json())
         .then((response) => {
