@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CardTitle, Collapse, Table } from 'reactstrap';
 import { ChartIcon, DownPointingIcon } from '../Icons';
+import { formatDate } from '../../utils/date';
 
 const professionalDevelopmentCategories = { 'professionalDevelopmentTitle': 'Course name', 'attendanceDate': 'Date', 'location': 'Location', 'alignmentToLeadership': 'Alignment to leadership definition' };
 
@@ -51,10 +52,5 @@ const ProfessionalDevelopmentTable = (props) => {
         </div>
     );
 }
-
-function formatDate(dateString) {
-    var date = new Date(dateString);
-    return date.toLocaleDateString("en-US");
-};
 
 export default ProfessionalDevelopmentTable;

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CardTitle, Collapse, Table } from 'reactstrap';
 import { EducationIcon, BriefcaseIcon, ChartIcon, CertificateIcon, DownPointingIcon } from '../Icons';
+import { formatDate } from '../../utils/date';
 
 const educationCategories = { 'institution': 'Institution', 'degree': 'Degree', 'graduationDate': 'Date', 'specialization': 'Specialization' };
 const positionHistoryCategories = { 'role': 'Role', 'schoolName': 'School', 'startDate': 'Start Date', 'endDate': 'End Date' };
@@ -72,10 +73,5 @@ const CollapsibleTable = (props) => {
         </div>
     );
 }
-
-function formatDate(dateString) {
-    var date = new Date(dateString);
-    return date.toLocaleDateString("en-US");
-};
 
 export default CollapsibleTable;

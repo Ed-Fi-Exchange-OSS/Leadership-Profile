@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CardTitle, Collapse, Table } from 'reactstrap';
 import { EducationIcon, DownPointingIcon } from '../Icons';
+import { formatDate } from '../../utils/date';
 
 const educationCategories = { 'institution': 'Institution', 'degree': 'Degree', 'specialization': 'Specialization' };
 
@@ -50,10 +51,5 @@ const EducationTable = (props) => {
         </div>
     );
 }
-
-function formatDate(dateString) {
-    var date = new Date(dateString);
-    return date.toLocaleDateString("en-US");
-};
 
 export default EducationTable;
