@@ -38,7 +38,7 @@ const CanvasChart = (props) => {
     datasets[1].backgroundColor.push("rgba(255, 166, 0, 0.2)");
     datasets[1].borderColor.push("rgba(255, 166, 0, 1)");
     
-    datasets[2].label = "Distric Max";
+    datasets[2].label = "District Max";
     datasets[2].data.push(e.districtMax);
     datasets[2].backgroundColor.push("rgba(0, 136, 255, 0.2)");
     datasets[2].borderColor.push("rgba(0, 136, 255, 1)");
@@ -56,6 +56,8 @@ const CanvasChart = (props) => {
           {
             ticks: {
               beginAtZero: true,
+              autoSkip: true,
+              maxTicksLimit: 5
             },
           },
         ],
