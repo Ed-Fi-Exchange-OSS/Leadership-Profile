@@ -317,7 +317,7 @@ namespace LeadershipProfileAPI.Data
 
                     ,ru.MeasureCategory as RatingCategory
                     ,mr.SubCategory as RatingSubCategory
-                    ,cast(coalesce(pm.Score, 0.0) as decimal(5,2)) as Rating
+                    ,coalesce(cast(pm.Score as decimal(5,2)), 0.0) as Rating
 
                 from edfi.Staff as s
                 left join staffService on staffService.StaffUSI = s.StaffUSI
@@ -414,7 +414,13 @@ namespace LeadershipProfileAPI.Data
             if (ratings != null && ratings.Score > 0)
             {
                 // Provide the condition being searched for matching your schema. Examples: "(r.Rating = 3)" or "(r.Rating = 3 and r.RatingCateogryId = 45)"
-                return $"({(ratings.CategoryId > 0 ? $"mr.Category = {ratings.CategoryId}" : "")}{(ratings.CategoryId > 0 && ratings.Score > 0 ? " and " : "")}{(ratings.Score > 0 ? $"pm.Score = {ratings.Score}" : "")})";
+                var whereCategory = ratings.CategoryId > 0 ? $"mr.Category = {ratings.CategoryId}" : string.Empty;
+                var andCatAndScore = ratings.CategoryId > 0 && ratings.Score > 0 ? " and " : string.Empty;
+                var whereScore = ratings.Score > 0 ? $"pm.Score = {ratings.Score}" : string.Empty;
+                var andScoreAndSub = !string.IsNullOrWhiteSpace(ratings.SubCategory) && ratings.Score > 0 ? " and " : string.Empty;
+                var whereSubCategory = !string.IsNullOrWhiteSpace(ratings.SubCategory) ? $"mr.SubCategory = '{ratings.SubCategory}'" : string.Empty;
+
+                return $"({whereCategory}{andCatAndScore}{whereScore}{andScoreAndSub}{whereSubCategory})";
             }
 
             return string.Empty;
