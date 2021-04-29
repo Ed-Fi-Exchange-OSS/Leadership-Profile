@@ -12,9 +12,11 @@ const AdvancedSearch = (props) =>
     const listSpeciaizations = {};
     const [listSubCategories, getListSubCategories] = useState([]);
 
-    const [lastClickedCat, setLastClickedCat] = useState('Select Category');
-    const [lastClickedSub, setLastClickedSub] = useState('Select SubCategory');
-
+    let defaultCategoryText = 'Select Category';
+    let defaultSubCategoryText = 'Select SubCategory';
+    const [lastClickedCat, setLastClickedCat] = useState(defaultCategoryText);
+    const [lastClickedSub, setLastClickedSub] = useState(defaultSubCategoryText);
+    
     const [positionStartDate, setPositionStartDate] = useState("");
     const [issuranceDate, setIssuranceDate] = useState("");
     const [rateScore, setRateScore] = useState(0);
@@ -172,33 +174,51 @@ const AdvancedSearch = (props) =>
         
         props.directoryCallback(filters);
     }
+
     function ClearFilters(){
         if(Object.keys(degrees).length !== 0){
             let newdegrees = [...degrees];
-            newdegrees.forEach((element,i) => {
+            newdegrees.forEach((element) => {
                 element.checked = false
             });
             setDegrees(newdegrees);
         }
         if(Object.keys(assignment).length !== 0){
             let newAssignment = [...assignment];
-            newAssignment.forEach((element,i) => {
+            newAssignment.forEach((element) => {
                 element.checked = false
             });
             setAssignment(newAssignment);
         }
         if(Object.keys(certifications).length !== 0){
             let newCertification = [...certifications];
-            newCertification.forEach((element,i) => {
+            newCertification.forEach((element) => {
                 element.checked = false;
             });
             setCertifications(newCertification);
         }
+        if(Object.keys(categories).length !== 0){
 
+            let newCategories = [...categories];
+            newCategories.forEach((element) => {
+                element.selected = false;
+            });
+            setCategories(newCategories);
+        }
+        if(Object.keys(subCategories).length !== 0){
+
+            let newSubCategories = [...subCategories];
+            newSubCategories.forEach((element) => {
+                element.selected = false;
+            });
+            setSubCategories(newSubCategories);
+        }
         setMinYears(0);
         setMaxYears(0);
         setPositionStartDate("");
         setRateScore(0);
+        setLastClickedCat(defaultCategoryText);
+        setLastClickedSub(defaultSubCategoryText);
     }
 
     function setIntegersOnly(setter, value) {
@@ -208,7 +228,7 @@ const AdvancedSearch = (props) =>
             value = parseInt(value, 10);
             setter(value);
         }
-    }
+    }    
 
     return(
         <div className="container advanced-filters-container">
@@ -380,7 +400,7 @@ const AdvancedSearch = (props) =>
                                     </div>
                                     <div className="row mb-2">
                                         <div className="col">
-                                            <UncontrolledDropdown setActiveFromChild>
+                                            <UncontrolledDropdown className="menu-item-button" setActiveFromChild disabled={lastClickedCat===defaultCategoryText}>
                                                 <DropdownToggle className="advanced-search-dropdown-button" caret>
                                                     {lastClickedSub}
                                                 </DropdownToggle>
@@ -390,7 +410,7 @@ const AdvancedSearch = (props) =>
                                                         Object.keys(subCategories).length !== 0 ? (
                                                             subCategories.map((catElement, index) => {
                                                                 return(
-                                                                    <DropdownItem value={catElement.value} onClick={OnClickSub} active={catElement.selected}>
+                                                                    <DropdownItem key={index} value={catElement.value} onClick={OnClickSub} active={catElement.selected}>
                                                                         {catElement.text}
                                                                     </DropdownItem>
                                                                 )

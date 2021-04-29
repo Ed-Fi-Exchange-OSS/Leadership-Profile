@@ -381,7 +381,11 @@
 
 .advanced-search-dropdown-button{
   width: 200px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  padding-right: 10px;
 }
+
 .filters-table{
   width: 100%;
     border-spacing: 1em;
