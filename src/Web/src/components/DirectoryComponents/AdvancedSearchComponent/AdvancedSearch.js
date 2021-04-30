@@ -426,8 +426,7 @@ const AdvancedSearch = (props) =>
                                             <Label>Score</Label>
                                         </div>
                                         <div className="col-5">
-                                            <Input onChange={event => setRateScore(event.target.value)} type="number" 
-                                            value={rateScore}/>
+                                            <Input type="number" min="0" max="4" step="1" value={rateScore} onChange={event => {setIntegersOnly(setRateScore, event.target.value);}} />
                                         </div>
                                     </div>
                                 </div>
