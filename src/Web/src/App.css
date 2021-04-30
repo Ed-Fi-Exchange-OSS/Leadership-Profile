@@ -202,6 +202,7 @@
 
 .pagination-button-div a {
   padding: 5px;
+  cursor: pointer;
 }
 
 .pagination-arrows {
@@ -349,18 +350,6 @@
   color: white;
 }
 
-/*Leader of Self */
-.top-buffer { 
-  margin-top:20px; 
-}
-.scores-box{
-  border: 1px solid #ccc!important;
-  border-radius: 16px;
-  background-color: #fbfbfb;
-  text-align: center;
-  font-size: x-small;
-}
-
 /* Role Managment List */
 .role-card-title{
   width: auto !important;
@@ -378,7 +367,110 @@
   font-size: small;
 }
 
+/* Advanced Search filter box */
+.advanced-filters-container{
+  border-radius: 4px;
+  background-color: #DAE1F2;
+  padding: 5px;
+}
+
+.advanced-search-row{
+  margin-bottom:15px;
+  margin-top: 15px;
+}
+
+.advanced-search-dropdown-button{
+  width: 200px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  padding-right: 10px;
+}
+
+.filters-table{
+  width: 100%;
+    border-spacing: 1em;
+    border-collapse: separate;
+}
+h5{
+  text-align: right;
+}
+
+.control-spacing{
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+.date-picker-sm{
+  font-size: 12px !important;
+}
+
 /* Card Profile */
-.card-spacing{
-  margin-bottom: 30px;
+.card-layout {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(240px, 1fr));
+  grid-gap: 50px;
+}
+
+.card-pagination-grid {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.card-grid {
+  display: grid;
+  box-shadow: 0 2px 4px;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+}
+
+.card-grid img {
+  padding-right: 10px;
+}
+
+.card-content {
+  width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-profile {
+  margin-top: 20px;
+  grid-column: 2 / span 3;
+  grid-row: 1 / span 3;
+}
+
+.card-link {
+  margin-top: 20px;
+  grid-column: 12 / span 1;
+  grid-row: 1 / span 1;
+}
+
+
+.card-contact {
+  margin-top: 20px;
+  grid-column: 4 / span 8;
+  grid-row: 1 / span 3;
+}
+
+.card-seperator {
+  grid-column: 4 / span 8;
+  grid-row: 4;
+}
+
+.divider {
+  border-bottom: 1px solid rgb(116, 116, 116);
+  height: 2px;
+  margin: 0.5em 0px 1.5em;
+}
+
+.card-person {
+  grid-column: 4 / span 4;
+  grid-row: 5;
+}
+
+.card-geo {
+  grid-column: 8 / span 4;
+  grid-row: 5;
 }

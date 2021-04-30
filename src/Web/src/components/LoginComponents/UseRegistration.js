@@ -47,13 +47,13 @@ function UseRegistration() {
 
     async function setRegistration() {
         let unmounted = false;
-        const apiUrl = new URL('/account/register', API_URL);
+        const apiUrl = new URL(API_URL + 'account/register');
         fetch(apiUrl, API_CONFIG("POST", JSON.stringify(registrationInfo))
         ).then((response) => {
             if (!unmounted && response.status === 200) {
                 setError(false);
                 loginAuth(username);
-                history.push('/queue?count=10&page=1&sortBy=desc&sortField=id');
+                history.push('/queue?count=10&page=1&sortBy=asc&sortField=id');
                 history.go(0);
             } else {
                 return response.json();

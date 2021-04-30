@@ -28,7 +28,7 @@ function UseForgotPassword() {
 
     function setForgotPassword(e) {
         if (staffUniqueId !== '' && userName !== '') {
-            const apiUrl = new URL('/account/forgotPassword', API_URL);
+            const apiUrl = new URL(API_URL + 'account/forgotPassword');
 
             fetch(apiUrl, API_CONFIG(
                     'POST', JSON.stringify({

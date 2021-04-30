@@ -13,39 +13,21 @@ import {
   DropdownMenu,
   DropdownItem,
 } from 'reactstrap';
+
 import { HeaderLogo } from './images'
 import AuthService from '../utils/auth-service';
+import LogoutService from '../utils/logout-service';
 import config from '../config';
 
 const Navigation = (props) => {
-  const { logoutAuth, isAuthenticated, getAuthInfo } = AuthService();
+  const { isAuthenticated, getAuthInfo } = AuthService();
+  const { logout } = LogoutService();
   const authInfo = getAuthInfo();
   const [isOpen, setIsOpen] = useState(false);
   const history = useHistory();
-
   const {SCHOOL_HEADER} = config();
-  
-  const toggle = () => setIsOpen(!isOpen);
 
-  const logout = () => {
-    const apiUrl = new URL(`https://localhost:5001/account/logout`);
-    fetch(apiUrl, {
-        method: 'POST',
-        mode: 'cors',
-        credentials: 'include',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        },
-        referrerPolicy: 'origin-when-cross-origin',
-        body: JSON.stringify({
-        'logoutId': authInfo,
-    })}).then(() => {
-      logoutAuth();
-      history.push('/account/login');
-      history.go(0);
-    }).catch(error => console.error(error)); 
-  }
+  const toggle = () => setIsOpen(!isOpen);
 
   const userRoles = () => {
     history.push('/admin/');
@@ -55,8 +37,8 @@ const Navigation = (props) => {
   return (
     <div>
       <Navbar expand="md">
-        <NavbarBrand href="/"><HeaderLogo/> {SCHOOL_HEADER}</NavbarBrand>
-        <NavbarToggler onClick={toggle} />
+          <NavbarBrand href="/"><HeaderLogo/> {SCHOOL_HEADER}</NavbarBrand>
+          <NavbarToggler onClick={toggle} />
           <Collapse isOpen={isOpen} navbar>
             {isAuthenticated() ? 
             <Nav className="ml-auto">

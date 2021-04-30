@@ -4,7 +4,7 @@ import config from '../../config';
 function UseProfile(id) {
     const { API_URL, API_CONFIG } = config();
     const [data, setData] = useState({});
-    
+
     function losMapping(apiRecords)
     {
         var losUIjson = [];
@@ -74,7 +74,7 @@ function UseProfile(id) {
             subCatArr[e].scoresByPeriod = scoresArr[e];
         });
 
-        Object.keys(catArr).forEach((ce) => {
+       Object.keys(catArr).forEach((ce) => {
             losUIjson.push(
             {
                 "categoryTitle" : ce,
@@ -90,7 +90,7 @@ function UseProfile(id) {
     useEffect(() => {
         let unmounted = false;
 
-        const apiUrl = new URL(`/profile/${id}`, API_URL);
+        const apiUrl = new URL(API_URL + `profile/${id}`);
         fetch(apiUrl, API_CONFIG('GET')
         ).then(response => response.json())
         .then((response) => {

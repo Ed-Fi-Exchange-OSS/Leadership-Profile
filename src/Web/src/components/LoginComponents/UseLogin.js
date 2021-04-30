@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 
 import AuthService from '../../utils/auth-service';
 import config from '../../config';
+import { convertCompilerOptionsFromJson } from 'typescript';
 
 function UseLogin() {
     const history = useHistory();
@@ -32,25 +33,40 @@ function UseLogin() {
 
     function setLogin(e) {
         if (password !== '' && username !== '') {
+
             let unmounted = false;
-            const apiUrl = new URL('/account/login', API_URL);
-            fetch(apiUrl, API_CONFIG('POST', JSON.stringify({
-                'username': username,
-                'password': password,
-            }))).then(response => response.json()
-            ).then((response) => {
-                if (!unmounted && response.result) {
-                    setError(false);
-                    loginAuth(username);
-                    history.push('/queue?count=10&page=1&sortBy=desc&sortField=id');
-                    history.go(0);
-                } else {
+            const apiUrl = new URL(API_URL + 'account/login');
+
+            fetch(apiUrl, API_CONFIG(
+                'POST', 
+                JSON.stringify(
+                    {
+                    'username': username,
+                    'password': password,
+                    }
+                )
+            ))
+            .then(response => response.json())
+            .then(
+                (result) => {
+                    if (!unmounted && result.result) 
+                    {
+                        setError(false);
+                        loginAuth(username); 
+                        history.push('/queue?count=10&page=1&sortBy=asc&sortField=id');
+                        history.go(0);
+                    }
+                    else 
+                    {
+                        setError(true);
+                    }
+                },
+                (error) => {
+                    console.error(error.message);
                     setError(true);
                 }
-            }).catch(error => {
-                setError(true);
-                console.error(error.message);
-            });
+            );
+
             return () => {
                 unmounted = true;
             };

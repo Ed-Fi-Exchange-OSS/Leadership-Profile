@@ -17,6 +17,7 @@ import AuthService from './utils/auth-service';
 import RoleManagement from './components/RoleMangementComponents/RoleManagement';
 import ForgotPassword from './components/LoginComponents/ForgotPassword';
 import ResetPassword from './components/LoginComponents/ResetPassword';
+import AdvancedSearch from './components/DirectoryComponents/AdvancedSearchComponent/SearchDirectory';
 
 function App() {
   const { isAuthenticated } = AuthService()
@@ -30,11 +31,12 @@ function App() {
           <div className="body">
             <LoggedInRoute exact path='/account/login' isAuthenticated={authenticated} component={Login} />
             <Route exact path="/">
-              <Redirect to="/directory?page=1&sortBy=desc&sortField=id" />
+              <Redirect to="/directory?page=1&sortBy=asc&sortField=id" />
             </Route>
             <PrivateRoute exact path="/:searchParams" isAuthenticated={authenticated} component={Directory} />
             <PrivateRoute path="/profile/:id" isAuthenticated={authenticated} component={Profile} />
             <PrivateRoute path="/admin/:searchParams" isAuthenticated={authenticated} component={RoleManagement} /> {/* add isAdmin to auth */}
+            <PrivateRoute path="/advanced/search" isAuthenticated={authenticated} component={AdvancedSearch} />
             <Route exact path="/account/register" component={Registration} />         
             <Route exact path="/account/forgotpassword" component={ForgotPassword} />
             <Route exact path="/account/resetpassword" component={ResetPassword} />

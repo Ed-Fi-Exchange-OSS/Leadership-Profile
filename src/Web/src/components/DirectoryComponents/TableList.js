@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { RightPointingIcon } from '../Icons';
 import Sorting from './Sorting';
 import PaginationButtons from './PaginationButtons';
+import PaginationDetails from "./PaginationDetails"
 
 const CreateTableList = (props) => {
     const { sort, data, setColumnSort, paging, setPage } = props;
@@ -73,7 +74,7 @@ const CreateTableList = (props) => {
                         </tr>)) : ''}
                         <tr className="bottom-row">
                             <td colSpan="8">
-                                <span>Showing {paging.page}-10 of {paging.totalSize} Users</span>
+                                <PaginationDetails paging={paging} count={data?.length} />
                             </td>
                             <td colSpan="2" className="pagination-buttons-container">
                                 <PaginationButtons paging={paging} setPage={setPage} />

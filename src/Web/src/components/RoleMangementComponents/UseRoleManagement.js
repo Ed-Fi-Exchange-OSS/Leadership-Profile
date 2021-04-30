@@ -48,7 +48,7 @@ function UseRoleManagement() {
 
     useEffect(() => {
         let unmounted = false;
-        const apiUrl = new URL('/userclaims?page='+paging.page+'', API_URL);
+        const apiUrl = new URL(API_URL + 'userclaims?page=' + paging.page);
         fetch(apiUrl, API_CONFIG('GET'))
             .then(response => response.json())
             .then((response) => {
@@ -131,14 +131,14 @@ function UseRoleManagement() {
         const removePromise = await RemoveAdminRoles(removeList);
         Promise.all([addPromise, removePromise])
             .then(() => {
-                history.push('/queue?count=10&page=1&sortBy=desc&sortField=id');
+                history.push('/queue?count=10&page=1&sortBy=asc&sortField=id');
                 history.go(0);
             });
     }
      
     function AddAdminRoles(addList) {
         let unmounted = false;
-        const apiUrl = new URL('/userclaims', API_URL);
+        const apiUrl = new URL(API_URL + 'userclaims');
         fetch(apiUrl, API_CONFIG('POST', JSON.stringify({staffUniqueIds: addList, claimType: "role", claimValue: "Admin"})))
             .then(() => Promise.resolve())
             .catch((error) => {
@@ -152,7 +152,7 @@ function UseRoleManagement() {
 
     function RemoveAdminRoles(removeList) {
         let unmounted = false;
-        const apiUrl = new URL('/userclaims', API_URL);
+        const apiUrl = new URL(API_URL + 'userclaims');
         fetch(apiUrl, API_CONFIG('DELETE', JSON.stringify({staffUniqueIds: removeList, claimType: "role", claimValue: "Admin"})))
             .then(() => Promise.resolve())
             .catch((error) => {
