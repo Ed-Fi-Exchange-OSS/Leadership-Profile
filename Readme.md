@@ -56,24 +56,7 @@ These are the available powershell commands to test the application (run them fr
 * `Invoke-Psake Test`: Runs all the tests.
 
 ## Running API
-### Setting the secrets locally for Ed-Fi ODS
-Take a look at Microsoft's recommended way managing secret storage [here](https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets) and follow the steps below:
-
-1. Navigate to directory where CSPROJ exists and run
-
- `dotnet user-secrets init`
-
-2. After running the command above, you should see `UserSecretId` in csproj file:
-![screenshot](/docs/images/screenshot-secrets-csproj.png)
-
-3. To set the Client Id run 
-
-  `dotnet user-secrets set "ODS-API:Client-Id" "{ClientId from Swagger}"` 
-
-4. To set the Client Secret run
-
-`dotnet user-secrets set "ODS-API:Client-Secret" "{ClientSecret from Swagger}"` 
-
+It can be run directly from the Editor, such as Visual Studio. It must be running along with the React Web application for full functionality.
     
 ## Available React Scripts
 
