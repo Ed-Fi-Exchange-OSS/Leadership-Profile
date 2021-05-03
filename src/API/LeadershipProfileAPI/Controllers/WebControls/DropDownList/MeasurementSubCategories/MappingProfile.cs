@@ -6,7 +6,8 @@ namespace LeadershipProfileAPI.Controllers.WebControls.DropDownList.MeasurementS
     {
         public MappingProfile()
         {
-            CreateMap<ListItemSubCategory, List.SubCategory>();
+            CreateMap<ListItemSubCategory, List.SubCategoryItem>();
+            CreateMap<ListItemSubCategory, Get.SubCategoryItem>();
         }
     }
 }

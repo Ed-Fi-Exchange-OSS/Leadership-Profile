@@ -2,7 +2,8 @@
 {
     public class ListItemSubCategory
     {
-        public string Text { get; set; }
-        public int Value { get; set; }
+        public int CategoryId { get; set; }
+        public string Category { get; set; }
+        public string SubCategory { get; set; }
     }
 }

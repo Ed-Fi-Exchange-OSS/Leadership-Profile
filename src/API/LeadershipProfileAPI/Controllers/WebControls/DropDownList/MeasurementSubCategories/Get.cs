@@ -10,9 +10,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeadershipProfileAPI.Controllers.WebControls.DropDownList.MeasurementSubCategories
 {
-    public static class List
+    public static class Get
     {
-        public class Query : IRequest<Response> { }
+        public class Query : IRequest<Response>         
+        {
+            public int Id { get; set; }
+        }
 
         public class Response
         {
@@ -39,7 +42,8 @@ namespace LeadershipProfileAPI.Controllers.WebControls.DropDownList.MeasurementS
 
             public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
             {
-                var list = await _dbContext.ListItemCategories
+                var list = await _dbContext.ListItemSubCategories
+                    .Where(x => x.CategoryId == request.Id)
                     .ProjectTo<SubCategoryItem>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);
 

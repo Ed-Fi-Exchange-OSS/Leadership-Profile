@@ -29,5 +29,12 @@ namespace LeadershipProfileAPI.Controllers.WebControls.DropDownList.MeasurementS
             var result = await _mediator.Send(query, cancellationToken);
             return Ok(result);
         }
+        
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult> GetAsync([FromRoute] int id, CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(new Get.Query { Id = id }, cancellationToken);
+            return Ok(result);
+        }
     }
 }

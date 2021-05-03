@@ -48,7 +48,7 @@ namespace LeadershipProfileAPI.Data
                 .HasNoKey();
 
             modelBuilder.Entity<ListItemSubCategory>()
-                .ToView("vw_ListAllSubCategories", "edfi")
+                .ToView("vw_ListAllCategoriesSubCategories", "edfi")
                 .HasNoKey();
 
             modelBuilder.Entity<Staff>().ToTable("Staff", schema: "edfi")
