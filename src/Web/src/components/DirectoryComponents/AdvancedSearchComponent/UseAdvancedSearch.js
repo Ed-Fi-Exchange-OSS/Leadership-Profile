@@ -106,8 +106,8 @@ function UseAdvancedSearch(){
                     var newResponse = [];
                     response.categories.forEach(element => {
                         newResponse.push({
-                            "text": element.Category,
-                            "value": element.CategoryId,
+                            "text": element.text,
+                            "value": element.value,
                             "selected": false
                         })
                     });
@@ -123,19 +123,19 @@ function UseAdvancedSearch(){
         };
     }
 
-    function GetSubCategories(categorieId){
+    function GetSubCategories(categoryId){
         let unmounted = false;
-        const apiUrl = new URL(API_URL + `webcontrols/dropdownlist/measurementsubcategories`);
+        const apiUrl = new URL(API_URL + `webcontrols/dropdownlist/measurementsubcategories/${categoryId}`);
         fetch(apiUrl, API_CONFIG('GET')
         ).then(response => response.json())
         .then((response) => {
             if (!unmounted && response !== null) {                
-                if(response.subCategories.length == 0){
+                if(response.subCategories.length != 0){
                     var newResponse = [];
                     response.subCategories.forEach(element => {
                         newResponse.push({
-                            "text": element.Category,
-                            "value": element.CategoryId,
+                            "text": element.subCategory,
+                            "value": element.subCategory,
                             "selected": false
                         })
                     });
