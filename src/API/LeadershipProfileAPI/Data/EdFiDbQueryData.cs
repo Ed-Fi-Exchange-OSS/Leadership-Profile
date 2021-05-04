@@ -36,14 +36,14 @@ namespace LeadershipProfileAPI.Data
             // Map the UI sorted field name to a table field name
             var fieldMapping = new Dictionary<string, string>
             {
-                {"id", "StaffUSI"},
-                {"name", "LastSurName"},
-                {"location", "Location"},
-                {"school", "Institution"},
-                {"position", "Position"},
-                {"yearsOfService", "YearsOfService"},
-                {"highestDegree", "HighestDegree"},
-                {"major", "Major"}
+                { "id", "StaffUniqueId" },
+                { "name", "LastSurName" },
+                { "location", "Location" },
+                { "school", "Institution" },
+                { "position", "Position" },
+                { "yearsOfService", "YearsOfService" },
+                { "highestDegree", "HighestDegree" },
+                { "major", "Major" }
             };
 
             var sql = $@"
