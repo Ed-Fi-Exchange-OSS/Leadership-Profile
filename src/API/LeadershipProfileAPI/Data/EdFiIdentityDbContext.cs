@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeadershipProfileAPI.Data
 {
-    public class EdFiIdentityDbContext:IdentityDbContext
+    public class EdFiIdentityDbContext : IdentityDbContext
     {
-        public EdFiIdentityDbContext(DbContextOptions<EdFiIdentityDbContext> options):base(options)
+        public EdFiIdentityDbContext(DbContextOptions<EdFiIdentityDbContext> options) : base(options)
         {
-            
+
         }
     }
 

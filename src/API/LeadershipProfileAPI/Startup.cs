@@ -70,7 +70,7 @@ namespace LeadershipProfileAPI
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo {Title = "LeadershipProfileAPI", Version = "v1"});
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "LeadershipProfileAPI", Version = "v1" });
                 c.CustomSchemaIds(type => type.ToString());
             });
         }
@@ -131,7 +131,7 @@ namespace LeadershipProfileAPI
                 // this defines a CORS policy called "default"
                 options.AddPolicy("default", policy =>
                 {
-                    policy.WithOrigins(authorityServer, webClient)
+                    policy.WithOrigins(new string[] { authorityServer, webClient, "http://localhost", "https://localhost" })
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials();
@@ -152,6 +152,10 @@ namespace LeadershipProfileAPI
                 opt.TokenLifespan = TimeSpan.FromHours(Convert.ToDouble(Environment.GetEnvironmentVariable("ForgotPasswordTokenLifeSpanHours")))
             );
 
+            services.Configure<SecurityStampValidatorOptions>(opt =>
+                opt.ValidationInterval = TimeSpan.FromHours(Convert.ToDouble(Environment.GetEnvironmentVariable("ValidTokenLifeSpanHours")))
+            );
+
             services.ConfigureApplicationCookie(options =>
             {
                 options.Events.OnRedirectToAccessDenied =
@@ -169,7 +173,7 @@ namespace LeadershipProfileAPI
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "LeadershipProfileAPI v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("../swagger/v1/swagger.json", "LeadershipProfileAPI v1"));
 
                 autoMapper.ConfigurationProvider.AssertConfigurationIsValid();
             }

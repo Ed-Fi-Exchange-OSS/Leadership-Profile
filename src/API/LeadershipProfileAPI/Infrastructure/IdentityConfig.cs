@@ -24,7 +24,7 @@ namespace LeadershipProfileAPI.Infrastructure
             };
 
         public static IEnumerable<Client> GetClient(string redirectUri, ICollection<string> allowCorsOrigin)
-        {   
+        {
             return new List<Client>
             {
                 // machine to machine client
@@ -50,7 +50,7 @@ namespace LeadershipProfileAPI.Infrastructure
                     RedirectUris = {redirectUri}, //should be our home page
                     PostLogoutRedirectUris = { redirectUri },
                     AllowedCorsOrigins = allowCorsOrigin,
-                    
+
                     AllowedScopes =
                     {
                         IdentityServerConstants.StandardScopes.OpenId,

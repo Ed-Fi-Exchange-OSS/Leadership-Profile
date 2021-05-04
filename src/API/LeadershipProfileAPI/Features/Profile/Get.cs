@@ -47,7 +47,7 @@ namespace LeadershipProfileAPI.Features.Profile
 
         public class CompetencyRatings
         {
-            public IList<Category> Categories {get;set;}
+            public IList<Category> Categories { get; set; }
         }
         public class Category
         {
@@ -57,7 +57,7 @@ namespace LeadershipProfileAPI.Features.Profile
         public class SubCategory
         {
             public string SubCatTitle { get; set; } = "Default Sub Category";
-            public string SubCatNotes { get; set; } = "Default Note";       
+            public string SubCatNotes { get; set; } = "Default Note";
             public IList<ScoresByPeriod> ScoresByPeriod { get; set; }
         }
         public class ScoresByPeriod
