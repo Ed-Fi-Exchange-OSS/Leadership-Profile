@@ -381,7 +381,7 @@ namespace LeadershipProfileAPI.Data
             if (assignments != null && (!string.IsNullOrWhiteSpace(assignments.StartDate) || assignments.Values.Any()))
             {
                 // Provide the condition being searched for matching your schema. Examples: "(a.StartDate = '1982-07-14')" or "(a.StartDate = '1982-07-14' and a.PositionId IN (5432, 234, 5331, 34))"
-                return $"({(!string.IsNullOrWhiteSpace(assignments.StartDate) ? $"a.StartDate = cast({assignments.StartDate} as date)" : "")}{(!string.IsNullOrWhiteSpace(assignments.StartDate) && assignments.Values.Any() ? " and " : "")}{(assignments.Values.Any() ? $"a.KleinStaffClassificationDescriptorId in ({string.Join(",", assignments.Values)})" : "")})";
+                return $"({(!string.IsNullOrWhiteSpace(assignments.StartDate) ? $"a.StartDate = cast('{assignments.StartDate}' as date)" : "")}{(!string.IsNullOrWhiteSpace(assignments.StartDate) && assignments.Values.Any() ? " and " : "")}{(assignments.Values.Any() ? $"a.KleinStaffClassificationDescriptorId in ({string.Join(",", assignments.Values)})" : "")})";
             }
 
             return string.Empty;
@@ -391,8 +391,8 @@ namespace LeadershipProfileAPI.Data
         {
             if (certifications != null && (!string.IsNullOrWhiteSpace(certifications.IssueDate) || certifications.Values.Any()))
             {
-                // Provide the condition being searched for matching your schema. Examples: "(c.IssueDate = '2017-04-23')" or "(c.IssueDate = '2017-04-23' and c.CerfificationId IN (234, 12, 98))"
-                return $"({(!string.IsNullOrWhiteSpace(certifications.IssueDate) ? $"c.IssuanceDate = cast({certifications.IssueDate} as date)" : "")}{(!string.IsNullOrWhiteSpace(certifications.IssueDate) && certifications.Values.Any() ? " and " : "")}{(certifications.Values.Any() ? $"c.CredentialFieldDescriptorId in ({string.Join(",", certifications.Values)})" : "")})";
+                // Provide the condition being searched for matching your schema. Examples: "(c.IssueDate = '2017-04-23')" or "(c.IssueDate = '2017-04-23' and c.CertificationId IN (234, 12, 98))"
+                return $"({(!string.IsNullOrWhiteSpace(certifications.IssueDate) ? $"c.IssuanceDate = cast('{certifications.IssueDate}' as date)" : "")}{(!string.IsNullOrWhiteSpace(certifications.IssueDate) && certifications.Values.Any() ? " and " : "")}{(certifications.Values.Any() ? $"c.CredentialFieldDescriptorId in ({string.Join(",", certifications.Values)})" : "")})";
             }
 
             return string.Empty;
