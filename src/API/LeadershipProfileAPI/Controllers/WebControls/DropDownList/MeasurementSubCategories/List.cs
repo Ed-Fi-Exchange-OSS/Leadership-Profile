@@ -22,8 +22,8 @@ namespace LeadershipProfileAPI.Controllers.WebControls.DropDownList.MeasurementS
         public class SubCategoryItem
         {
             public int CategoryId { get; set; }
-            public string Category { get; set; }
-            public string SubCategory { get; set; }
+            public string Text { get; set; }
+            public int Value { get; set; }
         }
 
         public class QueryHandler : IRequestHandler<Query, Response>
@@ -45,7 +45,7 @@ namespace LeadershipProfileAPI.Controllers.WebControls.DropDownList.MeasurementS
 
                 return new Response
                 {
-                    SubCategories = list.OrderBy(o => o.SubCategory).ToList()
+                    SubCategories = list.OrderBy(o => o.Text).ToList()
                 };
             }
         }

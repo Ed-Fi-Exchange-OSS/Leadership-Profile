@@ -1,8 +1,7 @@
 ﻿namespace LeadershipProfileAPI.Data.Models.ListItem
 {
-    public class ListItemCategory
+    public class ListItemCategory : ListItemBase
     {
-        public string Text { get; set; }
-        public int Value { get; set; }
+        
     }
 }

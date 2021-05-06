@@ -13,7 +13,7 @@ namespace LeadershipProfileAPI.Tests.Features.Search
         public async Task ShouldGetResponseWithMinYearsRequest()
         {
             var body = new ProfileSearchRequestBody()
-                .AddMinYears(0);
+                .AddMinYears(1);
             
             var response = await Testing.Send(new List.Query
             {
@@ -27,7 +27,7 @@ namespace LeadershipProfileAPI.Tests.Features.Search
         public async Task ShouldGetResponseWithMaxYearsRequest()
         {
             var body = new ProfileSearchRequestBody()
-                .AddMaxYears(0);
+                .AddMaxYears(1);
             
             var response = await Testing.Send(new List.Query
             {
@@ -97,13 +97,26 @@ namespace LeadershipProfileAPI.Tests.Features.Search
         public async Task ShouldGetResponseWithFullRequest()
         {
             var body = new ProfileSearchRequestBody()
-                .AddMinYears(0)
+                .AddMinYears(1)
                 .AddMaxYears(10)
                 .AddRatings()
                 .AddCertifications()
                 .AddAssignments()
                 .AddDegrees();
             
+            var response = await Testing.Send(new List.Query
+            {
+                SearchRequestBody = body
+            });
+            
+            response.ShouldNotBeNull();
+        }
+        
+        [Fact]
+        public async Task ShouldGetResponseWithEmptyRequest()
+        {
+            var body = new ProfileSearchRequestBody();
+
             var response = await Testing.Send(new List.Query
             {
                 SearchRequestBody = body

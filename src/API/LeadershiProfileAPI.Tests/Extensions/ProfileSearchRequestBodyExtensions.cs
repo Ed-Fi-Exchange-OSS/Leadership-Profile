@@ -49,7 +49,7 @@ namespace LeadershipProfileAPI.Tests.Extensions
             {                
                 body.Certifications = new ProfileSearchRequestCertifications
                 {
-                    IssueDate = DateTime.UtcNow.ToString("yyyy-MM-dd"),
+                    IssueDate = DateTime.UtcNow,
                     Values = Enumerable.Range(0, 10).ToList()
                 };
             }
@@ -68,7 +68,7 @@ namespace LeadershipProfileAPI.Tests.Extensions
             {
                 body.Assignments = new ProfileSearchRequestAssignments
                 {
-                    StartDate = DateTime.UtcNow.ToString("yyyy-MM-dd"),
+                    StartDate = DateTime.UtcNow,
                     Values = Enumerable.Range(0, 10).ToList()
                 };
             }
