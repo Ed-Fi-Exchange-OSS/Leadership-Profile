@@ -160,11 +160,11 @@ const AdvancedSearch = (props) =>
               "Score": rateScore
             },
             "Certifications": {
-              "IssueDate": issuranceDate,
+              "IssueDate": issuranceDate ? issuranceDate : null,
               "Values": filterCertifications
             },
             "Assignments": {
-              "StartDate": positionStartDate,
+              "StartDate": positionStartDate ? positionStartDate : null,
               "Values": filterRoles
             },
             "Degrees": {
@@ -216,6 +216,7 @@ const AdvancedSearch = (props) =>
         setMinYears(0);
         setMaxYears(0);
         setPositionStartDate("");
+        setIssuranceDate("");
         setRateScore(0);
         setLastClickedCat(defaultCategoryText);
         setLastClickedSub(defaultSubCategoryText);
@@ -252,7 +253,7 @@ const AdvancedSearch = (props) =>
                                                         Object.keys(assignment).length !== 0 ? (
                                                             assignment.map((positElement, index) => {
                                                                 return(
-                                                                <div><input type="checkbox"                                                                 
+                                                                <div key={index}><input type="checkbox"                                                                 
                                                                 style={{"display": "inline"}}
                                                                 name="desc1" 
                                                                 value={positElement.value}
@@ -270,15 +271,17 @@ const AdvancedSearch = (props) =>
                                     <div className="row">
                                         <div className="col">
                                             <table>
-                                                <tr>
-                                                    <td style={{"width": "100px"}}>
-                                                        <Label>Start Date</Label>    
-                                                    </td>
-                                                    <td>
-                                                        <Input onChange={event => setPositionStartDate(event.target.value)} 
-                                                        value={positionStartDate} className="date-picker-sm" type="date"></Input>
-                                                    </td>
-                                                </tr>
+                                                <tbody>
+                                                    <tr>
+                                                        <td style={{"width": "100px"}}>
+                                                            <Label>Start Date</Label>    
+                                                        </td>
+                                                        <td>
+                                                            <Input onChange={event => setPositionStartDate(event.target.value)} 
+                                                            value={positionStartDate} className="date-picker-sm" type="date"></Input>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
                                             </table>                                        
                                         </div>
                                     </div>
@@ -299,7 +302,7 @@ const AdvancedSearch = (props) =>
                                                     {
                                                         Object.keys(certifications).length !== 0 ? (
                                                             certifications.map((certElement, index) => {
-                                                                return(<div>
+                                                                return(<div key={index}>
                                                                     <input type="checkbox" 
                                                                     style={{"display": "inline"}}
                                                                     name={certElement.value} 
@@ -319,15 +322,17 @@ const AdvancedSearch = (props) =>
                                     <div className="row mb-2">
                                         <div className="col">
                                             <table>
-                                                <tr>
-                                                    <td style={{"width": "100px"}}>
-                                                        <Label>Issue Date</Label>                                                        
-                                                    </td>
-                                                    <td>
-                                                        <Input onChange={event => setIssuranceDate(event.target.value)} 
-                                                value={issuranceDate} className="date-picker-sm" type="date"></Input>
-                                                    </td>
-                                                </tr>
+                                                <tbody>
+                                                    <tr>
+                                                        <td style={{"width": "100px"}}>
+                                                            <Label>Issue Date</Label>                                                        
+                                                        </td>
+                                                        <td>
+                                                            <Input onChange={event => setIssuranceDate(event.target.value)} 
+                                                    value={issuranceDate} className="date-picker-sm" type="date"></Input>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
                                             </table>
                                         </div>
                                     </div>
@@ -348,7 +353,7 @@ const AdvancedSearch = (props) =>
                                                     Object.keys(degrees).length !== 0 ? (
                                                         degrees.map((eduElement, index) => {
                                                             return(
-                                                            <div><input type="checkbox"                                                             
+                                                            <div key={index}><input type="checkbox"                                                             
                                                             style={{"display": "inline"}}
                                                             onChange={e => {Degree_OnChange(e)}} 
                                                             value={eduElement.value}
