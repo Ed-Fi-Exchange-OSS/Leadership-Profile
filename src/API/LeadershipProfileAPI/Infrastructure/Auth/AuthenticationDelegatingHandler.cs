@@ -9,7 +9,6 @@ using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
-using Microsoft.AspNetCore.Server.IIS.Core;
 using Microsoft.Extensions.Configuration;
 
 namespace LeadershipProfileAPI.Infrastructure.Auth
@@ -67,7 +66,7 @@ namespace LeadershipProfileAPI.Infrastructure.Auth
             };
 
             requestToken.Content.Headers.ContentType =
-                new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded") {CharSet = "UTF-8"};
+                new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded") { CharSet = "UTF-8" };
             requestToken.Headers.TryAddWithoutValidation("Authorization", $"Basic {encodedPair}");
 
             var authApi = _clientFactory.CreateClient();

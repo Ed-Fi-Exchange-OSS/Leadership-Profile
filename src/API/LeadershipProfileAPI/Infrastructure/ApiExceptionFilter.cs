@@ -29,7 +29,7 @@ namespace LeadershipProfileAPI.Infrastructure
 
                 context.Exception = null!;
 
-                apiError = new ApiError(ex.Message) {errors = ex.Errors};
+                apiError = new ApiError(ex.Message) { errors = ex.Errors };
 
                 context.HttpContext.Response.StatusCode = ex.StatusCode;
             }
@@ -51,7 +51,7 @@ namespace LeadershipProfileAPI.Infrastructure
                     stack = context.Exception.StackTrace;
                 }
 
-                apiError = new ApiError(msg) {detail = stack};
+                apiError = new ApiError(msg) { detail = stack };
 
                 context.HttpContext.Response.StatusCode = 500;
 

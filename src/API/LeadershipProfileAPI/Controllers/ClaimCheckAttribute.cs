@@ -11,7 +11,7 @@ namespace LeadershipProfileAPI.Controllers
     {
         public ClaimCheckAttribute(string claimType, string claimValue) : base(typeof(ClaimCheckFilter))
         {
-            Arguments = new object[] {claimType , claimValue};
+            Arguments = new object[] { claimType, claimValue };
         }
     }
 
