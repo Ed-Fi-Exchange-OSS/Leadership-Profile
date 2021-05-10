@@ -17,6 +17,12 @@ specific language governing permissions and limitations under the License.
 See [NOTICES](NOTICES.md) for additional copyright and license notifications.
 
 ## Setting up the development environment
+* You will either have to Clone or Fork the repo.
+* You will need to be added to the org and team to clone and work on the repo.
+* For Fork, you won't need to be added to the org. If you wish to bring the changes back, you can create PR. The commits must be signed.
+* If Commits are not signed, they can’t be merged. Please refer [this document](https://techdocs.ed-fi.org/display/ETKB/Signing+Git+Commits) for the setup.
+* Caution: If your commits are not signed, and you want to do that after the fact, it can be an arduous process. It is highly recommended to make sure this works before starting real dev work.
+* CLA must be signed [here](https://cla-assistant.io/Ed-Fi-Exchange-OSS/Leadership-Profile?pullRequest=3).
 
 ### Required software
 
@@ -56,24 +62,7 @@ These are the available powershell commands to test the application (run them fr
 * `Invoke-Psake Test`: Runs all the tests.
 
 ## Running API
-### Setting the secrets locally for Ed-Fi ODS
-Take a look at Microsoft's recommended way managing secret storage [here](https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets) and follow the steps below:
-
-1. Navigate to directory where CSPROJ exists and run
-
- `dotnet user-secrets init`
-
-2. After running the command above, you should see `UserSecretId` in csproj file:
-![screenshot](/docs/images/screenshot-secrets-csproj.png)
-
-3. To set the Client Id run 
-
-  `dotnet user-secrets set "ODS-API:Client-Id" "{ClientId from Swagger}"` 
-
-4. To set the Client Secret run
-
-`dotnet user-secrets set "ODS-API:Client-Secret" "{ClientSecret from Swagger}"` 
-
+It can be run directly from the Editor, such as Visual Studio. It must be running along with the React Web application for full functionality.git 
     
 ## Available React Scripts
 
