@@ -5,7 +5,7 @@ const LoggedInRoute = ({ component: Component, isAuthenticated, ...rest }) => (
   <Route
     {...rest}
     render={props => (isAuthenticated
-      ? <Redirect to={{ pathname: '/queue?count=10&page=1&sortBy=desc&sortField=id', state: { from: props.location } }} />
+      ? <Redirect to={{ pathname: '/queue?count=10&page=1&sortBy=asc&sortField=id', state: { from: props.location } }} />
       : <Component {...rest} />)
     }
   />

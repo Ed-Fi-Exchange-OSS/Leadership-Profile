@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CardTitle, Collapse, Table } from 'reactstrap';
 import { BriefcaseIcon, DownPointingIcon } from '../Icons';
+import { formatDate } from '../../utils/date';
 
 const positionHistoryCategories = { 'role': 'Role', 'schoolName': 'School', 'startDate': 'Start Date', 'endDate': 'End Date' };
 
@@ -50,10 +51,5 @@ const PositionHistoryTable = (props) => {
         </div>
     );
 }
-
-function formatDate(dateString) {
-    var date = new Date(dateString);
-    return date.toLocaleDateString("en-US");
-};
 
 export default PositionHistoryTable;

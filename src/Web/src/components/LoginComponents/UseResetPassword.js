@@ -53,13 +53,13 @@ function UseResetPassword() {
 
     function setResetPassword(e) {
         if (newPassword !== '' && confirmPassword !== '') {
-            const apiUrl = new URL('/account/resetPassword', API_URL);
+            const apiUrl = new URL(API_URL + 'account/resetPassword');
 
             fetch(apiUrl, API_CONFIG(
                     'POST', JSON.stringify({
                         'username': searchableUrl.current.searchParams.get('username'),
                         'newPassword': newPassword,
-                        'token': window.location.search.split('token=')[1]
+                        'token': searchableUrl.current.searchParams.get('token')
                     })
                 )).then(response => response.json())
                 .then((response) => {

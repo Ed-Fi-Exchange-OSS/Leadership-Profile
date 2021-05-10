@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Row, Col,  Button, Card, Modal, ModalHeader, ModalBody, ModalFooter, Label, Input, Form, FormGroup } from 'reactstrap';
 import { PersonIcon, GeoIcon, PhoneIcon, MailIcon, EducationIconNavy, RibbonIcon, CalendarIcon, IdIcon } from '../Icons';
 import DataCorrectionModal from '../DataCorrectionComponent/DataCorrectionModal';
+import { formatDate } from '../../utils/date';
 
 const ProfileInfo = (props) => {
     const { data } = props;
@@ -62,10 +63,5 @@ const ProfileInfo = (props) => {
         </Card>
     );
 }
-
-function formatDate(dateString) {
-    var date = new Date(dateString);
-    return date.toLocaleDateString("en-US");
-};
 
 export default ProfileInfo;

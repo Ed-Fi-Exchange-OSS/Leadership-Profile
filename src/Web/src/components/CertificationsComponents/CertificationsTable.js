@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { CardTitle, Collapse, Table } from 'reactstrap';
 import { CertificateIcon, DownPointingIcon } from '../Icons';
+import { formatDate } from '../../utils/date';
 
-const certificateCategories = { 'description': 'Description', 'type': 'Type', 'validFromDate': 'Valid from', 'validToDate': 'Valid to' };
+const certificateCategories = { 'description': 'Description', 'credentialType': 'Type', 'issuanceDate': 'Issuance Date', 'expirationDate': 'Expiration Date' };
 
 const CertificationsTable = (props) => {
     const { title, data } = props;
@@ -51,10 +52,5 @@ const CertificationsTable = (props) => {
         </div>
     );
 }
-
-function formatDate(dateString) {
-    var date = new Date(dateString);
-    return date.toLocaleDateString("en-US");
-};
 
 export default CertificationsTable;

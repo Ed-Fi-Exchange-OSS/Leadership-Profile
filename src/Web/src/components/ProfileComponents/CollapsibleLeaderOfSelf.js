@@ -19,7 +19,7 @@ const CollapsibleLeaderOfSelf = (props) => {
       </h2>
       <Collapse isOpen={isOpen}>
         <div className="profile-collapsible-table">
-          <div className="container profile-info-text">
+          <div className="container">
             { Object.keys(data).length !== 0 ? (
               data.subCatCriteria.map((subCrit, i) => {
                 var lastPeriod = parseInt(subCrit.scoresByPeriod.length) - 1;

@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
-import config from '../../config';
-import LogoutService from '../../utils/logout-service';
+import config from '../../../config';
+import LogoutService from '../../../utils/logout-service';
 
-function UseDirectory() {
+function UseSearchDirectory() {
     const history = useHistory();
     const location = useLocation();
     const { API_URL, API_CONFIG } = config();
@@ -12,6 +12,7 @@ function UseDirectory() {
 
     const [data, setData] = useState([]);
     const [error, setError] = useState(false);
+    const [filters, setFilters] = useState();
 
     const [url, setUrl] = useState(window.location.href);
     const searchableUrl = useRef(new URL(url));
@@ -49,47 +50,49 @@ function UseDirectory() {
     useEffect(() => {
         searchableUrl.current.textContent = new URL(url);
         if (searchableUrl.current.search === location.search || !searchableUrl.current.search) return;
-        history.push(`directory${searchableUrl.current.search}`);
+        history.push(`search${searchableUrl.current.search}`);
     }, [url]);
-
+    
     useEffect(() => {
-        if (!searchableUrl.current.search) return;
-        let unmounted = false;
-        const apiUrl = new URL(API_URL + `profile${history.location.search}`);
-        fetch(apiUrl, API_CONFIG('GET'))
-        .then((response) => {
-            if (!response.ok) {
-                if (response.status === 401) {
-                    logout();
-                } else {
-                    setError(true);
-                }
-                return;
-            }
-
-            setError(false);
-            
-            response.json().then((response) => {
-                if (!unmounted && response !== null) {
-                    if (response.profiles !== undefined) {
-                        setData(response.profiles);
+        if(filters !== undefined){
+            if (!searchableUrl.current.search) return;
+            let unmounted = false;
+            const apiUrl = new URL(API_URL + `search${history.location.search}`);
+            fetch(apiUrl, API_CONFIG('POST', JSON.stringify(filters)))
+            .then((response) => {
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        logout();
+                    } else {
+                        setError(true);
                     }
-                    setPaging({
-                        ...paging,
-                        totalSize: response.totalCount,
-                        maxPages: Math.ceil(response.totalCount / 10),
-                    });
+                    return;
                 }
+    
+                setError(false);
+                
+                response.json().then((response) => {
+                    if (!unmounted && response !== null) {
+                        if (response.results !== undefined) {
+                            setData(response.results);
+                        }
+                        setPaging({
+                            ...paging,
+                            totalSize: response.totalCount,
+                            maxPages: Math.ceil(response.totalCount / 10),
+                        });
+                    }
+                });
+            })
+            .catch((error) => {
+                setError(true);
+                console.error(error.message);
             });
-        })
-        .catch((error) => {
-            setError(true);
-            console.error(error.message);
-        });
-        return () => {
-            unmounted = true;
-        };
-    }, [url]);
+            return () => {
+                unmounted = true;
+            };
+        }
+    }, [filters, url]);
 
     function setPage(newPage) {
         setPaging({
@@ -101,14 +104,8 @@ function UseDirectory() {
     function setColumnSort(category, value) {
         setSort({ category, value });
     }
-
-    function goToAdvancedSearch(){
-        let path = '/advanced/search?page=1&sortBy=asc&sortField=id';
-        history.push(path);
-        history.go(0);
-    }
-
-    return { setColumnSort, setSort, sort, data, paging, setPage, error,goToAdvancedSearch }
+    
+    return { setColumnSort, setSort, sort, data, paging, setPage, error, setFilters }
 }
 
-export default UseDirectory;
+export default UseSearchDirectory;
