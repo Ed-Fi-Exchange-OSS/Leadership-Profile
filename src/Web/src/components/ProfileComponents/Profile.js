@@ -40,7 +40,7 @@ const Profile = () => {
                     <CertificationsTable title='Certifications' data={data.certificates} />
                     <ProfessionalDevelopmentTable title='Professional Development and Learning Experiences' data={data.professionalDevelopment}/>
                 </div>
-                ) : activeComponent === "leader" && losMappingResult !== null !== 0 ? (
+                ) : activeComponent === "leader" && losMappingResult !== null && losMappingResult !== 0 ? (
                     <div>
                         { (losMappingResult).map((obj, i) => {
                             return (<CollapsibleLeaderOfSelf title={obj.categoryTitle} data={obj}/>)

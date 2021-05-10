@@ -1,6 +1,5 @@
-import { Button } from 'bootstrap';
-import React, { useState, useRef } from 'react';
-import { UncontrolledDropdown, DropdownItem, DropdownMenu, DropdownToggle, Label, Input, Table, Row, Col } from 'reactstrap';
+import React, { useState} from 'react';
+import { UncontrolledDropdown, DropdownItem, DropdownMenu, DropdownToggle, Label, Input } from 'reactstrap';
 import UseAdvancedSearch from './UseAdvancedSearch';
 
 const AdvancedSearch = (props) =>
@@ -8,9 +7,6 @@ const AdvancedSearch = (props) =>
     const {degrees, assignment, certifications, categories, subCategories,
         setDegrees, setAssignment, setCertifications, setCategories,
         setSubCategories, GetSubCategories } = UseAdvancedSearch();
-
-    const listSpeciaizations = {};
-    const [listSubCategories, getListSubCategories] = useState([]);
 
     let defaultCategoryText = 'Select Category';
     let defaultSubCategoryText = 'Select SubCategory';
@@ -46,7 +42,7 @@ const AdvancedSearch = (props) =>
 
         let newCategories = [...categories];
         newCategories.forEach((element,i) => {
-            if(element.value == e.currentTarget.value){
+            if(element.value === e.currentTarget.value){
                 element.selected = true;
             }
             else{
@@ -54,104 +50,67 @@ const AdvancedSearch = (props) =>
             }
         });
         setCategories(newCategories);
-        UpDateSubCategories(e.currentTarget.value);
+        UpdateSubcategories(e.currentTarget.value);
     }
     function OnClickSub(e){
         setLastClickedSub(e.target.innerText);
 
         let newSubCategories = [...subCategories];
-        newSubCategories.forEach((element,i) => {
-            if(element.value == e.currentTarget.value){
-                element.selected = true;
-            }
-            else{
-                element.selected = false;
-            }
+        newSubCategories.forEach((element) => {
+            element.selected = element.value === e.currentTarget.value;
         });
         setSubCategories(newSubCategories);
     }
-    function UpDateSubCategories(categorieId){
-        GetSubCategories(categorieId);
+    function UpdateSubcategories(categoryId){
+        GetSubCategories(categoryId);
+    }
+    function CheckSelectedItem(e, elements, setter) {
+        let newElements = [...elements];
+        newElements.forEach((element) => {
+            if (element.value == e.currentTarget.value) {
+                element.checked = e.currentTarget.checked;
+            }
+        });
+        setter(newElements);
+    }
+    function GetCheckedOrSelectedValues(elements) {
+        return elements?.filter(x => x.checked || x.selected).map(x => x.value) ?? [];
+    }
+    function UncheckAllElements(elements, setter) {
+        if (Object.keys(elements).length !== 0) {
+            let newElements = [...elements];
+            newElements.forEach((element) => {
+                element.checked = false
+            });
+            setter(newElements);
+        }
+    }
+    function UnselectAllElements(elements, setter) {
+        if (Object.keys(elements).length !== 0) {
+            let newElements = [...elements];
+            newElements.forEach((element) => {
+                element.selected = false
+            });
+            setter(newElements);
+        }
     }
     function Certification_OnChange(e){
-        let newCertification = [...certifications];
-        newCertification.forEach((element,i) => {
-            if(element.value == e.currentTarget.value){
-                element.checked = e.currentTarget.checked;
-            }
-        });
-        setCertifications(newCertification);
+        CheckSelectedItem(e, certifications, setCertifications);
     }
     function Position_OnChange(e){
-        let newAssignment = [...assignment];
-        newAssignment.forEach((element,i) => {
-            if(element.value == e.currentTarget.value){
-                element.checked = e.currentTarget.checked;
-            }
-        });
-        setAssignment(newAssignment);
+        CheckSelectedItem(e, assignment, setAssignment);
     }
     function Degree_OnChange(e){
-        let newdegrees = [...degrees];
-        newdegrees.forEach((element,i) => {
-            if(element.value == e.currentTarget.value){
-                element.checked = e.currentTarget.checked;
-            }
-        });
-        setDegrees(newdegrees);
+        CheckSelectedItem(e, degrees, setDegrees);
     }
     function SendFilter(){
-        var filterDegrees = [];
-        if(Object.keys(degrees).length !== 0){
-            degrees.forEach((e) => {
-                if(e.checked == true)
-                {
-                    filterDegrees.push(e.value)
-                }
-            });
-        }
+        let filterRoles = GetCheckedOrSelectedValues(assignment);
+        let filterCertifications = GetCheckedOrSelectedValues(certifications);
+        let filterDegrees = GetCheckedOrSelectedValues(null);
+        let catId = GetCheckedOrSelectedValues(categories)[0] ?? 0;
+        let subCatId = GetCheckedOrSelectedValues(subCategories)[0] ?? "";
 
-        var filterRoles = [];
-        if(Object.keys(assignment).length !== 0){
-            assignment.forEach((e) => {
-                if(e.checked == true)
-                {
-                    filterRoles.push(e.value)
-                }
-            });
-        }
-
-        var filterCertifications = [];
-        if(Object.keys(certifications).length !== 0){
-            certifications.forEach((e) => {
-                if(e.checked == true)
-                {
-                    filterCertifications.push(e.value)
-                }
-            });
-        }   
-
-        var catId = 0;
-        if(Object.keys(categories).length !== 0){
-            categories.forEach((e) => {
-                if(e.selected == true)
-                {
-                    catId = e.value;
-                }
-            });
-        } 
-
-        var subCatId = "";
-        if(Object.keys(subCategories).length !== 0){
-            subCategories.forEach((e) => {
-                if(e.selected == true)
-                {
-                    subCatId = e.value;
-                }
-            });
-        } 
-
-        var filters = {
+        let filters = {
             "MinYears": minYears,
             "MaxYears": maxYears,
             "Ratings": {
@@ -176,43 +135,12 @@ const AdvancedSearch = (props) =>
     }
 
     function ClearFilters(){
-        if(Object.keys(degrees).length !== 0){
-            let newdegrees = [...degrees];
-            newdegrees.forEach((element) => {
-                element.checked = false
-            });
-            setDegrees(newdegrees);
-        }
-        if(Object.keys(assignment).length !== 0){
-            let newAssignment = [...assignment];
-            newAssignment.forEach((element) => {
-                element.checked = false
-            });
-            setAssignment(newAssignment);
-        }
-        if(Object.keys(certifications).length !== 0){
-            let newCertification = [...certifications];
-            newCertification.forEach((element) => {
-                element.checked = false;
-            });
-            setCertifications(newCertification);
-        }
-        if(Object.keys(categories).length !== 0){
+        UncheckAllElements(degrees, setDegrees);
+        UncheckAllElements(assignment, setAssignment);
+        UncheckAllElements(certifications, setCertifications);
+        UnselectAllElements(categories, setCategories);
+        UnselectAllElements(subCategories, setSubCategories);
 
-            let newCategories = [...categories];
-            newCategories.forEach((element) => {
-                element.selected = false;
-            });
-            setCategories(newCategories);
-        }
-        if(Object.keys(subCategories).length !== 0){
-
-            let newSubCategories = [...subCategories];
-            newSubCategories.forEach((element) => {
-                element.selected = false;
-            });
-            setSubCategories(newSubCategories);
-        }
         setMinYears(0);
         setMaxYears(0);
         setPositionStartDate("");
