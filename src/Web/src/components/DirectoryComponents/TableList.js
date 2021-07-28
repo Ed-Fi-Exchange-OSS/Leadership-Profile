@@ -26,11 +26,6 @@ const CreateTableList = (props) => {
                                 status={sort.category === 'name' ? sort.value : null} />
                         </th>
                         <th>
-                            Location
-                            <Sorting onSortChange={newStatus => setColumnSort('location', newStatus)}
-                                status={sort.category === 'location' ? sort.value : null} />
-                        </th>
-                        <th>
                             School 
                             <Sorting onSortChange={newStatus => setColumnSort('school', newStatus)}
                                 status={sort.category === 'school' ? sort.value : null} />
@@ -64,7 +59,6 @@ const CreateTableList = (props) => {
                             <td><span className="dot"></span></td>
                             <td>{profile.staffUniqueId}</td>
                             <td>{profile.lastSurname}, {profile.firstName}</td>
-                            <td>{profile.location}</td>
                             <td>{profile.institution}</td>
                             <td>Teacher</td>
                             <td>{profile.yearsOfService}</td>
