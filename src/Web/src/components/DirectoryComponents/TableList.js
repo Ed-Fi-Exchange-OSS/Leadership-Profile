@@ -16,9 +16,7 @@ const CreateTableList = (props) => {
                     <tr>
                         <th></th>
                         <th>
-                            ID 
-                            <Sorting onSortChange={newStatus => setColumnSort('id', newStatus)}
-                                status={sort.category === 'id' ? sort.value : null} />
+                            ID                
                         </th>
                         <th>
                             Name
