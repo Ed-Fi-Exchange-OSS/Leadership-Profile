@@ -1,7 +1,6 @@
 import React from 'react';
 import { Table } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import { RightPointingIcon } from '../Icons';
 import Sorting from './Sorting';
 import PaginationButtons from './PaginationButtons';
 import PaginationDetails from "./PaginationDetails"

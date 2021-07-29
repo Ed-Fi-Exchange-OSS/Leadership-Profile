@@ -1,5 +1,5 @@
 import React from 'react';
-import { MailIcon, PhoneIcon, PersonIcon, EducationIcon, RightPointingIcon } from '../../Icons';
+import { MailIcon, PhoneIcon, PersonIcon, EducationIcon } from '../../Icons';
 import { Link } from 'react-router-dom';
 import { DefaultProfile } from '../../images'
 const CardProfile = (props) => {
@@ -11,11 +11,12 @@ const CardProfile = (props) => {
             <div className="card-profile">
                 <DefaultProfile></DefaultProfile>
             </div>
-            <div className="card-link">
-                <Link to={`profile/${data.staffUniqueId}`}><RightPointingIcon /></Link>
-            </div>
             <div className="card-contact">
-                <h4 className="card-content">{data.fullName}</h4>
+                <h4 className="card-content">
+                    <Link to={`profile/${data.staffUniqueId}`}>
+                        {data.fullName}
+                    </Link>
+                </h4>
                 <div className="card-content"><MailIcon />{data.email}</div>
                 <div className="card-content"><PhoneIcon />{data.telePhone}</div>
             </div>
