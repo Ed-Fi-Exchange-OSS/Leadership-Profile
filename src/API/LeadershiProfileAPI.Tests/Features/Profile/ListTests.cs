@@ -24,7 +24,7 @@ namespace LeadershipProfileAPI.Tests.Features.Profile
             profile.LastSurName.ShouldBe("Ramirez");
             profile.MiddleName.ShouldBeNull();
             profile.StaffUniqueId.ShouldBe("0132398");
-            profile.Location.ShouldBe("Dallas");
+            profile.Institution.ShouldBe("Austin");
         }
 
         [Fact]
@@ -59,23 +59,6 @@ namespace LeadershipProfileAPI.Tests.Features.Profile
             profile.ShouldNotBeNull();
             profile.LastSurName.ShouldBe("Abarough");
             profile.FirstName.ShouldBe("Evvy");
-        }
-
-        [Fact]
-        public async Task ShouldGetProfileSortedByLocationAsc()
-        {
-
-            var response = await Testing.Send(new List.Query
-            {
-                Page = 1,
-                SortField = "location",
-                SortBy = "asc"
-            });
-
-            var profile = response.Profiles.FirstOrDefault();
-
-            profile.ShouldNotBeNull();
-            profile.Location.ShouldBe("Arlington");
         }
 
         [Fact]
@@ -162,24 +145,7 @@ namespace LeadershipProfileAPI.Tests.Features.Profile
             profile.LastSurName.ShouldBe("Zuniga");
             profile.FirstName.ShouldBe("Christian");
         }
-
-        [Fact]
-        public async Task ShouldGetProfileSortedByLocationDesc()
-        {
-
-            var response = await Testing.Send(new List.Query
-            {
-                Page = 1,
-                SortField = "location",
-                SortBy = "desc"
-            });
-
-            var profile = response.Profiles.FirstOrDefault();
-
-            profile.ShouldNotBeNull();
-            profile.Location.ShouldBe("San Antonio");
-        }
-
+        
         [Fact]
         public async Task ShouldGetProfileSortedBySchoolDesc()
         {

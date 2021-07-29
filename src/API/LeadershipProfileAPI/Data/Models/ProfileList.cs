@@ -12,7 +12,6 @@ namespace LeadershipProfileAPI.Data.Models
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
         public string LastSurName { get; set; }
-        public string Location { get; set; }
         public string Institution { get; set; }
         public decimal? YearsOfService { get; set; }
         public string HighestDegree { get; set; }
