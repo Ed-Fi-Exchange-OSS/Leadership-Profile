@@ -16,7 +16,6 @@ namespace LeadershipProfileAPI.Tests.Data.Models
             result.FirstName.ShouldBe("Patricia");
             result.LastSurName.ShouldBe("Ramirez");
             result.MiddleName.ShouldBeNull();
-            result.Location.ShouldBe("Dallas");
             result.StaffUniqueId.ShouldBe("0132398");
         }
     }

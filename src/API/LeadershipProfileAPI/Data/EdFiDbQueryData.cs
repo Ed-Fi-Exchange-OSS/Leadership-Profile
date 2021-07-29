@@ -37,7 +37,6 @@ namespace LeadershipProfileAPI.Data
             {
                 { "id", "StaffUniqueId" },
                 { "name", "LastSurName" },
-                { "location", "Location" },
                 { "school", "Institution" },
                 { "position", "Position" },
                 { "yearsOfService", "YearsOfService" },
@@ -52,7 +51,6 @@ namespace LeadershipProfileAPI.Data
                     ,FirstName
                     ,MiddleName
                     ,LastSurname
-                    ,Location
                     ,Institution
                     ,YearsOfService
                     ,HighestDegree
