@@ -48,7 +48,6 @@ const CreateTableList = (props) => {
                             <Sorting onSortChange={newStatus => setColumnSort('major', newStatus)}
                                 status={sort.category === 'major' ? sort.value : null} />
                         </th>
-                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -62,7 +61,6 @@ const CreateTableList = (props) => {
                             <td>{profile.yearsOfService}</td>
                             <td>{profile.highestDegree}</td>
                             <td>{profile.major}</td>
-                            <td className="profile-table-row"><Link to={`profile/${profile.staffUniqueId}`}><RightPointingIcon /></Link></td>
                         </tr>)) : ''}
                         <tr className="bottom-row">
                             <td colSpan="8">
