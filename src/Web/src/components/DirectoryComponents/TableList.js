@@ -1,7 +1,6 @@
 import React from 'react';
 import { Table } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import { RightPointingIcon } from '../Icons';
 import Sorting from './Sorting';
 import PaginationButtons from './PaginationButtons';
 import PaginationDetails from "./PaginationDetails"
@@ -48,7 +47,6 @@ const CreateTableList = (props) => {
                             <Sorting onSortChange={newStatus => setColumnSort('major', newStatus)}
                                 status={sort.category === 'major' ? sort.value : null} />
                         </th>
-                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -56,16 +54,15 @@ const CreateTableList = (props) => {
                         <tr key={profile.id}>
                             <td><span className="dot"></span></td>
                             <td>{profile.staffUniqueId}</td>
-                            <td>{profile.lastSurname}, {profile.firstName}</td>
+                            <td><Link to={`profile/${profile.staffUniqueId}`}>{profile.lastSurname}, {profile.firstName}</Link></td>
                             <td>{profile.institution}</td>
                             <td>Teacher</td>
                             <td>{profile.yearsOfService}</td>
                             <td>{profile.highestDegree}</td>
                             <td>{profile.major}</td>
-                            <td className="profile-table-row"><Link to={`profile/${profile.staffUniqueId}`}><RightPointingIcon /></Link></td>
                         </tr>)) : ''}
                         <tr className="bottom-row">
-                            <td colSpan="8">
+                            <td colSpan="7">
                                 <PaginationDetails paging={paging} count={data?.length} />
                             </td>
                             <td colSpan="2" className="pagination-buttons-container">
