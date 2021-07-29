@@ -56,7 +56,7 @@ const CreateTableList = (props) => {
                         <tr key={profile.id}>
                             <td><span className="dot"></span></td>
                             <td>{profile.staffUniqueId}</td>
-                            <td>{profile.lastSurname}, {profile.firstName}</td>
+                            <td><Link to={`profile/${profile.staffUniqueId}`}>{profile.lastSurname}, {profile.firstName}</Link></td>
                             <td>{profile.institution}</td>
                             <td>Teacher</td>
                             <td>{profile.yearsOfService}</td>
