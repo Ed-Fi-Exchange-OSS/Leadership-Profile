@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useHistory } from "react-router-dom";
 import {
   Collapse,
   Navbar,
@@ -24,15 +23,9 @@ const Navigation = (props) => {
   const { logout } = LogoutService();
   const authInfo = getAuthInfo();
   const [isOpen, setIsOpen] = useState(false);
-  const history = useHistory();
   const {SCHOOL_HEADER} = config();
 
   const toggle = () => setIsOpen(!isOpen);
-
-  const userRoles = () => {
-    history.push('/admin/');
-    history.go(0);
-  }
 
   return (
     <div>
@@ -48,9 +41,6 @@ const Navigation = (props) => {
                       {authInfo}
                   </DropdownToggle>
                   <DropdownMenu right>
-                      <DropdownItem onClick={() => userRoles()}>
-                        User Roles
-                      </DropdownItem>
                       <DropdownItem onClick={() => logout()}>
                         Logout
                       </DropdownItem>
