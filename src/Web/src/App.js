@@ -14,7 +14,6 @@ import Directory from './components/DirectoryComponents/Directory';
 import Profile from './components/ProfileComponents/Profile';
 import Registration from './components/LoginComponents/Registration';
 import AuthService from './utils/auth-service';
-import RoleManagement from './components/RoleMangementComponents/RoleManagement';
 import ForgotPassword from './components/LoginComponents/ForgotPassword';
 import ResetPassword from './components/LoginComponents/ResetPassword';
 import AdvancedSearch from './components/DirectoryComponents/AdvancedSearchComponent/SearchDirectory';
@@ -35,7 +34,6 @@ function App() {
             </Route>
             <PrivateRoute exact path="/:searchParams" isAuthenticated={authenticated} component={Directory} />
             <PrivateRoute path="/profile/:id" isAuthenticated={authenticated} component={Profile} />
-            <PrivateRoute path="/admin/:searchParams" isAuthenticated={authenticated} component={RoleManagement} /> {/* add isAdmin to auth */}
             <PrivateRoute path="/advanced/search" isAuthenticated={authenticated} component={AdvancedSearch} />
             <Route exact path="/account/register" component={Registration} />         
             <Route exact path="/account/forgotpassword" component={ForgotPassword} />
