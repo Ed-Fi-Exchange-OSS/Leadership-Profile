@@ -44,5 +44,21 @@ namespace LeadershipProfileAPI.Features.Search
 
             return Ok(result);
         }
+
+        [HttpGet]
+        public async Task<ActionResult> GetProfile([FromQuery] ProfileSearchRequestQuery query, CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(
+                new List.Query
+                {
+                    Page = query.Page,
+                    SortBy = query.SortBy,
+                    SortField = query.SortField,
+                    SearchRequestBody = null
+                },
+                cancellationToken);
+
+            return Ok(result);
+        }
     }
 }

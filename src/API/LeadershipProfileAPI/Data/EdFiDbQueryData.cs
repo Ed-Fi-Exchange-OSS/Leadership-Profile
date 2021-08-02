@@ -108,6 +108,8 @@ namespace LeadershipProfileAPI.Data
 
         private static string ClauseConditions(ProfileSearchRequestBody body)
         {
+            if (body == null) return "--where excluded, no body provided";
+            
             var whereCondition = new[]
                 {
                     ClauseYears(body.MinYears, body.MaxYears), 

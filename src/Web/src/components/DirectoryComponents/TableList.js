@@ -58,7 +58,7 @@ const CreateTableList = (props) => {
                             <td>{profile.institution}</td>
                             <td>Teacher</td>
                             <td>{profile.yearsOfService}</td>
-                            <td>{profile.highestDegree}</td>
+                            <td>{profile.degree}</td>
                             <td>{profile.major}</td>
                         </tr>)) : ''}
                         <tr className="bottom-row">
