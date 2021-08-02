@@ -29,7 +29,7 @@ const Profile = () => {
                     <NavLink onClick={() => setActiveComponent("general")}>General Info</NavLink>
                 </NavItem>
                 <NavItem className={activeComponent === "leader" ? "current-profile-page nav-option" : "nav-option"}>
-                    <NavLink onClick={() => setActiveComponent("leader")}>Leader of Self</NavLink>
+                    <NavLink onClick={() => setActiveComponent("leader")}>Performance</NavLink>
                 </NavItem>
             </Nav>
 
