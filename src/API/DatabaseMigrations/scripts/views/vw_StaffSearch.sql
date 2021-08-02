@@ -185,14 +185,14 @@ from edfi.Staff as s
          join edfi.StaffEducationOrganizationAssignmentAssociation as seoaa on seoaa.StaffUSI = s.StaffUsi
          join assignments as a on a.StaffUSI = s.StaffUSI
          join certifications as c on c.StaffUSI = s.StaffUSI
-         join degrees as d on d.StaffUSI = s.StaffUSI
-         join tpdm.PerformanceEvaluationRatingResult as PERR
+         left join degrees as d on d.StaffUSI = s.StaffUSI
+         left join tpdm.PerformanceEvaluationRatingResult as PERR
                on perr.PersonId = s.PersonId
          left join rubric
                on rubric.DescriptorId = perr.PerformanceEvaluationTypeDescriptorId
          left join tpdm.PerformanceEvaluationRating as PER
                on per.PersonId = s.PersonId
-         inner join mostrecent as mr on mr.Category = perr.PerformanceEvaluationTypeDescriptorId
+         left join mostrecent as mr on mr.Category = perr.PerformanceEvaluationTypeDescriptorId
                and mr.SubCategory = perr.PerformanceEvaluationTypeDescriptorId
                and mr.StaffUsi = s.StaffUSI
                and mr.MeasureDate = per.ActualDate

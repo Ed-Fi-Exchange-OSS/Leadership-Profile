@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -38,7 +39,7 @@ namespace LeadershipProfileAPI.Features.Search
             public string StaffUniqueId { get; set; }
             public string FirstName { get; set; }
             public string MiddleName { get; set; }
-            public string LastSurName { get; set; }
+            [JsonPropertyName("lastSurname")] public string LastSurName { get; set; }
             public string FullName { get; set; }
             public int YearsOfService { get; set; }
             public string Certification { get; set; }
