@@ -66,15 +66,17 @@ task DownloadDbTestData -description "Downloads the DB test data from blob stora
 		Write-Host "Downloading..."
 		Invoke-WebRequest "$dbTestDataUrl" -OutFile "$testDataFolder/$dbTestDataZipFile"
 	}
-	Write-Host "Backup available at " -NoNewline
-	Write-Host "$testDataFolder/$dbTestDataZipFile" -ForegroundColor Yellow
-}
 
-task RecreateTestDatabase -description "Starts a docker container with the test database" -depends RemoveDbTestContainer, DownloadDbTestData {
 	if (!(Test-Path "$testDataFolder/$dbTestDataBakFile" -PathType Leaf)) {
+		Write-Host "Unpacking..."
 		Expand-Archive -Path "$testDataFolder/$dbTestDataZipFile" -DestinationPath "$testDataFolder"
 	}
 
+	Write-Host "Backup available at " -NoNewline
+	Write-Host "$testDataFolder/$dbTestDataBakFile" -ForegroundColor Yellow
+}
+
+task RecreateTestDatabase -description "Starts a docker container with the test database" -depends RemoveDbTestContainer, DownloadDbTestData {
 	Recreate-Docker-Db $testDatabaseContainerName $testDatabasePort $testDatabasePassword
 	Restore-Docker-Db $testDatabaseContainerName $testDataFolder $dbTestDataBakFile $testDatabasePassword $dbBackupName $dbName
 }
