@@ -70,15 +70,8 @@ task RecreateTestDatabase -description "Starts a docker container with the test 
 		Expand-Archive -Path "$testDataFolder/$dbTestDataZipFile" -DestinationPath "$testDataFolder"
 	}
 
-	exec { docker run -e 'ACCEPT_EULA=Y' --name "$testDatabaseContainerName" -e "SA_PASSWORD=$testDatabasePassword" -p "${testDatabasePort}:1433" -d "mcr.microsoft.com/mssql/server:2019-latest" }
-	Write-Host "Pausing for DB to come online"
-	Start-Sleep -s 15
-	exec { docker exec "$testDatabaseContainerName" mkdir "/var/opt/mssql/backup"}
-	exec { docker cp "$testDataFolder/$dbTestDataBakFile" "${testDatabaseContainerName}:/var/opt/mssql/backup/$dbTestDataBakFile" }
-	$restoreQuery = "RESTORE DATABASE $dbName FROM DISK='/var/opt/mssql/backup/$dbTestDataBakFile' WITH MOVE 'EdFi_Ods_Populated_Template_log' TO '/var/opt/mssql/data/EdFi_Ods_Populated_Template_log', MOVE 'EdFi_Ods_Populated_Template' TO '/var/opt/mssql/data/EdFi_Ods_Populated_Template.mdf'"
-	$restoreQuery | Out-File "$testDataFolder/restore.sql"
-	exec { docker cp "$testDataFolder/restore.sql" "${testDatabaseContainerName}:/var/opt/mssql/backup/restore.sql" }
-	exec { docker exec "$testDatabaseContainerName" /opt/mssql-tools/bin/sqlcmd -S localhost -U 'sa' -P "$testDatabasePassword" -i '/var/opt/mssql/backup/restore.sql' }
+	Recreate-Docker-Db $testDatabaseContainerName $testDatabasePort $testDatabasePassword
+	Restore-Docker-Db $testDatabaseContainerName $testDataFolder $dbTestDataBakFile $testDatabasePassword $dbName $dbName
 }
 
 task UpdateTestDatabase -description "Runs the migration scripts on the test database" {
