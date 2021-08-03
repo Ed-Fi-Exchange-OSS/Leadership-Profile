@@ -62,8 +62,11 @@ task RemoveDbTestContainer -description "Removes the database test container" {
 
 task DownloadDbTestData -description "Downloads the DB test data from blob storage" {
 	if (!(Test-Path "$testDataFolder/$dbTestDataZipFile" -PathType Leaf)) {
+		Write-Host "Downloading..."
 		Invoke-WebRequest "$dbTestDataUrl" -OutFile "$testDataFolder/$dbTestDataZipFile"
 	}
+	Write-Host "Backup available at " -NoNewline
+	Write-Host "$testDataFolder/$dbTestDataZipFile" -ForegroundColor Yellow
 }
 
 task RecreateTestDatabase -description "Starts a docker container with the test database" -depends RemoveDbTestContainer, DownloadDbTestData {
