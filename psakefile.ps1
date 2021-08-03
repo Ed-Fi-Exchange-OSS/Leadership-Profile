@@ -19,6 +19,7 @@ properties {
 	$dbTestdataBakFile = "EdFi_Ods_Populated_Template_TPDM_10.bak"
 	$testDataFolder = "$projectRootDirectory/testdata"
 	$dbName = "EdFi_Ods_Populated_Template"
+	$dbBackupName = "EdFi_Ods_Populated_Template_Test"
 }
 
 task RemovePublishFolders -description "Removes the publish related folders" {
@@ -75,7 +76,7 @@ task RecreateTestDatabase -description "Starts a docker container with the test 
 	}
 
 	Recreate-Docker-Db $testDatabaseContainerName $testDatabasePort $testDatabasePassword
-	Restore-Docker-Db $testDatabaseContainerName $testDataFolder $dbTestDataBakFile $testDatabasePassword $dbName $dbName
+	Restore-Docker-Db $testDatabaseContainerName $testDataFolder $dbTestDataBakFile $testDatabasePassword $dbBackupName $dbName
 }
 
 task UpdateTestDatabase -description "Runs the migration scripts on the test database" {
@@ -93,12 +94,12 @@ task UpdateLocalDatabase -description "Runs the migration scripts on the local d
 
 task RecreateLocalDatabase -description "Starts a docker container with the sample database for local dev" -depends DownloadDbTestData {
 	Recreate-Docker-Db $localDatabaseContainerName 1433 $testDatabasePassword
-	Restore-Docker-Db $localDatabaseContainerName $testDataFolder $dbTestDataBakFile $testDatabasePassword $dbName $dbName
+	Restore-Docker-Db $localDatabaseContainerName $testDataFolder $dbTestDataBakFile $testDatabasePassword $dbBackupName $dbName
 }
 
 task RestoreLocalDatabase -description "Restores local db without deleting the container" -depends DownloadDbTestData {
 	Write-Host "Restoring local database container"
-	Restore-Docker-Db $localDatabaseContainerName $testDataFolder $dbTestDataBakFile $testDatabasePassword $dbName $dbName
+	Restore-Docker-Db $localDatabaseContainerName $testDataFolder $dbTestDataBakFile $testDatabasePassword $dbBackupName $dbName
 }
 
 task RunLocalDatabase -description "Runs the docker container that has the local database" {
