@@ -14,9 +14,9 @@ properties {
 	$localDatabaseContainerName = "SqlServer2019"
 	$testDatabaseContainerName = "LeadershipProfileTestDb"
 	$testDatabasePort = "1435"
-	$dbTestDataUrl = "https://odsassets.blob.core.windows.net/public/TPDM/EdFi_TPDM_v08_20201109.zip"
-	$dbTestdataZipFile = "EdFi_TPDM_v08_20201109.zip"
-	$dbTestdataBakFile = "EdFi_TPDM_v08_20201109.bak"
+	$dbTestDataUrl = "https://odsassets.blob.core.windows.net/public/TPDM/EdFi_Ods_Populated_Template_TPDM_10.zip"
+	$dbTestdataZipFile = "EdFi_Ods_Populated_Template_TPDM_10.zip"
+	$dbTestdataBakFile = "EdFi_Ods_Populated_Template_TPDM_10.bak"
 	$testDataFolder = "$projectRootDirectory/testdata"
 	$dbName = "EdFi_Ods_Populated_Template"
 }
