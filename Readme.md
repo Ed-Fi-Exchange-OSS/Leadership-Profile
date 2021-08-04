@@ -28,6 +28,7 @@ See [NOTICES](NOTICES.md) for additional copyright and license notifications.
 
 * .net 5 sdk (https://dotnet.microsoft.com/download/dotnet/5.0)
 * SQL Server 2019 (https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
+  * Alternatively use Docker for local development, see more info below
 * node.js (https://nodejs.org/)
 * docker
 * powershell
@@ -66,6 +67,19 @@ These are the available powershell commands to test the application (run them fr
 It can be run directly from the Editor, such as Visual Studio. It must be running along with the React Web application for full functionality.
 
 * If using Visual Studio, set Startup to launch `LeadershipProfileAPI` (using dotnet and Kestrel, not IIS Express)
+
+### Use Docker for Local DB
+
+**Docker database is not recommended for use in a production environment.**
+
+Instead of a typical SQL Server installation, you can use Docker for the local database, similar to the test DB.
+
+* `Invoke-Psake RecreateLocalDatabase`: Destroys and recreates a SQL Server container for local dev
+* `Invoke-Psake RestoreLocalDatabase`: Restores the backup to the local DB without recreating the container
+* `Invoke-Psake UpdateLocalDockerDatabase`: Runs DB migration scripts against the Docker DB
+* `Invoke-Psake SetLocalDockerConnectionString`: Sets up local API configuration to use Docker DB
+* `Invoke-Psake ResetLocalDb`: Combines all of the above to set or reset the Docker DB
+
 ## Available React Scripts
 
 In the Web project directory, you can run the below scripts.
