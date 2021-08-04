@@ -87,11 +87,13 @@ namespace LeadershipProfileAPI.Data
                 {"name", "LastSurName"},
                 {"yearsOfService", "YearsOfService"},
                 {"certification", "Certification"},
-                {"assignment", "Assignment"},
-                {"degree", "Degree"},
+                {"position", "Assignment"},
+                {"highestDegree", "Degree"},
                 {"ratingCategory", "RatingCategory"},
                 {"ratingSubCategory", "RatingSubCategory"},
-                {"rating", "rating"}
+                {"rating", "rating"},
+                {"school", "Institution"},
+                {"major", "Major"}
             };
 
             // Implement the view in SQL, call it here
@@ -108,6 +110,8 @@ namespace LeadershipProfileAPI.Data
 
         private static string ClauseConditions(ProfileSearchRequestBody body)
         {
+            if (body == null) return "--where excluded, no body provided";
+            
             var whereCondition = new[]
                 {
                     ClauseYears(body.MinYears, body.MaxYears), 

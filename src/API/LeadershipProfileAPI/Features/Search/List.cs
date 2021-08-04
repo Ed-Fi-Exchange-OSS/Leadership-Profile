@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -38,7 +39,7 @@ namespace LeadershipProfileAPI.Features.Search
             public string StaffUniqueId { get; set; }
             public string FirstName { get; set; }
             public string MiddleName { get; set; }
-            public string LastSurName { get; set; }
+            [JsonPropertyName("lastSurname")] public string LastSurName { get; set; }
             public string FullName { get; set; }
             public int YearsOfService { get; set; }
             public string Certification { get; set; }
@@ -47,6 +48,9 @@ namespace LeadershipProfileAPI.Features.Search
             public string RatingCategory { get; set; }
             public string RatingSubCategory { get; set; }
             public decimal Rating { get; set; }
+            public string Institution { get; set; } = "Default Institution";
+            public string Email { get; set; }
+            public string Telephone { get; set; }
         }
 
         public class QueryHandler : IRequestHandler<Query, Response>
