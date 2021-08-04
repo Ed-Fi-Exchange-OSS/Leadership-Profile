@@ -87,11 +87,13 @@ namespace LeadershipProfileAPI.Data
                 {"name", "LastSurName"},
                 {"yearsOfService", "YearsOfService"},
                 {"certification", "Certification"},
-                {"assignment", "Assignment"},
-                {"degree", "Degree"},
+                {"position", "Assignment"},
+                {"highestDegree", "Degree"},
                 {"ratingCategory", "RatingCategory"},
                 {"ratingSubCategory", "RatingSubCategory"},
-                {"rating", "rating"}
+                {"rating", "rating"},
+                {"school", "Institution"},
+                {"major", "Major"}
             };
 
             // Implement the view in SQL, call it here
