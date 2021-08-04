@@ -62,11 +62,18 @@ These are the available powershell commands to test the application (run them fr
 * `Invoke-Psake Test`: Runs all the tests.
 
 ## Running API
-It can be run directly from the Editor, such as Visual Studio. It must be running along with the React Web application for full functionality.git 
-    
+
+It can be run directly from the Editor, such as Visual Studio. It must be running along with the React Web application for full functionality.
+
+* If using Visual Studio, set Startup to launch `LeadershipProfileAPI` (using dotnet and Kestrel, not IIS Express)
 ## Available React Scripts
 
-In the Web project directory, you can run:
+In the Web project directory, you can run the below scripts.
+You may need to manually install the `react-scripts` tool first:
+
+```shell
+npm i react-scripts
+```
 
 ### `npm start`
 
