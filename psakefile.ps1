@@ -106,6 +106,12 @@ task UpdateLocalDockerDatabase -description "Runs the migration scripts on the l
 	$roundhouseConnString="Server=localhost;Database=$dbName;User Id=sa;Password=$testDatabasePassword;"
 	Update-Database $roundhouseConnString
 }
+
+task SetLocalDockerConnectionString -description "Sets a user secret to override the connection string for the docker db" {
+	$roundhouseConnString="Server=localhost;Database=$dbName;User Id=sa;Password=$testDatabasePassword;"
+	dotnet user-secrets set "ConnectionStrings:EdFi" "$roundhouseConnString" --project $apiProjectFile
+}
+
 task Clean -description "Clean back to a fresh state" -depends RemoveDbTestContainer, RemovePublishFolders {
 	dotnet clean $productSolution
 }
