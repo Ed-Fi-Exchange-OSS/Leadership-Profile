@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LeadershipProfileAPI.Data.Models;
@@ -118,7 +119,8 @@ namespace LeadershipProfileAPI.Data
                     ClauseAssignments(body.Assignments), 
                     ClauseCertifications(body.Certifications), 
                     ClauseDegrees(body.Degrees), 
-                    ClauseRatings(body.Ratings)
+                    ClauseRatings(body.Ratings),
+                    ClauseName(body.Name)
                 }
                 .Where(x => !string.IsNullOrWhiteSpace(x))
                 .DefaultIfEmpty(string.Empty)
@@ -202,6 +204,11 @@ namespace LeadershipProfileAPI.Data
             }
 
             return string.Empty;
+        }
+
+        private static string ClauseName(string term)
+        {
+            return !string.IsNullOrEmpty(term) ? $"FullName LIKE '%{term}%'" : string.Empty;
         }
     }
 }
