@@ -11,6 +11,7 @@ properties {
 	$frontendAppFolder = "$projectRootDirectory/src/Web"
 	$artifactsFolder = "$projectRootDirectory/artifacts"
 	$testDatabasePassword = "yourStrong(!)Password"
+	$localDatabaseContainerName = "SqlServer2019"
 	$testDatabaseContainerName = "LeadershipProfileTestDb"
 	$testDatabasePort = "1435"
 	$dbTestDataUrl = "https://odsassets.blob.core.windows.net/public/TPDM/EdFi_TPDM_v08_20201109.zip"
@@ -87,6 +88,24 @@ task UpdateLocalDatabase -description "Runs the migration scripts on the local d
 	Update-Database "Server=localhost;Database=$dbName;Integrated Security=true;"
 }
 
+task RecreateLocalDatabase -description "Starts a docker container with the sample database for local dev" -depends DownloadDbTestData {
+	Recreate-Docker-Db $localDatabaseContainerName 1433 $testDatabasePassword
+	Restore-Docker-Db $localDatabaseContainerName $testDataFolder $dbTestDataBakFile $testDatabasePassword $dbName $dbName
+}
+
+task RestoreLocalDatabase -description "Restores local db without deleting the container" -depends DownloadDbTestData {
+	Write-Host "Restoring local database container"
+	Restore-Docker-Db $localDatabaseContainerName $testDataFolder $dbTestDataBakFile $testDatabasePassword $dbName $dbName
+}
+
+task RunLocalDatabase -description "Runs the docker container that has the local database" {
+	exec { docker start $testDatabaseContainerName }
+}
+
+task UpdateLocalDockerDatabase -description "Runs the migration scripts on the local docker database" {
+	$roundhouseConnString="Server=localhost;Database=$dbName;User Id=sa;Password=$testDatabasePassword;"
+	Update-Database $roundhouseConnString
+}
 task Clean -description "Clean back to a fresh state" -depends RemoveDbTestContainer, RemovePublishFolders {
 	dotnet clean $productSolution
 }
