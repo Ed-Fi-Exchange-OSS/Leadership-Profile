@@ -474,3 +474,14 @@ h5{
   grid-column: 8 / span 4;
   grid-row: 5;
 }
+
+.btn-dropdown{
+  background-color: #fff !important;
+  color: #495057 !important;
+  border-color: #ced4da !important;
+}
+
+.btn-dropdown-items{
+  width: 100%;
+  transform: (0px, 30px, 0px) ;
+}

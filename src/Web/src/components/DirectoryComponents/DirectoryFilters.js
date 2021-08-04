@@ -1,10 +1,63 @@
 import React from 'react';
-import { Form, FormGroup, Label, Input, Row, Col } from 'reactstrap';
+import { Form, FormGroup, Label, Input, Row, Col, UncontrolledDropdown, DropdownToggle, DropdownMenu } from 'reactstrap';
 import Searching from './Searching';
 import { FilterIcon } from '../Icons';
+import UseDirectoryFilters from './UseDirectoryFilter';
 
 const CreateDirectoryFilters = (props) => {
+
     function RenderFilters(data) {
+        const {positions, setPositions} = UseDirectoryFilters();
+
+        function CheckSelectedItem(e, elements, setter) {
+            let newElements = [...elements];
+            newElements.forEach((element) => {
+                if (element.value == e.currentTarget.value) {
+                    element.checked = e.currentTarget.checked;
+                }
+            });
+            setter(newElements);
+        }
+
+        function GetCheckedOrSelectedValues(elements) {
+            return elements?.filter(x => x.checked || x.selected).map(x => x.value) ?? [];
+        }
+
+        function Position_OnChange(e){
+            CheckSelectedItem(e, positions, setPositions);
+            OnChangeSubmit();
+        }
+
+        function OnChangeSubmit(){
+            let selectedPositions = GetCheckedOrSelectedValues(positions);
+
+            let filters = {
+                "Assignments":{
+                    "Values": selectedPositions
+                }
+            }
+
+            props.directoryFilteredSearchCallback(filters);
+        }
+
+        const modifiers ={
+            setMaxHeight: {
+                enabled: true,
+                order: 890,
+                fn: (data) => {
+                return {
+                    ...data,
+                    styles: {
+                    ...data.styles,
+                    overflow: 'auto',
+                    maxHeight: '300px',
+                    vw: '500px',
+                    },
+                };
+                },
+            },
+          };
+
         return (
             <div>
                 <div className="filters-container">
@@ -27,7 +80,7 @@ const CreateDirectoryFilters = (props) => {
                         </Col>
                         <Col>
                         <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                            <Input disabled type="select" name="select" className="filter-dropdown">
+                            <Input  type="select" name="select" className="filter-dropdown">
                                 <option>School - All</option>
                                 <option>2</option>
                                 <option>3</option>
@@ -38,13 +91,30 @@ const CreateDirectoryFilters = (props) => {
                         </Col>
                         <Col>
                         <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                            <Input disabled type="select" name="select" className="filter-dropdown">
-                                <option>Position - All</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                            </Input>
+                               <UncontrolledDropdown>
+                                   <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret>
+                                       Select Position
+                                   </DropdownToggle>
+                                   <DropdownMenu modifiers={modifiers} right className="btn-dropdown-items">
+                                       {
+                                           Object.keys(positions).length !== 0 ? (
+                                               positions.map((positionElement, index) => 
+                                               {
+                                                   return(
+                                                       <div key={index}>
+                                                           <input type="checkbox"
+                                                           style={{"display": "inline"}}
+                                                           name="desc1" 
+                                                           value={positionElement.value}
+                                                           checked={positionElement.checked}
+                                                           onChange={e => {Position_OnChange(e)}} />
+                                                        <Label style={{"display": "inline"}}>{positionElement.text}</Label></div>)
+                                               })
+                                            ) : ("")
+                                       }
+
+                                   </DropdownMenu>
+                               </UncontrolledDropdown>
                         </FormGroup>
                         </Col>
                         <Col>
@@ -113,8 +183,8 @@ const CreateDirectoryFilters = (props) => {
     );
 }
 
-const DirectoryFilters = () => (
-    <CreateDirectoryFilters />
+const DirectoryFilters = (props) => (
+    <CreateDirectoryFilters {...props}/>
 );
 
 export default DirectoryFilters;

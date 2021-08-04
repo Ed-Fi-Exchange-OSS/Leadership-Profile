@@ -13,6 +13,8 @@ function UseDirectory() {
     const [data, setData] = useState([]);
     const [error, setError] = useState(false);
 
+    const [filters, setFilters] = useState();
+
     const [url, setUrl] = useState(window.location.href);
     const searchableUrl = useRef(new URL(url));
 
@@ -53,11 +55,11 @@ function UseDirectory() {
     }, [url]);
 
     useEffect(() => {
-        debugger;
+        let defaultOrFilteredConfig = (filters !== undefined) ? API_CONFIG('POST', JSON.stringify(filters)) : API_CONFIG('GET') 
         if (!searchableUrl.current.search) return;
         let unmounted = false;
         const apiUrl = new URL(API_URL + `search${history.location.search}`);
-        fetch(apiUrl, API_CONFIG('GET'))
+        fetch(apiUrl, defaultOrFilteredConfig)
         .then((response) => {
             if (!response.ok) {
                 if (response.status === 401) {
@@ -90,7 +92,7 @@ function UseDirectory() {
         return () => {
             unmounted = true;
         };
-    }, [url]);
+    }, [filters, url]);
 
     function setPage(newPage) {
         setPaging({
@@ -109,7 +111,7 @@ function UseDirectory() {
         history.go(0);
     }
 
-    return { setColumnSort, setSort, sort, data, paging, setPage, error,goToAdvancedSearch }
+    return { setColumnSort, setSort, sort, data, paging, setPage, error,goToAdvancedSearch, setFilters}
 }
 
 export default UseDirectory;
