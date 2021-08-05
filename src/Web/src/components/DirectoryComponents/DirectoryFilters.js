@@ -160,7 +160,7 @@ const CreateDirectoryFilters = (props) => {
                 </div>
 
                 <div className="search-sort-container">
-                    <Form className="search-sort-form">
+                    <div className="search-sort-form">
                         <Searching onSearchValueChange = {NameSearch_OnChange}/>
                         <div className="sorting-container">
                             <FormGroup className="mb-2 mr-sm-2 mb-sm-0 sort-by-form-group">
@@ -186,7 +186,7 @@ const CreateDirectoryFilters = (props) => {
                                 </Input>
                             </FormGroup>
                         </div>
-                    </Form>
+                    </div>
                 </div>
             </div>
         );

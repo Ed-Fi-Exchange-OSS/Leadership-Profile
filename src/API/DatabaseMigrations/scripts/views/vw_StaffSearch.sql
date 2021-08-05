@@ -170,7 +170,7 @@ select s.StaffUSI
      , s.FirstName
      , s.MiddleName
      , s.LastSurname
-     , CONCAT(s.FirstName, ' ', s.MiddleName, ' ', s.LastSurname) as FullName
+     , CONCAT(s.FirstName, ' ', s.LastSurname) as FullName
 
      , staffService.YearsOfService
 
