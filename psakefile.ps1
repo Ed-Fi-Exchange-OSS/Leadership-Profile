@@ -11,6 +11,7 @@ properties {
 	$frontendAppFolder = "$projectRootDirectory/src/Web"
 	$artifactsFolder = "$projectRootDirectory/artifacts"
 	$testDatabasePassword = "yourStrong(!)Password"
+	$localDatabaseContainerName = "SqlServer2019"
 	$testDatabaseContainerName = "LeadershipProfileTestDb"
 	$testDatabasePort = "1435"
 	$dbTestDataUrl = "https://odsassets.blob.core.windows.net/public/TPDM/EdFi_TPDM_v08_20201109.zip"
@@ -70,15 +71,8 @@ task RecreateTestDatabase -description "Starts a docker container with the test 
 		Expand-Archive -Path "$testDataFolder/$dbTestDataZipFile" -DestinationPath "$testDataFolder"
 	}
 
-	exec { docker run -e 'ACCEPT_EULA=Y' --name "$testDatabaseContainerName" -e "SA_PASSWORD=$testDatabasePassword" -p "${testDatabasePort}:1433" -d "mcr.microsoft.com/mssql/server:2019-latest" }
-	Write-Host "Pausing for DB to come online"
-	Start-Sleep -s 15
-	exec { docker exec "$testDatabaseContainerName" mkdir "/var/opt/mssql/backup"}
-	exec { docker cp "$testDataFolder/$dbTestDataBakFile" "${testDatabaseContainerName}:/var/opt/mssql/backup/$dbTestDataBakFile" }
-	$restoreQuery = "RESTORE DATABASE $dbName FROM DISK='/var/opt/mssql/backup/$dbTestDataBakFile' WITH MOVE 'EdFi_Ods_Populated_Template_log' TO '/var/opt/mssql/data/EdFi_Ods_Populated_Template_log', MOVE 'EdFi_Ods_Populated_Template' TO '/var/opt/mssql/data/EdFi_Ods_Populated_Template.mdf'"
-	$restoreQuery | Out-File "$testDataFolder/restore.sql"
-	exec { docker cp "$testDataFolder/restore.sql" "${testDatabaseContainerName}:/var/opt/mssql/backup/restore.sql" }
-	exec { docker exec "$testDatabaseContainerName" /opt/mssql-tools/bin/sqlcmd -S localhost -U 'sa' -P "$testDatabasePassword" -i '/var/opt/mssql/backup/restore.sql' }
+	Recreate-Docker-Db $testDatabaseContainerName $testDatabasePort $testDatabasePassword
+	Restore-Docker-Db $testDatabaseContainerName $testDataFolder $dbTestDataBakFile $testDatabasePassword $dbName $dbName
 }
 
 task UpdateTestDatabase -description "Runs the migration scripts on the test database" {
@@ -92,6 +86,33 @@ task RunTestDatabase -description "Runs the docker container that has the test d
 
 task UpdateLocalDatabase -description "Runs the migration scripts on the local database" {
 	Update-Database "Server=localhost;Database=$dbName;Integrated Security=true;"
+}
+
+task RecreateLocalDatabase -description "Starts a docker container with the sample database for local dev" -depends DownloadDbTestData {
+	Recreate-Docker-Db $localDatabaseContainerName 1433 $testDatabasePassword
+	Restore-Docker-Db $localDatabaseContainerName $testDataFolder $dbTestDataBakFile $testDatabasePassword $dbName $dbName
+}
+
+task RestoreLocalDatabase -description "Restores local db without deleting the container" -depends DownloadDbTestData {
+	Write-Host "Restoring local database container"
+	Restore-Docker-Db $localDatabaseContainerName $testDataFolder $dbTestDataBakFile $testDatabasePassword $dbName $dbName
+}
+
+task RunLocalDatabase -description "Runs the docker container that has the local database" {
+	exec { docker start $localDatabaseContainerName }
+}
+
+task UpdateLocalDockerDatabase -description "Runs the migration scripts on the local docker database" {
+	$roundhouseConnString="Server=localhost;Database=$dbName;User Id=sa;Password=$testDatabasePassword;"
+	Update-Database $roundhouseConnString
+}
+
+task SetLocalDockerConnectionString -description "Sets a user secret to override the connection string for the docker db" {
+	$roundhouseConnString="Server=localhost;Database=$dbName;User Id=sa;Password=$testDatabasePassword;"
+	dotnet user-secrets set "ConnectionStrings:EdFi" "$roundhouseConnString" --project $apiProjectFile
+}
+
+task ResetLocalDb -description "Recreates and updates the local docker db" -depends RecreateLocalDatabase, UpdateLocalDockerDatabase, SetLocalDockerConnectionString {
 }
 
 task Clean -description "Clean back to a fresh state" -depends RemoveDbTestContainer, RemovePublishFolders {
