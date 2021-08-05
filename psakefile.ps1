@@ -99,7 +99,7 @@ task RestoreLocalDatabase -description "Restores local db without deleting the c
 }
 
 task RunLocalDatabase -description "Runs the docker container that has the local database" {
-	exec { docker start $testDatabaseContainerName }
+	exec { docker start $localDatabaseContainerName }
 }
 
 task UpdateLocalDockerDatabase -description "Runs the migration scripts on the local docker database" {
