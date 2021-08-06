@@ -81,6 +81,7 @@ function UseDirectory() {
                         ...paging,
                         totalSize: response.totalCount,
                         maxPages: Math.ceil(response.totalCount / 10),
+                        page: Math.ceil(response.totalCount / 10) > paging.page ? paging.page : 1
                     });
                 }
             });

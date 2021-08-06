@@ -109,8 +109,22 @@ namespace LeadershipProfileAPI.Data
                  offset {(currentPage - 1) * pageSize} rows
                  fetch next {pageSize} rows only
              ";
+            var staff = await _edfiDbContext.StaffSearches.FromSqlRaw(sql, name).ToListAsync();
+            return staff.GroupBy(x => x.StaffUniqueId).Select(x => x.First()).ToList();
+        }
+
+        public async Task<int> GetSearchResultsTotalsAsync(ProfileSearchRequestBody body)
+        { 
+            // Add the 'name' value as sql parameter to avoid SQL injection from raw text
+            var name = new SqlParameter("name", body?.Name ?? string.Empty);
+
+            // Implement the view in SQL, call it here
+            var sql = $@"
+                 select DISTINCT (StaffUSI) from edfi.vw_StaffSearch
+                 {ClauseConditions(body)}
+             ";
             
-            return await _edfiDbContext.StaffSearches.FromSqlRaw(sql, name).ToListAsync();
+            return await _edfiDbContext.StaffSearches.FromSqlRaw(sql, name).CountAsync();
         }
 
         private static string ClauseConditions(ProfileSearchRequestBody body)
