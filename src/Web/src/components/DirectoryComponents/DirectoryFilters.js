@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Form, FormGroup, Label, Input, Row, Col, UncontrolledDropdown, DropdownToggle, DropdownMenu } from 'reactstrap';
 import Searching from './Searching';
 import { FilterIcon } from '../Icons';
@@ -7,7 +7,8 @@ import UseDirectoryFilters from './UseDirectoryFilter';
 const CreateDirectoryFilters = (props) => {
 
     function RenderFilters(data) {
-        const {positions, setPositions} = UseDirectoryFilters();
+        const {positions, setPositions, nameSearch, setNameSearch} = UseDirectoryFilters();
+        const isInitialRender = useRef(true);
 
         function CheckSelectedItem(e, elements, setter) {
             let newElements = [...elements];
@@ -34,11 +35,26 @@ const CreateDirectoryFilters = (props) => {
             let filters = {
                 "Assignments":{
                     "Values": selectedPositions
-                }
+                }, 
+                "Name": nameSearch
             }
 
             props.directoryFilteredSearchCallback(filters);
         }
+        
+        function NameSearch_OnChange(value){
+            setNameSearch(value);
+        }
+
+        useEffect(() => {
+
+            if(isInitialRender.current){
+                isInitialRender.current = false;
+                return;
+            }
+
+            OnChangeSubmit();
+        }, [nameSearch])
 
         const modifiers ={
             setMaxHeight: {
@@ -144,8 +160,8 @@ const CreateDirectoryFilters = (props) => {
                 </div>
 
                 <div className="search-sort-container">
-                    <Form className="search-sort-form">
-                        <Searching />
+                    <div className="search-sort-form">
+                        <Searching onSearchValueChange = {NameSearch_OnChange}/>
                         <div className="sorting-container">
                             <FormGroup className="mb-2 mr-sm-2 mb-sm-0 sort-by-form-group">
                                 <Label for="sortBy" className="mr-sm-2">
@@ -170,7 +186,7 @@ const CreateDirectoryFilters = (props) => {
                                 </Input>
                             </FormGroup>
                         </div>
-                    </Form>
+                    </div>
                 </div>
             </div>
         );

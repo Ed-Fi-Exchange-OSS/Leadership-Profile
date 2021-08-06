@@ -4,6 +4,7 @@ import config from '../../config';
 function UseDirectoryFilters () {
     const { API_URL, API_CONFIG } = config();
     const [positions, setPositions] = useState([]);
+    const [nameSearch, setNameSearch] = useState();
 
     async function GetPositions(){
         let unmounted = false;
@@ -34,7 +35,9 @@ function UseDirectoryFilters () {
         GetPositions();
     }, [])
 
-    return {positions, setPositions};
+
+
+    return {positions, nameSearch, setPositions, setNameSearch};
 }
 
 export default UseDirectoryFilters;

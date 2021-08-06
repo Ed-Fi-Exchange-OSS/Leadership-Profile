@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LeadershipProfileAPI.Data.Models;
 using LeadershipProfileAPI.Data.Models.ProfileSearchRequest;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeadershipProfileAPI.Data
@@ -96,6 +98,9 @@ namespace LeadershipProfileAPI.Data
                 {"major", "Major"}
             };
 
+            // Add the 'name' value as sql parameter to avoid SQL injection from raw text
+            var name = new SqlParameter("name", body?.Name ?? string.Empty);
+
             // Implement the view in SQL, call it here
             var sql = $@"
                  select * from edfi.vw_StaffSearch
@@ -105,7 +110,7 @@ namespace LeadershipProfileAPI.Data
                  fetch next {pageSize} rows only
              ";
             
-            return await _edfiDbContext.StaffSearches.FromSqlRaw(sql).ToListAsync();
+            return await _edfiDbContext.StaffSearches.FromSqlRaw(sql, name).ToListAsync();
         }
 
         private static string ClauseConditions(ProfileSearchRequestBody body)
@@ -118,7 +123,8 @@ namespace LeadershipProfileAPI.Data
                     ClauseAssignments(body.Assignments), 
                     ClauseCertifications(body.Certifications), 
                     ClauseDegrees(body.Degrees), 
-                    ClauseRatings(body.Ratings)
+                    ClauseRatings(body.Ratings),
+                    ClauseName()
                 }
                 .Where(x => !string.IsNullOrWhiteSpace(x))
                 .DefaultIfEmpty(string.Empty)
@@ -202,6 +208,11 @@ namespace LeadershipProfileAPI.Data
             }
 
             return string.Empty;
+        }
+
+        private static string ClauseName()
+        {
+            return "(coalesce(TRIM(@name), '') = '' OR FullName LIKE '%' + @name + '%')";
         }
     }
 }

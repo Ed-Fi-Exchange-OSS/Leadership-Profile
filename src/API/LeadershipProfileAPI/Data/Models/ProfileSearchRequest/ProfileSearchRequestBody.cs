@@ -8,5 +8,7 @@
         public ProfileSearchRequestCertifications Certifications { get; set; }
         public ProfileSearchRequestAssignments Assignments { get; set; }
         public ProfileSearchRequestDegrees Degrees { get; set; }
+
+        public string Name { get; set; }
     }
 }
