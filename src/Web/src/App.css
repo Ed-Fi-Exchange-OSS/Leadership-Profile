@@ -485,3 +485,7 @@ h5{
   width: 100%;
   transform: (0px, 30px, 0px) ;
 }
+
+.profile-card-table tbody{
+  font-size: large;
+}
