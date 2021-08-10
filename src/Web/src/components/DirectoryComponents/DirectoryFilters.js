@@ -7,7 +7,11 @@ import UseDirectoryFilters from './UseDirectoryFilter';
 const CreateDirectoryFilters = (props) => {
 
     function RenderFilters(data) {
-        const {positions, setPositions, nameSearch, setNameSearch} = UseDirectoryFilters();
+        const {positions, setPositions, nameSearch, setNameSearch, 
+            degrees, setDegrees, certifications, setCertifications,
+            yearsOptionRange, setYearsOptionRange, year, setYear,
+            yearRange, setYearRange
+        } = UseDirectoryFilters();
         const isInitialRender = useRef(true);
 
         function CheckSelectedItem(e, elements, setter) {
@@ -24,26 +28,70 @@ const CreateDirectoryFilters = (props) => {
             return elements?.filter(x => x.checked || x.selected).map(x => x.value) ?? [];
         }
 
-        function Position_OnChange(e){
-            CheckSelectedItem(e, positions, setPositions);
-            OnChangeSubmit();
-        }
-
         function OnChangeSubmit(){
             let selectedPositions = GetCheckedOrSelectedValues(positions);
+            let selectedDegrees = GetCheckedOrSelectedValues(degrees);
+            let selectedCertificates = GetCheckedOrSelectedValues(certifications);
 
             let filters = {
                 "Assignments":{
                     "Values": selectedPositions
-                }, 
-                "Name": nameSearch
+                },
+                "Degrees":{
+                    "Values": selectedDegrees
+                },
+                "Certifications":{
+                    "Values": selectedCertificates
+                },
+                "Name": nameSearch,
+                "MinYears": yearRange.min,
+                "MaxYears": yearRange.max
             }
 
             props.directoryFilteredSearchCallback(filters);
         }
         
+        function Position_OnChange(e){
+            CheckSelectedItem(e, positions, setPositions);
+            OnChangeSubmit();
+        }
+
         function NameSearch_OnChange(value){
             setNameSearch(value);
+        }
+
+        function Degree_OnChange(e){
+            CheckSelectedItem(e, degrees, setDegrees);
+            OnChangeSubmit();
+        }
+
+        function Certification_OnChange(e){
+            CheckSelectedItem(e, certifications, setCertifications);
+            OnChangeSubmit();
+        }
+
+        function YearOption_OnChange(value){
+            setYearsOptionRange(value);
+        }
+
+        function Year_OnChange(value){
+            setYear(value);
+
+            if(yearsOptionRange == 0){
+                let atLeast = {
+                    min: value,
+                    max: 0
+                };
+                setYearRange(atLeast);
+            }
+
+            if(yearsOptionRange == 1){
+                let lessThan = {
+                    min: 0,
+                    max: value
+                };
+                setYearRange(lessThan);
+            }
         }
 
         useEffect(() => {
@@ -55,6 +103,14 @@ const CreateDirectoryFilters = (props) => {
 
             OnChangeSubmit();
         }, [nameSearch])
+
+        useEffect(() => {
+            if(isInitialRender.current){
+                isInitialRender.current = false;
+                return;
+            }
+            OnChangeSubmit();
+        }, [yearRange])
 
         const modifiers ={
             setMaxHeight: {
@@ -76,27 +132,12 @@ const CreateDirectoryFilters = (props) => {
 
         return (
             <div>
-                <div className="filters-container">
+                <div className="filters-container col-12">
                     <Form>
                     <Row>
-                        <Col className="filter-select-with-label">
-                        <FormGroup className="mb-2 mt-7 mr-sm-2 mb-sm-0 form-group-filter-with-label">
-                            <Label for="districtSelect" className="mr-sm-2">
-                                <FilterIcon />
-                                <span className="filter-title">Filter by</span>
-                            </Label>
-                            <Input disabled type="select" name="select" id="districtSelect" className="filter-dropdown-sm">
-                                <option>District - All</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                            </Input>
-                        </FormGroup>
-                        </Col>
                         <Col>
                         <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                            <Input  type="select" name="select" className="filter-dropdown">
+                            <Input disabled type="select" name="select" className="filter-dropdown">
                                 <option>School - All</option>
                                 <option>2</option>
                                 <option>3</option>
@@ -133,26 +174,77 @@ const CreateDirectoryFilters = (props) => {
                                </UncontrolledDropdown>
                         </FormGroup>
                         </Col>
+                        
                         <Col>
-                        <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                            <Input disabled type="select" name="select" className="filter-dropdown">
-                                <option>Years of Service - All</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                            </Input>
+                            <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+                            <UncontrolledDropdown>
+                                   <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret>
+                                       Select Degree
+                                   </DropdownToggle>
+                                   <DropdownMenu modifiers={modifiers} right className="btn-dropdown-items">
+                                       {
+                                           Object.keys(degrees).length !== 0 ? (
+                                               degrees.map((positionElement, index) => 
+                                               {
+                                                   return(
+                                                       <div key={index}>
+                                                           <input type="checkbox"
+                                                           style={{"display": "inline"}}
+                                                           name="desc1" 
+                                                           value={positionElement.value}
+                                                           checked={positionElement.checked}
+                                                           onChange={e => {Degree_OnChange(e)}} />
+                                                        <Label style={{"display": "inline"}}>{positionElement.text}</Label></div>)
+                                               })
+                                            ) : ("")
+                                       }
+
+                                   </DropdownMenu>
+                               </UncontrolledDropdown>
                         </FormGroup>
                         </Col>
                         <Col>
                             <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                            <Input disabled type="select" name="select" className="filter-dropdown">
-                                <option>Degree - All</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                            </Input>
+                                <Input type="select" name="select" className="filter-dropdown" value={yearsOptionRange}
+                                onChange={event => {YearOption_OnChange(event.currentTarget.value);}} >
+                                    <option value="-1">Years</option>
+                                    <option value="0">At Least</option>
+                                    <option value="1">Less Than</option>
+                                </Input>
+                            </FormGroup>
+                        </Col>
+                        <Col>
+                            <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+                                <Input disabled={yearsOptionRange < 0} type="number" min="0" step="1" value={year} placeholder="Years"
+                                onChange={event => {Year_OnChange(event.target.value);}} />
+                            </FormGroup>
+                        </Col>
+                        <Col>
+                            <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+                            <UncontrolledDropdown>
+                                   <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret>
+                                       Select Certifications
+                                   </DropdownToggle>
+                                   <DropdownMenu modifiers={modifiers} right className="btn-dropdown-items">
+                                       {
+                                           Object.keys(certifications).length !== 0 ? (
+                                               certifications.map((positionElement, index) => 
+                                               {
+                                                   return(
+                                                       <div key={index}>
+                                                           <input type="checkbox"
+                                                           style={{"display": "inline"}}
+                                                           name="desc1" 
+                                                           value={positionElement.value}
+                                                           checked={positionElement.checked}
+                                                           onChange={e => {Certification_OnChange(e)}} />
+                                                        <Label style={{"display": "inline"}}>{positionElement.text}</Label></div>)
+                                               })
+                                            ) : ("")
+                                       }
+
+                                   </DropdownMenu>
+                               </UncontrolledDropdown>
                         </FormGroup>
                         </Col>
                     </Row>
