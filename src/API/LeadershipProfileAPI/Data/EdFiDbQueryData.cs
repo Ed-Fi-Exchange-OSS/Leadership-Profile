@@ -138,7 +138,8 @@ namespace LeadershipProfileAPI.Data
                     ClauseCertifications(body.Certifications), 
                     ClauseDegrees(body.Degrees), 
                     ClauseRatings(body.Ratings),
-                    ClauseName()
+                    ClauseName(),
+                    ClauseInstitution(body.Institutions)
                 }
                 .Where(x => !string.IsNullOrWhiteSpace(x))
                 .DefaultIfEmpty(string.Empty)
@@ -227,6 +228,17 @@ namespace LeadershipProfileAPI.Data
         private static string ClauseName()
         {
             return "(coalesce(TRIM(@name), '') = '' OR FullName LIKE '%' + @name + '%')";
+        }
+
+        private static string ClauseInstitution(ProfileSearchRequestInstitution institutions)
+        {
+            if (institutions != null && institutions.Values.Any())
+            {
+                var whereInstitutions = institutions.Values.Any() ? $"InstitutionId in ({string.Join(",", institutions.Values)})" : string.Empty;
+
+                return $"({whereInstitutions})";
+            }
+            return string.Empty;
         }
     }
 }

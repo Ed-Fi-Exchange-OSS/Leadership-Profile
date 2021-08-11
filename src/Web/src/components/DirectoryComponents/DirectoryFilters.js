@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from 'react';
-import { Form, FormGroup, Label, Input, Row, Col, UncontrolledDropdown, DropdownToggle, DropdownMenu } from 'reactstrap';
+import { Form, FormGroup, Label, Input, Row, Col, UncontrolledDropdown, DropdownToggle, DropdownMenu, Button } from 'reactstrap';
 import Searching from './Searching';
 import { FilterIcon } from '../Icons';
 import UseDirectoryFilters from './UseDirectoryFilter';
+import DropdownTypeAhead from './DropdownTypeAhead';
 
 const CreateDirectoryFilters = (props) => {
 
@@ -10,7 +11,9 @@ const CreateDirectoryFilters = (props) => {
         const {positions, setPositions, nameSearch, setNameSearch, 
             degrees, setDegrees, certifications, setCertifications,
             yearsOptionRange, setYearsOptionRange, year, setYear,
-            yearRange, setYearRange
+            yearRange, setYearRange, institutions, setInstitutions,
+            filteredInstitutions, setFilteredInstitutions,
+            filterInstitutionValue, setFilterInstitutionValue
         } = UseDirectoryFilters();
         const isInitialRender = useRef(true);
 
@@ -32,7 +35,7 @@ const CreateDirectoryFilters = (props) => {
             let selectedPositions = GetCheckedOrSelectedValues(positions);
             let selectedDegrees = GetCheckedOrSelectedValues(degrees);
             let selectedCertificates = GetCheckedOrSelectedValues(certifications);
-
+            let selectedInstitutions = GetCheckedOrSelectedValues(institutions);
             let filters = {
                 "Assignments":{
                     "Values": selectedPositions
@@ -45,7 +48,10 @@ const CreateDirectoryFilters = (props) => {
                 },
                 "Name": nameSearch,
                 "MinYears": yearRange.min,
-                "MaxYears": yearRange.max
+                "MaxYears": yearRange.max,
+                "Institutions":{
+                    "Values": selectedInstitutions
+                }
             }
 
             props.directoryFilteredSearchCallback(filters);
@@ -94,6 +100,15 @@ const CreateDirectoryFilters = (props) => {
             }
         }
 
+        function Institution_Onchange(e){
+            CheckSelectedItem(e, filteredInstitutions, setFilteredInstitutions);
+            OnChangeSubmit();
+        }
+
+        function institutionFiltering(value){
+            setFilterInstitutionValue(value);
+        }
+
         useEffect(() => {
 
             if(isInitialRender.current){
@@ -111,6 +126,17 @@ const CreateDirectoryFilters = (props) => {
             }
             OnChangeSubmit();
         }, [yearRange])
+
+        useEffect(() =>{
+            if(filterInstitutionValue && filterInstitutionValue.length >= 2){
+                let filterInstitutions = institutions.filter(n => n.text.toLowerCase().includes(filterInstitutionValue.toLowerCase()));
+                setFilteredInstitutions(filterInstitutions);
+                return;
+            }
+            // unfilter and show all institutions from state
+            setFilteredInstitutions(institutions);
+
+        }, [filterInstitutionValue])
 
         const modifiers ={
             setMaxHeight: {
@@ -137,13 +163,34 @@ const CreateDirectoryFilters = (props) => {
                     <Row>
                         <Col>
                         <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                            <Input disabled type="select" name="select" className="filter-dropdown">
-                                <option>School - All</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                            </Input>
+                        <UncontrolledDropdown>
+                                   <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret>
+                                       Schools
+                                   </DropdownToggle>
+                                   <DropdownMenu modifiers={modifiers} right className="btn-dropdown-items">
+                                       <DropdownTypeAhead 
+                                            value={filterInstitutionValue} 
+                                            changeEvent={(e) => institutionFiltering(e.target.value)} 
+                                            clearEvent={() => institutionFiltering('')} />
+                                       {
+                                           Object.keys(filteredInstitutions).length !== 0 ? (
+                                               filteredInstitutions.map((positionElement, index) => 
+                                               {
+                                                   return(
+                                                       <div key={index}>
+                                                           <input type="checkbox"
+                                                           style={{"display": "inline"}}
+                                                           name="desc1" 
+                                                           value={positionElement.value}
+                                                           checked={positionElement.checked}
+                                                           onChange={e => {Institution_Onchange(e)}} />
+                                                        <Label style={{"display": "inline"}}>{positionElement.text}</Label></div>)
+                                               })
+                                            ) : ("")
+                                       }
+
+                                   </DropdownMenu>
+                               </UncontrolledDropdown>
                         </FormGroup>
                         </Col>
                         <Col>
@@ -173,8 +220,7 @@ const CreateDirectoryFilters = (props) => {
                                    </DropdownMenu>
                                </UncontrolledDropdown>
                         </FormGroup>
-                        </Col>
-                        
+                        </Col>      
                         <Col>
                             <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
                             <UncontrolledDropdown>
@@ -183,6 +229,7 @@ const CreateDirectoryFilters = (props) => {
                                    </DropdownToggle>
                                    <DropdownMenu modifiers={modifiers} right className="btn-dropdown-items">
                                        {
+                                           
                                            Object.keys(degrees).length !== 0 ? (
                                                degrees.map((positionElement, index) => 
                                                {
@@ -198,7 +245,6 @@ const CreateDirectoryFilters = (props) => {
                                                })
                                             ) : ("")
                                        }
-
                                    </DropdownMenu>
                                </UncontrolledDropdown>
                         </FormGroup>

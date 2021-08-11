@@ -124,14 +124,14 @@ with staffService as (
                        on de.DescriptorId = rd.PerformanceEvaluationTypeDescriptorId
 ),
 
-staff_school (StaffUSI, School, Position) AS
+staff_school (StaffUSI, School, Position, SchoolId) AS
 (
-    SELECT seoaa.StaffUSI, eo.NameOfInstitution, d.ShortDescription
+    SELECT seoaa.StaffUSI, eo.NameOfInstitution, d.ShortDescription, seoaa.EducationOrganizationId
     FROM edfi.StaffEducationOrganizationAssignmentAssociation seoaa
     INNER JOIN edfi.EducationOrganization eo ON eo.EducationOrganizationId = seoaa.EducationOrganizationId
     INNER JOIN edfi.Descriptor d ON d.DescriptorId = seoaa.StaffClassificationDescriptorId
     WHERE seoaa.EndDate IS NULL OR seoaa.EndDate >= GETUTCDATE()
-    GROUP BY seoaa.StaffUSI, eo.NameOfInstitution, d.ShortDescription
+    GROUP BY seoaa.StaffUSI, eo.NameOfInstitution, d.ShortDescription, seoaa.EducationOrganizationId
 ),
 
 staff_email (StaffUSI, Email) AS (
@@ -191,6 +191,7 @@ select s.StaffUSI
      , perr.Rating    as Rating
 
      , ss.School as Institution
+     , ss.SchoolId as InstitutionId
      , se.Email as Email
      , st.Telephone as Telephone
      , sm.Major as Major
