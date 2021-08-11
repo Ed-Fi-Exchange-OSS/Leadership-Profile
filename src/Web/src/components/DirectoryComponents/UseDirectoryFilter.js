@@ -11,49 +11,37 @@ function UseDirectoryFilters () {
     const [year, setYear] = useState();
     const [yearRange, setYearRange] = useState({min: 0, max: 0})
 
-    async function GetPositions(){
-        FetchFilterData(`webcontrols/dropdownlist/assignments`, (response) => {
-            var newResponse = [];
-            response.assignments.forEach(element => {
+    async function getPositions(){
+        fetchFilterData(`webcontrols/dropdownlist/assignments`, (response) => {
+            responseSetter(response.assignments, setPositions);
+        });
+    }
+
+    async function getDegrees(){
+        fetchFilterData(`webcontrols/dropdownlist/degrees`, (response) => {
+            responseSetter(response.degrees, setDegrees);
+        });
+    }
+
+    async function getCertifications(){
+        fetchFilterData(`webcontrols/dropdownlist/certifications`, (response) => {
+            responseSetter(response.certifications, setCertifications);
+        });
+    }
+
+    function responseSetter(responseObject, setter){
+        var newResponse = [];
+            responseObject.forEach(element => {
                 newResponse.push({
                     "text": element.text,
                     "value": element.value,
                     "checked": false
                 })
             });
-            setPositions(newResponse);
-        });
+        setter(newResponse);
     }
 
-    async function GetDegrees(){
-        FetchFilterData(`webcontrols/dropdownlist/degrees`, (response) => {
-            var newResponse = [];
-            response.degrees.forEach(element => {
-                newResponse.push({
-                    "text": element.text,
-                    "value": element.value,
-                    "checked": false
-                })
-            });
-            setDegrees(newResponse);
-        });
-    }
-
-    async function GetCertifications(){
-        FetchFilterData(`webcontrols/dropdownlist/certifications`, (response) => {
-            var newResponse = [];
-            response.certifications.forEach(element => {
-                newResponse.push({
-                    "text": element.text,
-                    "value": element.value,
-                    "checked": false
-                })
-            });
-            setCertifications(newResponse);
-        });
-    }
-
-    async function FetchFilterData(queryString, callback){
+    async function fetchFilterData(queryString, callback){
         let unmounted = false;
         const apiUrl = new URL(API_URL + queryString);
         fetch(apiUrl, API_CONFIG('GET')
@@ -71,9 +59,9 @@ function UseDirectoryFilters () {
     }
 
     useEffect(() => {
-        GetPositions();
-        GetDegrees();
-        GetCertifications();
+        getPositions();
+        getDegrees();
+        getCertifications();
     }, [])
 
     return {positions, nameSearch, degrees, certifications, yearsOptionRange, year, yearRange,
