@@ -7,7 +7,7 @@ function DropdownTypeAhead({value, changeEvent, clearEvent}){
             <Input type="text" className="dropdown-menu-filter"
                 value={value}
                 onChange={changeEvent}
-                autocomplete="off" placeholder="type school" />
+                autoComplete="off" placeholder="type school" />
             <Button className="filter-dropdown-clear" onClick={clearEvent}/>
         </FormGroup>
     )

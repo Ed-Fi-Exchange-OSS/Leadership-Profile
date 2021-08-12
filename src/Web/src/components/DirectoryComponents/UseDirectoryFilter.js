@@ -8,7 +8,7 @@ function UseDirectoryFilters () {
     const [degrees, setDegrees] = useState([]);
     const [certifications, setCertifications] = useState([]);
     const [yearsOptionRange, setYearsOptionRange] = useState(-1);
-    const [year, setYear] = useState();
+    const [year, setYear] = useState('');
     const [yearRange, setYearRange] = useState({min: 0, max: 0})
     const [institutions, setInstitutions] = useState([]);
     const [filteredInstitutions, setFilteredInstitutions] = useState(institutions);
