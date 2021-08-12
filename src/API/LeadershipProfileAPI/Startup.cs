@@ -165,6 +165,16 @@ namespace LeadershipProfileAPI
                         return Task.FromResult<object>(null);
                     };
             });
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = true;
+                options.Password.RequiredLength = 8;
+                options.Password.RequiredUniqueChars = 0;
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMapper autoMapper)
