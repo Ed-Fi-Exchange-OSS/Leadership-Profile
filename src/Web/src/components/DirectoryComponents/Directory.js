@@ -28,11 +28,11 @@ const Directory = () => {
                 <div className="directory-subtitle-controls">
                     <BreadcrumbList currentPage="home" />
                     <div className="view-style-buttons">
-                        <a href="#"className="login-submit" onClick={e => handleOnClick(e)}>Advanced Search</a>
-                        <button color="primary" className="btn btn-primary view-style-button-first view-style-button" onClick={() => setActiveComponent("table")}>
+                        <span className="view-style-label">View Style</span>
+                        <button disabled={activeComponent == "table"} color="primary" className="btn btn-primary view-style-button-first view-style-button" onClick={() => setActiveComponent("table")}>
                             <TableViewIcon />
                         </button>
-                        <button  color="primary" className="btn btn-primary view-style-button" onClick={() => setActiveComponent("card")}>
+                        <button disabled={activeComponent == "card"} color="primary" className="btn btn-primary view-style-button" onClick={() => setActiveComponent("card")}>
                             <CardViewIcon />
                         </button>
                     </div>

@@ -236,6 +236,14 @@ const CreateDirectoryFilters = (props) => {
 
         return (
             <div>
+                <div className="search-sort-container">
+                    <div className="search-sort-form">
+                        <Searching onSearchValueChange = {NameSearch_OnChange}/>
+                    </div>
+                </div>
+
+                <PillsFilters pills={pills} handleRemove={removePillAndFilter} handleRemoveAll={removeAllPills}/>
+
                 <div className="filters-container col-12">
                     <Form>
                     <Row>
@@ -275,7 +283,7 @@ const CreateDirectoryFilters = (props) => {
                         <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
                                <UncontrolledDropdown>
                                    <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret>
-                                       Select Position
+                                       Positions
                                    </DropdownToggle>
                                    <DropdownMenu modifiers={modifiers} right className="btn-dropdown-items">
                                        {
@@ -303,7 +311,7 @@ const CreateDirectoryFilters = (props) => {
                             <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
                             <UncontrolledDropdown>
                                    <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret>
-                                       Select Degree
+                                       Degrees
                                    </DropdownToggle>
                                    <DropdownMenu modifiers={modifiers} right className="btn-dropdown-items">
                                        {
@@ -347,7 +355,7 @@ const CreateDirectoryFilters = (props) => {
                             <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
                             <UncontrolledDropdown>
                                    <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret>
-                                       Select Certifications
+                                       Certifications
                                    </DropdownToggle>
                                    <DropdownMenu modifiers={modifiers} right className="btn-dropdown-items">
                                        {
@@ -374,38 +382,6 @@ const CreateDirectoryFilters = (props) => {
                     </Row>
                     </Form>
                 </div>
-
-                <div className="search-sort-container">
-                    <div className="search-sort-form">
-                        <Searching onSearchValueChange = {NameSearch_OnChange}/>
-                        <div className="sorting-container">
-                            <FormGroup className="mb-2 mr-sm-2 mb-sm-0 sort-by-form-group">
-                                <Label for="sortBy" className="mr-sm-2">
-                                    <FilterIcon />
-                                    <span className="filter-title">Sort by</span>
-                                </Label>
-                                <Input disabled type="select" name="select" id="sort-by">
-                                    <option>A - B</option>
-                                    <option>2</option>
-                                    <option>3</option>
-                                    <option>4</option>
-                                    <option>5</option>
-                                </Input>
-                            </FormGroup>
-                            <FormGroup className="experience-sort">
-                                <Input disabled type="select" name="select" id="experience">
-                                    <option>Most experience</option>
-                                    <option>2</option>
-                                    <option>3</option>
-                                    <option>4</option>
-                                    <option>5</option>
-                                </Input>
-                            </FormGroup>
-                        </div>
-                    </div>
-                </div>
-
-                <PillsFilters pills={pills} handleRemove={removePillAndFilter} handleRemoveAll={removeAllPills}/>
             </div>
         );
     }
