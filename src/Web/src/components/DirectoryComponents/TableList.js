@@ -15,9 +15,6 @@ const CreateTableList = (props) => {
                     <tr>
                         <th></th>
                         <th>
-                            ID                
-                        </th>
-                        <th>
                             Name
                             <Sorting onSortChange={newStatus => setColumnSort('name', newStatus)}
                                 status={sort.category === 'name' ? sort.value : null} />
@@ -53,7 +50,6 @@ const CreateTableList = (props) => {
                     {data !== [] ? data.map(profile => (
                         <tr key={profile.id}>
                             <td><span className="dot"></span></td>
-                            <td>{profile.staffUniqueId}</td>
                             <td><Link to={`profile/${profile.staffUniqueId}`}>{profile.lastSurname}, {profile.firstName}</Link></td>
                             <td>{profile.institution}</td>
                             <td>{profile.assignment}</td>
@@ -62,7 +58,7 @@ const CreateTableList = (props) => {
                             <td>{profile.major}</td>
                         </tr>)) : ''}
                         <tr className="bottom-row">
-                            <td colSpan="7">
+                            <td colSpan="6">
                                 <PaginationDetails paging={paging} count={data?.length} />
                             </td>
                             <td colSpan="2" className="pagination-buttons-container">
