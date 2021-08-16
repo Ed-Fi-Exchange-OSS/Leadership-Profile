@@ -83,6 +83,11 @@ namespace LeadershipProfileAPI.Features.Account
                         {
                             response.HasErrors = true;
 
+                            if (result.Errors.Any(x => x.Code.Contains("Password")))
+                            {
+                                response.ResultMessage = "PasswordError";
+                            }
+
                             foreach (var error in result.Errors)
                             {
                                 _logger.LogError($"ErrorCode: {error.Code}, Description: {error.Description}");

@@ -43,7 +43,17 @@ const Registration = () => {
                 </FormGroup>
                 {error.hasError ? 
                 <Alert color="danger">
-                   {error.message}
+
+                    {error.message == 'PasswordError'?
+                    <div>
+                        Please enter a password with the following characteristics
+                         <ul>
+                             <li>At least 1 upper case letter</li>
+                             <li>At least 1 lower case letter</li>
+                             <li>Password contains at least 8 characters</li>
+                         </ul>
+                    </div>
+                    : <div>{error.message}</div>}
                 </Alert>
                 : <div></div>}
                 <Button className="register-submit">Submit</Button>
