@@ -95,7 +95,6 @@ namespace LeadershipProfileAPI.Data
                 {"ratingSubCategory", "RatingSubCategory"},
                 {"rating", "rating"},
                 {"school", "Institution"},
-                {"major", "Major"}
             };
 
             // Add the 'name' value as sql parameter to avoid SQL injection from raw text
