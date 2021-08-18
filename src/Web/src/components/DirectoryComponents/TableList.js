@@ -31,9 +31,6 @@ const CreateTableList = (props) => {
                         <th>
                             Highest Degree
                         </th>
-                        <th>
-                            Major
-                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -45,10 +42,9 @@ const CreateTableList = (props) => {
                             <td>{profile.assignment}</td>
                             <td>{profile.yearsOfService}</td>
                             <td>{profile.degree}</td>
-                            <td>{profile.major}</td>
                         </tr>)) : ''}
                         <tr className="bottom-row">
-                            <td colSpan="6">
+                            <td colSpan="5">
                                 <PaginationDetails paging={paging} count={data?.length} />
                             </td>
                             <td colSpan="2" className="pagination-buttons-container">
