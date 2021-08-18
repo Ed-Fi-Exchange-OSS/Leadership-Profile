@@ -38,7 +38,7 @@ const CreateTableList = (props) => {
                 </thead>
                 <tbody>
                     {data !== [] ? data.map(profile => (
-                        <tr key={profile.id}>
+                        <tr key={profile.staffUniqueId}>
                             <td><span className="dot"></span></td>
                             <td><Link to={`profile/${profile.staffUniqueId}`}>{profile.lastSurname}, {profile.firstName}</Link></td>
                             <td>{profile.institution}</td>
