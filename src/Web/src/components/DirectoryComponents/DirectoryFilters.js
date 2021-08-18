@@ -220,7 +220,7 @@ const CreateDirectoryFilters = (props) => {
                                    </DropdownMenu>
                                </UncontrolledDropdown>
                         </FormGroup>
-                        </Col>      
+                        </Col>
                         <Col>
                             <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
                             <UncontrolledDropdown>
