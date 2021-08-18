@@ -40,6 +40,8 @@ namespace LeadershipProfileAPI
             .UseSerilog()
             .ConfigureAppConfiguration((hostContext, builder) =>
                 {
+                    builder.AddEnvironmentVariables();
+
                     if (hostContext.HostingEnvironment.IsDevelopment())
                     {
                         builder.AddUserSecrets<Program>();
