@@ -77,10 +77,8 @@ namespace LeadershipProfileAPI
 
         private static void AddAuth(IServiceCollection services, IConfiguration configuration)
         {
-            var authorityServer = configuration.GetValue<string>("AuthorityServer");
-            var webClient = configuration.GetValue<string>("WebClient");
-            var redirectPath = configuration.GetValue<string>("WebClientRedirectUri");
-            var redirectUri = $"{webClient}{redirectPath}";
+            var settings = new AuthSettings();
+            configuration.GetSection("AuthSettings").Bind(settings);
 
             services.AddAuthentication(options =>
             {
@@ -92,7 +90,7 @@ namespace LeadershipProfileAPI
                 options.SignOutScheme = IdentityServerConstants.SignoutScheme;
                 options.SaveTokens = true; // idserver
 
-                options.Authority = authorityServer;
+                options.Authority = settings.AuthorityServer;
                 options.ClientId = "interactive";
                 options.ClientSecret = "secret";
                 options.ResponseType = "code id_token token";
@@ -106,7 +104,7 @@ namespace LeadershipProfileAPI
                 };
             }).AddJwtBearer("Bearer", options =>
             {
-                options.Authority = authorityServer; //value from environment variable // API
+                options.Authority = settings.AuthorityServer; //value from environment variable // API
 
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -132,7 +130,7 @@ namespace LeadershipProfileAPI
                 // this defines a CORS policy called "default"
                 options.AddPolicy("default", policy =>
                 {
-                    policy.WithOrigins(new string[] { authorityServer, webClient, "http://localhost", "https://localhost" })
+                    policy.WithOrigins(new string[] { settings.AuthorityServer, settings.WebClient, "http://localhost", "https://localhost" })
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials();
@@ -143,7 +141,7 @@ namespace LeadershipProfileAPI
             services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<EdFiIdentityDbContext>().AddDefaultTokenProviders(); ;
 
             services.AddIdentityServer()
-                .AddInMemoryClients(IdentityConfig.GetClient(redirectUri, new List<string> { authorityServer, webClient }))
+                .AddInMemoryClients(IdentityConfig.GetClient(settings.WebClientRedirectUriFull, new List<string> { settings.AuthorityServer, settings.WebClient }))
                 .AddInMemoryIdentityResources(IdentityConfig.IdentityResources)
                 .AddInMemoryApiScopes(IdentityConfig.ApiScopes)
                 .AddAspNetIdentity<IdentityUser>()
