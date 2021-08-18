@@ -125,11 +125,12 @@
 .form-group-filter-with-label {
   display: flex;
   width: 100%;
+  text-align: left !important;
 }
 
 .form-group-filter-with-label label {
   white-space: nowrap;
-  margin: 5px
+  margin: 5px;
 }
 
 .search-sort-form {
@@ -488,4 +489,22 @@ h5{
 
 .profile-card-table tbody{
   font-size: large;
+}
+
+.dropdown-toggle::after{
+  margin-top: 0.55rem;
+  float:right;
+}
+
+.dropdown-menu-filter{
+  cursor: text;
+  margin-bottom: 5px !important;
+}
+.filter-dropdown-clear{  
+  float: right;
+  margin-top: -2.7rem;
+  position: relative;
+}
+.filter-dropdown-clear::after{  
+  content: "X"
 }
