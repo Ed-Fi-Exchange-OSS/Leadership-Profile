@@ -48,7 +48,7 @@ namespace LeadershipProfileAPI
             services.AddDbContext<EdFiIdentityDbContext>(options => options.UseSqlServer(connectionString));
             services.AddDbContext<EdFiDbContext>(options => options.UseSqlServer(connectionString));
 
-            AddAuth(services);
+            AddAuth(services, Configuration);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Latest);
 
@@ -75,11 +75,12 @@ namespace LeadershipProfileAPI
             });
         }
 
-        private static void AddAuth(IServiceCollection services)
+        private static void AddAuth(IServiceCollection services, IConfiguration configuration)
         {
-            var authorityServer = Environment.GetEnvironmentVariable("AuthorityServer");
-            var webClient = Environment.GetEnvironmentVariable("WebClient");
-            var redirectUri = $"{webClient}{Environment.GetEnvironmentVariable("WebClientRedirectUri")}";
+            var authorityServer = configuration.GetValue<string>("AuthorityServer");
+            var webClient = configuration.GetValue<string>("WebClient");
+            var redirectPath = configuration.GetValue<string>("WebClientRedirectUri");
+            var redirectUri = $"{webClient}{redirectPath}";
 
             services.AddAuthentication(options =>
             {
