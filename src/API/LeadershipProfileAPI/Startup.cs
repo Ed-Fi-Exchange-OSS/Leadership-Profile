@@ -148,11 +148,11 @@ namespace LeadershipProfileAPI
                 .AddDeveloperSigningCredential();
 
             services.Configure<DataProtectionTokenProviderOptions>(opt =>
-                opt.TokenLifespan = TimeSpan.FromHours(Convert.ToDouble(Environment.GetEnvironmentVariable("ForgotPasswordTokenLifeSpanHours")))
+                opt.TokenLifespan = TimeSpan.FromHours(settings.ForgotPasswordTokenLifeSpanHours)
             );
 
             services.Configure<SecurityStampValidatorOptions>(opt =>
-                opt.ValidationInterval = TimeSpan.FromHours(Convert.ToDouble(Environment.GetEnvironmentVariable("ValidTokenLifeSpanHours")))
+                opt.ValidationInterval = TimeSpan.FromHours(settings.ValidTokenLifeSpanHours)
             );
 
             services.ConfigureApplicationCookie(options =>
