@@ -13,58 +13,6 @@ with staffService as (
     from edfi.StaffEducationOrganizationAssignmentAssociation as seoaa
              left join edfi.Descriptor as ksad on ksad.DescriptorId = seoaa.StaffClassificationDescriptorId
 )
-   , degrees as (
-    select pp.StaffUSI
-         , pp.MajorSpecialization
-         , CASE
-               WHEN
-                           da.CodeValue IN ('Masters', 'Master', 'M.ED', 'MED', 'MS', 'MA')
-                       OR da.CodeValue LIKE 'MA-%'
-                       OR da.CodeValue LIKE 'Master%'
-                       OR da.CodeValue LIKE 'MBA%'
-                       OR da.CodeValue LIKE 'M. Ed%'
-                       OR da.CodeValue LIKE 'MA %'
-                       OR da.CodeValue LIKE 'MA-%'
-                       OR da.CodeValue LIKE 'MS %'
-                       OR da.CodeValue LIKE 'MS-%'
-                   THEN 'Masters'
-
-               WHEN
-                           da.CodeValue IN ('BACHELORS', 'BFA', 'BA', 'BS')
-                       OR da.CodeValue LIKE 'Bach%'
-                       OR da.CodeValue LIKE 'B.A.%'
-                       OR da.CodeValue LIKE 'BA %'
-                       OR da.CodeValue LIKE 'B.S.%'
-                       OR da.CodeValue LIKE 'BS %'
-                   THEN 'Bachelors'
-
-               WHEN
-                           da.CodeValue IN ('CERT', 'HVACR CERTIFIED', 'TEACHING CERTIFICATION')
-                       OR da.CodeValue LIKE 'Certif%'
-                   THEN 'Certificate'
-
-               WHEN
-                           da.CodeValue IN ('DOCTORATE', 'ED.D.')
-                       OR da.CodeValue LIKE 'DOCTOR%'
-                   THEN 'Doctorate'
-
-               WHEN
-                           da.CodeValue IN ('Associates', 'Assoc', 'Associates')
-                       OR da.CodeValue LIKE 'Assoc%'
-                   THEN 'Associates'
-
-               WHEN
-                       da.CodeValue IN ('NO DEGREE', 'None', 'N/A')
-                   THEN 'No Degree'
-
-               ELSE 'Other'
-        END as Degree
-         , lda.LevelOfDegreeAwardedDescriptorId
-    from tpdm.StaffTeacherPreparationProgram as pp
-             join tpdm.LevelOfDegreeAwardedDescriptor as lda
-                  ON lda.LevelOfDegreeAwardedDescriptorId = pp.LevelOfDegreeAwardedDescriptorId
-             join edfi.Descriptor as da ON da.DescriptorId = lda.LevelOfDegreeAwardedDescriptorId
-)
    , allMeasures as (
     select st.StaffUSI
          , rd.PerformanceEvaluationTypeDescriptorId as Category
@@ -143,8 +91,8 @@ select s.StaffUSI
 
      , seoaa.StaffClassificationDescriptorId
 
-     , d.Degree
-     , d.LevelOfDegreeAwardedDescriptorId
+     , degreeDescriptor.CodeValue as Degree
+     , s.HighestCompletedLevelOfEducationDescriptorId
 
      , mr.Category    as RatingCategory
      , mr.Subcategory as RatingSubCategory
@@ -158,7 +106,7 @@ from edfi.Staff as s
          left join staffService on staffService.StaffUSI = s.StaffUSI
          join edfi.StaffEducationOrganizationAssignmentAssociation as seoaa on seoaa.StaffUSI = s.StaffUsi
          join assignments as a on a.StaffUSI = s.StaffUSI
-         left join degrees as d on d.StaffUSI = s.StaffUSI
+         left join edfi.Descriptor as degreeDescriptor ON degreeDescriptor.DescriptorId = s.HighestCompletedLevelOfEducationDescriptorId
          left join tpdm.PerformanceEvaluationRatingResult as PERR
                on perr.PersonId = s.PersonId
          left join rubric
