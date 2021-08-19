@@ -7,7 +7,6 @@ import CollapsibleLeaderOfSelf from './CollapsibleLeaderOfSelf';
 import LeaderOfOrgChart from './LeaderOfOrgChart';
 import ProfessionalDevelopmentTable from './../ProfessionalDevelopmentComponents/ProfessionalDevelopmentTable'
 import CertificationsTable from './../CertificationsComponents/CertificationsTable'
-import EducationTable from './../EducationComponents/EducationTable';
 import PositionHistoryTable from '../PositionHistoryComponent/PositionHistoryTable';
 import UseProfile from './UseProfile';
 import ProfileBreadcrumbMenu from './ProfileBreadcrumbMenu';
@@ -37,7 +36,6 @@ const Profile = () => {
 
             {activeComponent === "general" && data !== {} ? (
                 <div>
-                    <EducationTable title='Education' data={data.education} />
                     <PositionHistoryTable title='Position History' data={data.positionHistory} />
                     <CertificationsTable title='Certifications' data={data.certificates} />
                     <ProfessionalDevelopmentTable title='Professional Development and Learning Experiences' data={data.professionalDevelopment}/>

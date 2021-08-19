@@ -13,7 +13,6 @@ namespace LeadershipProfileAPI.Data
         }
 
         public DbSet<Staff> Staff { get; set; }
-        public DbSet<StaffEducation> StaffEducations { get; set; }
         public DbSet<ProfileList> ProfileList { get; set; }
         public DbSet<ProfileHeader> ProfileHeader { get; set; }
         public DbSet<ProfilePositionHistory> ProfilePositionHistory { get; set; }
@@ -67,10 +66,6 @@ namespace LeadershipProfileAPI.Data
 
             modelBuilder.Entity<StaffAdmin>()
                 .HasKey(k => k.Id);
-
-            modelBuilder.Entity<StaffEducation>()
-                .ToView("vw_StaffEducations", "edfi")
-                .HasKey(k => new { k.StaffUsi, k.TeacherPreparationProgramName });
 
             modelBuilder.Entity<StaffPerformanceMeasure>()
                 .HasKey(k => new { k.StaffUsi, k.Category, k.SubCategory, k.MeasureDate });

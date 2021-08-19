@@ -34,7 +34,6 @@ namespace LeadershipProfileAPI.Features.Profile
             public string Email { get; set; } = "default@email.com";
             public DateTime? StartDate { get; set; }
             public bool InterestedInNextRole { get; set; }
-            public IEnumerable<TeacherEducation> Education { get; set; }
             public IEnumerable<PositionHistory> PositionHistory { get; set; }
             public IEnumerable<Certificate> Certificates { get; set; }
             public IEnumerable<ProfessionalDevelopment> ProfessionalDevelopment { get; set; }
@@ -94,13 +93,6 @@ namespace LeadershipProfileAPI.Features.Profile
             public string AlignmentToLeadership { get; set; }
         }
 
-        public class TeacherEducation
-        {
-            public string Degree { get; set; }
-            public string Specialization { get; set; }
-            public string Institution { get; set; }
-        }
-
         public class QueryHandler : IRequestHandler<Query, Response>
         {
             private readonly EdFiDbContext _dbContext;
@@ -132,11 +124,6 @@ namespace LeadershipProfileAPI.Features.Profile
                     .ProjectTo<Certificate>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
 
                 response.Certificates = certificates;
-
-                response.Education = await _dbContext.StaffEducations
-                    .Where(o => o.StaffUniqueId == request.Id)
-                    .ProjectTo<TeacherEducation>(_mapper.ConfigurationProvider)
-                    .ToListAsync(cancellationToken);
 
                 response.ProfessionalDevelopment = await _dbContext.StaffProfessionalDevelopments
                     .Where(o => o.StaffUniqueId == request.Id)

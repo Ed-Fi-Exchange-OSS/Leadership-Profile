@@ -18,7 +18,6 @@ namespace LeadershipProfileAPI.Features.Profile
 
             CreateMap<ProfileHeader, Get.Response>()
                 .ForMember(dst => dst.Certificates, opt => opt.Ignore())
-                .ForMember(dst => dst.Education, opt => opt.Ignore())
                 .ForMember(dst => dst.PositionHistory, opt => opt.Ignore())
                 .ForMember(dst => dst.ProfessionalDevelopment, opt => opt.Ignore())
                 .ForMember(dst => dst.InterestedInNextRole, opt => opt.MapFrom(x => false))
@@ -60,11 +59,6 @@ namespace LeadershipProfileAPI.Features.Profile
             //    .ForMember(dst => dst.Period, opt => opt.MapFrom(x => x.Period))
             //    .ForMember(dst => dst.StaffScore, opt => opt.MapFrom(x => x.StaffScore))
             //    .ForMember(dst => dst.StaffScoreNotes, opt => opt.MapFrom(x => x.StaffScoreNotes));
-
-            CreateMap<StaffEducation, Get.TeacherEducation>()
-                .ForMember(dst => dst.Institution, opt => opt.MapFrom(x => x.InstitutionAttended))
-                .ForMember(dst => dst.Degree, opt => opt.MapFrom(x => x.DegreeAwarded))
-                .ForMember(dst => dst.Specialization, opt => opt.MapFrom(x => x.MajorOrSpecialization));
 
             CreateMap<StaffProfessionalDevelopment, Get.ProfessionalDevelopment>()
                 .ForMember(dst => dst.AttendanceDate, opt => opt.MapFrom(x => x.AttendanceDate))
