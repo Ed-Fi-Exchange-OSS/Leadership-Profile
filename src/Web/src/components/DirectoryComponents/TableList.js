@@ -21,28 +21,15 @@ const CreateTableList = (props) => {
                         </th>
                         <th>
                             School 
-                            <Sorting onSortChange={newStatus => setColumnSort('school', newStatus)}
-                                status={sort.category === 'school' ? sort.value : null} />
                         </th>
                         <th>
                             Position
-                            <Sorting onSortChange={newStatus => setColumnSort('position', newStatus)}
-                                status={sort.category === 'position' ? sort.value : null} />
                         </th>
                         <th>
                             Years
-                            <Sorting onSortChange={newStatus => setColumnSort('yearsOfService', newStatus)}
-                                status={sort.category === 'yearsOfService' ? sort.value : null} />
                         </th>
                         <th>
                             Highest Degree
-                            <Sorting onSortChange={newStatus => setColumnSort('highestDegree', newStatus)}
-                                status={sort.category === 'highestDegree' ? sort.value : null} />
-                        </th>
-                        <th>
-                            Major
-                            <Sorting onSortChange={newStatus => setColumnSort('major', newStatus)}
-                                status={sort.category === 'major' ? sort.value : null} />
                         </th>
                     </tr>
                 </thead>
@@ -55,10 +42,9 @@ const CreateTableList = (props) => {
                             <td>{profile.assignment}</td>
                             <td>{profile.yearsOfService}</td>
                             <td>{profile.degree}</td>
-                            <td>{profile.major}</td>
                         </tr>)) : ''}
                         <tr className="bottom-row">
-                            <td colSpan="6">
+                            <td colSpan="5">
                                 <PaginationDetails paging={paging} count={data?.length} />
                             </td>
                             <td colSpan="2" className="pagination-buttons-container">

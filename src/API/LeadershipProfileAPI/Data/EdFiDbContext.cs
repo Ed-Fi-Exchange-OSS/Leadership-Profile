@@ -27,6 +27,7 @@ namespace LeadershipProfileAPI.Data
         public DbSet<ListItemCertification> ListItemCertifications { get; set; }
         public DbSet<ListItemDegree> ListItemDegrees { get; set; }
         public DbSet<ListItemSubCategory> ListItemSubCategories { get; set; }
+        public DbSet<ListItemInstitution> ListItemItemInstitutions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -48,6 +49,10 @@ namespace LeadershipProfileAPI.Data
 
             modelBuilder.Entity<ListItemSubCategory>()
                 .ToView("vw_ListAllSubCategories", "edfi")
+                .HasNoKey();
+
+            modelBuilder.Entity<ListItemInstitution>()
+                .ToView("vw_ListAllInstitutions", "edfi")
                 .HasNoKey();
 
             modelBuilder.Entity<Staff>().ToTable("Staff", schema: "edfi")

@@ -124,5 +124,19 @@ namespace LeadershipProfileAPI.Tests.Features.Search
             
             response.ShouldNotBeNull();
         }
+
+        [Fact]
+        public async Task ShouldGetResponseWithInstitutionRequest()
+        {
+            var body = new ProfileSearchRequestBody()
+                .AddInstitutions();
+
+            var response = await Testing.Send(new List.Query
+            {
+                SearchRequestBody = body
+            });
+
+            response.ShouldNotBeNull();
+        }
     }
 }

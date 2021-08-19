@@ -18,6 +18,5 @@
         public string Institution { get; set; }
         public string Email { get; set; }
         public string Telephone { get; set; }
-        public string Major { get; set; }
     }
 }

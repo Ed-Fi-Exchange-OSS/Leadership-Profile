@@ -92,5 +92,24 @@ namespace LeadershipProfileAPI.Tests.Extensions
 
             return body;
         }
+
+
+        public static ProfileSearchRequestBody AddInstitutions(this ProfileSearchRequestBody body,
+            ProfileSearchRequestInstitution institutions = null)
+        {
+            if (institutions != null)
+            {
+                body.Institutions = institutions;
+            }
+            else
+            {
+                body.Institutions = new ProfileSearchRequestInstitution
+                {
+                    Values = Enumerable.Range(0, 10).ToList()
+                };
+            }
+
+            return body;
+        }
     }
 }

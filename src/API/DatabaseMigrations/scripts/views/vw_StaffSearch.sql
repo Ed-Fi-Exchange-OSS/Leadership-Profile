@@ -124,14 +124,14 @@ with staffService as (
                        on de.DescriptorId = rd.PerformanceEvaluationTypeDescriptorId
 ),
 
-staff_school (StaffUSI, School, Position) AS
+staff_school (StaffUSI, School, Position, SchoolId) AS
 (
-    SELECT seoaa.StaffUSI, eo.NameOfInstitution, d.ShortDescription
+    SELECT seoaa.StaffUSI, eo.NameOfInstitution, d.ShortDescription, seoaa.EducationOrganizationId
     FROM edfi.StaffEducationOrganizationAssignmentAssociation seoaa
     INNER JOIN edfi.EducationOrganization eo ON eo.EducationOrganizationId = seoaa.EducationOrganizationId
     INNER JOIN edfi.Descriptor d ON d.DescriptorId = seoaa.StaffClassificationDescriptorId
     WHERE seoaa.EndDate IS NULL OR seoaa.EndDate >= GETUTCDATE()
-    GROUP BY seoaa.StaffUSI, eo.NameOfInstitution, d.ShortDescription
+    GROUP BY seoaa.StaffUSI, eo.NameOfInstitution, d.ShortDescription, seoaa.EducationOrganizationId
 ),
 
 staff_email (StaffUSI, Email) AS (
@@ -149,20 +149,6 @@ staff_telephone (StaffUSI, Telephone) AS (
         ROW_NUMBER() OVER (PARTITION BY StaffUSI ORDER BY TelephoneNumberTypeDescriptorId) RowNumber
         FROM edfi.StaffTelephone st
     ) st WHERE st.RowNumber = 1
-),
-staff_major (StaffUSI, Major) AS (
-	SELECT StaffUSI, MajorSpecialization FROM (
-		SELECT
-			s.StaffUSI,
-			tcds.MajorSpecialization,
-			tcds.EndDate,
-			ROW_NUMBER() OVER (PARTITION BY s.StaffUSI ORDER BY tcds.EndDate DESC) RowNumber
-		FROM edfi.Staff s
-		INNER JOIN tpdm.TeacherCandidate tc ON tc.PersonId = s.PersonId
-		INNER JOIN tpdm.TeacherCandidateDegreeSpecialization tcds ON tcds.TeacherCandidateIdentifier = tc.TeacherCandidateIdentifier
-		WHERE tcds.EndDate IS NOT NULL
-		GROUP BY s.StaffUSI, s.StaffUniqueId, tcds.MajorSpecialization, tcds.MinorSpecialization, tcds.EndDate
-	) m WHERE m.RowNumber = 1
 )
 
 select s.StaffUSI
@@ -191,10 +177,9 @@ select s.StaffUSI
      , perr.Rating    as Rating
 
      , ss.School as Institution
+     , ss.SchoolId as InstitutionId
      , se.Email as Email
      , st.Telephone as Telephone
-     , sm.Major as Major
-
 from edfi.Staff as s
          left join staffService on staffService.StaffUSI = s.StaffUSI
          join edfi.StaffEducationOrganizationAssignmentAssociation as seoaa on seoaa.StaffUSI = s.StaffUsi
@@ -214,7 +199,5 @@ from edfi.Staff as s
          left join rubric as ru on ru.DescriptorId = perr.PerformanceEvaluationTypeDescriptorId
          LEFT JOIN staff_school ss ON ss.StaffUSI = s.StaffUSI
          LEFT JOIN staff_email se ON se.StaffUSI = s.StaffUSI
-         LEFT JOIN staff_telephone st ON st.StaffUSI = s.StaffUSI
-         LEFT JOIN staff_major sm ON sm.StaffUSI = s.StaffUSI
-         
+         LEFT JOIN staff_telephone st ON st.StaffUSI = s.StaffUSI         
 GO
