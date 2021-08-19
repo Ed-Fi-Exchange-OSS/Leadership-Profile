@@ -249,9 +249,37 @@ const CreateDirectoryFilters = (props) => {
                     <Row>
                         <Col>
                         <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+                               <UncontrolledDropdown>
+                                   <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret>
+                                       Positions
+                                   </DropdownToggle>
+                                   <DropdownMenu modifiers={modifiers} right className="btn-dropdown-items">
+                                       {
+                                           Object.keys(positions).length !== 0 ? (
+                                               positions.map((positionElement, index) => 
+                                               {
+                                                   return(
+                                                       <div key={index}>
+                                                           <input type="checkbox"
+                                                           style={{"display": "inline"}}
+                                                           name={positionElement.text}
+                                                           value={positionElement.value}
+                                                           checked={positionElement.checked}
+                                                           onChange={e => {Position_OnChange(e)}} />
+                                                        <Label style={{"display": "inline"}}>{positionElement.text}</Label></div>)
+                                               })
+                                            ) : ("")
+                                       }
+
+                                   </DropdownMenu>
+                               </UncontrolledDropdown>
+                        </FormGroup>
+                        </Col>
+                        <Col>
+                        <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
                         <UncontrolledDropdown>
                                    <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret>
-                                       Schools
+                                       Locations
                                    </DropdownToggle>
                                    <DropdownMenu modifiers={modifiers} right className="btn-dropdown-items">
                                        <DropdownTypeAhead 
@@ -280,32 +308,20 @@ const CreateDirectoryFilters = (props) => {
                         </FormGroup>
                         </Col>
                         <Col>
-                        <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                               <UncontrolledDropdown>
-                                   <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret>
-                                       Positions
-                                   </DropdownToggle>
-                                   <DropdownMenu modifiers={modifiers} right className="btn-dropdown-items">
-                                       {
-                                           Object.keys(positions).length !== 0 ? (
-                                               positions.map((positionElement, index) => 
-                                               {
-                                                   return(
-                                                       <div key={index}>
-                                                           <input type="checkbox"
-                                                           style={{"display": "inline"}}
-                                                           name={positionElement.text}
-                                                           value={positionElement.value}
-                                                           checked={positionElement.checked}
-                                                           onChange={e => {Position_OnChange(e)}} />
-                                                        <Label style={{"display": "inline"}}>{positionElement.text}</Label></div>)
-                                               })
-                                            ) : ("")
-                                       }
-
-                                   </DropdownMenu>
-                               </UncontrolledDropdown>
-                        </FormGroup>
+                            <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+                                <Input type="select" name="select" className="filter-dropdown" value={yearsOptionRange}
+                                onChange={event => {YearOption_OnChange(event.currentTarget.value);}} >
+                                    <option value="-1">Years</option>
+                                    <option value="0">At Least</option>
+                                    <option value="1">Less Than</option>
+                                </Input>
+                            </FormGroup>
+                        </Col>
+                        <Col>
+                            <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+                                <Input disabled={yearsOptionRange < 0} type="number" min="0" step="1" value={year || ''} placeholder="Years"
+                                onChange={event => {Year_OnChange(event.target.value);}} />
+                            </FormGroup>
                         </Col>
                         <Col>
                             <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
@@ -334,22 +350,6 @@ const CreateDirectoryFilters = (props) => {
                                    </DropdownMenu>
                                </UncontrolledDropdown>
                         </FormGroup>
-                        </Col>
-                        <Col>
-                            <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                                <Input type="select" name="select" className="filter-dropdown" value={yearsOptionRange}
-                                onChange={event => {YearOption_OnChange(event.currentTarget.value);}} >
-                                    <option value="-1">Years</option>
-                                    <option value="0">At Least</option>
-                                    <option value="1">Less Than</option>
-                                </Input>
-                            </FormGroup>
-                        </Col>
-                        <Col>
-                            <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                                <Input disabled={yearsOptionRange < 0} type="number" min="0" step="1" value={year || ''} placeholder="Years"
-                                onChange={event => {Year_OnChange(event.target.value);}} />
-                            </FormGroup>
                         </Col>
                         <Col>
                             <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
