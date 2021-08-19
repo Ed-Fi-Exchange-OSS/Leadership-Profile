@@ -38,7 +38,7 @@
 }
 
 .breadcrumb-div {
-  margin-bottom: 32px;
+  margin-bottom: 2rem;
   font-size: 14px;
   line-height: 24px;
 }
@@ -74,6 +74,12 @@
   justify-content: space-between;
 }
 
+.view-style-buttons {
+  position: relative;
+  top: 3.5rem;
+  cursor: pointer;
+}
+
 .view-style-buttons > a {
   padding: .05rem .375rem!important;
   padding: 0;
@@ -106,6 +112,7 @@
   border-radius: 4px;
   background-color: #A6C1FF;
   padding: 24px 10px;
+  margin-bottom: 10px;
 }
 
 .filter-form {
@@ -135,7 +142,6 @@
 
 .search-sort-form {
   display: flex;
-  margin: 24px 0 30px;
 }
 
 .sorting-container {
@@ -500,6 +506,10 @@ h5{
   cursor: text;
   margin-bottom: 5px !important;
 }
+.filter-dropdown{
+  cursor: pointer;
+}
+
 .filter-dropdown-clear{  
   float: right;
   margin-top: -2.7rem;
@@ -507,4 +517,37 @@ h5{
 }
 .filter-dropdown-clear::after{  
   content: "X"
+}
+
+.selected-filters{
+  min-height:50px;
+}
+.selected-filters-wrapper{
+  padding-top:25px;
+}
+.selected-filters-clear{
+  float:right;
+  cursor: pointer;
+}
+
+.pill{
+  display: inline-flex;
+  padding: 5px 15px 5px 15px;
+  border: 1px solid;
+  margin: 0 .25rem 1rem 0.5rem;
+  border-radius: 10px;
+  max-height: 3rem;
+  width: auto;
+  background-color: #007bff;
+  color: white;
+}
+
+.remove-pill{
+  position: relative;
+  float: right;
+  text-align: right;
+  margin-right: 1rem;
+  right: -1rem;
+  color: white;
+  cursor: pointer;
 }

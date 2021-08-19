@@ -20,16 +20,16 @@ const CreateTableList = (props) => {
                                 status={sort.category === 'name' ? sort.value : null} />
                         </th>
                         <th>
-                            School 
+                            Position
                         </th>
                         <th>
-                            Position
+                            Location 
                         </th>
                         <th>
                             Years
                         </th>
                         <th>
-                            Highest Degree
+                            Degree
                         </th>
                     </tr>
                 </thead>
@@ -38,8 +38,8 @@ const CreateTableList = (props) => {
                         <tr key={profile.staffUniqueId}>
                             <td><span className="dot"></span></td>
                             <td><Link to={`profile/${profile.staffUniqueId}`}>{profile.lastSurname}, {profile.firstName}</Link></td>
-                            <td>{profile.institution}</td>
                             <td>{profile.assignment}</td>
+                            <td>{profile.institution}</td>
                             <td>{profile.yearsOfService}</td>
                             <td>{profile.degree}</td>
                         </tr>)) : ''}

@@ -157,8 +157,8 @@ namespace LeadershipProfileAPI.Data
                 var whereMinYears = min > 0 ? $"YearsOfService >= {min}" : string.Empty;
                 var andMinAndMax = min > 0 && max > 0 ? " and " : string.Empty;
                 var whereMaxYears = max > 0 ? $"YearsOfService <= {max}" : string.Empty;
-                
-                return $"({whereMinYears}{andMinAndMax}{whereMaxYears})";
+                var whereIfLessThan = max > 0 && min >= 0 ? " OR YearsOfService IS NULL" : string.Empty;
+                return $"({whereMinYears}{andMinAndMax}{whereMaxYears}{whereIfLessThan})";
             }
 
             return string.Empty;
