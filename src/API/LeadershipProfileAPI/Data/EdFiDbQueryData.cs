@@ -88,7 +88,6 @@ namespace LeadershipProfileAPI.Data
                 {"id", "StaffUniqueId"},
                 {"name", "LastSurName"},
                 {"yearsOfService", "YearsOfService"},
-                {"certification", "Certification"},
                 {"position", "Assignment"},
                 {"highestDegree", "Degree"},
                 {"ratingCategory", "RatingCategory"},
@@ -134,7 +133,6 @@ namespace LeadershipProfileAPI.Data
                 {
                     ClauseYears(body.MinYears, body.MaxYears), 
                     ClauseAssignments(body.Assignments), 
-                    ClauseCertifications(body.Certifications), 
                     ClauseDegrees(body.Degrees), 
                     ClauseRatings(body.Ratings),
                     ClauseName(),
@@ -174,21 +172,6 @@ namespace LeadershipProfileAPI.Data
                 var whereAssignment = assignments.Values.Any() ? $"StaffClassificationDescriptorId in ({string.Join(",", assignments.Values)})" : string.Empty;
                 
                 return $"({whereStart}{andStartAndAssignment}{whereAssignment})";
-            }
-
-            return string.Empty;
-        }
-
-        private static string ClauseCertifications(ProfileSearchRequestCertifications certifications)
-        {
-            if (certifications != null && (certifications.IssueDate.HasValue || certifications.Values.Any()))
-            {
-                // Provide the condition being searched for matching your schema. Examples: "(c.IssueDate = '2017-04-23')" or "(c.IssueDate = '2017-04-23' and c.CerfificationId IN (234, 12, 98))"
-                var whereIssueDate = certifications.IssueDate.HasValue ? $"datediff(day, IssuanceDate, '{certifications.IssueDate.Value.ToShortDateString()}') = 0" : string.Empty;
-                var andIssueAndCertification = certifications.IssueDate.HasValue && certifications.Values.Any() ? " and " : string.Empty;
-                var whereCertification = certifications.Values.Any() ? $"CredentialFieldDescriptorId in ({string.Join(",", certifications.Values)})" : string.Empty;
-                
-                return $"({whereIssueDate}{andIssueAndCertification}{whereCertification})";
             }
 
             return string.Empty;
