@@ -11,9 +11,9 @@ const CreateDirectoryFilters = (props) => {
 
     function RenderFilters(data) {
         const {positions, setPositions, nameSearch, setNameSearch, 
-            degrees, setDegrees, certifications, setCertifications,
+            degrees, setDegrees,
             yearsOptionRange, setYearsOptionRange, year, setYear,
-            yearRange, setYearRange, institutions, setInstitutions,
+            setYearRange, institutions, setInstitutions,
             filteredInstitutions, setFilteredInstitutions,
             filterInstitutionValue, setFilterInstitutionValue
         } = UseDirectoryFilters();
@@ -43,7 +43,6 @@ const CreateDirectoryFilters = (props) => {
         function OnChangeSubmit(isClearing){
             let selectedPositions = GetCheckedOrSelectedValues(positions);
             let selectedDegrees = GetCheckedOrSelectedValues(degrees);
-            let selectedCertificates = GetCheckedOrSelectedValues(certifications);
             let selectedInstitutions = GetCheckedOrSelectedValues(institutions);
             let yearsOnRange = getYearRange(isClearing);
             let filters = {
@@ -52,9 +51,6 @@ const CreateDirectoryFilters = (props) => {
                 },
                 "Degrees":{
                     "Values": selectedDegrees
-                },
-                "Certifications":{
-                    "Values": selectedCertificates
                 },
                 "Name": nameSearch,
                 "MinYears": yearsOnRange.min,
@@ -84,13 +80,6 @@ const CreateDirectoryFilters = (props) => {
             OnChangeSubmit();
         }
 
-        function Certification_OnChange(e){
-            CheckSelectedItem(e, certifications, setCertifications);
-            setCheckedFilterAsPill("Certification", e.currentTarget);
-
-            OnChangeSubmit();
-        }
-
         function YearOption_OnChange(value){
             setYearsOptionRange(value); 
         }
@@ -115,9 +104,6 @@ const CreateDirectoryFilters = (props) => {
             }
             if(pill.filter === "Degree"){
                 setCheckValueForElement(degrees, pill.value, false, setDegrees);
-            }
-            if(pill.filter === "Certification"){
-                setCheckValueForElement(certifications, pill.value, false, setCertifications);
             }
             if(pill.filter === "Institution"){
                 setCheckValueForElement(filteredInstitutions, pill.value, false, setFilteredInstitutions);
@@ -144,7 +130,6 @@ const CreateDirectoryFilters = (props) => {
             setPills([]);
             unCheckAll(positions, setPositions);
             unCheckAll(degrees, setDegrees);
-            unCheckAll(certifications, setCertifications);
             unCheckAll(filteredInstitutions, setFilteredInstitutions);
             setYearsOptionRange('-1');
             setYear('');
@@ -347,34 +332,6 @@ const CreateDirectoryFilters = (props) => {
                                                })
                                             ) : ("")
                                        }
-                                   </DropdownMenu>
-                               </UncontrolledDropdown>
-                        </FormGroup>
-                        </Col>
-                        <Col>
-                            <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                            <UncontrolledDropdown>
-                                   <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret>
-                                       Certifications
-                                   </DropdownToggle>
-                                   <DropdownMenu modifiers={modifiers} right className="btn-dropdown-items">
-                                       {
-                                           Object.keys(certifications).length !== 0 ? (
-                                               certifications.map((positionElement, index) => 
-                                               {
-                                                   return(
-                                                       <div key={index}>
-                                                           <input type="checkbox"
-                                                           style={{"display": "inline"}}
-                                                           name={positionElement.text}
-                                                           value={positionElement.value}
-                                                           checked={positionElement.checked}
-                                                           onChange={e => {Certification_OnChange(e)}} />
-                                                        <Label style={{"display": "inline"}}>{positionElement.text}</Label></div>)
-                                               })
-                                            ) : ("")
-                                       }
-
                                    </DropdownMenu>
                                </UncontrolledDropdown>
                         </FormGroup>

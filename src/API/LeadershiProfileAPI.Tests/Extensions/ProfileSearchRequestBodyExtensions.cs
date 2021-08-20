@@ -38,24 +38,6 @@ namespace LeadershipProfileAPI.Tests.Extensions
 
             return body;
         }
-        
-        public static ProfileSearchRequestBody AddCertifications(this ProfileSearchRequestBody body, ProfileSearchRequestCertifications certifications = null)
-        {
-            if (certifications != null)
-            {
-                body.Certifications = certifications;
-            }
-            else
-            {                
-                body.Certifications = new ProfileSearchRequestCertifications
-                {
-                    IssueDate = DateTime.UtcNow,
-                    Values = Enumerable.Range(0, 10).ToList()
-                };
-            }
-
-            return body;
-        }
 
         public static ProfileSearchRequestBody AddAssignments(this ProfileSearchRequestBody body,
             ProfileSearchRequestAssignments assignments = null)

@@ -24,10 +24,10 @@ namespace LeadershipProfileAPI.Data
         public DbSet<StaffSearch> StaffSearches { get; set; }
         public DbSet<ListItemAssignment> ListItemAssignments { get; set; }
         public DbSet<ListItemCategory> ListItemCategories { get; set; }
-        public DbSet<ListItemCertification> ListItemCertifications { get; set; }
         public DbSet<ListItemDegree> ListItemDegrees { get; set; }
         public DbSet<ListItemSubCategory> ListItemSubCategories { get; set; }
         public DbSet<ListItemInstitution> ListItemItemInstitutions { get; set; }
+        public DbSet<StaffSearchGroup> StaffSearchGroups { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -37,10 +37,6 @@ namespace LeadershipProfileAPI.Data
 
             modelBuilder.Entity<ListItemCategory>()
                 .ToView("vw_ListAllCategories", "edfi")
-                .HasNoKey();
-
-            modelBuilder.Entity<ListItemCertification>()
-                .ToView("vw_ListAllCertifications", "edfi")
                 .HasNoKey();
 
             modelBuilder.Entity<ListItemDegree>()
@@ -95,6 +91,8 @@ namespace LeadershipProfileAPI.Data
             modelBuilder.Entity<StaffSearch>()
                 .ToView("vw_StaffSearch", "edfi")
                 .HasNoKey();
+
+            modelBuilder.Entity<StaffSearchGroup>().HasNoKey();
         }
     }
 

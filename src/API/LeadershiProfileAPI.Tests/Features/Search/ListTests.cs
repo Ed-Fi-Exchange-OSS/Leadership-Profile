@@ -50,21 +50,7 @@ namespace LeadershipProfileAPI.Tests.Features.Search
             
             response.ShouldNotBeNull();
         }
-        
-        [Fact]
-        public async Task ShouldGetResponseWithCertificationsRequest()
-        {
-            var body = new ProfileSearchRequestBody()
-                .AddCertifications();
-            
-            var response = await Testing.Send(new List.Query
-            {
-                SearchRequestBody = body
-            });
-            
-            response.ShouldNotBeNull();
-        }
-        
+
         [Fact]
         public async Task ShouldGetResponseWithAssignmentsRequest()
         {
@@ -100,7 +86,6 @@ namespace LeadershipProfileAPI.Tests.Features.Search
                 .AddMinYears(1)
                 .AddMaxYears(10)
                 .AddRatings()
-                .AddCertifications()
                 .AddAssignments()
                 .AddDegrees();
             
