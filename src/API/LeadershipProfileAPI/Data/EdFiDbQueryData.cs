@@ -79,21 +79,32 @@ namespace LeadershipProfileAPI.Data
         /// <param name="currentPage">When paginating the data, which page of data should be returned</param>
         /// <param name="pageSize">The number of records returned in the result</param>
         /// <returns></returns>
-        public async Task<IList<StaffSearch>> GetSearchResultsAsync(ProfileSearchRequestBody body,
+        public async Task<IList<StaffSearchGroup>> GetSearchResultsAsync(ProfileSearchRequestBody body,
             string sortBy = "asc", string sortField = "name", int currentPage = 1, int pageSize = 10)
         {
+            // List of columns in the select/group query
+            string[] columns = {
+                    "staff.StaffUniqueId"
+                    , "staff.FirstName"
+                    , "staff.LastSurname"
+                    , "staff.Institution"
+                    , "staff.Assignment"
+                    , "staff.YearsOfService"
+                    , "staff.Degree"
+            };
+
             // Map the UI sorted field name to a table field name
             var fieldMapping = new Dictionary<string, string>
             {
-                {"id", "StaffUniqueId"},
-                {"name", "LastSurName"},
-                {"yearsOfService", "YearsOfService"},
-                {"position", "Assignment"},
-                {"highestDegree", "Degree"},
-                {"ratingCategory", "RatingCategory"},
-                {"ratingSubCategory", "RatingSubCategory"},
-                {"rating", "rating"},
-                {"school", "Institution"},
+                {"id", "staff.StaffUniqueId"},
+                {"name", "staff.LastSurName"},
+                {"yearsOfService", "staff.YearsOfService"},
+                {"position", "staff.Assignment"},
+                {"highestDegree", "staff.Degree"},
+                {"ratingCategory", "staff.RatingCategory"},
+                {"ratingSubCategory", "staff.RatingSubCategory"},
+                {"rating", "staff.rating"},
+                {"school", "staff.Institution"},
             };
 
             // Add the 'name' value as sql parameter to avoid SQL injection from raw text
@@ -101,14 +112,20 @@ namespace LeadershipProfileAPI.Data
 
             // Implement the view in SQL, call it here
             var sql = $@"
-                 select * from edfi.vw_StaffSearch
-                 {ClauseConditions(body)}
-                 order by case when {fieldMapping[sortField]} is null then 1 else 0 end, {fieldMapping[sortField]} {sortBy}
-                 offset {(currentPage - 1) * pageSize} rows
-                 fetch next {pageSize} rows only
+                select 
+                    {string.Join(", ", columns)}
+                FROM(
+                    select * from edfi.vw_StaffSearch
+                    {ClauseConditions(body)}
+                ) staff
+                group by 
+                    {string.Join(", ", columns)}
+                order by case when {fieldMapping[sortField]} is null then 1 else 0 end, {fieldMapping[sortField]} {sortBy}
+                offset {(currentPage - 1) * pageSize} rows
+                fetch next {pageSize} rows only
              ";
-            var staff = await _edfiDbContext.StaffSearches.FromSqlRaw(sql, name).ToListAsync();
-            return staff.GroupBy(x => x.StaffUniqueId).Select(x => x.First()).ToList();
+            var staff = await _edfiDbContext.StaffSearchGroups.FromSqlRaw(sql, name).ToListAsync();
+            return staff;
         }
 
         public async Task<int> GetSearchResultsTotalsAsync(ProfileSearchRequestBody body)

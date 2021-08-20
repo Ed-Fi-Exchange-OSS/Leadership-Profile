@@ -8,6 +8,8 @@ namespace LeadershipProfileAPI.Features.Search
         {
             CreateMap<StaffSearch, List.SearchResult>()
                 .ForMember(d => d.FullName, o => o.MapFrom(x => GetFullName(x.FirstName, x.MiddleName, x.LastSurname)));
+            CreateMap<StaffSearchGroup, List.SearchResult>()
+                .ForMember(d => d.FullName, o => o.MapFrom(x => GetFullName(x.FirstName, null, x.LastSurname)));
         }
 
         private static string GetFullName(string firstName, string middleName, string lastName)
