@@ -13,28 +13,6 @@ with staffService as (
     from edfi.StaffEducationOrganizationAssignmentAssociation as seoaa
              left join edfi.Descriptor as ksad on ksad.DescriptorId = seoaa.StaffClassificationDescriptorId
 )
-   , certDescription as (
-    select distinct Credential.CredentialFieldDescriptorId
-                  , theDescriptors.CodeValue [Credential Field]
-                  , oah.AssessmentIdentifier [Certification Academic Subject]
-                  , oah.Description          [Certification Academic Subject Description]
-    from EdFi.CredentialFieldDescriptor
-             left join edfi.Credential
-                       on Credential.CredentialFieldDescriptorId = CredentialFieldDescriptor.CredentialFieldDescriptorId
-             left join EdFi.Descriptor theDescriptors
-                       on theDescriptors.DescriptorId = CredentialFieldDescriptor.CredentialFieldDescriptorId
-             left join EdFi.ObjectiveAssessmentH oah
-                       on oah.AcademicSubjectDescriptorId = theDescriptors.DescriptorId
-)
-   , certifications as (
-    select sc.StaffUSI
-         , cd.CredentialFieldDescriptorId
-         , COALESCE(cd.[Certification Academic Subject], cd.[Credential Field]) [Certificate]
-         , sc.CreateDate as                                                     IssuanceDate
-    from edfi.StaffCredential as sc
-             left join edfi.Credential as ct ON ct.CredentialIdentifier = sc.CredentialIdentifier
-             left join certDescription as cd on cd.CredentialFieldDescriptorId = ct.CredentialFieldDescriptorId
-)
    , degrees as (
     select pp.StaffUSI
          , pp.MajorSpecialization
@@ -165,10 +143,6 @@ select s.StaffUSI
 
      , seoaa.StaffClassificationDescriptorId
 
-     , c.Certificate  as Certification
-     , c.IssuanceDate
-     , c.CredentialFieldDescriptorId
-
      , d.Degree
      , d.LevelOfDegreeAwardedDescriptorId
 
@@ -184,7 +158,6 @@ from edfi.Staff as s
          left join staffService on staffService.StaffUSI = s.StaffUSI
          join edfi.StaffEducationOrganizationAssignmentAssociation as seoaa on seoaa.StaffUSI = s.StaffUsi
          join assignments as a on a.StaffUSI = s.StaffUSI
-         join certifications as c on c.StaffUSI = s.StaffUSI
          left join degrees as d on d.StaffUSI = s.StaffUSI
          left join tpdm.PerformanceEvaluationRatingResult as PERR
                on perr.PersonId = s.PersonId

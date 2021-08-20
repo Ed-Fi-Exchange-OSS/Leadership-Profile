@@ -41,8 +41,7 @@ namespace LeadershipProfileAPI.Features.Search
             public string MiddleName { get; set; }
             [JsonPropertyName("lastSurname")] public string LastSurName { get; set; }
             public string FullName { get; set; }
-            public int YearsOfService { get; set; }
-            public string Certification { get; set; }
+            public decimal YearsOfService { get; set; }
             public string Assignment { get; set; }
             public string Degree { get; set; }
             public string RatingCategory { get; set; }
