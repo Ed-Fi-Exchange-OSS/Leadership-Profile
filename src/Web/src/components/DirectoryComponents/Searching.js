@@ -4,11 +4,10 @@ import { FormGroup, Input } from 'reactstrap';
 import { SearchIcon } from '../Icons';
 
 const Searching = (props) => {
-    const { onSearchValueChange } = props;
+    const { onSearchValueChange, value } = props;
 
     function handleOnChange(value) {
-        if(value.length >= 3 || value.length === 0)
-            onSearchValueChange(value);
+        onSearchValueChange(value);
     }
 
     function handleOnKeyUp(e){
@@ -21,6 +20,7 @@ const Searching = (props) => {
     return (
         <FormGroup className="w-50 search-by-name">
             <Input onChange={e => handleOnChange(e.target.value)}
+            value={value}
             onKeyUp={e => handleOnKeyUp(e)}
             type="text" name="searchByName" placeholder="Search by name" className="w-100" />
             <SearchIcon stylingId="search-by-name-icon" />

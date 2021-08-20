@@ -1,7 +1,11 @@
 import React, {useState} from 'react';
+import { useFilterContext } from '../../../context/filters/UseFilterContext';
+import PillType from "../../../utils/Constants";
+import FilterActions from '../../../context/filters/FilterActions';
 
 const UsePills = () => {
-    const [pills, setPills]= useState([]);
+    const pillTypes = PillType;
+    const [filterState, sendFilter] = useFilterContext();
 
     const setNewPill = (filter, label, value) => {
         let newPill = {
@@ -9,30 +13,41 @@ const UsePills = () => {
             label: label,
             value: value
         }
-        setPills(prevPills => [...prevPills, newPill]);
+        return newPill;
     }
 
     const removePill = (filterToRemove, name, value) => {
+        let pillToRemove;
         if(typeof(filterToRemove) === 'object' && typeof(name) === 'undefined'){
-            setPills(prevPills => prevPills.filter(pill => pill != filterToRemove));
+            pillToRemove = filterToRemove;
         }
 
         if(typeof(filterToRemove) === 'string' && typeof(name) === 'undefined'){
-            let pillToRemove = pills.find(e => e.filter === filterToRemove)
-
-            if (pillToRemove)
-                setPills(prevPills => prevPills.filter(pill => pill != pillToRemove));
+            pillToRemove = filterState.pills.find(e => e.filter === filterToRemove)
         }
         
         if(typeof(filterToRemove) === 'string' && name && value){
-            let pillToRemove = pills.find(e => e.filter === filterToRemove && e.label === name && e.value === value)
+            pillToRemove = filterState.pills.find(e => e.filter === filterToRemove && e.label === name && e.value === value)
+        }
 
-            if (pillToRemove)
-                setPills(prevPills => prevPills.filter(pill => pill != pillToRemove));
+        if (pillToRemove) sendFilter(FilterActions.removePill, pillToRemove);
+    }
+
+    function getTypeAction(filterType, isAdd){
+        switch(filterType){
+            case pillTypes.Position:{
+                return isAdd ? FilterActions.setPosition : FilterActions.removePosition;
+            }
+            case pillTypes.Institution:{
+                return isAdd ? FilterActions.setIntitution : FilterActions.removeInstitution;
+            }
+            case pillTypes.Degree:{
+                return isAdd ? FilterActions.setDegree : FilterActions.removeDegree;
+            }
         }
     }
-    
-    return{pills, setPills, setNewPill, removePill};
+
+    return{setNewPill, removePill, pillTypes, getTypeAction};
 }
 
 export default UsePills;
