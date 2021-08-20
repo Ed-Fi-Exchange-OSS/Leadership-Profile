@@ -10,6 +10,7 @@ import CertificationsTable from './../CertificationsComponents/CertificationsTab
 import EducationTable from './../EducationComponents/EducationTable';
 import PositionHistoryTable from '../PositionHistoryComponent/PositionHistoryTable';
 import UseProfile from './UseProfile';
+import ProfileBreadcrumbMenu from './ProfileBreadcrumbMenu';
 
 const Profile = () => {
     const [activeComponent, setActiveComponent] = useState("general");
@@ -23,6 +24,7 @@ const Profile = () => {
  
     return (
         <div>
+            <ProfileBreadcrumbMenu data={data} />
             <ProfileInfo data={data}/>
             <Nav className="profile-nav">
                 <NavItem className={activeComponent === "general" ? "current-profile-page nav-option" : "nav-option"}>
