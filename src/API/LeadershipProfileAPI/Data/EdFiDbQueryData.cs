@@ -91,6 +91,7 @@ namespace LeadershipProfileAPI.Data
                     , "staff.Assignment"
                     , "staff.YearsOfService"
                     , "staff.Degree"
+                    , "staff.Level"
             };
 
             // Map the UI sorted field name to a table field name

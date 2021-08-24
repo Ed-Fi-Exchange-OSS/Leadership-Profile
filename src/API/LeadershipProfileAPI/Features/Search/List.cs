@@ -43,6 +43,7 @@ namespace LeadershipProfileAPI.Features.Search
             public string Assignment { get; set; }
             public string Degree { get; set; }
             public string Institution { get; set; } = "Default Institution";
+            public string Level { get; set; }
         }
 
         public class QueryHandler : IRequestHandler<Query, Response>

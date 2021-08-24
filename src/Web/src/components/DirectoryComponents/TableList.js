@@ -23,6 +23,9 @@ const CreateTableList = (props) => {
                             Position
                         </th>
                         <th>
+                            Level
+                        </th>
+                        <th>
                             Location 
                         </th>
                         <th>
@@ -35,10 +38,11 @@ const CreateTableList = (props) => {
                 </thead>
                 <tbody>
                     {data !== [] ? data.map(profile => (
-                        <tr key={profile.staffUniqueId}>
+                        <tr key={`${profile.staffUniqueId}-${profile.lastSurname}-${profile.assignment}-${profile.institution}`}>
                             <td><span className="dot"></span></td>
                             <td><Link to={`profile/${profile.staffUniqueId}`}>{profile.lastSurname}, {profile.firstName}</Link></td>
                             <td>{profile.assignment}</td>
+                            <td>{profile.level}</td>
                             <td>{profile.institution}</td>
                             <td>{profile.yearsOfService}</td>
                             <td>{profile.degree}</td>

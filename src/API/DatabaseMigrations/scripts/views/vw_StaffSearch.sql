@@ -6,13 +6,37 @@ with staffService as (
     group by StaffUsi
 )
    , assignments as (
-    select seoaa.StaffUSI
-         , seoaa.StaffClassificationDescriptorId
-         , ksad.CodeValue  as [Position]
-         , seoaa.BeginDate as StartDate
-    from edfi.StaffEducationOrganizationAssignmentAssociation as seoaa
-             left join edfi.Descriptor as ksad on ksad.DescriptorId = seoaa.StaffClassificationDescriptorId
-)
+     SELECT seoaa.StaffUSI
+          , seoaa.StaffClassificationDescriptorId
+          , ksad.CodeValue  as [Position]
+          , seoaa.BeginDate as StartDate
+          , eo.NameOfInstitution
+          , seoaa.EducationOrganizationId
+     FROM
+		(
+			SELECT StaffUSI, MAX(LatestUpdateDate) LatestModifiedDate
+			FROM edfi.StaffEducationOrganizationAssignmentAssociation
+			UNPIVOT(LatestUpdateDate FOR Dates IN (CreateDate, LastModifiedDate)) as u
+			GROUP BY StaffUSI
+		) AS latestAssignment
+		JOIN edfi.StaffEducationOrganizationAssignmentAssociation as seoaa	   			
+				ON seoaa.StaffUSI = latestAssignment.StaffUSI 
+				and (LastModifiedDate = latestAssignment.LatestModifiedDate OR CreateDate = latestAssignment.LatestModifiedDate)
+          LEFT JOIN edfi.Descriptor as ksad ON ksad.DescriptorId = seoaa.StaffClassificationDescriptorId
+          LEFT JOIN edfi.EducationOrganization eo ON eo.EducationOrganizationId = seoaa.EducationOrganizationId
+          LEFT JOIN edfi.Descriptor d ON d.DescriptorId = seoaa.StaffClassificationDescriptorId
+          WHERE seoaa.EndDate IS NULL OR seoaa.EndDate >= GETUTCDATE()
+	)
+	, schoolLevel as (
+          SELECT 
+               ssa.StaffUSI, 
+               ssa.SchoolId, 
+               sc.SchoolCategoryDescriptorId, 
+               sgld.Description as SchoolLevel
+          FROM edfi.StaffSchoolAssociation ssa
+          LEFT JOIN edfi.SchoolCategory sc on sc.SchoolId = ssa.SchoolId
+          LEFT JOIN edfi.Descriptor sgld ON sgld.DescriptorId = sc.SchoolCategoryDescriptorId
+	)
    , allMeasures as (
     select st.StaffUSI
          , rd.PerformanceEvaluationTypeDescriptorId as Category
@@ -48,33 +72,6 @@ with staffService as (
     from tpdm.RubricDimension as rd
              left join edfi.Descriptor as de
                        on de.DescriptorId = rd.PerformanceEvaluationTypeDescriptorId
-),
-
-staff_school (StaffUSI, School, Position, SchoolId) AS
-(
-    SELECT seoaa.StaffUSI, eo.NameOfInstitution, d.ShortDescription, seoaa.EducationOrganizationId
-    FROM edfi.StaffEducationOrganizationAssignmentAssociation seoaa
-    INNER JOIN edfi.EducationOrganization eo ON eo.EducationOrganizationId = seoaa.EducationOrganizationId
-    INNER JOIN edfi.Descriptor d ON d.DescriptorId = seoaa.StaffClassificationDescriptorId
-    WHERE seoaa.EndDate IS NULL OR seoaa.EndDate >= GETUTCDATE()
-    GROUP BY seoaa.StaffUSI, eo.NameOfInstitution, d.ShortDescription, seoaa.EducationOrganizationId
-),
-
-staff_email (StaffUSI, Email) AS (
-    SELECT StaffUSI, Email FROM 
-    (SELECT StaffUSI, ElectronicMailAddress Email, ROW_NUMBER () OVER (PARTITION BY StaffUSI ORDER BY ElectronicMailTypeDescriptorId) RowNumber
-    FROM edfi.StaffElectronicMail
-    ) se WHERE se.RowNumber = 1
-),
-staff_telephone (StaffUSI, Telephone) AS (
-    SELECT StaffUSI, TelephoneNumber FROM
-    (
-        SELECT 
-        StaffUSI,
-        TelephoneNumber,
-        ROW_NUMBER() OVER (PARTITION BY StaffUSI ORDER BY TelephoneNumberTypeDescriptorId) RowNumber
-        FROM edfi.StaffTelephone st
-    ) st WHERE st.RowNumber = 1
 )
 
 select s.StaffUSI
@@ -84,28 +81,34 @@ select s.StaffUSI
      , s.LastSurname
      , CONCAT(s.FirstName, ' ', s.LastSurname) as FullName
 
+	 -- Tenure
      , staffService.YearsOfService
 
+	 -- Assignment/Position
      , a.Position     as Assignment
      , a.StartDate
+	 , a.StaffClassificationDescriptorId
 
-     , seoaa.StaffClassificationDescriptorId
+	 -- Level
+	 , sl.SchoolCategoryDescriptorId
+	 , COALESCE(sl.SchoolLevel, 'Unknown') as [Level]
 
+	 -- Degree
      , degreeDescriptor.CodeValue as Degree
      , s.HighestCompletedLevelOfEducationDescriptorId
 
+	 -- Rating
      , mr.Category    as RatingCategory
      , mr.Subcategory as RatingSubCategory
      , perr.Rating    as Rating
 
-     , ss.School as Institution
-     , ss.SchoolId as InstitutionId
-     , se.Email as Email
-     , st.Telephone as Telephone
+	 -- School/Institution
+     , a.NameOfInstitution as Institution
+     , a.EducationOrganizationId as InstitutionId
 from edfi.Staff as s
          left join staffService on staffService.StaffUSI = s.StaffUSI
-         join edfi.StaffEducationOrganizationAssignmentAssociation as seoaa on seoaa.StaffUSI = s.StaffUsi
-         join assignments as a on a.StaffUSI = s.StaffUSI
+         left join assignments as a on a.StaffUSI = s.StaffUSI
+         left join schoolLevel as sl on sl.StaffUSI = s.StaffUSI
          left join edfi.Descriptor as degreeDescriptor ON degreeDescriptor.DescriptorId = s.HighestCompletedLevelOfEducationDescriptorId
          left join tpdm.PerformanceEvaluationRatingResult as PERR
                on perr.PersonId = s.PersonId
@@ -117,8 +120,5 @@ from edfi.Staff as s
                and mr.SubCategory = perr.PerformanceEvaluationTypeDescriptorId
                and mr.StaffUsi = s.StaffUSI
                and mr.MeasureDate = per.ActualDate
-         left join rubric as ru on ru.DescriptorId = perr.PerformanceEvaluationTypeDescriptorId
-         LEFT JOIN staff_school ss ON ss.StaffUSI = s.StaffUSI
-         LEFT JOIN staff_email se ON se.StaffUSI = s.StaffUSI
-         LEFT JOIN staff_telephone st ON st.StaffUSI = s.StaffUSI         
+         left join rubric as ru on ru.DescriptorId = perr.PerformanceEvaluationTypeDescriptorId          
 GO
