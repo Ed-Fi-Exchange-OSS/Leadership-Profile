@@ -10,5 +10,6 @@
         public ProfileSearchRequestInstitution Institutions { get; set; }
 
         public string Name { get; set; }
+        public ProfileSearchRequestTenure TenureRanges { get; set; }
     }
 }
