@@ -13,6 +13,7 @@ function UseDirectoryFilters () {
     const [year, setYear] = useState('');
     const [yearRange, setYearRange] = useState({min: 0, max: 0})
     const [institutions, setInstitutions] = useState([]);
+    const [tenureRanges, setTenureRanges] = useState([]);
     const [filteredInstitutions, setFilteredInstitutions] = useState(institutions);
     const [filterInstitutionValue, setFilterInstitutionValue] = useState();
 
@@ -33,6 +34,18 @@ function UseDirectoryFilters () {
             responseSetter(response.institutions, setInstitutions, filterState.institutions);
         });
     }
+
+    async function getTenureRanges(){
+        responseSetter(ranges, setTenureRanges, filterState.tenure);
+    }
+
+    let ranges = [
+        {text:"0-2 years.", value: 0},
+        {text:"3-5 years.", value: 1},
+        {text:"6-10 years.", value: 2},
+        {text:"11-15 years.", value: 3},
+        {text:"15+ years.", value: 4}
+    ];
 
     function responseSetter(responseObject, setter, initialState){
         var newResponse = [];
@@ -86,6 +99,7 @@ function UseDirectoryFilters () {
         getPositions();
         getDegrees();
         getInstitutions();
+        getTenureRanges();
     }, [])
 
     useEffect(() => {
@@ -93,9 +107,9 @@ function UseDirectoryFilters () {
     }, [institutions])
 
     return {positions, nameSearch, degrees, yearsOptionRange, year, yearRange, 
-        institutions, filteredInstitutions, filterInstitutionValue,
+        institutions, filteredInstitutions, filterInstitutionValue, tenureRanges,
          setPositions, setNameSearch, setDegrees, setYearsOptionRange, setYear, setYearRange, 
-         setInstitutions, setFilteredInstitutions, setFilterInstitutionValue,
+         setInstitutions, setFilteredInstitutions, setFilterInstitutionValue, setTenureRanges,
         setCheckValueForElement, unCheckAllFromElement};
 }
 

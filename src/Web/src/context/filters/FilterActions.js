@@ -9,6 +9,8 @@ const FilterActions = {
     setYear: "SET_YEAR",
     removeYear: "REMOVE_YEAR",
     removePill: "REMOVE_PILL",
+    setTenure:"SET_TENURE",
+    removeTenure: "REMOVE_TENURE",
     clearFilters: "CLEAR_FILTERS"
 };
 

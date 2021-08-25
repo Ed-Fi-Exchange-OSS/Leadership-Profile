@@ -17,7 +17,8 @@ const CreateDirectoryFilters = (props) => {
             setYearRange, institutions, setInstitutions,
             filteredInstitutions, setFilteredInstitutions,
             filterInstitutionValue, setFilterInstitutionValue,
-            setCheckValueForElement, unCheckAllFromElement
+            tenureRanges, setTenureRanges,
+            setCheckValueForElement, unCheckAllFromElement,
         } = UseDirectoryFilters();
         
         const { setNewPill, removePill, pillTypes, getTypeAction } = UsePills();
@@ -35,8 +36,14 @@ const CreateDirectoryFilters = (props) => {
             sendFilter(action, pill);
         }
 
+        function GetCheckedOrSelectedValues(elements) {
+            return elements?.filter(x => x.checked || x.selected).map(x => x.value) ?? [];
+        }
+
         function OnChangeSubmit(isClearing){
-            let yearsOnRange = getYearRange(isClearing);
+            //let yearsOnRange = getYearRange(isClearing);
+            let selectedTenureRanges =  getYearRange(filterState.tenure)
+
             let filters = {
                 "Assignments":{
                     "Values": filterState.positions
@@ -45,10 +52,13 @@ const CreateDirectoryFilters = (props) => {
                     "Values": filterState.degrees
                 },
                 "Name": filterState.nameSearch,
-                "MinYears": yearsOnRange.min,
-                "MaxYears": yearsOnRange.max,
+                "MinYears": 0,
+                "MaxYears": 0,
                 "Institutions":{
                     "Values": filterState.institutions
+                },
+                "TenureRanges":{
+                    "Values": selectedTenureRanges
                 }
             }
 
@@ -74,6 +84,11 @@ const CreateDirectoryFilters = (props) => {
             setYearsOptionRange(value); 
         }
 
+        function Tenure_OnChange(e)
+        {
+            CheckSelectedItem(e.currentTarget, tenureRanges, setTenureRanges, pillTypes.Tenure);
+        }
+
         function Year_OnChange(value){
             setYear(value);
         }
@@ -97,13 +112,13 @@ const CreateDirectoryFilters = (props) => {
                 setCheckValueForElement(filteredInstitutions, setFilteredInstitutions, pill.value, false);
             }
             if(pill.filter === pillTypes.Tenure){
-                setYear('');
-                removePill(pill);
+                setCheckValueForElement(tenureRanges, setTenureRanges, pill.value, false);
             }
 
             sendFilter(getTypeAction(pill.filter, false), pill);
 
-            if(pill.filter !== pillTypes.Tenure) OnChangeSubmit();
+            //if(pill.filter !== pillTypes.Tenure) OnChangeSubmit();
+            OnChangeSubmit();
         }
 
         function removeAllPills(){
@@ -111,29 +126,37 @@ const CreateDirectoryFilters = (props) => {
             unCheckAllFromElement(positions, setPositions);
             unCheckAllFromElement(degrees, setDegrees);
             unCheckAllFromElement(filteredInstitutions, setFilteredInstitutions);
-            setYearsOptionRange('-1');
+            //setYearsOptionRange('-1');
             setYear('');
             OnChangeSubmit(true);
         }
 
-        function getYearRange(clearing){
-            if(yearsOptionRange < 0 || typeof(year)  === 'undefined' || year === '' || clearing) return {min:0, max:0};
+        function getYearRange(tenureOptions){
+            let range = [];
 
-            if(yearsOptionRange == 0 && year){
-                let atLeast = {
-                    min: year,
-                    max: 0
-                };
-                return atLeast;
+            if(typeof(tenureOptions) !=='undefined')
+            {
+                if (tenureOptions.includes(0)) {
+                    range.push({min:0, max:2});
+                }
+    
+                if (tenureOptions.includes(1)) {
+                    range.push({min:3, max:5});
+                }
+    
+                if (tenureOptions.includes(2)) {
+                    range.push({min:6, max:10});
+                }
+    
+                if (tenureOptions.includes(3)) {
+                    range.push({min:11, max:15});
+                }
+    
+                if (tenureOptions.includes(4)) {
+                    range.push({min:15, max:100});
+                }
             }
-
-            if(yearsOptionRange == 1 && year){
-                let lessThan = {
-                    min: 0,
-                    max: year
-                };
-                return lessThan;
-            }
+            return range;
         }
 
         useEffect(() => {
@@ -259,14 +282,32 @@ const CreateDirectoryFilters = (props) => {
                         </FormGroup>
                         </Col>
                         <Col>
-                            <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                                <Input type="select" name="select" className="filter-dropdown" value={yearsOptionRange}
-                                onChange={event => {YearOption_OnChange(event.currentTarget.value);}} >
-                                    <option value="-1">Years</option>
-                                    <option value="0">At Least</option>
-                                    <option value="1">Less Than</option>
-                                </Input>
-                            </FormGroup>
+                        <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+                               <UncontrolledDropdown>
+                                   <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret>
+                                       Tenure
+                                   </DropdownToggle>
+                                   <DropdownMenu modifiers={modifiers} right className="btn-dropdown-items">
+                                       {
+                                           Object.keys(tenureRanges).length !== 0 ? (
+                                            tenureRanges.map((tenureElement, index) => 
+                                               {
+                                                   return(
+                                                       <div key={index}>
+                                                           <input type="checkbox"
+                                                           style={{"display": "inline"}}
+                                                           name={tenureElement.text}
+                                                           value={tenureElement.value}
+                                                           checked={tenureElement.checked}
+                                                           onChange={e => {Tenure_OnChange(e)}} />
+                                                        <Label style={{"display": "inline"}}>{tenureElement.text}</Label></div>)
+                                               })
+                                            ) : ("")
+                                       }
+
+                                   </DropdownMenu>
+                               </UncontrolledDropdown>
+                        </FormGroup>
                         </Col>
                         <Col>
                             <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
