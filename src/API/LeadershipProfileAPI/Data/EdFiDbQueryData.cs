@@ -200,7 +200,7 @@ namespace LeadershipProfileAPI.Data
             if (degrees != null && degrees.Values.Any())
             {
                 // Provide the condition being searched for matching your schema. Example: "(d.DegreeId = 68)"
-                var whereDegrees = degrees.Values.Any() ? $"LevelOfDegreeAwardedDescriptorId in ({string.Join(",", degrees.Values)})" : string.Empty;
+                var whereDegrees = degrees.Values.Any() ? $"HighestCompletedLevelOfEducationDescriptorId in ({string.Join(",", degrees.Values)})" : string.Empty;
 
                 return $"({whereDegrees})";
             }
