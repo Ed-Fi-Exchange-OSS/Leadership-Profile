@@ -209,7 +209,7 @@ namespace LeadershipProfileAPI.Data
 
         private static string ClauseRatings(ProfileSearchRequestRatings ratings)
         {
-            if (ratings?.Score > 0)
+            if (ratings?.CategoryId > 0 && ratings?.Score >= 0)
             {
                 // Provide the condition being searched for matching your schema. Examples: "(r.Rating = 3)" or "(r.Rating = 3 and r.RatingCateogryId = 45)"
                 var whereCategory = ratings.CategoryId > 0 ? $"mr.Category = {ratings.CategoryId}" : string.Empty;
@@ -218,7 +218,9 @@ namespace LeadershipProfileAPI.Data
                 var andScoreAndSub = !string.IsNullOrWhiteSpace(ratings.SubCategory) && ratings.Score > 0 ? " and " : string.Empty;
                 var whereSubCategory = !string.IsNullOrWhiteSpace(ratings.SubCategory) ? $"mr.SubCategory = '{ratings.SubCategory}'" : string.Empty;
 
-                return $"({whereCategory}{andCatAndScore}{whereScore}{andScoreAndSub}{whereSubCategory})";
+                // TO-DO: returning empty for now until backend changes
+                //return $"({whereCategory}{andCatAndScore}{whereScore}{andScoreAndSub}{whereSubCategory})";
+                return string.Empty;
             }
 
             return string.Empty;

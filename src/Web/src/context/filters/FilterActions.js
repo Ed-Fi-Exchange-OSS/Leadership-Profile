@@ -9,6 +9,9 @@ const FilterActions = {
     setYear: "SET_YEAR",
     removeYear: "REMOVE_YEAR",
     removePill: "REMOVE_PILL",
+    setRatingCategory: "SET_RATING_CATEGORY",
+    setRatingScore: "SET_RATING_SCORE",
+    removeRating: "REMOVE_RATING",
     clearFilters: "CLEAR_FILTERS"
 };
 

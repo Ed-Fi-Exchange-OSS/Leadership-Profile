@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Form, FormGroup, Label, Input, Row, Col, UncontrolledDropdown, DropdownToggle, DropdownMenu, Button } from 'reactstrap';
+import { Form, FormGroup, Label, Input, Row, Col, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import Searching from './Searching';
 import UseDirectoryFilters from './UseDirectoryFilter';
 import DropdownTypeAhead from './DropdownTypeAhead';
@@ -7,6 +7,7 @@ import PillsFilters from './PillsComponents/PillsFilters';
 import UsePills from './PillsComponents/UsePills';
 import { useFilterContext } from "../../context/filters/UseFilterContext";
 import FilterActions from "../../context/filters/FilterActions";
+import { SCORE_OPTIONS } from '../../utils/Constants';
 
 const CreateDirectoryFilters = (props) => {
 
@@ -17,19 +18,19 @@ const CreateDirectoryFilters = (props) => {
             setYearRange, institutions, setInstitutions,
             filteredInstitutions, setFilteredInstitutions,
             filterInstitutionValue, setFilterInstitutionValue,
-            setCheckValueForElement, unCheckAllFromElement
+            setCheckValueForElement, unCheckAllFromElement,
+            categories
         } = UseDirectoryFilters();
         
         const { setNewPill, removePill, pillTypes, getTypeAction } = UsePills();
         const [filterState, sendFilter] = useFilterContext();
-
+        
         function CheckSelectedItem(target, elements, setter, type) {
             setCheckValueForElement(elements, setter,  target.value, target.checked);
             setCheckedFilterAsPill(type, target);
         }
 
         function setCheckedFilterAsPill(filterType, target){
-            debugger;
             let action = getTypeAction(filterType, target.checked);
             let pill = setNewPill(filterType, target.name, parseInt(target.value))
             sendFilter(action, pill);
@@ -49,6 +50,10 @@ const CreateDirectoryFilters = (props) => {
                 "MaxYears": yearsOnRange.max,
                 "Institutions":{
                     "Values": filterState.institutions
+                },
+                "Ratings": {
+                    "CategoryId": filterState.categoryId,
+                    "Score": filterState.score
                 }
             }
 
@@ -134,6 +139,22 @@ const CreateDirectoryFilters = (props) => {
                 };
                 return lessThan;
             }
+        }
+
+        function onClickCategory(e){
+            // Clear filter/pill if default Category selected 
+            if(e.currentTarget.value == 0){
+                var ratingPill = filterState.pills.find(value => value.filter === pillTypes.Rating);
+                sendFilter(FilterActions.removeRating, ratingPill);
+                return;
+            }
+            sendFilter(FilterActions.setRatingCategory, {text: e.currentTarget.innerText, value: e.currentTarget.value});
+        }
+
+        function onClickScore(e){
+            let target = e.target;
+            let pill = setNewPill(pillTypes.Rating, `${filterState.categoryLabel} : ${target.innerText}`, target.value)
+            sendFilter(FilterActions.setRatingScore, pill);
         }
 
         useEffect(() => {
@@ -301,6 +322,55 @@ const CreateDirectoryFilters = (props) => {
                                    </DropdownMenu>
                                </UncontrolledDropdown>
                         </FormGroup>
+                        </Col>
+                    </Row>
+                    <Row className="centered-filter-rows">
+                        <Col md={3} lg={3} xl={3}>
+                            <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+                                <UncontrolledDropdown setActiveFromChild>
+                                    <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret>
+                                        {filterState.categoryLabel || "Performance Indicator"}
+                                    </DropdownToggle>
+                                    <DropdownMenu modifiers={modifiers} persist={false}>
+                                        <DropdownItem value="0" key={"cat-0"} onClick={onClickCategory}>All Performance Indicators</DropdownItem>
+                                        <DropdownItem divider/>
+                                        {
+                                            Object.keys(categories).length !== 0 ? (
+                                                categories.map((catElement, index) => {
+                                                    return(
+                                                        <DropdownItem key={"cat-" + index} onClick={onClickCategory} value={catElement.value} active={catElement.selected}>
+                                                            {catElement.text}
+                                                        </DropdownItem>
+                                                    )
+                                                })
+                                            ): ("")
+                                        }
+                                    </DropdownMenu>
+                                </UncontrolledDropdown>
+                            </FormGroup>
+                        </Col>
+                        <Col md={3} lg={3} xl={3}>
+                            <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+                                <UncontrolledDropdown >
+                                    <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret disabled={filterState.categoryId == 0}>
+                                        Score
+                                    </DropdownToggle>
+                                    <DropdownMenu modifiers={modifiers} right>
+                                        <DropdownItem value="0" key={"score-0"} onClick={onClickScore}>All Scores</DropdownItem>
+                                        {
+                                            Object.keys(SCORE_OPTIONS).length !== 0 ? (
+                                                SCORE_OPTIONS.map((score, index) => {
+                                                    return(
+                                                        <DropdownItem key={"score-" + index} onClick={onClickScore} value={score.value} active={score.selected}>
+                                                            {score.text}
+                                                        </DropdownItem>
+                                                    )
+                                                })
+                                            ): ("")
+                                        }
+                                    </DropdownMenu>
+                                </UncontrolledDropdown>
+                            </FormGroup>
                         </Col>
                     </Row>
                     </Form>

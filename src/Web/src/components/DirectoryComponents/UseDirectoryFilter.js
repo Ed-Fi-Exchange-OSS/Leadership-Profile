@@ -15,6 +15,7 @@ function UseDirectoryFilters () {
     const [institutions, setInstitutions] = useState([]);
     const [filteredInstitutions, setFilteredInstitutions] = useState(institutions);
     const [filterInstitutionValue, setFilterInstitutionValue] = useState();
+    const [categories, setCategories] = useState([]);
 
     async function getPositions(){
         fetchFilterData(`webcontrols/dropdownlist/assignments`, (response) => {
@@ -34,13 +35,20 @@ function UseDirectoryFilters () {
         });
     }
 
-    function responseSetter(responseObject, setter, initialState){
+    async function getCategories(){
+        fetchFilterData(`webcontrols/dropdownlist/measurementcategories`, (response) => {
+            responseSetter(response.categories, setCategories, null, false);
+        });
+    }
+
+    function responseSetter(responseObject, setter, initialState, isCheckboxFilter = true){
+        var selected = isCheckboxFilter ? "checked" : "selected";
         var newResponse = [];
             responseObject.forEach(element => {
                 newResponse.push({
                     "text": element.text,
                     "value": element.value,
-                    "checked": initialState ? initialState.includes(element.value) : false
+                    [selected]: initialState ? initialState.includes(element.value) : false
                 })
             });
         setter(newResponse);
@@ -86,6 +94,7 @@ function UseDirectoryFilters () {
         getPositions();
         getDegrees();
         getInstitutions();
+        getCategories();
     }, [])
 
     useEffect(() => {
@@ -93,10 +102,11 @@ function UseDirectoryFilters () {
     }, [institutions])
 
     return {positions, nameSearch, degrees, yearsOptionRange, year, yearRange, 
-        institutions, filteredInstitutions, filterInstitutionValue,
+        institutions, filteredInstitutions, filterInstitutionValue, categories,
          setPositions, setNameSearch, setDegrees, setYearsOptionRange, setYear, setYearRange, 
-         setInstitutions, setFilteredInstitutions, setFilterInstitutionValue,
-        setCheckValueForElement, unCheckAllFromElement};
+         setInstitutions, setFilteredInstitutions, setFilterInstitutionValue, 
+         setCheckValueForElement, unCheckAllFromElement, 
+         setCategories};
 }
 
 export default UseDirectoryFilters;
