@@ -37,7 +37,7 @@ namespace LeadershipProfileAPI.Controllers.WebControls.DropDownList.MeasurementC
                 _mapper = mapper;
             }
 
-            public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
+            public Task<Response> Handle(Query request, CancellationToken cancellationToken)
             {
                 //var list = await _dbContext.ListItemCategories
                 //    .ProjectTo<Category>(_mapper.ConfigurationProvider)
@@ -46,10 +46,12 @@ namespace LeadershipProfileAPI.Controllers.WebControls.DropDownList.MeasurementC
                 /* TO-DO: Returning dummy data, replace this with code above when db view is updated */
                 var list = _mapper.Map<List<Category>> (DummyData());
 
-                return new Response
+                var response = new Response
                 {
                     Categories = list.OrderBy(o => o.Text).ToList()
                 };
+
+                return Task.FromResult(response);
             }
 
             public List<ListItemCategory> DummyData()
