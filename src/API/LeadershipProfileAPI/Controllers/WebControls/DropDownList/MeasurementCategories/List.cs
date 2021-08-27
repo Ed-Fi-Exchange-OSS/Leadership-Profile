@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using LeadershipProfileAPI.Data;
+using LeadershipProfileAPI.Data.Models.ListItem;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -36,15 +37,32 @@ namespace LeadershipProfileAPI.Controllers.WebControls.DropDownList.MeasurementC
                 _mapper = mapper;
             }
 
-            public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
+            public Task<Response> Handle(Query request, CancellationToken cancellationToken)
             {
-                var list = await _dbContext.ListItemCategories
-                    .ProjectTo<Category>(_mapper.ConfigurationProvider)
-                    .ToListAsync(cancellationToken);
+                //var list = await _dbContext.ListItemCategories
+                //    .ProjectTo<Category>(_mapper.ConfigurationProvider)
+                //    .ToListAsync(cancellationToken);
 
-                return new Response
+                /* TO-DO: Returning dummy data, replace this with code above when db view is updated */
+                var list = _mapper.Map<List<Category>> (DummyData());
+
+                var response = new Response
                 {
                     Categories = list.OrderBy(o => o.Text).ToList()
+                };
+
+                return Task.FromResult(response);
+            }
+
+            public List<ListItemCategory> DummyData()
+            {
+                return new List<ListItemCategory>
+                {
+                    new() { Text = "Forever Learner", Value = 1 },
+                    new() { Text = "Promise 2 Purpose Investor", Value = 2 },
+                    new() { Text = "Relationship Driven", Value = 3 },
+                    new() { Text = "Student Focused", Value = 4 },
+                    new() { Text = "Technical Skills", Value = 5 }
                 };
             }
         }

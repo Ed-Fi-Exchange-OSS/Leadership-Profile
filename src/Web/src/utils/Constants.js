@@ -4,6 +4,9 @@ export const INITIAL_FILTERS_STATE = {
     positions: [],
     degrees: [],
     tenure: [],
+    categoryId: 0,
+    categoryLabel: '',
+    score: 0,
     pills: []
 
     /*
@@ -34,7 +37,17 @@ const PillType = {
     Position: "POSITION",
     Institution: "INSTITUTION",
     Tenure: "TENURE",
-    Degree: "DEGREE"
+    Degree: "DEGREE",
+    Rating: "RATING"
 }
 
 export default PillType;
+
+export const SCORE_OPTIONS = 
+    [
+        {"text": "At Least 1", "value": 1, "selected": false},
+        {"text": "At Least 2", "value": 2, "selected": false},
+        {"text": "At Least 3", "value": 3, "selected": false},
+        {"text": "At Least 4", "value": 4, "selected": false},
+        {"text": "5", "value": 5, "selected": false}
+    ];
