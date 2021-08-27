@@ -230,7 +230,7 @@ const CreateDirectoryFilters = (props) => {
                         <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
                         <UncontrolledDropdown>
                                    <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret>
-                                       Locations
+                                       Schools
                                    </DropdownToggle>
                                    <DropdownMenu modifiers={modifiers} right className="btn-dropdown-items">
                                        <DropdownTypeAhead 
