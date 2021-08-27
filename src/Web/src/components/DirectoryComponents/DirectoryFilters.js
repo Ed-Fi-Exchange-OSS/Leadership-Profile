@@ -136,7 +136,7 @@ const CreateDirectoryFilters = (props) => {
             }
         }
 
-        useEffect((git) => {
+        useEffect(() => {
             OnChangeSubmit();
         }, [filterState])
 

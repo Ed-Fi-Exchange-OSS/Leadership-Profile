@@ -28,16 +28,6 @@ namespace LeadershipProfileAPI.Features.Profile
             _mediator = mediator;
         }
 
-        [HttpGet]
-        public async Task<ActionResult> GetDirectory(
-            [FromQuery] List.Query query,
-            CancellationToken cancellationToken
-        )
-        {
-            var result = await _mediator.Send(query, cancellationToken);
-            return Ok(result);
-        }
-
         [HttpGet("{id}")]
         public async Task<ActionResult> GetProfile([FromRoute] string id, CancellationToken cancellationToken)
         {
