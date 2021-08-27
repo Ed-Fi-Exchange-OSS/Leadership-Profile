@@ -24,7 +24,7 @@ const CreateDirectoryFilters = (props) => {
         
         const { setNewPill, removePill, pillTypes, getTypeAction } = UsePills();
         const [filterState, sendFilter] = useFilterContext();
-        
+
         function CheckSelectedItem(target, elements, setter, type) {
             setCheckValueForElement(elements, setter,  target.value, target.checked);
             setCheckedFilterAsPill(type, target);
