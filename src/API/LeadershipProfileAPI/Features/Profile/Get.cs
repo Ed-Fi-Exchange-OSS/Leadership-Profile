@@ -168,25 +168,11 @@ namespace LeadershipProfileAPI.Features.Profile
                     {2020, flPerformanceRating2020}, {2021, flPerformanceRating2021}
                 };
 
-                var overAllPerformanceEvaluation = new PerformanceEvaluation()
+                return new List<PerformanceEvaluation>
                 {
-                    Title = "Overall",
-                    RatingsByYear = overallRatingsByYear
+                    new PerformanceEvaluation() { Title = "Overall", RatingsByYear = overallRatingsByYear },
+                    new PerformanceEvaluation() { Title = "Forever Learner", RatingsByYear = flRatingsByYear },
                 };
-
-                var flPerformanceEvaluation = new PerformanceEvaluation()
-                {
-                    Title = "Forever Learner",
-                    RatingsByYear = flRatingsByYear
-                };
-
-                var evaluations = new List<PerformanceEvaluation>
-                {
-                    overAllPerformanceEvaluation,
-                    flPerformanceEvaluation
-                };
-
-                return evaluations;
             }
         }
     }
