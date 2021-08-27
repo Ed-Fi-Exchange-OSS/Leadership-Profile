@@ -6,17 +6,11 @@ import CardList from './CardListComponents/CardList';
 import UseDirectory from './UseDirectory';
 import ErrorMessage from '../ErrorMessage';
 import DirectoryFilters from './DirectoryFilters';
-import UseSearchDirectory from './AdvancedSearchComponent/UseSearchDirectory';
 
 const Directory = () => {
     const [activeComponent, setActiveComponent] = useState("table");
-    const { setColumnSort, sort, data, paging, setPage, search, setSearchValue, error, goToAdvancedSearch, setFilters } = UseDirectory();
+    const { setColumnSort, sort, data, paging, setPage, error, setFilters } = UseDirectory();
     
-    const handleOnClick = (e) => {
-        e.preventDefault();
-        goToAdvancedSearch();
-    };
-
     const callbackFilteredSearch = (searchData) => {
         setFilters(searchData);
     }
