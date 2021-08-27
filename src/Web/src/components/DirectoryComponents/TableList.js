@@ -23,7 +23,7 @@ const CreateTableList = (props) => {
                             Position
                         </th>
                         <th>
-                            Location 
+                            School 
                         </th>
                         <th>
                             Years
