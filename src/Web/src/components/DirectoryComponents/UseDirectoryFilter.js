@@ -16,6 +16,7 @@ function UseDirectoryFilters () {
     const [tenureRanges, setTenureRanges] = useState([]);
     const [filteredInstitutions, setFilteredInstitutions] = useState(institutions);
     const [filterInstitutionValue, setFilterInstitutionValue] = useState();
+    const [categories, setCategories] = useState([]);
 
     async function getPositions(){
         fetchFilterData(`webcontrols/dropdownlist/assignments`, (response) => {
@@ -40,20 +41,26 @@ function UseDirectoryFilters () {
     }
 
     let ranges = [
-        {text:"0-2 years.", value: 0},
-        {text:"3-5 years.", value: 1},
-        {text:"6-10 years.", value: 2},
-        {text:"11-15 years.", value: 3},
-        {text:"15+ years.", value: 4}
+        { text: "0-2 years.", value: 0 },
+        { text: "3-5 years.", value: 1 },
+        { text: "6-10 years.", value: 2 },
+        { text: "11-15 years.", value: 3 },
+        { text: "15+ years.", value: 4 }
     ];
+    async function getCategories(){
+        fetchFilterData(`webcontrols/dropdownlist/measurementcategories`, (response) => {
+            responseSetter(response.categories, setCategories, null, false);
+        });
+    }
 
-    function responseSetter(responseObject, setter, initialState){
+    function responseSetter(responseObject, setter, initialState, isCheckboxFilter = true){
+        var selected = isCheckboxFilter ? "checked" : "selected";
         var newResponse = [];
             responseObject.forEach(element => {
                 newResponse.push({
                     "text": element.text,
                     "value": element.value,
-                    "checked": initialState ? initialState.includes(element.value) : false
+                    [selected]: initialState ? initialState.includes(element.value) : false
                 })
             });
         setter(newResponse);
@@ -99,6 +106,7 @@ function UseDirectoryFilters () {
         getPositions();
         getDegrees();
         getInstitutions();
+        getCategories();
         getTenureRanges();
     }, [])
 
@@ -106,11 +114,12 @@ function UseDirectoryFilters () {
         setFilteredInstitutions(institutions);
     }, [institutions])
 
-    return {positions, nameSearch, degrees, yearsOptionRange, year, yearRange, 
-        institutions, filteredInstitutions, filterInstitutionValue, tenureRanges,
-         setPositions, setNameSearch, setDegrees, setYearsOptionRange, setYear, setYearRange, 
-         setInstitutions, setFilteredInstitutions, setFilterInstitutionValue, setTenureRanges,
-        setCheckValueForElement, unCheckAllFromElement};
+    return {positions, nameSearch, degrees, yearsOptionRange, year, yearRange,
+        institutions, filteredInstitutions, filterInstitutionValue, categories, tenureRanges,
+         setPositions, setNameSearch, setDegrees, setYearsOptionRange, setYear, setYearRange,
+         setInstitutions, setFilteredInstitutions, setFilterInstitutionValue,
+        setCheckValueForElement, unCheckAllFromElement, setTenureRanges,
+         setCategories};
 }
 
 export default UseDirectoryFilters;

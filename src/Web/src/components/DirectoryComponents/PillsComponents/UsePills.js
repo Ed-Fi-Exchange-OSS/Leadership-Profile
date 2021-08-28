@@ -44,6 +44,9 @@ const UsePills = () => {
             case pillTypes.Degree:{
                 return isAdd ? FilterActions.setDegree : FilterActions.removeDegree;
             }
+            case pillTypes.Rating:{
+                return isAdd ? FilterActions.setRatingScore : FilterActions.removeRating;
+            }
             case pillTypes.Tenure:{
                 return isAdd ? FilterActions.setTenure : FilterActions.removeTenure;
             }

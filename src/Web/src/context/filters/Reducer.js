@@ -3,7 +3,7 @@ import {INITIAL_FILTERS_STATE} from "../../utils/Constants";
 
 const Reducer = (state, action) => {
     const {setNameFilter, setPosition, removePosition, setIntitution, removeInstitution, 
-        setDegree, removeDegree, setTenure, removeTenure, removePill, clearFilters} = FilterActions;
+        setDegree, removeDegree, setTenure, removeTenure, setRatingCategory, setRatingScore, removeRating, removePill, clearFilters} = FilterActions;
 
     switch(action.type){
         case setNameFilter: { 
@@ -79,6 +79,32 @@ const Reducer = (state, action) => {
         case removePill: {
             return {
                 ...state,
+                pills: state.pills.filter(value => value !== action.payload)
+            }
+        }
+        case setRatingCategory: {
+            return {
+                ...state,
+                categoryLabel: action.payload.text,
+                categoryId: action.payload.value
+            }
+        }
+        case setRatingScore: {
+            let newFilterPill = action.payload;
+            return {
+                ...state,
+                score: newFilterPill.value,
+                pills: state.pills.some(pill => pill.filter === newFilterPill.filter)
+                    ? state.pills.map(prevPill => (prevPill.filter === newFilterPill.filter) ? newFilterPill : prevPill)            
+                    : [...state.pills, newFilterPill]
+            }
+        }
+        case removeRating: {
+            return {
+                ...state,
+                score: 0,
+                categoryId: 0,
+                categoryLabel: '',
                 pills: state.pills.filter(value => value !== action.payload)
             }
         }
