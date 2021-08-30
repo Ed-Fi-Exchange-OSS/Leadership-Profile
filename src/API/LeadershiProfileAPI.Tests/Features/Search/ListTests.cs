@@ -15,10 +15,7 @@ namespace LeadershipProfileAPI.Tests.Features.Search
         {
             var body = new ProfileSearchRequestBody();
 
-            var response = await Testing.Send(new List.Query
-            {
-                SearchRequestBody = body
-            });
+            var response = await SendSearchQuery(body);
 
             response.ShouldNotBeNull();
         }
@@ -29,10 +26,7 @@ namespace LeadershipProfileAPI.Tests.Features.Search
             var body = new ProfileSearchRequestBody()
                 .AddRatings();
 
-            var response = await Testing.Send(new List.Query
-            {
-                SearchRequestBody = body
-            });
+            var response = await SendSearchQuery(body);
 
             response.ShouldNotBeNull();
         }
@@ -43,10 +37,7 @@ namespace LeadershipProfileAPI.Tests.Features.Search
             var body = new ProfileSearchRequestBody()
                 .AddAssignments();
 
-            var response = await Testing.Send(new List.Query
-            {
-                SearchRequestBody = body
-            });
+            var response = await SendSearchQuery(body);
 
             response.ShouldNotBeNull();
         }
@@ -57,10 +48,7 @@ namespace LeadershipProfileAPI.Tests.Features.Search
             var body = new ProfileSearchRequestBody()
                 .AddDegrees();
 
-            var response = await Testing.Send(new List.Query
-            {
-                SearchRequestBody = body
-            });
+            var response = await SendSearchQuery(body);
 
             response.ShouldNotBeNull();
         }
@@ -73,10 +61,7 @@ namespace LeadershipProfileAPI.Tests.Features.Search
                 .AddAssignments()
                 .AddDegrees();
 
-            var response = await Testing.Send(new List.Query
-            {
-                SearchRequestBody = body
-            });
+            var response = await SendSearchQuery(body);
 
             response.ShouldNotBeNull();
         }
@@ -87,10 +72,7 @@ namespace LeadershipProfileAPI.Tests.Features.Search
             var body = new ProfileSearchRequestBody()
                 .AddInstitutions();
 
-            var response = await Testing.Send(new List.Query
-            {
-                SearchRequestBody = body
-            });
+            var response = await SendSearchQuery(body);
 
             response.ShouldNotBeNull();
         }
