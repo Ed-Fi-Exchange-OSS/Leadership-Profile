@@ -83,7 +83,7 @@ task RecreateTestDatabase -description "Starts a docker container with the test 
 
 task UpdateTestDatabase -description "Runs the migration scripts on the test database" {
     $roundhouseConnString="Server=localhost,$testDatabasePort;Database=$dbName;User Id=sa;Password=$testDatabasePassword;"
-	Update-Database $roundhouseConnString
+	Update-Database $roundhouseConnString 'TEST'
 } 
 
 task RunTestDatabase -description "Runs the docker container that has the test database" {
@@ -91,7 +91,11 @@ task RunTestDatabase -description "Runs the docker container that has the test d
 }
 
 task UpdateLocalDatabase -description "Runs the migration scripts on the local database" {
-	Update-Database "Server=localhost;Database=$dbName;Integrated Security=true;"
+	Update-Database "Server=localhost;Database=$dbName;Integrated Security=true;" $env
+}
+
+task SeedLocalDatabase -description "Seed test data into your local dev database" {
+	Update-Database "Server=localhost;Database=$dbName;Integrated Security=true;" 'TEST'
 }
 
 task RecreateLocalDatabase -description "Starts a docker container with the sample database for local dev" -depends DownloadDbTestData {
@@ -110,7 +114,12 @@ task RunLocalDatabase -description "Runs the docker container that has the local
 
 task UpdateLocalDockerDatabase -description "Runs the migration scripts on the local docker database" {
 	$roundhouseConnString="Server=localhost;Database=$dbName;User Id=sa;Password=$testDatabasePassword;"
-	Update-Database $roundhouseConnString
+	Update-Database $roundhouseConnString $env
+}
+
+task SeedLocalDockerDatabase -description "Seed test data into your local dev database" {
+	$roundhouseConnString="Server=localhost;Database=$dbName;User Id=sa;Password=$testDatabasePassword;"
+	Update-Database $roundhouseConnString 'TEST'
 }
 
 task SetLocalDockerConnectionString -description "Sets a user secret to override the connection string for the docker db" {
