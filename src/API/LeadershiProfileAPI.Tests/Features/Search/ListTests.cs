@@ -11,6 +11,19 @@ namespace LeadershipProfileAPI.Tests.Features.Search
     {
 
         [Fact]
+        public async Task ShouldGetResponseWithEmptyRequest()
+        {
+            var body = new ProfileSearchRequestBody();
+
+            var response = await Testing.Send(new List.Query
+            {
+                SearchRequestBody = body
+            });
+
+            response.ShouldNotBeNull();
+        }
+
+        [Fact]
         public async Task ShouldGetResponseWithRatingsRequest()
         {
             var body = new ProfileSearchRequestBody()
@@ -59,19 +72,6 @@ namespace LeadershipProfileAPI.Tests.Features.Search
                 .AddRatings()
                 .AddAssignments()
                 .AddDegrees();
-
-            var response = await Testing.Send(new List.Query
-            {
-                SearchRequestBody = body
-            });
-
-            response.ShouldNotBeNull();
-        }
-
-        [Fact]
-        public async Task ShouldGetResponseWithEmptyRequest()
-        {
-            var body = new ProfileSearchRequestBody();
 
             var response = await Testing.Send(new List.Query
             {
