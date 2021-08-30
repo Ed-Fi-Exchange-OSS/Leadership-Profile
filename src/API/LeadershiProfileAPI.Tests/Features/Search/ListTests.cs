@@ -14,7 +14,6 @@ namespace LeadershipProfileAPI.Tests.Features.Search
         public async Task ShouldGetResponseWithEmptyRequest()
         {
             var body = new ProfileSearchRequestBody();
-
             var response = await SendSearchQuery(body);
 
             response.ShouldNotBeNull();
@@ -23,9 +22,7 @@ namespace LeadershipProfileAPI.Tests.Features.Search
         [Fact]
         public async Task ShouldGetResponseWithRatingsRequest()
         {
-            var body = new ProfileSearchRequestBody()
-                .AddRatings();
-
+            var body = new ProfileSearchRequestBody().AddRatings();
             var response = await SendSearchQuery(body);
 
             response.ShouldNotBeNull();
@@ -34,9 +31,7 @@ namespace LeadershipProfileAPI.Tests.Features.Search
         [Fact]
         public async Task ShouldGetResponseWithAssignmentsRequest()
         {
-            var body = new ProfileSearchRequestBody()
-                .AddAssignments();
-
+            var body = new ProfileSearchRequestBody().AddAssignments();
             var response = await SendSearchQuery(body);
 
             response.ShouldNotBeNull();
@@ -45,9 +40,7 @@ namespace LeadershipProfileAPI.Tests.Features.Search
         [Fact]
         public async Task ShouldGetResponseWithDegreesRequest()
         {
-            var body = new ProfileSearchRequestBody()
-                .AddDegrees();
-
+            var body = new ProfileSearchRequestBody().AddDegrees();
             var response = await SendSearchQuery(body);
 
             response.ShouldNotBeNull();
@@ -69,12 +62,20 @@ namespace LeadershipProfileAPI.Tests.Features.Search
         [Fact]
         public async Task ShouldGetResponseWithInstitutionRequest()
         {
-            var body = new ProfileSearchRequestBody()
-                .AddInstitutions();
+            var body = new ProfileSearchRequestBody().AddInstitutions();
 
             var response = await SendSearchQuery(body);
 
             response.ShouldNotBeNull();
+        }
+
+        private Task<List.Response> SendSearchQuery(ProfileSearchRequestBody body, int page = 1)
+        {
+            return Testing.Send(new List.Query
+            {
+                SearchRequestBody = body,
+                Page = page,
+            });
         }
     }
 }
