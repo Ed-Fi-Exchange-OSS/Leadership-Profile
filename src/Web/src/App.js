@@ -16,7 +16,6 @@ import Registration from './components/LoginComponents/Registration';
 import AuthService from './utils/auth-service';
 import ForgotPassword from './components/LoginComponents/ForgotPassword';
 import ResetPassword from './components/LoginComponents/ResetPassword';
-import AdvancedSearch from './components/DirectoryComponents/AdvancedSearchComponent/SearchDirectory';
 import FilterContextProvider from './context/filters/FilterContextProvider';
 
 function App() {
@@ -37,7 +36,9 @@ function App() {
               <PrivateRoute exact path="/:searchParams" isAuthenticated={authenticated} component={Directory} />
               <PrivateRoute path="/profile/:id" isAuthenticated={authenticated} component={Profile} />
             </FilterContextProvider>
-            <PrivateRoute path="/advanced/search" isAuthenticated={authenticated} component={AdvancedSearch} />
+            <PrivateRoute path="/advanced/search">
+              <Redirect to="/directory?page=1&sortBy=asc&sortField=id" />
+            </PrivateRoute>
             <Route exact path="/account/register" component={Registration} />         
             <Route exact path="/account/forgotpassword" component={ForgotPassword} />
             <Route exact path="/account/resetpassword" component={ResetPassword} />
