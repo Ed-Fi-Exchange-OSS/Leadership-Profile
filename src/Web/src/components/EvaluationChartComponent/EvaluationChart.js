@@ -1,0 +1,193 @@
+import React, {useState, useEffect } from 'react';
+import {Bar} from 'react-chartjs-2';
+import { DownPointingIcon } from '../Icons';
+import { CardTitle, Collapse, Table } from 'reactstrap';
+import { Form, FormGroup, Label, Input, Row, Col, UncontrolledDropdown, DropdownToggle, DropdownMenu, Button } from 'reactstrap';
+
+
+const EvaluationChart = (props) =>{
+    
+    const { title, data } = props;
+    const [isOpen, setIsOpen] = useState(false);
+    const [icon, setIcon] = useState('');
+    const [chartCategories, setCategories] = useState();
+    const [chartScores, setScores] = useState();
+    const [ratings, setRatings] =  useState();
+    const [evaluationYears, setEvaluationYears] = useState();
+    const [selectedYearOption] = useState();
+
+    const toggle = () => setIsOpen(!isOpen);
+
+    const [yearsToSelect, setYearsToSelect] = useState([]);
+
+
+    function setTable(title) {
+
+    }
+
+
+    function buildYearOptions(data)
+    {
+        let years =  [];
+        if (yearsToSelect.length == 0) {
+            data.forEach(element => {
+                years.push({label:element, value:element})
+            });
+        }
+
+        setYearsToSelect(years);
+    }
+
+    useEffect(()=> {
+        setTable(title);
+    },[CardTitle]);
+
+    useEffect(()=> {
+        if (data !== undefined) {
+            debugger;
+            var evaluation =  data.filter(x=> x.title === props.title);
+            let title =  evaluation[0].title;
+            setRatings(evaluation[0].ratingsByYear);
+            let ratings = evaluation[0].ratingsByYear;
+            let selectedYear =  Object.keys(ratings)[0];
+            let ratingYears = Object.keys(evaluation[0].ratingsByYear);
+            buildYearOptions(ratingYears);
+            setEvaluationYears(ratingYears);
+            setChartData(selectedYear, ratings);
+        }
+
+    }, data);
+    
+    const state = {
+        labels: chartCategories,//['Label1','Label2','Label3','Label4','LAbel5'],
+        datasets: [{
+          label: '',
+          data: chartScores,//[65, 59, 80, 81, 56, 55, 40],
+          barThickness:36,
+          backgroundColor: [
+            'rgba(12, 101, 184, 1.0)',
+            'rgba(91, 106, 208, 1.0)',
+            'rgba(65, 195, 224, 1.0)',
+            'rgba(161, 99, 223, 1.0)',
+            'rgba(31, 142, 243, 1.0)',
+            'rgba(117, 164, 210, 1.0)'
+          ],
+          borderColor: [
+            'rgb(12, 101, 184)',
+            'rgb(91, 106, 208)',
+            'rgb(65, 195, 224)',
+            'rgb(161, 99, 223)',
+            'rgb(31, 142, 243)',
+            'rgb(117, 164, 210)'
+
+          ],
+          borderWidth: 1,
+          borderRadius:4
+        }]
+      };
+    // const state = {
+    //     labels: [''],
+    //     datasets: [
+    //       {
+    //         label: 'Rainfall1',
+    //         backgroundColor: 'rgba(75,192,192,1)',
+    //         borderColor: 'rgba(0,0,0,1)',
+    //         borderWidth: 1,
+    //         data: [3.0]
+    //       },
+    //       {
+    //         label: 'Rainfall2',
+    //         backgroundColor: 'rgba(75,192,192,1)',
+    //         borderColor: 'rgba(0,0,0,1)',
+    //         borderWidth: 1,
+    //         data: [4.2]
+    //       },
+    //       {
+    //         label: 'Rainfall3',
+    //         backgroundColor: 'rgba(75,192,192,1)',
+    //         borderColor: 'rgba(0,0,0,1)',
+    //         borderWidth: 1,
+    //         data: [5.1]
+    //       },
+    //       {
+    //         label: 'Rainfall4',
+    //         backgroundColor: 'rgba(75,192,192,1)',
+    //         borderColor: 'rgba(0,0,0,1)',
+    //         borderWidth: 1,
+    //         data: [2.3]
+    //       },
+    //       {
+    //         label: 'Rainfall5',
+    //         backgroundColor: 'rgba(75,192,192,1)',
+    //         borderColor: 'rgba(0,0,0,1)',
+    //         borderWidth: 1,
+    //         data: [4.5]
+    //       }
+    //     ]
+    //   }
+
+    function setChartData(selectedYear, ratings) {
+        
+        let ratingsByYear = ratings[selectedYear];
+        if (ratingsByYear !== undefined) {
+            setCategories(ratingsByYear.map(x => x.category));
+            setScores(ratingsByYear.map(x => x.score));
+        }
+
+        // ratingYears.forEach(element => {
+        //     if (element == selectedYear) {
+        //         debugger;
+        //         let ratingsByYear = ratings[element];
+        //         setCategories(ratingsByYear.map(x => x.category));
+        //         setScores(ratingsByYear.map(x => x.score));
+        //     }
+        // });
+    }
+    const updateEvaluationData = (selectedYear) => {
+        setChartData(selectedYear, ratings);
+    }
+        
+    return (
+        <div className="profile-collapsible-container">
+            <h2 className="profile-collapsible-header" onClick={toggle}>
+                <span className="profile-collapsible-icon">{icon}</span>
+                <span>{title}</span>
+                <span className="profile-collapsible-down-icon"><DownPointingIcon /></span>
+            </h2>
+            <Collapse isOpen={isOpen}>
+            <select id="dddEvaluationsYear" onChange={ e => updateEvaluationData(e.currentTarget.value) }
+                value= {selectedYearOption}>
+                {
+                    yearsToSelect.map( year =>
+                        <option value = { year.value }>
+                            { year.label }
+                        </option>
+                    )
+                }
+            </select>
+                <Bar
+                    data={state}
+                    options={{
+                    response: true,
+                    title:{
+                        display:false,
+                        text:'Average Rainfall per month',
+                        fontSize:10
+                    },
+                    legend:{
+                        display:true,
+                        position:'right'
+                    },
+                    scales: {
+                        y:{
+                            begintAtZero : true
+                        }
+                    }
+                    }}
+                />
+            </Collapse>
+        </div>
+      );
+}
+
+export default EvaluationChart
