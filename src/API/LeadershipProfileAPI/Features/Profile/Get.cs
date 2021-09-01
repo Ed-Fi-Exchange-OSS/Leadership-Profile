@@ -98,7 +98,9 @@ namespace LeadershipProfileAPI.Features.Profile
                 var response = _mapper.Map<Response>(profileHeader);
 
                 var positionHistory = await _dbContext.ProfilePositionHistory.Where(x => x.StaffUniqueId == request.Id)
-                    .ProjectTo<PositionHistory>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
+                    .OrderByDescending(x => x.StartDate)
+                    .ProjectTo<PositionHistory>(_mapper.ConfigurationProvider)
+                    .ToListAsync(cancellationToken);
 
                 response.PositionHistory = positionHistory;
 
