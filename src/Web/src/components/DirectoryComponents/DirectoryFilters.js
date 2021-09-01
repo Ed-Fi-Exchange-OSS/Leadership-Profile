@@ -42,7 +42,6 @@ const CreateDirectoryFilters = (props) => {
         }
 
         function OnChangeSubmit(isClearing){
-            //let yearsOnRange = getYearRange(isClearing);
             let selectedTenureRanges =  getYearRange(filterState.tenure)
 
             let filters = {
@@ -121,8 +120,6 @@ const CreateDirectoryFilters = (props) => {
             }
 
             sendFilter(getTypeAction(pill.filter, false), pill);
-
-            //if(pill.filter !== pillTypes.Tenure) OnChangeSubmit();
             OnChangeSubmit();
         }
 
@@ -131,7 +128,6 @@ const CreateDirectoryFilters = (props) => {
             unCheckAllFromElement(positions, setPositions);
             unCheckAllFromElement(degrees, setDegrees);
             unCheckAllFromElement(filteredInstitutions, setFilteredInstitutions);
-            //setYearsOptionRange('-1');
             setYear('');
             OnChangeSubmit(true);
         }
