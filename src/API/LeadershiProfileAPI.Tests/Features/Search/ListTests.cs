@@ -59,15 +59,6 @@ namespace LeadershipProfileAPI.Tests.Features.Search
             response.ShouldNotBeNull();
         }
 
-        [Fact]
-        public async Task ShouldGetResponseWithInstitutionRequest()
-        {
-            var body = new ProfileSearchRequestBody().AddInstitutions();
-
-            var response = await SendSearchQuery(body);
-
-            response.ShouldNotBeNull();
-        }
 
         private Task<List.Response> SendSearchQuery(ProfileSearchRequestBody body, int page = 1)
         {
