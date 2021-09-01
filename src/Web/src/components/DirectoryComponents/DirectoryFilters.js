@@ -1,11 +1,13 @@
 import React, { useEffect, useRef } from 'react';
-import { Form, FormGroup, Label, Input, Row, Col, UncontrolledDropdown, DropdownToggle, DropdownMenu, Button } from 'reactstrap';
+import { Form, FormGroup, Label, Input, Row, Col, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import Searching from './Searching';
-import { FilterIcon } from '../Icons';
 import UseDirectoryFilters from './UseDirectoryFilter';
 import DropdownTypeAhead from './DropdownTypeAhead';
 import PillsFilters from './PillsComponents/PillsFilters';
 import UsePills from './PillsComponents/UsePills';
+import { useFilterContext } from "../../context/filters/UseFilterContext";
+import FilterActions from "../../context/filters/FilterActions";
+import { SCORE_OPTIONS } from '../../utils/Constants';
 
 const CreateDirectoryFilters = (props) => {
 
@@ -15,48 +17,43 @@ const CreateDirectoryFilters = (props) => {
             yearsOptionRange, setYearsOptionRange, year, setYear,
             setYearRange, institutions, setInstitutions,
             filteredInstitutions, setFilteredInstitutions,
-            filterInstitutionValue, setFilterInstitutionValue
+            filterInstitutionValue, setFilterInstitutionValue,
+            setCheckValueForElement, unCheckAllFromElement,
+            categories
         } = UseDirectoryFilters();
         
-        const {pills, setPills, setNewPill, removePill} = UsePills();
+        const { setNewPill, removePill, pillTypes, getTypeAction } = UsePills();
+        const [filterState, sendFilter] = useFilterContext();
 
-        const isInitialRender = useRef(true);
-
-        function CheckSelectedItem(e, elements, setter) {
-            setCheckValueForElement(elements, e.currentTarget.value, e.currentTarget.checked, setter);
+        function CheckSelectedItem(target, elements, setter, type) {
+            setCheckValueForElement(elements, setter,  target.value, target.checked);
+            setCheckedFilterAsPill(type, target);
         }
 
-        function setCheckValueForElement(elements, value, checked, setter){
-            let newElements = [...elements];
-            newElements.forEach((element) => {
-                if (element.value == value) {
-                    element.checked = checked;
-                }
-            });
-            setter(newElements);
-        }
-
-        function GetCheckedOrSelectedValues(elements) {
-            return elements?.filter(x => x.checked || x.selected).map(x => x.value) ?? [];
+        function setCheckedFilterAsPill(filterType, target){
+            let action = getTypeAction(filterType, target.checked);
+            let pill = setNewPill(filterType, target.name, parseInt(target.value))
+            sendFilter(action, pill);
         }
 
         function OnChangeSubmit(isClearing){
-            let selectedPositions = GetCheckedOrSelectedValues(positions);
-            let selectedDegrees = GetCheckedOrSelectedValues(degrees);
-            let selectedInstitutions = GetCheckedOrSelectedValues(institutions);
             let yearsOnRange = getYearRange(isClearing);
             let filters = {
                 "Assignments":{
-                    "Values": selectedPositions
+                    "Values": filterState.positions
                 },
                 "Degrees":{
-                    "Values": selectedDegrees
+                    "Values": filterState.degrees
                 },
-                "Name": nameSearch,
+                "Name": filterState.nameSearch,
                 "MinYears": yearsOnRange.min,
                 "MaxYears": yearsOnRange.max,
                 "Institutions":{
-                    "Values": selectedInstitutions
+                    "Values": filterState.institutions
+                },
+                "Ratings": {
+                    "CategoryId": filterState.categoryId,
+                    "Score": filterState.score
                 }
             }
 
@@ -64,20 +61,18 @@ const CreateDirectoryFilters = (props) => {
         }
         
         function Position_OnChange(e){
-            CheckSelectedItem(e, positions, setPositions);
-            setCheckedFilterAsPill("Position", e.currentTarget);
-            OnChangeSubmit();
+            CheckSelectedItem(e.currentTarget, positions, setPositions, pillTypes.Position);
         }
 
         function NameSearch_OnChange(value){
             setNameSearch(value);
+            if(value.length >= 3 || value.length === 0){
+                sendFilter(FilterActions.setNameFilter, value);
+            }
         }
 
         function Degree_OnChange(e){
-            CheckSelectedItem(e, degrees, setDegrees);
-            setCheckedFilterAsPill("Degree", e.currentTarget);
-
-            OnChangeSubmit();
+            CheckSelectedItem(e.currentTarget, degrees, setDegrees, pillTypes.Degree);
         }
 
         function YearOption_OnChange(value){
@@ -89,9 +84,7 @@ const CreateDirectoryFilters = (props) => {
         }
 
         function Institution_Onchange(e){
-            CheckSelectedItem(e, filteredInstitutions, setFilteredInstitutions);
-            setCheckedFilterAsPill("Institution", e.currentTarget);
-            OnChangeSubmit();
+            CheckSelectedItem(e.currentTarget, filteredInstitutions, setFilteredInstitutions, pillTypes.Institution);
         }
 
         function institutionFiltering(value){
@@ -99,50 +92,33 @@ const CreateDirectoryFilters = (props) => {
         }
 
         function removePillAndFilter(pill){
-            if(pill.filter === "Position"){
-                setCheckValueForElement(positions, pill.value, false, setPositions);
+            if(pill.filter === pillTypes.Position){
+                setCheckValueForElement(positions, setPositions, pill.value, false);
             }
-            if(pill.filter === "Degree"){
-                setCheckValueForElement(degrees, pill.value, false, setDegrees);
+            if(pill.filter === pillTypes.Degree){
+                setCheckValueForElement(degrees, setDegrees, pill.value, false);
             }
-            if(pill.filter === "Institution"){
-                setCheckValueForElement(filteredInstitutions, pill.value, false, setFilteredInstitutions);
+            if(pill.filter === pillTypes.Institution){
+                setCheckValueForElement(filteredInstitutions, setFilteredInstitutions, pill.value, false);
             }
-            if(pill.filter === "Year"){
+            if(pill.filter === pillTypes.Tenure){
                 setYear('');
+                removePill(pill);
             }
 
-            removePill(pill);
+            sendFilter(getTypeAction(pill.filter, false), pill);
 
-            if(pill.filter !== "Year") OnChangeSubmit();
+            if(pill.filter !== pillTypes.Tenure) OnChangeSubmit();
         }
 
-        function unCheckAll(elements, setter){
-            let newElements = [...elements];
-            newElements.forEach((element) => {
-                if(element.checked)
-                    element.checked = false;
-            });
-            setter(newElements);
-        }
-        
         function removeAllPills(){
-            setPills([]);
-            unCheckAll(positions, setPositions);
-            unCheckAll(degrees, setDegrees);
-            unCheckAll(filteredInstitutions, setFilteredInstitutions);
+            sendFilter(FilterActions.clearFilters);
+            unCheckAllFromElement(positions, setPositions);
+            unCheckAllFromElement(degrees, setDegrees);
+            unCheckAllFromElement(filteredInstitutions, setFilteredInstitutions);
             setYearsOptionRange('-1');
             setYear('');
             OnChangeSubmit(true);
-        }
-
-        function setCheckedFilterAsPill(filterName, target){
-            if(target.checked){
-                setNewPill(filterName, target.name, target.value);
-            }
-            else{
-                removePill(filterName, target.name, target.value);
-            }
         }
 
         function getYearRange(clearing){
@@ -165,14 +141,25 @@ const CreateDirectoryFilters = (props) => {
             }
         }
 
-        useEffect(() => {
-            if(isInitialRender.current){
-                isInitialRender.current = false;
+        function onClickCategory(e){
+            // Clear filter/pill if default Category selected 
+            if(e.currentTarget.value == 0){
+                var ratingPill = filterState.pills.find(value => value.filter === pillTypes.Rating);
+                sendFilter(FilterActions.removeRating, ratingPill);
                 return;
             }
+            sendFilter(FilterActions.setRatingCategory, {text: e.currentTarget.innerText, value: e.currentTarget.value});
+        }
 
+        function onClickScore(e){
+            let target = e.target;
+            let pill = setNewPill(pillTypes.Rating, `${filterState.categoryLabel} : ${target.innerText}`, target.value)
+            sendFilter(FilterActions.setRatingScore, pill);
+        }
+
+        useEffect(() => {
             OnChangeSubmit();
-        }, [nameSearch])
+        }, [filterState])
 
         useEffect(() => {
             setYearRange(getYearRange());
@@ -223,11 +210,11 @@ const CreateDirectoryFilters = (props) => {
             <div>
                 <div className="search-sort-container">
                     <div className="search-sort-form">
-                        <Searching onSearchValueChange = {NameSearch_OnChange}/>
+                        <Searching onSearchValueChange = {NameSearch_OnChange} value={nameSearch}/>
                     </div>
                 </div>
 
-                <PillsFilters pills={pills} handleRemove={removePillAndFilter} handleRemoveAll={removeAllPills}/>
+                <PillsFilters handleRemove={removePillAndFilter} handleRemoveAll={removeAllPills}/>
 
                 <div className="filters-container col-12">
                     <Form>
@@ -264,7 +251,7 @@ const CreateDirectoryFilters = (props) => {
                         <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
                         <UncontrolledDropdown>
                                    <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret>
-                                       Locations
+                                       Schools
                                    </DropdownToggle>
                                    <DropdownMenu modifiers={modifiers} right className="btn-dropdown-items">
                                        <DropdownTypeAhead 
@@ -335,6 +322,55 @@ const CreateDirectoryFilters = (props) => {
                                    </DropdownMenu>
                                </UncontrolledDropdown>
                         </FormGroup>
+                        </Col>
+                    </Row>
+                    <Row className="centered-filter-rows">
+                        <Col md={3} lg={3} xl={3}>
+                            <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+                                <UncontrolledDropdown setActiveFromChild>
+                                    <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret>
+                                        {filterState.categoryLabel || "Performance Indicator"}
+                                    </DropdownToggle>
+                                    <DropdownMenu modifiers={modifiers} persist={false}>
+                                        <DropdownItem value="0" key={"cat-0"} onClick={onClickCategory}>All Performance Indicators</DropdownItem>
+                                        <DropdownItem divider/>
+                                        {
+                                            Object.keys(categories).length !== 0 ? (
+                                                categories.map((catElement, index) => {
+                                                    return(
+                                                        <DropdownItem key={"cat-" + index} onClick={onClickCategory} value={catElement.value} active={catElement.selected}>
+                                                            {catElement.text}
+                                                        </DropdownItem>
+                                                    )
+                                                })
+                                            ): ("")
+                                        }
+                                    </DropdownMenu>
+                                </UncontrolledDropdown>
+                            </FormGroup>
+                        </Col>
+                        <Col md={3} lg={3} xl={3}>
+                            <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+                                <UncontrolledDropdown >
+                                    <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret disabled={filterState.categoryId == 0}>
+                                        Score
+                                    </DropdownToggle>
+                                    <DropdownMenu modifiers={modifiers} right>
+                                        <DropdownItem value="0" key={"score-0"} onClick={onClickScore}>All Scores</DropdownItem>
+                                        {
+                                            Object.keys(SCORE_OPTIONS).length !== 0 ? (
+                                                SCORE_OPTIONS.map((score, index) => {
+                                                    return(
+                                                        <DropdownItem key={"score-" + index} onClick={onClickScore} value={score.value} active={score.selected}>
+                                                            {score.text}
+                                                        </DropdownItem>
+                                                    )
+                                                })
+                                            ): ("")
+                                        }
+                                    </DropdownMenu>
+                                </UncontrolledDropdown>
+                            </FormGroup>
                         </Col>
                     </Row>
                     </Form>

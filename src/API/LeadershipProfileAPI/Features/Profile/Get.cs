@@ -4,13 +4,11 @@ using LeadershipProfileAPI.Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-using IdentityServer4.Extensions;
 
 namespace LeadershipProfileAPI.Features.Profile
 {
@@ -168,25 +166,11 @@ namespace LeadershipProfileAPI.Features.Profile
                     {2020, flPerformanceRating2020}, {2021, flPerformanceRating2021}
                 };
 
-                var overAllPerformanceEvaluation = new PerformanceEvaluation()
+                return new List<PerformanceEvaluation>
                 {
-                    Title = "Overall",
-                    RatingsByYear = overallRatingsByYear
+                    new PerformanceEvaluation() { Title = "Overall", RatingsByYear = overallRatingsByYear },
+                    new PerformanceEvaluation() { Title = "Forever Learner", RatingsByYear = flRatingsByYear },
                 };
-
-                var flPerformanceEvaluation = new PerformanceEvaluation()
-                {
-                    Title = "Forever Learner",
-                    RatingsByYear = flRatingsByYear
-                };
-
-                var evaluations = new List<PerformanceEvaluation>
-                {
-                    overAllPerformanceEvaluation,
-                    flPerformanceEvaluation
-                };
-
-                return evaluations;
             }
         }
     }

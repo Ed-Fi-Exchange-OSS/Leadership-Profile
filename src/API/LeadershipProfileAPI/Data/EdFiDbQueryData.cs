@@ -24,52 +24,6 @@ namespace LeadershipProfileAPI.Data
         public EdFiDbQueryData(EdFiDbContext edfiDbContext) => _edfiDbContext = edfiDbContext;
 
         /// <summary>
-        /// Method sends raw SQL to the database and returns a queryable, paginated, collection of ProfileList
-        /// objects sorted by a field and direction
-        /// </summary>
-        /// <param name="sortBy">Direction to sort the data</param>
-        /// <param name="sortField">Field to sort data on</param>
-        /// <param name="currentPage">When paginating the data, which page of data should be returned</param>
-        /// <param name="pageSize">The number of records returned in the result</param>
-        /// <returns></returns>
-        public IQueryable<ProfileList> GetProfileList(string sortBy = "asc", string sortField = "name", int currentPage = 1, int pageSize = 10)
-        {
-            // Map the UI sorted field name to a table field name
-            var fieldMapping = new Dictionary<string, string>
-            {
-                { "id", "StaffUniqueId" },
-                { "name", "LastSurName" },
-                { "school", "Institution" },
-                { "position", "Position" },
-                { "yearsOfService", "YearsOfService" },
-                { "highestDegree", "HighestDegree" },
-                { "major", "Major" }
-            };
-
-            var sql = $@"
-                select
-                     StaffUSI
-                    ,StaffUniqueId
-                    ,FirstName
-                    ,MiddleName
-                    ,LastSurname
-                    ,Institution
-                    ,YearsOfService
-                    ,HighestDegree
-                    ,Email
-                    ,Position
-                    ,Telephone
-                    ,Major
-                from edfi.vw_LeadershipProfileList
-                order by case when {fieldMapping[sortField]} is null then 1 else 0 end, {fieldMapping[sortField]} {sortBy}
-                offset {(currentPage - 1) * pageSize} rows
-                fetch next {pageSize} rows only
-            ";
-
-            return _edfiDbContext.ProfileList.FromSqlRaw(sql);
-        }
-
-        /// <summary>
         /// Method sends raw SQL to the database and returns a queryable, paginated, collection of Staff records
         /// matching the criteria and sorted by a field and direction
         /// </summary>
@@ -209,7 +163,7 @@ namespace LeadershipProfileAPI.Data
 
         private static string ClauseRatings(ProfileSearchRequestRatings ratings)
         {
-            if (ratings?.Score > 0)
+            if (ratings?.CategoryId > 0 && ratings?.Score >= 0)
             {
                 // Provide the condition being searched for matching your schema. Examples: "(r.Rating = 3)" or "(r.Rating = 3 and r.RatingCateogryId = 45)"
                 var whereCategory = ratings.CategoryId > 0 ? $"mr.Category = {ratings.CategoryId}" : string.Empty;
@@ -218,7 +172,9 @@ namespace LeadershipProfileAPI.Data
                 var andScoreAndSub = !string.IsNullOrWhiteSpace(ratings.SubCategory) && ratings.Score > 0 ? " and " : string.Empty;
                 var whereSubCategory = !string.IsNullOrWhiteSpace(ratings.SubCategory) ? $"mr.SubCategory = '{ratings.SubCategory}'" : string.Empty;
 
-                return $"({whereCategory}{andCatAndScore}{whereScore}{andScoreAndSub}{whereSubCategory})";
+                // TO-DO: returning empty for now until backend changes
+                //return $"({whereCategory}{andCatAndScore}{whereScore}{andScoreAndSub}{whereSubCategory})";
+                return string.Empty;
             }
 
             return string.Empty;

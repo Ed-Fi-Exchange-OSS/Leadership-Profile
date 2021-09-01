@@ -115,7 +115,7 @@
 
 /* Directory Filters */
 .filters-container {
-  height: 88px;
+  height: auto;
   border-radius: 4px;
   background-color: #A6C1FF;
   padding: 24px 10px;
@@ -180,6 +180,11 @@
   margin-top: -27.5px;
   position: relative;
   z-index: 2;
+}
+
+.centered-filter-rows{
+  margin-top: 15px;
+  justify-content: center;
 }
 
 /* Directory table list formatting */

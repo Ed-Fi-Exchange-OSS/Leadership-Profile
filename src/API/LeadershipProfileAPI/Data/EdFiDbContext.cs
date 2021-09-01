@@ -13,7 +13,6 @@ namespace LeadershipProfileAPI.Data
         }
 
         public DbSet<Staff> Staff { get; set; }
-        public DbSet<ProfileList> ProfileList { get; set; }
         public DbSet<ProfileHeader> ProfileHeader { get; set; }
         public DbSet<ProfilePositionHistory> ProfilePositionHistory { get; set; }
         public DbSet<StaffAdmin> StaffAdmins { get; set; }
@@ -51,10 +50,6 @@ namespace LeadershipProfileAPI.Data
 
             modelBuilder.Entity<Staff>().ToTable("Staff", schema: "edfi")
                 .Property(p => p.LastName).HasColumnName("LastSurname");
-
-            modelBuilder.Entity<ProfileList>()
-                .ToView("vw_LeadershipProfileList", "edfi")
-                .HasNoKey();
 
             modelBuilder.Entity<ProfileHeader>()
                 .ToView("vw_LeadershipProfileHeader", "edfi")

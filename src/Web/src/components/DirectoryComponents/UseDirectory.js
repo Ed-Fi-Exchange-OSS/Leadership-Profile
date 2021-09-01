@@ -106,13 +106,7 @@ function UseDirectory() {
         setSort({ category, value });
     }
 
-    function goToAdvancedSearch(){
-        let path = '/advanced/search?page=1&sortBy=asc&sortField=id';
-        history.push(path);
-        history.go(0);
-    }
-
-    return { setColumnSort, setSort, sort, data, paging, setPage, error,goToAdvancedSearch, setFilters}
+    return { setColumnSort, setSort, sort, data, paging, setPage, error, setFilters}
 }
 
 export default UseDirectory;
