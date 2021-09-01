@@ -64,7 +64,7 @@ namespace LeadershipProfileAPI.Features.Profile
             public string Description { get; set; } = "Default Certificate";
             public string Type { get; set; } = "Default Type";
             public DateTime ValidFromDate { get; set; }
-            public DateTime ValidToDate { get; set; }
+            public DateTime? ValidToDate { get; set; }
         }
 
         public class ProfessionalDevelopment
