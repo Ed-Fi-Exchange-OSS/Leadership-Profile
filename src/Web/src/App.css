@@ -558,3 +558,7 @@ h5{
   color: white;
   cursor: pointer;
 }
+
+.chartContainer{
+  padding: 15px;
+}

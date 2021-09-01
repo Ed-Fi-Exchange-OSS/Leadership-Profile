@@ -31,7 +31,7 @@ const Profile = () => {
                     <NavLink onClick={() => setActiveComponent("general")}>General Info</NavLink>
                 </NavItem>
                 <NavItem className={activeComponent === "leader" ? "current-profile-page nav-option" : "nav-option"}>
-                    <NavLink onClick={() => setActiveComponent("leader")}>Performance</NavLink>
+                    <NavLink onClick={() => setActiveComponent("leader")}>Leader or self</NavLink>
                 </NavItem>
             </Nav>
 
@@ -40,15 +40,11 @@ const Profile = () => {
                     <PositionHistoryTable title='Position History' data={data.positionHistory} />
                     <CertificationsTable title='Certifications' data={data.certificates} />
                     <ProfessionalDevelopmentTable title='Professional Development and Learning Experiences' data={data.professionalDevelopment}/>
-                    <EvaluationChart title='Overall' data={data.evaluations} />
-                    <EvaluationChart title='Forever Learner' data={data.evaluations} />
                 </div>
-                ) : activeComponent === "leader" && losMappingResult !== null && losMappingResult !== 0 ? (
+                ) : activeComponent === "leader" ? (
                     <div>
-                        { (losMappingResult).map((obj, i) => {
-                            return (<CollapsibleLeaderOfSelf title={obj.categoryTitle} data={obj}/>)
-                            })
-                        }
+                        <EvaluationChart title='Overall' data={data.evaluations} />
+                        <EvaluationChart title='Forever Learner' data={data.evaluations} />
                     </div>
                 ) : '' }
         </div >
