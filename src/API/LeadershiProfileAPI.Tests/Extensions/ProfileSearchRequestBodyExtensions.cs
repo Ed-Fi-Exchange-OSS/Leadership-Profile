@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using LeadershipProfileAPI.Data.Models.ProfileSearchRequest;
 
@@ -6,6 +5,19 @@ namespace LeadershipProfileAPI.Tests.Extensions
 {
     public static class ProfileSearchRequestBodyExtensions
     {
+        public static ProfileSearchRequestBody AddYearsOfPriorExperience(this ProfileSearchRequestBody body, params ProfileSearchYearsOfPriorExperience.Range[] ranges)
+        {
+            body.YearsOfPriorExperienceRanges = ranges.Any()
+                ? new ProfileSearchYearsOfPriorExperience {Values = ranges}
+                : new ProfileSearchYearsOfPriorExperience
+                {
+                    Values = Enumerable.Range(0, 10)
+                        .Select(r => new ProfileSearchYearsOfPriorExperience.Range(r, r+1))
+                        .ToList()
+                };
+
+            return body;
+        }
 
         public static ProfileSearchRequestBody AddRatings(this ProfileSearchRequestBody body, ProfileSearchRequestRatings degrees = null)
         {
