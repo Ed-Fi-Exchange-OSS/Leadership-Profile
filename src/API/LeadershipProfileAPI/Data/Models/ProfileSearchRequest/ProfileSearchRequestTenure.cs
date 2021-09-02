@@ -2,7 +2,7 @@
 
 namespace LeadershipProfileAPI.Data.Models.ProfileSearchRequest
 {
-    public class YearsOfPriorExperience
+    public class ProfileSearchYearsOfPriorExperience
     {
         public ICollection<Range> Values { get; set; }
     }

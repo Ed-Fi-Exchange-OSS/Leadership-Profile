@@ -2,7 +2,7 @@
 {
     public class ProfileSearchRequestBody
     {
-        public YearsOfPriorExperience YearsOfPriorExperienceRanges { get; set; }
+        public ProfileSearchYearsOfPriorExperience YearsOfPriorExperienceRanges { get; set; }
         public ProfileSearchRequestRatings Ratings { get; set; }
         public ProfileSearchRequestAssignments Assignments { get; set; }
         public ProfileSearchRequestDegrees Degrees { get; set; }

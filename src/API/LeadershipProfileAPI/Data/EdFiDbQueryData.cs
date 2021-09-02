@@ -153,7 +153,7 @@ namespace LeadershipProfileAPI.Data
                     ClauseRatings(body.Ratings),
                     ClauseName(),
                     ClauseInstitution(body.Institutions),
-                    ClauseTenure(body.YearsOfPriorExperienceRanges)
+                    ClauseYearsOfExperience(body.YearsOfPriorExperienceRanges)
                 }
                 .Where(x => !string.IsNullOrWhiteSpace(x))
                 .DefaultIfEmpty(string.Empty)
@@ -227,7 +227,7 @@ namespace LeadershipProfileAPI.Data
             return string.Empty;
         }
 
-        private static string ClauseTenure(YearsOfPriorExperience yearsOfPriorExperienceRanges)
+        private static string ClauseYearsOfExperience(ProfileSearchYearsOfPriorExperience yearsOfPriorExperienceRanges)
         {
             var whereTenure = string.Empty;
             var rangesCounter = 0;
