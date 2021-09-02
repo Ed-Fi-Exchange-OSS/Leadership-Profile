@@ -1,8 +1,12 @@
-﻿using LeadershipProfileAPI.Features.Search;
+﻿using System;
+using System.Linq;
+using LeadershipProfileAPI.Features.Search;
 using Shouldly;
 using System.Threading.Tasks;
 using LeadershipProfileAPI.Data.Models.ProfileSearchRequest;
 using LeadershipProfileAPI.Tests.Extensions;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace LeadershipProfileAPI.Tests.Features.Search
@@ -31,14 +35,41 @@ namespace LeadershipProfileAPI.Tests.Features.Search
         [Fact]
         public async Task ShouldGetResponseWithFullRequest()
         {
-            var body = new ProfileSearchRequestBody()
-                .AddRatings()
-                .AddAssignments()
-                .AddDegrees();
+            var masters = await Testing.DbContextScopeExec(db
+                => db.ListItemDegrees.SingleAsync(d => d.Text == "Master's"));
 
-            var response = await SendSearchQuery(body);
+            var body = new ProfileSearchRequestBody() { Name = "mar" }
+                .AddInstitutions(TestDataConstants.SchoolIds.LemmElementary)
+                .AddDegrees(masters.Value);
 
-            response.ShouldNotBeNull();
+            var inclusiveResults = await SearchAllTestUtility.SearchForAllResults(body);
+
+            inclusiveResults.All(s => s.Degree == "Master's"
+                          && s.Institution == "Lemm Elementary School"
+                          && s.FullName.Contains("mar", StringComparison.CurrentCultureIgnoreCase)
+                ).ShouldBeTrue();
+
+            var inclusiveResultIds = inclusiveResults.Select(r => r.StaffUniqueId).ToList();
+            inclusiveResultIds.ShouldContain(TestDataConstants.StaffUsis.MaryMuffet);
+            inclusiveResultIds.ShouldContain(TestDataConstants.StaffUsis.MartyJackson);
+            inclusiveResultIds.ShouldNotContain(TestDataConstants.StaffUsis.MartaMasterson);
+
+            var principal = await Testing.DbContextScopeExec(db
+                => db.ListItemAssignments.SingleAsync(d => d.Text == "Principal"));
+
+            body.AddAssignments(principal.Value);
+
+            var exclusiveResults = await SearchAllTestUtility.SearchForAllResults(body);
+            exclusiveResults.All(s => s.Degree == "Master's"
+                             && s.Institution == "Lemm Elementary School"
+                             && s.Assignment == "Principal"
+                             && s.FullName.Contains("mar", StringComparison.CurrentCultureIgnoreCase)
+            ).ShouldBeTrue();
+
+            var exclusiveResultIds = exclusiveResults.Select(r => r.StaffUniqueId).ToList();
+            exclusiveResultIds.ShouldContain(TestDataConstants.StaffUsis.MaryMuffet);
+            exclusiveResultIds.ShouldNotContain(TestDataConstants.StaffUsis.MartyJackson);
+            exclusiveResultIds.ShouldNotContain(TestDataConstants.StaffUsis.MartaMasterson);
         }
 
 
