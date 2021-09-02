@@ -231,7 +231,8 @@ namespace LeadershipProfileAPI.Data
         {
             var whereTenure = string.Empty;
             var rangesCounter = 0;
-            if (yearsOfPriorExperienceRanges.Values.Count <= 0) return whereTenure;
+            if (yearsOfPriorExperienceRanges == null || yearsOfPriorExperienceRanges.Values.Count <= 0)
+                return whereTenure;
 
             foreach (var range in yearsOfPriorExperienceRanges.Values)
             {
