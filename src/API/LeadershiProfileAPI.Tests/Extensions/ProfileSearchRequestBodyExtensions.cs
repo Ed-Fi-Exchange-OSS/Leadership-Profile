@@ -6,21 +6,7 @@ namespace LeadershipProfileAPI.Tests.Extensions
 {
     public static class ProfileSearchRequestBodyExtensions
     {
-        public static ProfileSearchRequestBody AddMinYears(this ProfileSearchRequestBody body, int years)
-        {
-            body.MinYears = years;
-                
-            return body;
-        }
-        
-        public static ProfileSearchRequestBody AddMaxYears(this ProfileSearchRequestBody body, int years)
-        {
-            body.MaxYears = years;
 
-            return body;
-        }
-
-        
         public static ProfileSearchRequestBody AddRatings(this ProfileSearchRequestBody body, ProfileSearchRequestRatings degrees = null)
         {
             if (degrees != null)
@@ -28,7 +14,7 @@ namespace LeadershipProfileAPI.Tests.Extensions
                 body.Ratings = degrees;
             }
             else
-            {                
+            {
                 body.Ratings = new ProfileSearchRequestRatings
                 {
                     CategoryId = 1,
@@ -65,7 +51,7 @@ namespace LeadershipProfileAPI.Tests.Extensions
                 body.Degrees = degrees;
             }
             else
-            {                
+            {
                 body.Degrees = new ProfileSearchRequestDegrees
                 {
                     Values = Enumerable.Range(0, 10).ToList()

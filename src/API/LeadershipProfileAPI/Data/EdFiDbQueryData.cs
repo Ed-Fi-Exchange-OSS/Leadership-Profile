@@ -148,7 +148,6 @@ namespace LeadershipProfileAPI.Data
 
             var whereCondition = new[]
                 {
-                    ClauseYears(body.MinYears, body.MaxYears),
                     ClauseAssignments(body.Assignments),
                     ClauseDegrees(body.Degrees),
                     ClauseRatings(body.Ratings),
@@ -243,15 +242,15 @@ namespace LeadershipProfileAPI.Data
             return string.Empty;
         }
 
-        private static string ClauseTenure(ProfileSearchRequestTenure tenureRanges)
+        private static string ClauseTenure(YearsOfPriorExperience yearsOfPriorExperienceRanges)
         {
             var whereTenure = string.Empty;
             var rangesCounter = 0;
-            if (tenureRanges.Values.Count <= 0) return whereTenure;
+            if (yearsOfPriorExperienceRanges.Values.Count <= 0) return whereTenure;
 
-            foreach (var range in tenureRanges.Values)
+            foreach (var range in yearsOfPriorExperienceRanges.Values)
             {
-                var totalRanges = tenureRanges.Values.Count;
+                var totalRanges = yearsOfPriorExperienceRanges.Values.Count;
                 var orCondition = totalRanges > 1 && totalRanges - 1 != rangesCounter ? "OR " : string.Empty;
                 whereTenure += $"YearsOfService BETWEEN {range.Min} AND {range.Max} {orCondition}";
                 rangesCounter++;
