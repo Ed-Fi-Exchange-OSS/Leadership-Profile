@@ -14,7 +14,7 @@ const CreateDirectoryFilters = (props) => {
     function RenderFilters(data) {
         const {positions, setPositions, nameSearch, setNameSearch, 
             degrees, setDegrees,
-            yearsOptionRange, setYearsOptionRange, year, setYear,
+            yearsOptionRange, setYearsOptionRange, 
             setYearRange, institutions, setInstitutions,
             filteredInstitutions, setFilteredInstitutions,
             filterInstitutionValue, setFilterInstitutionValue,
@@ -52,8 +52,6 @@ const CreateDirectoryFilters = (props) => {
                     "Values": filterState.degrees
                 },
                 "Name": filterState.nameSearch,
-                "MinYears": 0,
-                "MaxYears": 0,
                 "Institutions":{
                     "Values": filterState.institutions
                 },
@@ -93,10 +91,6 @@ const CreateDirectoryFilters = (props) => {
             CheckSelectedItem(e.currentTarget, tenureRanges, setTenureRanges, pillTypes.Tenure);
         }
 
-        function Year_OnChange(value){
-            setYear(value);
-        }
-
         function Institution_Onchange(e){
             CheckSelectedItem(e.currentTarget, filteredInstitutions, setFilteredInstitutions, pillTypes.Institution);
         }
@@ -128,7 +122,6 @@ const CreateDirectoryFilters = (props) => {
             unCheckAllFromElement(positions, setPositions);
             unCheckAllFromElement(degrees, setDegrees);
             unCheckAllFromElement(filteredInstitutions, setFilteredInstitutions);
-            setYear('');
             OnChangeSubmit(true);
         }
 
@@ -185,19 +178,7 @@ const CreateDirectoryFilters = (props) => {
 
         useEffect(() => {
             setYearRange(getYearRange());
-            
-            if(yearsOptionRange < 0) return;
-
-            if(typeof(year)  !== 'undefined' && year !== '') {
-                removePill("Year");
-         
-                    yearsOptionRange == 0 ? setNewPill("Year", `At Least ${year} years`, year) 
-                    : setNewPill("Year", `Less Than ${year} years`, year);
-                
-
-                OnChangeSubmit();
-            }
-        }, [year, yearsOptionRange])
+        }, [yearsOptionRange])
 
         useEffect(() =>{
             if(filterInstitutionValue && filterInstitutionValue.length >= 2){
@@ -328,12 +309,6 @@ const CreateDirectoryFilters = (props) => {
                                    </DropdownMenu>
                                </UncontrolledDropdown>
                         </FormGroup>
-                        </Col>
-                        <Col>
-                            <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                                <Input disabled={yearsOptionRange < 0} type="number" min="0" step="1" value={year || ''} placeholder="Years"
-                                onChange={event => {Year_OnChange(event.target.value);}} />
-                            </FormGroup>
                         </Col>
                         <Col>
                             <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
