@@ -1,11 +1,5 @@
 CREATE OR ALTER VIEW [edfi].[vw_StaffSearch] AS
-with staffService as (
-    select StaffUsi
-         , sum(FLOOR(DATEDIFF(DAY, HireDate, HireDate) / 365.0 * 4) / 4) as YearsOfService
-    from edfi.StaffEducationOrganizationEmploymentAssociation
-    group by StaffUsi
-)
-   , assignments as (
+with assignments as (
     select seoaa.StaffUSI
          , seoaa.StaffClassificationDescriptorId
          , ksad.CodeValue  as [Position]
@@ -84,7 +78,7 @@ select s.StaffUSI
      , s.LastSurname
      , CONCAT(s.FirstName, ' ', s.LastSurname) as FullName
 
-     , staffService.YearsOfService
+     , s.YearsOfPriorProfessionalExperience as YearsOfService 
 
      , a.Position     as Assignment
      , a.StartDate
@@ -103,7 +97,6 @@ select s.StaffUSI
      , se.Email as Email
      , st.Telephone as Telephone
 from edfi.Staff as s
-         left join staffService on staffService.StaffUSI = s.StaffUSI
          join edfi.StaffEducationOrganizationAssignmentAssociation as seoaa on seoaa.StaffUSI = s.StaffUsi
          join assignments as a on a.StaffUSI = s.StaffUSI
          left join edfi.Descriptor as degreeDescriptor ON degreeDescriptor.DescriptorId = s.HighestCompletedLevelOfEducationDescriptorId

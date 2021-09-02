@@ -51,3 +51,11 @@ export const SCORE_OPTIONS =
         {"text": "At Least 4", "value": 4, "selected": false},
         {"text": "5", "value": 5, "selected": false}
     ];
+
+export const TENURE_RANGES = {
+    0: {min:0, max:2},
+    1: {min:3, max:5},
+    2: {min:6, max:10},
+    3: {min:11, max:15},
+    4: {min:15, max:100}
+}
