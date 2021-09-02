@@ -44,23 +44,14 @@ namespace LeadershipProfileAPI.Tests.Extensions
             return body;
         }
 
-        public static ProfileSearchRequestBody AddDegrees(this ProfileSearchRequestBody body, ProfileSearchRequestDegrees degrees = null)
+        public static ProfileSearchRequestBody AddDegrees(this ProfileSearchRequestBody body, params int[] degrees)
         {
-            if (degrees != null)
-            {
-                body.Degrees = degrees;
-            }
-            else
-            {
-                body.Degrees = new ProfileSearchRequestDegrees
-                {
-                    Values = Enumerable.Range(0, 10).ToList()
-                };
-            }
+            body.Degrees = degrees.Any()
+                ? new ProfileSearchRequestDegrees{ Values = degrees }
+                : new ProfileSearchRequestDegrees { Values = Enumerable.Range(0, 10).ToList() };
 
             return body;
         }
-
 
         public static ProfileSearchRequestBody AddInstitutions(this ProfileSearchRequestBody body, params int[] institutions)
         {

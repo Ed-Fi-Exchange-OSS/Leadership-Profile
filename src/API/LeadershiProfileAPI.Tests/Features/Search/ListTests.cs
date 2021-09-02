@@ -38,15 +38,6 @@ namespace LeadershipProfileAPI.Tests.Features.Search
         }
 
         [Fact]
-        public async Task ShouldGetResponseWithDegreesRequest()
-        {
-            var body = new ProfileSearchRequestBody().AddDegrees();
-            var response = await SendSearchQuery(body);
-
-            response.ShouldNotBeNull();
-        }
-
-        [Fact]
         public async Task ShouldGetResponseWithFullRequest()
         {
             var body = new ProfileSearchRequestBody()
