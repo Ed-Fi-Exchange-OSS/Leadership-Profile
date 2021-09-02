@@ -87,6 +87,26 @@ namespace LeadershipProfileAPI.Tests.Features.Search
             countsById.ShouldAllBe(x => x == 1);
         }
 
+        [Fact]
+        public async Task ShouldContainAccurateDirectoryInfo()
+        {
+            var body = new ProfileSearchRequestBody { Name = "Barry Quinoa" };
+
+            var results = await SendSearchQuery(body);
+
+            results.ShouldNotBeNull();
+            var result = results.Results.Single();
+
+            result.StaffUniqueId.ShouldBe(TestDataConstants.StaffUsis.BarryQuinoa);
+            result.FirstName.ShouldBe("Barry");
+            result.LastSurName.ShouldBe("Quinoa");
+            result.FullName.ShouldBe("Barry Quinoa");
+            result.Assignment.ShouldBe("Principal");
+            result.Institution.ShouldBe("Charleston Intermediate School");
+            result.Degree.ShouldBe("Bachelor's");
+            result.YearsOfService.ShouldBe(4);
+        }
+
         private Task<List.Response> SendSearchQuery(ProfileSearchRequestBody body, int page = 1)
         {
             return Testing.Send(new List.Query
