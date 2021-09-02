@@ -104,5 +104,5 @@ from edfi.Staff as s
                and mr.MeasureDate = per.ActualDate
          left join rubric as ru on ru.DescriptorId = perr.PerformanceEvaluationTypeDescriptorId
          LEFT JOIN staff_email se ON se.StaffUSI = s.StaffUSI
-         LEFT JOIN staff_telephone st ON st.StaffUSI = s.StaffUSI         
+         LEFT JOIN staff_telephone st ON st.StaffUSI = s.StaffUSI
 GO
