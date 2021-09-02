@@ -153,7 +153,7 @@ namespace LeadershipProfileAPI.Data
                     ClauseRatings(body.Ratings),
                     ClauseName(),
                     ClauseInstitution(body.Institutions),
-                    ClauseTenure(body.TenureRanges)
+                    ClauseTenure(body.YearsOfPriorExperienceRanges)
                 }
                 .Where(x => !string.IsNullOrWhiteSpace(x))
                 .DefaultIfEmpty(string.Empty)

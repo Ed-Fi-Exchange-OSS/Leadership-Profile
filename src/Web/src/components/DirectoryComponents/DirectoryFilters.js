@@ -59,7 +59,7 @@ const CreateDirectoryFilters = (props) => {
                     "CategoryId": filterState.categoryId,
                     "Score": filterState.score
                 },
-                "TenureRanges":{
+                "YearsOfPriorExperienceRanges":{
                     "Values": selectedTenureRanges
                 }
             }
@@ -133,25 +133,6 @@ const CreateDirectoryFilters = (props) => {
                 tenureOptions.forEach(option => {
                     ranges.push(TENURE_RANGES[option]);
                 });
-                // if (tenureOptions.includes(0)) {
-                //     range.push({min:0, max:2});
-                // }
-    
-                // if (tenureOptions.includes(1)) {
-                //     range.push({min:3, max:5});
-                // }
-    
-                // if (tenureOptions.includes(2)) {
-                //     range.push({min:6, max:10});
-                // }
-    
-                // if (tenureOptions.includes(3)) {
-                //     range.push({min:11, max:15});
-                // }
-    
-                // if (tenureOptions.includes(4)) {
-                //     range.push({min:15, max:100});
-                // }
             }
             return ranges;
         }
