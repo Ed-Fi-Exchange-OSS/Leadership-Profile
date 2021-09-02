@@ -45,7 +45,6 @@ function UseDirectoryFilters () {
 
     function buildTenureRangesOptions(){
         let result = [];
-        debugger;
         let lastOption =  Object.keys(TENURE_RANGES)[Object.keys(TENURE_RANGES).length - 1]
         for(let key of Object.keys(TENURE_RANGES)){
             let value = TENURE_RANGES[key];
