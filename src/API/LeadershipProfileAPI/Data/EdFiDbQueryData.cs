@@ -164,21 +164,6 @@ namespace LeadershipProfileAPI.Data
                 : "--where excluded, no conditions provided";
         }
 
-        private static string ClauseYears(int min, int max)
-        {
-            if (min > 0 || max > 0)
-            {
-                // Provide the condition being searched for matching your schema. Example: "(y.YearsOfService >= min and y.YearsOfService <= max)"
-                var whereMinYears = min > 0 ? $"YearsOfService >= {min}" : string.Empty;
-                var andMinAndMax = min > 0 && max > 0 ? " and " : string.Empty;
-                var whereMaxYears = max > 0 ? $"YearsOfService <= {max}" : string.Empty;
-                var whereIfLessThan = max > 0 && min >= 0 ? " OR YearsOfService IS NULL" : string.Empty;
-                return $"({whereMinYears}{andMinAndMax}{whereMaxYears}{whereIfLessThan})";
-            }
-
-            return string.Empty;
-        }
-
         private static string ClauseAssignments(ProfileSearchRequestAssignments assignments)
         {
             if (assignments != null && (assignments.StartDate.HasValue || assignments.Values.Any()))
