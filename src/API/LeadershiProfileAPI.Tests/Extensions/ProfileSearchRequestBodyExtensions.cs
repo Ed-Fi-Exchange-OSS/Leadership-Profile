@@ -25,21 +25,11 @@ namespace LeadershipProfileAPI.Tests.Extensions
             return body;
         }
 
-        public static ProfileSearchRequestBody AddAssignments(this ProfileSearchRequestBody body,
-            ProfileSearchRequestAssignments assignments = null)
+        public static ProfileSearchRequestBody AddAssignments(this ProfileSearchRequestBody body, params int[] assignments)
         {
-            if (assignments != null)
-            {
-                body.Assignments = assignments;
-            }
-            else
-            {
-                body.Assignments = new ProfileSearchRequestAssignments
-                {
-                    StartDate = DateTime.UtcNow,
-                    Values = Enumerable.Range(0, 10).ToList()
-                };
-            }
+            body.Assignments = assignments.Any()
+                ? new ProfileSearchRequestAssignments { Values = assignments }
+                : new ProfileSearchRequestAssignments { Values = Enumerable.Range(0, 10).ToList() };
 
             return body;
         }
