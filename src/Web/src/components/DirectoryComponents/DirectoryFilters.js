@@ -7,7 +7,7 @@ import PillsFilters from './PillsComponents/PillsFilters';
 import UsePills from './PillsComponents/UsePills';
 import { useFilterContext } from "../../context/filters/UseFilterContext";
 import FilterActions from "../../context/filters/FilterActions";
-import { SCORE_OPTIONS } from '../../utils/Constants';
+import { SCORE_OPTIONS, TENURE_RANGES} from '../../utils/Constants';
 
 const CreateDirectoryFilters = (props) => {
 
@@ -133,31 +133,34 @@ const CreateDirectoryFilters = (props) => {
         }
 
         function getYearRange(tenureOptions){
-            let range = [];
+            let ranges = [];
 
             if(typeof(tenureOptions) !=='undefined')
             {
-                if (tenureOptions.includes(0)) {
-                    range.push({min:0, max:2});
-                }
+                tenureOptions.forEach(option => {
+                    ranges.push(TENURE_RANGES[option]);
+                });
+                // if (tenureOptions.includes(0)) {
+                //     range.push({min:0, max:2});
+                // }
     
-                if (tenureOptions.includes(1)) {
-                    range.push({min:3, max:5});
-                }
+                // if (tenureOptions.includes(1)) {
+                //     range.push({min:3, max:5});
+                // }
     
-                if (tenureOptions.includes(2)) {
-                    range.push({min:6, max:10});
-                }
+                // if (tenureOptions.includes(2)) {
+                //     range.push({min:6, max:10});
+                // }
     
-                if (tenureOptions.includes(3)) {
-                    range.push({min:11, max:15});
-                }
+                // if (tenureOptions.includes(3)) {
+                //     range.push({min:11, max:15});
+                // }
     
-                if (tenureOptions.includes(4)) {
-                    range.push({min:15, max:100});
-                }
+                // if (tenureOptions.includes(4)) {
+                //     range.push({min:15, max:100});
+                // }
             }
-            return range;
+            return ranges;
         }
 
         function onClickCategory(e){
