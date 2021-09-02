@@ -5,7 +5,6 @@ using Shouldly;
 using System.Threading.Tasks;
 using LeadershipProfileAPI.Data.Models.ProfileSearchRequest;
 using LeadershipProfileAPI.Tests.Extensions;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
@@ -72,6 +71,21 @@ namespace LeadershipProfileAPI.Tests.Features.Search
             exclusiveResultIds.ShouldNotContain(TestDataConstants.StaffUsis.MartaMasterson);
         }
 
+        [Fact]
+        public async Task ShouldNotContainDuplicateResults()
+        {
+            var body = new ProfileSearchRequestBody();
+
+            var results = await SearchAllTestUtility.SearchForAllResults(body);
+
+            results.ShouldNotBeNull();
+
+            var countsById = results
+                .GroupBy(x => x.StaffUniqueId)
+                .Select(x => x.Count());
+
+            countsById.ShouldAllBe(x => x == 1);
+        }
 
         private Task<List.Response> SendSearchQuery(ProfileSearchRequestBody body, int page = 1)
         {
