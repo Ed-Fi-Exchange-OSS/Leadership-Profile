@@ -1,11 +1,12 @@
 CREATE OR ALTER VIEW [edfi].[vw_StaffSearch] AS
 with assignments as (
     select seoaa.StaffUSI
-         , seoaa.StaffClassificationDescriptorId
+         , seoaa.StaffClassificationDescriptorId as [PositionId]
          , ksad.CodeValue  as [Position]
          , seoaa.BeginDate as StartDate
-    from edfi.StaffEducationOrganizationAssignmentAssociation as seoaa
-             left join edfi.Descriptor as ksad on ksad.DescriptorId = seoaa.StaffClassificationDescriptorId
+         , Row_number() over (partition by seoaa.StaffUSI order by BeginDate desc) as "Number"
+     from edfi.StaffEducationOrganizationAssignmentAssociation as seoaa
+     join edfi.Descriptor as ksad on ksad.DescriptorId = seoaa.StaffClassificationDescriptorId
 )
    , allMeasures as (
     select st.StaffUSI
@@ -82,8 +83,7 @@ select s.StaffUSI
 
      , a.Position     as Assignment
      , a.StartDate
-
-     , seoaa.StaffClassificationDescriptorId
+     , a.PositionId   as StaffClassificationDescriptorId
 
      , degreeDescriptor.CodeValue as Degree
      , s.HighestCompletedLevelOfEducationDescriptorId
@@ -97,8 +97,7 @@ select s.StaffUSI
      , se.Email as Email
      , st.Telephone as Telephone
 from edfi.Staff as s
-         join edfi.StaffEducationOrganizationAssignmentAssociation as seoaa on seoaa.StaffUSI = s.StaffUsi
-         join assignments as a on a.StaffUSI = s.StaffUSI
+         join assignments as a on a.StaffUSI = s.StaffUSI and a.Number = 1
          left join edfi.Descriptor as degreeDescriptor ON degreeDescriptor.DescriptorId = s.HighestCompletedLevelOfEducationDescriptorId
          left join tpdm.PerformanceEvaluationRatingResult as PERR
                on perr.PersonId = s.PersonId
