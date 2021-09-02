@@ -89,7 +89,7 @@ namespace LeadershipProfileAPI.Data
 
             // Implement the view in SQL, call it here
             var sql = $@"
-                 select DISTINCT (StaffUSI) from edfi.vw_StaffSearch
+                 select StaffUSI from edfi.vw_StaffSearch
                  {ClauseConditions(body)}
              ";
 
