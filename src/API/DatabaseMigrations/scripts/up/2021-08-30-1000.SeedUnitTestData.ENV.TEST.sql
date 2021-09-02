@@ -8,7 +8,7 @@ DECLARE  @HighSchool INT, @Bachelors INT, @Masters INT, @Doctorate INT;
 
 SELECT @HighSchool = DescriptorId FROM edfi.Descriptor WHERE Namespace='uri://ed-fi.org/LevelOfEducationDescriptor' AND CodeValue = 'High School Diploma';
 SELECT @Bachelors = DescriptorId FROM edfi.Descriptor WHERE Namespace='uri://ed-fi.org/LevelOfEducationDescriptor' AND CodeValue = 'Bachelor''s';
-SELECT @Masters = DescriptorId FROM edfi.Descriptor WHERE Namespace='uri://ed-fi.org/LevelOfEducationDescriptor' AND CodeValue = 'Masters''s';
+SELECT @Masters = DescriptorId FROM edfi.Descriptor WHERE Namespace='uri://ed-fi.org/LevelOfEducationDescriptor' AND CodeValue = 'Master''s';
 SELECT @Doctorate = DescriptorId FROM edfi.Descriptor WHERE Namespace='uri://ed-fi.org/LevelOfEducationDescriptor' AND CodeValue = 'Doctorate';
 
 /** STAFF TITLES **/
