@@ -29,15 +29,6 @@ namespace LeadershipProfileAPI.Tests.Features.Search
         }
 
         [Fact]
-        public async Task ShouldGetResponseWithAssignmentsRequest()
-        {
-            var body = new ProfileSearchRequestBody().AddAssignments();
-            var response = await SendSearchQuery(body);
-
-            response.ShouldNotBeNull();
-        }
-
-        [Fact]
         public async Task ShouldGetResponseWithFullRequest()
         {
             var body = new ProfileSearchRequestBody()
