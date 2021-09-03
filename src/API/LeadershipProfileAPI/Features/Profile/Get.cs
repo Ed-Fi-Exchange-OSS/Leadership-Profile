@@ -64,7 +64,7 @@ namespace LeadershipProfileAPI.Features.Profile
             public string Description { get; set; } = "Default Certificate";
             public string Type { get; set; } = "Default Type";
             public DateTime ValidFromDate { get; set; }
-            public DateTime ValidToDate { get; set; }
+            public DateTime? ValidToDate { get; set; }
         }
 
         public class ProfessionalDevelopment
@@ -98,7 +98,9 @@ namespace LeadershipProfileAPI.Features.Profile
                 var response = _mapper.Map<Response>(profileHeader);
 
                 var positionHistory = await _dbContext.ProfilePositionHistory.Where(x => x.StaffUniqueId == request.Id)
-                    .ProjectTo<PositionHistory>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
+                    .OrderByDescending(x => x.StartDate)
+                    .ProjectTo<PositionHistory>(_mapper.ConfigurationProvider)
+                    .ToListAsync(cancellationToken);
 
                 response.PositionHistory = positionHistory;
 
@@ -166,10 +168,17 @@ namespace LeadershipProfileAPI.Features.Profile
                     {2020, flPerformanceRating2020}, {2021, flPerformanceRating2021}
                 };
 
+                var emptyRatingsByYear = new Dictionary<int, IEnumerable<PerformanceRating>>
+                {
+                    {2020,flPerformanceRating2020}, {2021, new List<PerformanceRating>()}
+                };
+
                 return new List<PerformanceEvaluation>
                 {
                     new PerformanceEvaluation() { Title = "Overall", RatingsByYear = overallRatingsByYear },
                     new PerformanceEvaluation() { Title = "Forever Learner", RatingsByYear = flRatingsByYear },
+                    new PerformanceEvaluation() { Title = "Demo", RatingsByYear = flRatingsByYear },
+                    new PerformanceEvaluation() { Title = "No Data", RatingsByYear = emptyRatingsByYear},
                 };
             }
         }

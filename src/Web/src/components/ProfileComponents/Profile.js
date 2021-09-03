@@ -2,14 +2,12 @@ import React, { useState, useRef } from 'react';
 import { Nav, NavItem, NavLink} from 'reactstrap';
 
 import ProfileInfo from './ProfileInfo';
-import CollapsibleTable from './CollapsibleTable';
-import CollapsibleLeaderOfSelf from './CollapsibleLeaderOfSelf';
-import LeaderOfOrgChart from './LeaderOfOrgChart';
 import ProfessionalDevelopmentTable from './../ProfessionalDevelopmentComponents/ProfessionalDevelopmentTable'
 import CertificationsTable from './../CertificationsComponents/CertificationsTable'
 import PositionHistoryTable from '../PositionHistoryComponent/PositionHistoryTable';
 import UseProfile from './UseProfile';
 import ProfileBreadcrumbMenu from './ProfileBreadcrumbMenu';
+import EvaluationChart from '../EvaluationChartComponent/EvaluationChart';
 
 const Profile = () => {
     const [activeComponent, setActiveComponent] = useState("general");
@@ -40,12 +38,18 @@ const Profile = () => {
                     <CertificationsTable title='Certifications' data={data.certificates} />
                     <ProfessionalDevelopmentTable title='Professional Development and Learning Experiences' data={data.professionalDevelopment}/>
                 </div>
-                ) : activeComponent === "leader" && losMappingResult !== null && losMappingResult !== 0 ? (
+                ) : activeComponent === "leader" && data !== {} ? (
                     <div>
-                        { (losMappingResult).map((obj, i) => {
-                            return (<CollapsibleLeaderOfSelf title={obj.categoryTitle} data={obj}/>)
-                            })
-                        }
+                         {
+                             data.evaluations.map(evaluation =>{
+                                 return(
+                                    <div>
+                                        <EvaluationChart title={evaluation.title} data={data.evaluations} key={evaluation.title}/>
+                                    </div>
+                                 )
+                             })
+                         }
+                         
                     </div>
                 ) : '' }
         </div >

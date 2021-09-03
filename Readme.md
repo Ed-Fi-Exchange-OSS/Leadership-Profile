@@ -39,7 +39,7 @@ See [NOTICES](NOTICES.md) for additional copyright and license notifications.
 * Run the `setup.ps1` powershell script to install the required powershell modules and tools needed to build
 the application.
 * Run `Invoke-Psake DownloadDbTestData` in powershell from the project root folder.
-* Unzip and restore the backup in `testdata/EdFi_TPDM_v08_20201109.zip` to your local SQL Server instance.
+* Unzip and restore the backup in `testdata/EdFi_Ods_Populated_Template_TPDM_10.zip` to your local SQL Server instance.
 * Run the database migrations by running this powershell command from the project root folder:
 ```
 Invoke-Psake UpdateLocalDatabase
@@ -62,6 +62,10 @@ These are the available powershell commands to test the application (run them fr
 * `Invoke-Psake TestFrontend`: Runs the frontend tests.
 * `Invoke-Psake Test`: Runs all the tests.
 
+### Test Data
+
+* Test Data is seeded for automated tests on the Test Database by default. To seed your dev database, run the migrations scripts under the `TEST` environment using `Invoke-Psake SeedLocalDatabase`
+
 ## Running API
 
 It can be run directly from the Editor, such as Visual Studio. It must be running along with the React Web application for full functionality.
@@ -74,11 +78,11 @@ It can be run directly from the Editor, such as Visual Studio. It must be runnin
 
 Instead of a typical SQL Server installation, you can use Docker for the local database, similar to the test DB.
 
-* `Invoke-Psake RecreateLocalDatabase`: Destroys and recreates a SQL Server container for local dev
-* `Invoke-Psake RestoreLocalDatabase`: Restores the backup to the local DB without recreating the container
+* `Invoke-Psake RecreateLocalDockerDatabase`: Destroys and recreates a SQL Server container for local dev
+* `Invoke-Psake RestoreLocalDockerDatabase`: Restores the backup to the local DB without recreating the container
 * `Invoke-Psake UpdateLocalDockerDatabase`: Runs DB migration scripts against the Docker DB
 * `Invoke-Psake SetLocalDockerConnectionString`: Sets up local API configuration to use Docker DB
-* `Invoke-Psake ResetLocalDb`: Combines all of the above to set or reset the Docker DB
+* `Invoke-Psake ResetLocalDockerDatabase`: Combines all of the above to set or reset the Docker DB
 
 ## Available React Scripts
 
