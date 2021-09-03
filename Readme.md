@@ -74,11 +74,11 @@ It can be run directly from the Editor, such as Visual Studio. It must be runnin
 
 Instead of a typical SQL Server installation, you can use Docker for the local database, similar to the test DB.
 
-* `Invoke-Psake RecreateLocalDatabase`: Destroys and recreates a SQL Server container for local dev
-* `Invoke-Psake RestoreLocalDatabase`: Restores the backup to the local DB without recreating the container
+* `Invoke-Psake RecreateLocalDockerDatabase`: Destroys and recreates a SQL Server container for local dev
+* `Invoke-Psake RestoreLocalDockerDatabase`: Restores the backup to the local DB without recreating the container
 * `Invoke-Psake UpdateLocalDockerDatabase`: Runs DB migration scripts against the Docker DB
 * `Invoke-Psake SetLocalDockerConnectionString`: Sets up local API configuration to use Docker DB
-* `Invoke-Psake ResetLocalDb`: Combines all of the above to set or reset the Docker DB
+* `Invoke-Psake ResetLocalDockerDatabase`: Combines all of the above to set or reset the Docker DB
 
 ## Available React Scripts
 

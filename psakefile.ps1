@@ -98,18 +98,18 @@ task SeedLocalDatabase -description "Seed test data into your local dev database
 	Update-Database "Server=localhost;Database=$dbName;Integrated Security=true;" 'TEST'
 }
 
-task RecreateLocalDatabase -description "Starts a docker container with the sample database for local dev" -depends DownloadDbTestData {
+task RecreateLocalDockerDatabase -description "Starts a docker container with the sample database for local dev" -depends DownloadDbTestData {
 	Recreate-Docker-Db $localDatabaseContainerName 1433 $testDatabasePassword
 	Restore-Docker-Db $localDatabaseContainerName $testDataFolder $dbTestDataBakFile $testDatabasePassword $dbBackupName $dbName
 }
 
-task RestoreLocalDatabase -description "Restores local db without deleting the container" -depends DownloadDbTestData {
-	Write-Host "Restoring local database container"
-	Restore-Docker-Db $localDatabaseContainerName $testDataFolder $dbTestDataBakFile $testDatabasePassword $dbBackupName $dbName
+task RunLocalDockerDatabase -description "Runs the docker container that has the local database" {
+	exec { docker start $localDatabaseContainerName }
 }
 
-task RunLocalDatabase -description "Runs the docker container that has the local database" {
-	exec { docker start $localDatabaseContainerName }
+task RestoreLocalDockerDatabase -description "Restores local db without deleting the container" -depends DownloadDbTestData {
+	Write-Host "Restoring local database container"
+	Restore-Docker-Db $localDatabaseContainerName $testDataFolder $dbTestDataBakFile $testDatabasePassword $dbBackupName $dbName
 }
 
 task UpdateLocalDockerDatabase -description "Runs the migration scripts on the local docker database" {
@@ -127,7 +127,7 @@ task SetLocalDockerConnectionString -description "Sets a user secret to override
 	dotnet user-secrets set "ConnectionStrings:EdFi" "$roundhouseConnString" --project $apiProjectFile
 }
 
-task ResetLocalDb -description "Recreates and updates the local docker db" -depends RecreateLocalDatabase, UpdateLocalDockerDatabase, SetLocalDockerConnectionString {
+task ResetLocalDockerDatabase -description "Recreates and updates the local docker db" -depends RecreateLocalDatabase, UpdateLocalDockerDatabase, SetLocalDockerConnectionString {
 }
 
 task Clean -description "Clean back to a fresh state" -depends RemoveDbTestContainer, RemovePublishFolders {
