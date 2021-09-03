@@ -127,7 +127,7 @@ task SetLocalDockerConnectionString -description "Sets a user secret to override
 	dotnet user-secrets set "ConnectionStrings:EdFi" "$roundhouseConnString" --project $apiProjectFile
 }
 
-task ResetLocalDockerDatabase -description "Recreates and updates the local docker db" -depends RecreateLocalDatabase, UpdateLocalDockerDatabase, SetLocalDockerConnectionString {
+task ResetLocalDockerDatabase -description "Recreates and updates the local docker db" -depends RecreateLocalDockerDatabase, UpdateLocalDockerDatabase, SetLocalDockerConnectionString {
 }
 
 task Clean -description "Clean back to a fresh state" -depends RemoveDbTestContainer, RemovePublishFolders {
