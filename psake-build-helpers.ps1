@@ -39,7 +39,6 @@ function Restore-Docker-Db($containerName, $bakDir, $bakFilename, $dbPass, $bakD
     exec { docker exec "$containerName" /opt/mssql-tools/bin/sqlcmd -S localhost -U 'sa' -P "$dbPass" -i '/var/opt/mssql/backup/restore.sql' }
 }
 
-
-function Update-Database($roundhouseConnString) {
-    exec { rh -f="./src/API/DatabaseMigrations/scripts" -c="$roundhouseConnString" -dc --env $env --noninteractive  } -workingDirectory .
+function Update-Database($roundhouseConnString, $environment) {
+    exec { rh -f="./src/API/DatabaseMigrations/scripts" -c="$roundhouseConnString" -dc --env $environment --noninteractive  } -workingDirectory .
 }

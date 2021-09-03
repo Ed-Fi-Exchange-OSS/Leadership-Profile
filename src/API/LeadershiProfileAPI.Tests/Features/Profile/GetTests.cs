@@ -3,6 +3,7 @@ using System.Linq;
 using LeadershipProfileAPI.Features.Profile;
 using Shouldly;
 using System.Threading.Tasks;
+using LeadershipProfileAPI.Tests.Features.Search;
 using Xunit;
 
 namespace LeadershipProfileAPI.Tests.Features.Profile
@@ -12,45 +13,56 @@ namespace LeadershipProfileAPI.Tests.Features.Profile
         [Fact]
         public async Task ShouldGetProfile()
         {
-            var profile = await Testing.Send(new Get.Query {Id = "1000003312"});
+            var profile = await Testing.Send(new Get.Query {Id = TestDataConstants.StaffUsis.BarryQuinoa });
 
             profile.ShouldNotBeNull();
-            profile.FirstName.ShouldBe("Nicola");
-            profile.LastName.ShouldBe("Supple");
-            profile.MiddleName.ShouldBe("Edward");
-            profile.Phone.ShouldBe("713-100-3312");
-            profile.Email.ShouldBe("Nicola.Supple.1000003312@univ.edu");
+            profile.FirstName.ShouldBe("Barry");
+            profile.LastName.ShouldBe("Quinoa");
+            profile.MiddleName.ShouldBeNullOrEmpty();
+            profile.Phone.ShouldBe("512-456-3222");
+            profile.Email.ShouldBe("barry.quinoa@example.com");
         }
 
         [Fact]
         public async Task ShouldGetPositionHistory()
         {
-            var profile = await Testing.Send(new Get.Query { Id = "1000005688" });
+            var profile = await Testing.Send(new Get.Query { Id = TestDataConstants.StaffUsis.BarryQuinoa });
 
             profile.ShouldNotBeNull();
-            profile.PositionHistory.ShouldNotBeEmpty();
+            profile.PositionHistory.Count().ShouldBe(3);
 
-            var positionHistory = profile.PositionHistory.First();
+            var latestPosition = profile.PositionHistory.First();
 
-            positionHistory.Role.ShouldBe("Assistant Principal");
-            positionHistory.SchoolName.ShouldBe("CARLENS");
-            positionHistory.StartDate.ShouldBe(DateTime.Parse("2018-01-15"));
-            positionHistory.EndDate.ShouldBeNull();
+            latestPosition.Role.ShouldBe("Principal");
+            latestPosition.SchoolName.ShouldBe("Charleston Intermediate School");
+            latestPosition.StartDate.ShouldNotBe(DateTime.MinValue);
+            latestPosition.EndDate.ShouldNotBeNull();
+
+            var lastPosition = profile.PositionHistory.Last();
+            lastPosition.Role.ShouldBe("Assistant Principal");
+            lastPosition.SchoolName.ShouldBe("Carter Collins High School");
+            lastPosition.StartDate.ShouldNotBe(DateTime.MinValue);
+            lastPosition.EndDate.ShouldNotBeNull();
         }
 
         [Fact]
         public async Task ShouldGetCertificates()
         {
-            var profile = await Testing.Send(new Get.Query { Id = "1000001322" });
+            var profile = await Testing.Send(new Get.Query { Id = TestDataConstants.StaffUsis.BarryQuinoa });
 
             profile.ShouldNotBeNull();
             profile.Certificates.ShouldNotBeEmpty();
 
-            var certificate = profile.Certificates.First();
-            certificate.Type.ShouldBe("Certification");
-            certificate.Description.ShouldBe("Mathematics");
-            certificate.ValidFromDate.ShouldBe(DateTime.Parse("2018-01-19"));
-            certificate.ValidToDate.ShouldBe(DateTime.Parse("2024-01-31"));
+            profile.Certificates.Count().ShouldBe(2);
+
+            var health = profile.Certificates.First(c => c.Description == "Health");
+            health.Type.ShouldBe("Certification");
+            health.ValidFromDate.ShouldNotBe(DateTime.MinValue);
+
+            var otherCert = profile.Certificates.First(c => c.Description != "Health");
+            otherCert.Type.ShouldBe("Certification");
+            otherCert.Description.ShouldBe("Social Studies");
+            otherCert.ValidFromDate.ShouldNotBe(DateTime.MinValue);
         }
     }
 }
