@@ -11,9 +11,6 @@
         public decimal? YearsOfService { get; set; }
         public string Assignment { get; set; }
         public string Degree { get; set; }
-        public string RatingCategory { get; set; }
-        public string RatingSubCategory { get; set; }
-        public decimal? Rating { get; set; }
         public string Institution { get; set; }
         public string Email { get; set; }
         public string Telephone { get; set; }
