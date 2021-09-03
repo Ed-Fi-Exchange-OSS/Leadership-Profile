@@ -62,6 +62,10 @@ These are the available powershell commands to test the application (run them fr
 * `Invoke-Psake TestFrontend`: Runs the frontend tests.
 * `Invoke-Psake Test`: Runs all the tests.
 
+### Test Data
+
+* Test Data is seeded for automated tests on the Test Database by default. To seed your dev database, run the migrations scripts under the `TEST` environment using `Invoke-Psake SeedLocalDatabase`
+
 ## Running API
 
 It can be run directly from the Editor, such as Visual Studio. It must be running along with the React Web application for full functionality.
