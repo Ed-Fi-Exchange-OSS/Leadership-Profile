@@ -7,17 +7,18 @@ import PillsFilters from './PillsComponents/PillsFilters';
 import UsePills from './PillsComponents/UsePills';
 import { useFilterContext } from "../../context/filters/UseFilterContext";
 import FilterActions from "../../context/filters/FilterActions";
-import { SCORE_OPTIONS } from '../../utils/Constants';
+import { SCORE_OPTIONS, TENURE_RANGES} from '../../utils/Constants';
 
 const CreateDirectoryFilters = (props) => {
 
     function RenderFilters(data) {
         const {positions, setPositions, nameSearch, setNameSearch, 
             degrees, setDegrees,
-            yearsOptionRange, setYearsOptionRange, year, setYear,
+            yearsOptionRange, setYearsOptionRange, 
             setYearRange, institutions, setInstitutions,
             filteredInstitutions, setFilteredInstitutions,
             filterInstitutionValue, setFilterInstitutionValue,
+            tenureRanges, setTenureRanges,
             setCheckValueForElement, unCheckAllFromElement,
             categories
         } = UseDirectoryFilters();
@@ -36,8 +37,13 @@ const CreateDirectoryFilters = (props) => {
             sendFilter(action, pill);
         }
 
+        function GetCheckedOrSelectedValues(elements) {
+            return elements?.filter(x => x.checked || x.selected).map(x => x.value) ?? [];
+        }
+
         function OnChangeSubmit(isClearing){
-            let yearsOnRange = getYearRange(isClearing);
+            let selectedTenureRanges =  getYearRange(filterState.tenure)
+
             let filters = {
                 "Assignments":{
                     "Values": filterState.positions
@@ -46,14 +52,15 @@ const CreateDirectoryFilters = (props) => {
                     "Values": filterState.degrees
                 },
                 "Name": filterState.nameSearch,
-                "MinYears": yearsOnRange.min,
-                "MaxYears": yearsOnRange.max,
                 "Institutions":{
                     "Values": filterState.institutions
                 },
                 "Ratings": {
                     "CategoryId": filterState.categoryId,
                     "Score": filterState.score
+                },
+                "YearsOfPriorExperienceRanges":{
+                    "Values": selectedTenureRanges
                 }
             }
 
@@ -79,8 +86,9 @@ const CreateDirectoryFilters = (props) => {
             setYearsOptionRange(value); 
         }
 
-        function Year_OnChange(value){
-            setYear(value);
+        function Tenure_OnChange(e)
+        {
+            CheckSelectedItem(e.currentTarget, tenureRanges, setTenureRanges, pillTypes.Tenure);
         }
 
         function Institution_Onchange(e){
@@ -102,13 +110,11 @@ const CreateDirectoryFilters = (props) => {
                 setCheckValueForElement(filteredInstitutions, setFilteredInstitutions, pill.value, false);
             }
             if(pill.filter === pillTypes.Tenure){
-                setYear('');
-                removePill(pill);
+                setCheckValueForElement(tenureRanges, setTenureRanges, pill.value, false);
             }
 
             sendFilter(getTypeAction(pill.filter, false), pill);
-
-            if(pill.filter !== pillTypes.Tenure) OnChangeSubmit();
+            OnChangeSubmit();
         }
 
         function removeAllPills(){
@@ -116,29 +122,19 @@ const CreateDirectoryFilters = (props) => {
             unCheckAllFromElement(positions, setPositions);
             unCheckAllFromElement(degrees, setDegrees);
             unCheckAllFromElement(filteredInstitutions, setFilteredInstitutions);
-            setYearsOptionRange('-1');
-            setYear('');
             OnChangeSubmit(true);
         }
 
-        function getYearRange(clearing){
-            if(yearsOptionRange < 0 || typeof(year)  === 'undefined' || year === '' || clearing) return {min:0, max:0};
+        function getYearRange(tenureOptions){
+            let ranges = [];
 
-            if(yearsOptionRange == 0 && year){
-                let atLeast = {
-                    min: year,
-                    max: 0
-                };
-                return atLeast;
+            if(typeof(tenureOptions) !=='undefined')
+            {
+                tenureOptions.forEach(option => {
+                    ranges.push(TENURE_RANGES[option]);
+                });
             }
-
-            if(yearsOptionRange == 1 && year){
-                let lessThan = {
-                    min: 0,
-                    max: year
-                };
-                return lessThan;
-            }
+            return ranges;
         }
 
         function onClickCategory(e){
@@ -163,19 +159,7 @@ const CreateDirectoryFilters = (props) => {
 
         useEffect(() => {
             setYearRange(getYearRange());
-            
-            if(yearsOptionRange < 0) return;
-
-            if(typeof(year)  !== 'undefined' && year !== '') {
-                removePill("Year");
-         
-                    yearsOptionRange == 0 ? setNewPill("Year", `At Least ${year} years`, year) 
-                    : setNewPill("Year", `Less Than ${year} years`, year);
-                
-
-                OnChangeSubmit();
-            }
-        }, [year, yearsOptionRange])
+        }, [yearsOptionRange])
 
         useEffect(() =>{
             if(filterInstitutionValue && filterInstitutionValue.length >= 2){
@@ -280,20 +264,32 @@ const CreateDirectoryFilters = (props) => {
                         </FormGroup>
                         </Col>
                         <Col>
-                            <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                                <Input type="select" name="select" className="filter-dropdown" value={yearsOptionRange}
-                                onChange={event => {YearOption_OnChange(event.currentTarget.value);}} >
-                                    <option value="-1">Years</option>
-                                    <option value="0">At Least</option>
-                                    <option value="1">Less Than</option>
-                                </Input>
-                            </FormGroup>
-                        </Col>
-                        <Col>
-                            <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                                <Input disabled={yearsOptionRange < 0} type="number" min="0" step="1" value={year || ''} placeholder="Years"
-                                onChange={event => {Year_OnChange(event.target.value);}} />
-                            </FormGroup>
+                        <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+                               <UncontrolledDropdown>
+                                   <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret>
+                                       Tenure
+                                   </DropdownToggle>
+                                   <DropdownMenu modifiers={modifiers} right className="btn-dropdown-items">
+                                       {
+                                           Object.keys(tenureRanges).length !== 0 ? (
+                                            tenureRanges.map((tenureElement, index) => 
+                                               {
+                                                   return(
+                                                       <div key={index}>
+                                                           <input type="checkbox"
+                                                           style={{"display": "inline"}}
+                                                           name={tenureElement.text}
+                                                           value={tenureElement.value}
+                                                           checked={tenureElement.checked}
+                                                           onChange={e => {Tenure_OnChange(e)}} />
+                                                        <Label style={{"display": "inline"}}>{tenureElement.text}</Label></div>)
+                                               })
+                                            ) : ("")
+                                       }
+
+                                   </DropdownMenu>
+                               </UncontrolledDropdown>
+                        </FormGroup>
                         </Col>
                         <Col>
                             <FormGroup className="mb-2 mr-sm-2 mb-sm-0">

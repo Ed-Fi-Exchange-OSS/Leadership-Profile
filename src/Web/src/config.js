@@ -15,7 +15,7 @@ function config() {
         }
     }
 
-    const SCHOOL_HEADER = "TPDM Leadership Portal"
+    const SCHOOL_HEADER = "Leadership Portal"
     return {API_URL, API_CONFIG, SCHOOL_HEADER}
 }
 

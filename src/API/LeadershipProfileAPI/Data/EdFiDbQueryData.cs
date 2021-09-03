@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace LeadershipProfileAPI.Data
 {
     /// <summary>
-    /// The EdFiDbQueryData provides alternative options to query dbContext when 
+    /// The EdFiDbQueryData provides alternative options to query dbContext when
     /// more complex queries are required.
     /// </summary>
     public class EdFiDbQueryData
@@ -72,7 +72,7 @@ namespace LeadershipProfileAPI.Data
                     select * from edfi.vw_StaffSearch
                     {ClauseConditions(body)}
                 ) staff
-                group by 
+                group by
                     {string.Join(", ", columns)}
                 order by case when {fieldMapping[sortField]} is null then 1 else 0 end, {fieldMapping[sortField]} {sortBy}
                 offset {(currentPage - 1) * pageSize} rows
@@ -83,7 +83,7 @@ namespace LeadershipProfileAPI.Data
         }
 
         public async Task<int> GetSearchResultsTotalsAsync(ProfileSearchRequestBody body)
-        { 
+        {
             // Add the 'name' value as sql parameter to avoid SQL injection from raw text
             var name = new SqlParameter("name", body?.Name ?? string.Empty);
 
@@ -92,45 +92,30 @@ namespace LeadershipProfileAPI.Data
                  select DISTINCT (StaffUSI) from edfi.vw_StaffSearch
                  {ClauseConditions(body)}
              ";
-            
+
             return await _edfiDbContext.StaffSearches.FromSqlRaw(sql, name).CountAsync();
         }
 
         private static string ClauseConditions(ProfileSearchRequestBody body)
         {
             if (body == null) return "--where excluded, no body provided";
-            
+
             var whereCondition = new[]
                 {
-                    ClauseYears(body.MinYears, body.MaxYears), 
-                    ClauseAssignments(body.Assignments), 
-                    ClauseDegrees(body.Degrees), 
+                    ClauseAssignments(body.Assignments),
+                    ClauseDegrees(body.Degrees),
                     ClauseRatings(body.Ratings),
                     ClauseName(),
-                    ClauseInstitution(body.Institutions)
+                    ClauseInstitution(body.Institutions),
+                    ClauseYearsOfExperience(body.YearsOfPriorExperienceRanges)
                 }
                 .Where(x => !string.IsNullOrWhiteSpace(x))
                 .DefaultIfEmpty(string.Empty)
                 .Aggregate((x, y) => $"{x} and {y}");
 
-            return !string.IsNullOrWhiteSpace(whereCondition) 
-                ? $"where {whereCondition}" 
+            return !string.IsNullOrWhiteSpace(whereCondition)
+                ? $"where {whereCondition}"
                 : "--where excluded, no conditions provided";
-        }
-
-        private static string ClauseYears(int min, int max)
-        {
-            if (min > 0 || max > 0)
-            {
-                // Provide the condition being searched for matching your schema. Example: "(y.YearsOfService >= min and y.YearsOfService <= max)"
-                var whereMinYears = min > 0 ? $"YearsOfService >= {min}" : string.Empty;
-                var andMinAndMax = min > 0 && max > 0 ? " and " : string.Empty;
-                var whereMaxYears = max > 0 ? $"YearsOfService <= {max}" : string.Empty;
-                var whereIfLessThan = max > 0 && min >= 0 ? " OR YearsOfService IS NULL" : string.Empty;
-                return $"({whereMinYears}{andMinAndMax}{whereMaxYears}{whereIfLessThan})";
-            }
-
-            return string.Empty;
         }
 
         private static string ClauseAssignments(ProfileSearchRequestAssignments assignments)
@@ -141,7 +126,7 @@ namespace LeadershipProfileAPI.Data
                 var whereStart = assignments.StartDate.HasValue ? $"datediff(day, StartDate, '{assignments.StartDate.Value.ToShortDateString()}') = 0" : string.Empty;
                 var andStartAndAssignment = assignments.StartDate.HasValue && assignments.Values.Any() ? " and " : string.Empty;
                 var whereAssignment = assignments.Values.Any() ? $"StaffClassificationDescriptorId in ({string.Join(",", assignments.Values)})" : string.Empty;
-                
+
                 return $"({whereStart}{andStartAndAssignment}{whereAssignment})";
             }
 
@@ -154,7 +139,7 @@ namespace LeadershipProfileAPI.Data
             {
                 // Provide the condition being searched for matching your schema. Example: "(d.DegreeId = 68)"
                 var whereDegrees = degrees.Values.Any() ? $"HighestCompletedLevelOfEducationDescriptorId in ({string.Join(",", degrees.Values)})" : string.Empty;
-                
+
                 return $"({whereDegrees})";
             }
 
@@ -194,6 +179,24 @@ namespace LeadershipProfileAPI.Data
                 return $"({whereInstitutions})";
             }
             return string.Empty;
+        }
+
+        private static string ClauseYearsOfExperience(ProfileSearchYearsOfPriorExperience yearsOfPriorExperienceRanges)
+        {
+            var whereTenure = string.Empty;
+            var rangesCounter = 0;
+            if (yearsOfPriorExperienceRanges == null || yearsOfPriorExperienceRanges.Values.Count <= 0)
+                return whereTenure;
+
+            foreach (var range in yearsOfPriorExperienceRanges.Values)
+            {
+                var totalRanges = yearsOfPriorExperienceRanges.Values.Count;
+                var orCondition = totalRanges > 1 && totalRanges - 1 != rangesCounter ? "OR " : string.Empty;
+                whereTenure += $"YearsOfService BETWEEN {range.Min} AND {range.Max} {orCondition}";
+                rangesCounter++;
+            }
+
+            return whereTenure;
         }
     }
 }

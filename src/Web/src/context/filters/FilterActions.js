@@ -12,6 +12,8 @@ const FilterActions = {
     setRatingCategory: "SET_RATING_CATEGORY",
     setRatingScore: "SET_RATING_SCORE",
     removeRating: "REMOVE_RATING",
+    setTenure:"SET_TENURE",
+    removeTenure: "REMOVE_TENURE",
     clearFilters: "CLEAR_FILTERS"
 };
 

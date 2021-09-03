@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Row, Col,  Button, Card, Modal, ModalHeader, ModalBody, ModalFooter, Label, Input, Form, FormGroup } from 'reactstrap';
 import { PersonIcon, GeoIcon, PhoneIcon, MailIcon, EducationIconNavy, RibbonIcon, CalendarIcon, IdIcon } from '../Icons';
-import DataCorrectionModal from '../DataCorrectionComponent/DataCorrectionModal';
 import { formatDate } from '../../utils/date';
 
 const ProfileInfo = (props) => {
@@ -40,16 +39,6 @@ const ProfileInfo = (props) => {
                             <tr>
                                 <td className="profile-info-icon"><CalendarIcon /></td>
                                 <td className="profile-info-text">Last start date: {formatDate(data.startDate)}</td>              
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    <DataCorrectionModal data={data}></DataCorrectionModal>
-                                </td>
                             </tr>
                         </tbody>
                     </table>
