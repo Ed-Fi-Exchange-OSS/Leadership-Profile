@@ -122,6 +122,7 @@ const CreateDirectoryFilters = (props) => {
             unCheckAllFromElement(positions, setPositions);
             unCheckAllFromElement(degrees, setDegrees);
             unCheckAllFromElement(filteredInstitutions, setFilteredInstitutions);
+            unCheckAllFromElement(tenureRanges, setTenureRanges);
             OnChangeSubmit(true);
         }
 
