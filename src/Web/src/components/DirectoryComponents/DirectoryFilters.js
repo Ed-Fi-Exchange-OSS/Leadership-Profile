@@ -216,13 +216,16 @@ const CreateDirectoryFilters = (props) => {
                                                {
                                                    return positionElement.checked ? "" : (
                                                        <div key={index}>
-                                                           <input type="checkbox"
-                                                           style={{"display": "inline"}}
-                                                           name={positionElement.text}
-                                                           value={positionElement.value}
-                                                           checked={positionElement.checked}
-                                                           onChange={e => {Position_OnChange(e)}} />
-                                                        <Label style={{"display": "inline"}}>{positionElement.text}</Label></div>)
+                                                            <Label style={{"display": "inline"}}>
+                                                                <input type="checkbox"
+                                                                       style={{"display": "inline"}}
+                                                                       value={positionElement.value}
+                                                                       name={positionElement.text}
+                                                                       checked={positionElement.checked}
+                                                                       onChange={e => {Position_OnChange(e)}} />
+                                                                {positionElement.text}
+                                                            </Label>
+                                                        </div>)
                                                })
                                             ) : ("")
                                        }
@@ -248,17 +251,19 @@ const CreateDirectoryFilters = (props) => {
                                                {
                                                    return schoolElement.checked ? "" : (
                                                        <div key={index}>
-                                                           <input type="checkbox"
-                                                           style={{"display": "inline"}}
-                                                           name={schoolElement.text}
-                                                           value={schoolElement.value}
-                                                           checked={schoolElement.checked}
-                                                           onChange={e => {Institution_Onchange(e)}} />
-                                                        <Label style={{"display": "inline"}}>{schoolElement.text}</Label></div>)
+                                                            <Label style={{"display": "inline"}}>
+                                                                <input type="checkbox"
+                                                                       style={{"display": "inline"}}
+                                                                       name={schoolElement.text}
+                                                                       value={schoolElement.value}
+                                                                       checked={schoolElement.checked}
+                                                                       onChange={e => {Institution_Onchange(e)}} />
+                                                                {schoolElement.text}
+                                                            </Label>
+                                                        </div>)
                                                })
                                             ) : ("")
                                        }
-
                                    </DropdownMenu>
                                </UncontrolledDropdown>
                         </FormGroup>
@@ -276,13 +281,16 @@ const CreateDirectoryFilters = (props) => {
                                                {
                                                    return tenureElement.checked ? "" : (
                                                        <div key={index}>
-                                                           <input type="checkbox"
-                                                           style={{"display": "inline"}}
-                                                           name={tenureElement.text}
-                                                           value={tenureElement.value}
-                                                           checked={tenureElement.checked}
-                                                           onChange={e => {Tenure_OnChange(e)}} />
-                                                        <Label style={{"display": "inline"}}>{tenureElement.text}</Label></div>)
+                                                            <Label style={{"display": "inline"}}>
+                                                                <input type="checkbox"
+                                                                       style={{"display": "inline"}}
+                                                                       name={tenureElement.text}
+                                                                       value={tenureElement.value}
+                                                                       checked={tenureElement.checked}
+                                                                       onChange={e => {Tenure_OnChange(e)}} />
+                                                                {tenureElement.text}
+                                                            </Label>
+                                                        </div>)
                                                })
                                             ) : ("")
                                        }
@@ -304,13 +312,17 @@ const CreateDirectoryFilters = (props) => {
                                                {
                                                    return degreeElement.checked ? "" : (
                                                        <div key={index}>
-                                                           <input type="checkbox"
-                                                           style={{"display": "inline"}}
-                                                           name={degreeElement.text}
-                                                           value={degreeElement.value}
-                                                           checked={degreeElement.checked}
-                                                           onChange={e => {Degree_OnChange(e)}} />
-                                                        <Label style={{"display": "inline"}}>{degreeElement.text}</Label></div>)
+                                                            <Label style={{"display": "inline"}}>
+                                                                   style={{"display": "inline"}}
+                                                                <input type="checkbox"
+                                                                       name={degreeElement.text}
+                                                                       value={degreeElement.value}
+                                                                       style={{"display": "inline"}}
+                                                                       checked={degreeElement.checked}
+                                                                       onChange={e => {Degree_OnChange(e)}} />
+                                                                {degreeElement.text}
+                                                            </Label>
+                                                        </div>)
                                                })
                                             ) : ("")
                                        }
