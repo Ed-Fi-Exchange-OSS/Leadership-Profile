@@ -166,10 +166,17 @@ namespace LeadershipProfileAPI.Features.Profile
                     {2020, flPerformanceRating2020}, {2021, flPerformanceRating2021}
                 };
 
+                var emptyRatingsByYear = new Dictionary<int, IEnumerable<PerformanceRating>>
+                {
+                    {2020,flPerformanceRating2020}, {2021, new List<PerformanceRating>()}
+                };
+
                 return new List<PerformanceEvaluation>
                 {
                     new PerformanceEvaluation() { Title = "Overall", RatingsByYear = overallRatingsByYear },
                     new PerformanceEvaluation() { Title = "Forever Learner", RatingsByYear = flRatingsByYear },
+                    new PerformanceEvaluation() { Title = "Demo", RatingsByYear = flRatingsByYear },
+                    new PerformanceEvaluation() { Title = "No Data", RatingsByYear = emptyRatingsByYear},
                 };
             }
         }

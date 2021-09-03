@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Chartjs from "chart.js";
 
 const CanvasChart = (props) => {
+  return(<div></div>);
 
   var periods = []; 
   var datasets = [
@@ -74,7 +75,7 @@ const CanvasChart = (props) => {
 
   useEffect(() => {
     if (chartContainer && chartContainer.current) {
-      const newChartInstance = new Chartjs(chartContainer.current, chartConfig);
+      const newChartInstance = new Chartjs(chartContainer.current, {chartConfig});
       setChartInstance(newChartInstance);
     }
   }, [chartContainer]);
