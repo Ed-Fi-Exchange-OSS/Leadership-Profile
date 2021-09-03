@@ -214,7 +214,7 @@ const CreateDirectoryFilters = (props) => {
                                            Object.keys(positions).length !== 0 ? (
                                                positions.map((positionElement, index) => 
                                                {
-                                                   return(
+                                                   return positionElement.checked ? "" : (
                                                        <div key={index}>
                                                            <input type="checkbox"
                                                            style={{"display": "inline"}}
@@ -246,7 +246,7 @@ const CreateDirectoryFilters = (props) => {
                                            Object.keys(filteredInstitutions).length !== 0 ? (
                                                filteredInstitutions.map((positionElement, index) => 
                                                {
-                                                   return(
+                                                   return positionElement.checked ? "" : (
                                                        <div key={index}>
                                                            <input type="checkbox"
                                                            style={{"display": "inline"}}
@@ -274,7 +274,7 @@ const CreateDirectoryFilters = (props) => {
                                            Object.keys(tenureRanges).length !== 0 ? (
                                             tenureRanges.map((tenureElement, index) => 
                                                {
-                                                   return(
+                                                   return tenureElement.checked ? "" : (
                                                        <div key={index}>
                                                            <input type="checkbox"
                                                            style={{"display": "inline"}}
@@ -299,11 +299,10 @@ const CreateDirectoryFilters = (props) => {
                                    </DropdownToggle>
                                    <DropdownMenu modifiers={modifiers} right className="btn-dropdown-items">
                                        {
-                                           
                                            Object.keys(degrees).length !== 0 ? (
                                                degrees.map((positionElement, index) => 
                                                {
-                                                   return(
+                                                   return positionElement.checked ? "" : (
                                                        <div key={index}>
                                                            <input type="checkbox"
                                                            style={{"display": "inline"}}
