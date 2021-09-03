@@ -215,10 +215,9 @@ const CreateDirectoryFilters = (props) => {
                                                positions.map((positionElement, index) => 
                                                {
                                                    return positionElement.checked ? "" : (
-                                                       <div key={index}>
-                                                            <Label style={{"display": "inline"}}>
+                                                       <div key={index} className="filter-select-item">
+                                                            <Label>
                                                                 <input type="checkbox"
-                                                                       style={{"display": "inline"}}
                                                                        value={positionElement.value}
                                                                        name={positionElement.text}
                                                                        checked={positionElement.checked}
@@ -250,10 +249,9 @@ const CreateDirectoryFilters = (props) => {
                                                filteredInstitutions.map((schoolElement, index) => 
                                                {
                                                    return schoolElement.checked ? "" : (
-                                                       <div key={index}>
-                                                            <Label style={{"display": "inline"}}>
+                                                       <div key={index} className="filter-select-item">
+                                                            <Label>
                                                                 <input type="checkbox"
-                                                                       style={{"display": "inline"}}
                                                                        name={schoolElement.text}
                                                                        value={schoolElement.value}
                                                                        checked={schoolElement.checked}
@@ -280,10 +278,9 @@ const CreateDirectoryFilters = (props) => {
                                             tenureRanges.map((tenureElement, index) => 
                                                {
                                                    return tenureElement.checked ? "" : (
-                                                       <div key={index}>
-                                                            <Label style={{"display": "inline"}}>
+                                                       <div key={index} className="filter-select-item">
+                                                            <Label>
                                                                 <input type="checkbox"
-                                                                       style={{"display": "inline"}}
                                                                        name={tenureElement.text}
                                                                        value={tenureElement.value}
                                                                        checked={tenureElement.checked}
@@ -311,13 +308,11 @@ const CreateDirectoryFilters = (props) => {
                                                degrees.map((degreeElement, index) => 
                                                {
                                                    return degreeElement.checked ? "" : (
-                                                       <div key={index}>
-                                                            <Label style={{"display": "inline"}}>
-                                                                   style={{"display": "inline"}}
+                                                       <div key={index} className="filter-select-item">
+                                                            <Label>
                                                                 <input type="checkbox"
                                                                        name={degreeElement.text}
                                                                        value={degreeElement.value}
-                                                                       style={{"display": "inline"}}
                                                                        checked={degreeElement.checked}
                                                                        onChange={e => {Degree_OnChange(e)}} />
                                                                 {degreeElement.text}
