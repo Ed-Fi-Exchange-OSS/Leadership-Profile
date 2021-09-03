@@ -12,7 +12,7 @@ const CreateTableList = (props) => {
         return (
             <Table striped className="directory-table">
                 <thead>
-                    <tr>
+                    <tr><th></th>
                         <th>
                             Name
                             <Sorting onSortChange={newStatus => setColumnSort('name', newStatus)}
@@ -35,6 +35,7 @@ const CreateTableList = (props) => {
                 <tbody>
                     {data !== [] ? data.map(profile => (
                         <tr key={profile.staffUniqueId}>
+                            <td></td>
                             <td><Link to={`profile/${profile.staffUniqueId}`}>{profile.lastSurname}, {profile.firstName}</Link></td>
                             <td>{profile.assignment}</td>
                             <td>{profile.institution}</td>
