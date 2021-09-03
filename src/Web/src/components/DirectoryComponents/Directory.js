@@ -18,9 +18,8 @@ const Directory = () => {
     return (
         <div>
             <div className='directory-div'>
-                <h2 className='directory-title'>Directory</h2>
                 <div className="directory-subtitle-controls">
-                    <BreadcrumbList currentPage="home" />
+                    <div></div>
                     <div className="view-style-buttons">
                         <span className="view-style-label">View Style</span>
                         <button disabled={activeComponent == "table"} color="primary" className="btn btn-primary view-style-button-first view-style-button" onClick={() => setActiveComponent("table")}>
@@ -31,6 +30,7 @@ const Directory = () => {
                         </button>
                     </div>
                 </div>
+                <h2 className='directory-title'>Directory</h2>
                 <DirectoryFilters directoryFilteredSearchCallback = {callbackFilteredSearch}/>
             </div>
             
