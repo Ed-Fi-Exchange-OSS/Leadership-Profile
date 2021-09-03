@@ -39,7 +39,7 @@ See [NOTICES](NOTICES.md) for additional copyright and license notifications.
 * Run the `setup.ps1` powershell script to install the required powershell modules and tools needed to build
 the application.
 * Run `Invoke-Psake DownloadDbTestData` in powershell from the project root folder.
-* Unzip and restore the backup in `testdata/EdFi_TPDM_v08_20201109.zip` to your local SQL Server instance.
+* Unzip and restore the backup in `testdata/EdFi_Ods_Populated_Template_TPDM_10.zip` to your local SQL Server instance.
 * Run the database migrations by running this powershell command from the project root folder:
 ```
 Invoke-Psake UpdateLocalDatabase
