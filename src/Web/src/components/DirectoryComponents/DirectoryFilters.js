@@ -244,17 +244,17 @@ const CreateDirectoryFilters = (props) => {
                                             clearEvent={() => institutionFiltering('')} />
                                        {
                                            Object.keys(filteredInstitutions).length !== 0 ? (
-                                               filteredInstitutions.map((positionElement, index) => 
+                                               filteredInstitutions.map((schoolElement, index) => 
                                                {
-                                                   return positionElement.checked ? "" : (
+                                                   return schoolElement.checked ? "" : (
                                                        <div key={index}>
                                                            <input type="checkbox"
                                                            style={{"display": "inline"}}
-                                                           name={positionElement.text}
-                                                           value={positionElement.value}
-                                                           checked={positionElement.checked}
+                                                           name={schoolElement.text}
+                                                           value={schoolElement.value}
+                                                           checked={schoolElement.checked}
                                                            onChange={e => {Institution_Onchange(e)}} />
-                                                        <Label style={{"display": "inline"}}>{positionElement.text}</Label></div>)
+                                                        <Label style={{"display": "inline"}}>{schoolElement.text}</Label></div>)
                                                })
                                             ) : ("")
                                        }
@@ -300,17 +300,17 @@ const CreateDirectoryFilters = (props) => {
                                    <DropdownMenu modifiers={modifiers} right className="btn-dropdown-items">
                                        {
                                            Object.keys(degrees).length !== 0 ? (
-                                               degrees.map((positionElement, index) => 
+                                               degrees.map((degreeElement, index) => 
                                                {
-                                                   return positionElement.checked ? "" : (
+                                                   return degreeElement.checked ? "" : (
                                                        <div key={index}>
                                                            <input type="checkbox"
                                                            style={{"display": "inline"}}
-                                                           name={positionElement.text}
-                                                           value={positionElement.value}
-                                                           checked={positionElement.checked}
+                                                           name={degreeElement.text}
+                                                           value={degreeElement.value}
+                                                           checked={degreeElement.checked}
                                                            onChange={e => {Degree_OnChange(e)}} />
-                                                        <Label style={{"display": "inline"}}>{positionElement.text}</Label></div>)
+                                                        <Label style={{"display": "inline"}}>{degreeElement.text}</Label></div>)
                                                })
                                             ) : ("")
                                        }
