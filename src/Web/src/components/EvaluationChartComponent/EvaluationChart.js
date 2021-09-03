@@ -1,7 +1,7 @@
 import React, {useState, useEffect } from 'react';
 import {Bar} from 'react-chartjs-2';
 import { DownPointingIcon } from '../Icons';
-import { CardTitle, Collapse} from 'reactstrap';
+import { Collapse} from 'reactstrap';
 
 
 const EvaluationChart = (props) =>{
@@ -9,8 +9,6 @@ const EvaluationChart = (props) =>{
     const { title, data } = props;
     const [isOpen, setIsOpen] = useState(false);
     const [icon, setIcon] = useState('');
-    const [chartCategories, setCategories] = useState();
-    const [chartScores, setScores] = useState();
     const [ratings, setRatings] =  useState();
     const [selectedYearOption] = useState();
     const [chartDataSets, setChartDataSets] = useState([]);
@@ -37,12 +35,6 @@ const EvaluationChart = (props) =>{
 
     const [yearsToSelect, setYearsToSelect] = useState([]);
 
-
-    function setTable(title) {
-
-    }
-
-
     function buildYearOptions(data)
     {
         let years =  [];
@@ -54,10 +46,6 @@ const EvaluationChart = (props) =>{
 
         setYearsToSelect(years);
     }
-
-    useEffect(()=> {
-        setTable(title);
-    },[CardTitle]);
 
     useEffect(()=> {
         if (data !== undefined) {
@@ -89,7 +77,7 @@ const EvaluationChart = (props) =>{
                             label: element.category,
                             backgroundColor: barColors[barNumber],
                             borderColor: barBorderColors[barNumber],
-                            maxBarThickness:36,
+                            maxBarThickness:100,
                             minBarThickness:36,
                             borderWidth: 1,
                             borderRadius: 4,
@@ -148,22 +136,28 @@ const EvaluationChart = (props) =>{
                 <span className="profile-collapsible-down-icon"><DownPointingIcon /></span>
             </h2>
             <Collapse isOpen={isOpen}>
-            <div class="chartContainer">
-                <span>Year/s </span>
+            <div className="chartContainer">
+                <span>Year </span>
             <select id="dddEvaluationsYear" onChange={ e => updateEvaluationData(e.currentTarget.value) }
                 value= {selectedYearOption}>
                 {
                     yearsToSelect.map( year =>
-                        <option value = { year.value }>
+                        <option value = { year.value } key= {year.value}>
                             { year.label }
                         </option>
                     )
                 }
             </select>
-                    <Bar
-                        data={chartData}
-                        options = {chartOptions}
-                    />
+                    { chartData.datasets.length > 0 ? (
+                            <Bar
+                                data={chartData}
+                                options = {chartOptions}
+                            />
+                    ): 
+                    <div><br/>
+                        <h3>No ratings found for this evaluation</h3>
+                    </div>
+                    }
                 </div>
             </Collapse>
         </div>
