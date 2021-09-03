@@ -115,17 +115,9 @@ namespace LeadershipProfileAPI.Data
 
         private static string ClauseAssignments(ProfileSearchRequestAssignments assignments)
         {
-            if (assignments != null && (assignments.StartDate.HasValue || assignments.Values.Any()))
-            {
-                // Provide the condition being searched for matching your schema. Examples: "(a.StartDate = '1982-07-14')" or "(a.StartDate = '1982-07-14' and a.PositionId IN (5432, 234, 5331, 34))"
-                var whereStart = assignments.StartDate.HasValue ? $"datediff(day, StartDate, '{assignments.StartDate.Value.ToShortDateString()}') = 0" : string.Empty;
-                var andStartAndAssignment = assignments.StartDate.HasValue && assignments.Values.Any() ? " and " : string.Empty;
-                var whereAssignment = assignments.Values.Any() ? $"StaffClassificationDescriptorId in ({string.Join(",", assignments.Values)})" : string.Empty;
-
-                return $"({whereStart}{andStartAndAssignment}{whereAssignment})";
-            }
-
-            return string.Empty;
+            return assignments != null && (assignments.Values.Any())
+                ? $"(StaffClassificationDescriptorId in ({string.Join(",", assignments.Values)}))"
+                : string.Empty;
         }
 
         private static string ClauseDegrees(ProfileSearchRequestDegrees degrees)
