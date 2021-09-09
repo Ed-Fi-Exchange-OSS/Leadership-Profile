@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using LeadershipProfileAPI.Data;
-using LeadershipProfileAPI.Data.Models.ListItem;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace LeadershipProfileAPI.Controllers.WebControls.DropDownList.MeasurementCategories
 {
@@ -24,12 +23,11 @@ namespace LeadershipProfileAPI.Controllers.WebControls.DropDownList.MeasurementC
 
             public string Text { get; set; }
 
-
             public Category() { }
             public Category(string value)
             {
                 Value = value;
-                Text = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(value);
+                Text = value;
             }
         }
 
@@ -42,35 +40,18 @@ namespace LeadershipProfileAPI.Controllers.WebControls.DropDownList.MeasurementC
                 _dbContext = dbContext;
             }
 
-            public Task<Response> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
             {
-                //var list = await _dbContext.ListItemCategories
-                //    .ProjectTo<Category>(_mapper.ConfigurationProvider)
-                //    .ToListAsync(cancellationToken);
+                var list = await _dbContext.ListItemCategories
+                    .OrderBy(c => c.SortOrder)
+                    .Select(c => c.Category)
+                    .Distinct()
+                    .Select(c => new Category(c))
+                    .ToListAsync(cancellationToken);
 
-                /* TO-DO: Returning dummy data, replace this with code above when db view is updated */
-                var list = DummyData()
-                    .Select(d => new Category(d.Value))
-                    .OrderBy(d => d.Text)
-                    .ToList();
-
-                var response = new Response
+                return new Response
                 {
                     Categories = list
-                };
-
-                return Task.FromResult(response);
-            }
-
-            public List<ListItemCategory> DummyData()
-            {
-                return new List<ListItemCategory>
-                {
-                    new() { Value = "Forever Learner" },
-                    new() { Value = "Promise 2 Purpose Investor" },
-                    new() { Value = "Relationship Driven" },
-                    new() { Value = "Student Focused" },
-                    new() { Value = "Technical Skills" }
                 };
             }
         }

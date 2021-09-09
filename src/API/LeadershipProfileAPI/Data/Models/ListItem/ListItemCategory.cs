@@ -3,6 +3,7 @@
     public class ListItemCategory
     {
         //Evaluation Objective has a Text-Based Key
-        public string Value { get; set; }
+        public string Category { get; set; }
+        public int SortOrder { get; set; }
     }
 }
