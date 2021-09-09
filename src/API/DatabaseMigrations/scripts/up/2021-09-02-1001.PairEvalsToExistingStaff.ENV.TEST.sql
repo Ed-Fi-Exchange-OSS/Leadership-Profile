@@ -17,8 +17,3 @@ FROM edfi.Staff staff
 
 DROP TABLE IF EXISTS #EvaluatedPersons;
 GO
-
-/* Reduce scores to be on a 5-point scale for optics */
-UPDATE tpdm.EvaluationObjectiveRatingResult
-SET Rating = (Rating / 20.0)
-
