@@ -4,7 +4,7 @@ export const INITIAL_FILTERS_STATE = {
     positions: [],
     degrees: [],
     tenure: [],
-    categoryId: 0,
+    category:'',
     categoryLabel: '',
     score: 0,
     pills: []
