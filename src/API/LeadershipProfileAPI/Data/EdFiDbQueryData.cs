@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LeadershipProfileAPI.Data.Models;
@@ -69,6 +68,7 @@ namespace LeadershipProfileAPI.Data
                     ,Email
                     ,Telephone
                 from edfi.vw_StaffSearch
+                {ClauseRatingsConditionalJoin(body)}
                 {ClauseConditions(body)}
                 order by case when {fieldMapping[sortField]} is null then 1 else 0 end, {fieldMapping[sortField]} {sortBy}
                 offset {(currentPage - 1) * pageSize} rows
@@ -91,6 +91,19 @@ namespace LeadershipProfileAPI.Data
             return await _edfiDbContext.StaffSearches.FromSqlRaw(sql, name).CountAsync();
         }
 
+        private string ClauseRatingsConditionalJoin(ProfileSearchRequestBody body)
+        {
+            if (body == null || body.Ratings == null || !body.Ratings.IsPopulated)
+                return string.Empty;
+
+            var joinOnStaff = "JOIN edfi.vw_StaffObjectiveRatings ratings ON ratings.StaffUSI = s.StaffUSI";
+
+            var onCategory = $" AND ratings.Category = '{body.Ratings.Category}'";
+            var andScore = body.Ratings.Score > 0 ? $" AND ratings.Rating >= {body.Ratings.Score}" : string.Empty;
+
+            return $"{joinOnStaff}{onCategory}{andScore}";
+        }
+
         private static string ClauseConditions(ProfileSearchRequestBody body)
         {
             if (body == null) return "--where excluded, no body provided";
@@ -99,7 +112,6 @@ namespace LeadershipProfileAPI.Data
                 {
                     ClauseAssignments(body.Assignments),
                     ClauseDegrees(body.Degrees),
-                    ClauseRatings(body.Ratings),
                     ClauseName(),
                     ClauseInstitution(body.Institutions),
                     ClauseYearsOfExperience(body.YearsOfPriorExperienceRanges)
@@ -128,25 +140,6 @@ namespace LeadershipProfileAPI.Data
                 var whereDegrees = degrees.Values.Any() ? $"HighestCompletedLevelOfEducationDescriptorId in ({string.Join(",", degrees.Values)})" : string.Empty;
 
                 return $"({whereDegrees})";
-            }
-
-            return string.Empty;
-        }
-
-        private static string ClauseRatings(ProfileSearchRequestRatings ratings)
-        {
-            if (ratings?.CategoryId > 0 && ratings?.Score >= 0)
-            {
-                // Provide the condition being searched for matching your schema. Examples: "(r.Rating = 3)" or "(r.Rating = 3 and r.RatingCateogryId = 45)"
-                var whereCategory = ratings.CategoryId > 0 ? $"mr.Category = {ratings.CategoryId}" : string.Empty;
-                var andCatAndScore = ratings.CategoryId > 0 && ratings.Score > 0 ? " and " : string.Empty;
-                var whereScore = ratings.Score > 0 ? $"pm.Score = {ratings.Score}" : string.Empty;
-                var andScoreAndSub = !string.IsNullOrWhiteSpace(ratings.SubCategory) && ratings.Score > 0 ? " and " : string.Empty;
-                var whereSubCategory = !string.IsNullOrWhiteSpace(ratings.SubCategory) ? $"mr.SubCategory = '{ratings.SubCategory}'" : string.Empty;
-
-                // TO-DO: returning empty for now until backend changes
-                //return $"({whereCategory}{andCatAndScore}{whereScore}{andScoreAndSub}{whereSubCategory})";
-                return string.Empty;
             }
 
             return string.Empty;
