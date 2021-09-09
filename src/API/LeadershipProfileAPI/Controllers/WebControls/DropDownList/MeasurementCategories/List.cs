@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using LeadershipProfileAPI.Data;
 using LeadershipProfileAPI.Data.Models.ListItem;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace LeadershipProfileAPI.Controllers.WebControls.DropDownList.MeasurementCategories
 {
@@ -22,19 +20,26 @@ namespace LeadershipProfileAPI.Controllers.WebControls.DropDownList.MeasurementC
 
         public class Category
         {
+            public string Value { get; set; }
+
             public string Text { get; set; }
-            public int Value { get; set; }
+
+
+            public Category() { }
+            public Category(string value)
+            {
+                Value = value;
+                Text = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(value);
+            }
         }
 
         public class QueryHandler : IRequestHandler<Query, Response>
         {
             private readonly EdFiDbContext _dbContext;
-            private readonly IMapper _mapper;
 
-            public QueryHandler(EdFiDbContext dbContext, IMapper mapper)
+            public QueryHandler(EdFiDbContext dbContext)
             {
                 _dbContext = dbContext;
-                _mapper = mapper;
             }
 
             public Task<Response> Handle(Query request, CancellationToken cancellationToken)
@@ -44,11 +49,14 @@ namespace LeadershipProfileAPI.Controllers.WebControls.DropDownList.MeasurementC
                 //    .ToListAsync(cancellationToken);
 
                 /* TO-DO: Returning dummy data, replace this with code above when db view is updated */
-                var list = _mapper.Map<List<Category>> (DummyData());
+                var list = DummyData()
+                    .Select(d => new Category(d.Value))
+                    .OrderBy(d => d.Text)
+                    .ToList();
 
                 var response = new Response
                 {
-                    Categories = list.OrderBy(o => o.Text).ToList()
+                    Categories = list
                 };
 
                 return Task.FromResult(response);
@@ -58,11 +66,11 @@ namespace LeadershipProfileAPI.Controllers.WebControls.DropDownList.MeasurementC
             {
                 return new List<ListItemCategory>
                 {
-                    new() { Text = "Forever Learner", Value = 1 },
-                    new() { Text = "Promise 2 Purpose Investor", Value = 2 },
-                    new() { Text = "Relationship Driven", Value = 3 },
-                    new() { Text = "Student Focused", Value = 4 },
-                    new() { Text = "Technical Skills", Value = 5 }
+                    new() { Value = "Forever Learner" },
+                    new() { Value = "Promise 2 Purpose Investor" },
+                    new() { Value = "Relationship Driven" },
+                    new() { Value = "Student Focused" },
+                    new() { Value = "Technical Skills" }
                 };
             }
         }
