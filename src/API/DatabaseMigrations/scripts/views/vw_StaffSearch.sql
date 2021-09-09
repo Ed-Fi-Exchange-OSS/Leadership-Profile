@@ -75,7 +75,6 @@ select s.StaffUSI
      , s.YearsOfPriorProfessionalExperience as YearsOfService 
 
      , a.Position     as Assignment
-     , a.StartDate
      , a.PositionId   as StaffClassificationDescriptorId
      , a.Institution
      , a.InstitutionId

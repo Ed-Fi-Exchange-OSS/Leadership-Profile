@@ -18,7 +18,7 @@ const Searching = (props) => {
     }
 
     return (
-        <FormGroup className="w-50 search-by-name">
+        <FormGroup className="search-by-name">
             <Input onChange={e => handleOnChange(e.target.value)}
             value={value}
             onKeyUp={e => handleOnKeyUp(e)}
