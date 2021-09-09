@@ -85,6 +85,7 @@
   position: relative;
   top: 3.5rem;
   cursor: pointer;
+  display: none;
 }
 
 .view-style-buttons > a {
