@@ -13,21 +13,21 @@ const CreateTableList = (props) => {
             <Table striped className="directory-table">
                 <thead>
                     <tr><th></th>
-                        <th>
+                        <th width="20%">
                             Name
                             <Sorting onSortChange={newStatus => setColumnSort('name', newStatus)}
                                 status={sort.category === 'name' ? sort.value : null} />
                         </th>
-                        <th>
+                        <th width="20%">
                             Position
                         </th>
-                        <th>
+                        <th width="30%">
                             School 
                         </th>
-                        <th>
+                        <th width="10%">
                             Years
                         </th>
-                        <th>
+                        <th width="20%">
                             Degree
                         </th>
                     </tr>
@@ -36,11 +36,11 @@ const CreateTableList = (props) => {
                     {data !== [] ? data.map(profile => (
                         <tr key={profile.staffUniqueId}>
                             <td></td>
-                            <td><Link to={`profile/${profile.staffUniqueId}`}>{profile.lastSurname}, {profile.firstName}</Link></td>
-                            <td>{profile.assignment}</td>
-                            <td>{profile.institution}</td>
-                            <td>{profile.yearsOfService}</td>
-                            <td>{profile.degree}</td>
+                            <td width="20%"><Link to={`profile/${profile.staffUniqueId}`}>{profile.lastSurname}, {profile.firstName}</Link></td>
+                            <td width="20%">{profile.assignment}</td>
+                            <td width="20%">{profile.institution}</td>
+                            <td width="20%">{profile.yearsOfService}</td>
+                            <td width="20%">{profile.degree}</td>
                         </tr>)) : ''}
                         <tr className="bottom-row">
                             <td colSpan="5">

@@ -8,6 +8,7 @@ import UsePills from './PillsComponents/UsePills';
 import { useFilterContext } from "../../context/filters/UseFilterContext";
 import FilterActions from "../../context/filters/FilterActions";
 import { SCORE_OPTIONS, TENURE_RANGES} from '../../utils/Constants';
+import { Table } from 'reactstrap';
 
 const CreateDirectoryFilters = (props) => {
 
@@ -192,161 +193,97 @@ const CreateDirectoryFilters = (props) => {
 
         return (
             <div>
-                <div className="search-sort-container">
-                    <div className="search-sort-form">
-                        <Searching onSearchValueChange = {NameSearch_OnChange} value={nameSearch}/>
-                    </div>
-                </div>
+                <div  className="filters-container">
+                <Table cellspacing="0" cellpadding="0">
 
-                <PillsFilters handleRemove={removePillAndFilter} handleRemoveAll={removeAllPills}/>
+                   <tbody>
+                       <tr>
+                            <td></td>
+                           <td width="20%">
+                                <Searching onSearchValueChange = {NameSearch_OnChange} value={nameSearch}/>
+                            </td>
+                           <td width="20%">
+                                <FormGroup>
+                                    <UncontrolledDropdown>
+                                        <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret>
+                                            Positions
+                                        </DropdownToggle>
+                                        <DropdownMenu modifiers={modifiers} right className="btn-dropdown-items">
+                                            {
+                                                Object.keys(positions).length !== 0 ? (
+                                                    positions.map((positionElement, index) => 
+                                                    {
+                                                        return(
+                                                            <div key={index}>
+                                                                <input type="checkbox"
+                                                                style={{"display": "inline"}}
+                                                                name={positionElement.text}
+                                                                value={positionElement.value}
+                                                                checked={positionElement.checked}
+                                                                onChange={e => {Position_OnChange(e)}} />
+                                                                <Label style={{"display": "inline"}}>{positionElement.text}</Label></div>)
+                                                    })
+                                                    ) : ("")
+                                            }
 
-                <div className="filters-container col-12">
-                    <Form>
-                    <Row>
-                        <Col>
-                        <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                               <UncontrolledDropdown>
-                                   <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret>
-                                       Positions
-                                   </DropdownToggle>
-                                   <DropdownMenu modifiers={modifiers} right className="btn-dropdown-items">
-                                       {
-                                           Object.keys(positions).length !== 0 ? (
-                                               positions.map((positionElement, index) => 
-                                               {
-                                                   return(
-                                                       <div key={index}>
-                                                           <input type="checkbox"
-                                                           style={{"display": "inline"}}
-                                                           name={positionElement.text}
-                                                           value={positionElement.value}
-                                                           checked={positionElement.checked}
-                                                           onChange={e => {Position_OnChange(e)}} />
-                                                        <Label style={{"display": "inline"}}>{positionElement.text}</Label></div>)
-                                               })
-                                            ) : ("")
-                                       }
+                                        </DropdownMenu>
+                                    </UncontrolledDropdown>
+                                </FormGroup>
+                                <FormGroup>
+                                    <UncontrolledDropdown setActiveFromChild>
+                                        <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret>
+                                            {filterState.categoryLabel || "Performance Indicator"}
+                                        </DropdownToggle>
+                                        <DropdownMenu modifiers={modifiers} persist={false}>
+                                            <DropdownItem value="0" key={"cat-0"} onClick={onClickCategory}>All Performance Indicators</DropdownItem>
+                                            <DropdownItem divider/>
+                                            {
+                                                Object.keys(categories).length !== 0 ? (
+                                                    categories.map((catElement, index) => {
+                                                        return(
+                                                            <DropdownItem key={"cat-" + index} onClick={onClickCategory} value={catElement.value} active={catElement.selected}>
+                                                                {catElement.text}
+                                                            </DropdownItem>
+                                                        )
+                                                    })
+                                                ): ("")
+                                            }
+                                        </DropdownMenu>
+                                    </UncontrolledDropdown>
+                                </FormGroup>
+                           </td>
+                           <td width="30%">
+                                <FormGroup>
+                                    <UncontrolledDropdown>
+                                        <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret>
+                                            Schools
+                                        </DropdownToggle>
+                                        <DropdownMenu modifiers={modifiers} right className="btn-dropdown-items">
+                                            <DropdownTypeAhead 
+                                                    value={filterInstitutionValue} 
+                                                    changeEvent={(e) => institutionFiltering(e.target.value)} 
+                                                    clearEvent={() => institutionFiltering('')} />
+                                            {
+                                                Object.keys(filteredInstitutions).length !== 0 ? (
+                                                    filteredInstitutions.map((positionElement, index) => 
+                                                    {
+                                                        return(
+                                                            <div key={index}>
+                                                                <input type="checkbox"
+                                                                style={{"display": "inline"}}
+                                                                name={positionElement.text}
+                                                                value={positionElement.value}
+                                                                checked={positionElement.checked}
+                                                                onChange={e => {Institution_Onchange(e)}} />
+                                                                <Label style={{"display": "inline"}}>{positionElement.text}</Label></div>)
+                                                    })
+                                                    ) : ("")
+                                            }
 
-                                   </DropdownMenu>
-                               </UncontrolledDropdown>
-                        </FormGroup>
-                        </Col>
-                        <Col>
-                        <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                        <UncontrolledDropdown>
-                                   <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret>
-                                       Schools
-                                   </DropdownToggle>
-                                   <DropdownMenu modifiers={modifiers} right className="btn-dropdown-items">
-                                       <DropdownTypeAhead 
-                                            value={filterInstitutionValue} 
-                                            changeEvent={(e) => institutionFiltering(e.target.value)} 
-                                            clearEvent={() => institutionFiltering('')} />
-                                       {
-                                           Object.keys(filteredInstitutions).length !== 0 ? (
-                                               filteredInstitutions.map((positionElement, index) => 
-                                               {
-                                                   return(
-                                                       <div key={index}>
-                                                           <input type="checkbox"
-                                                           style={{"display": "inline"}}
-                                                           name={positionElement.text}
-                                                           value={positionElement.value}
-                                                           checked={positionElement.checked}
-                                                           onChange={e => {Institution_Onchange(e)}} />
-                                                        <Label style={{"display": "inline"}}>{positionElement.text}</Label></div>)
-                                               })
-                                            ) : ("")
-                                       }
-
-                                   </DropdownMenu>
-                               </UncontrolledDropdown>
-                        </FormGroup>
-                        </Col>
-                        <Col>
-                        <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                               <UncontrolledDropdown>
-                                   <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret>
-                                       Tenure
-                                   </DropdownToggle>
-                                   <DropdownMenu modifiers={modifiers} right className="btn-dropdown-items">
-                                       {
-                                           Object.keys(tenureRanges).length !== 0 ? (
-                                            tenureRanges.map((tenureElement, index) => 
-                                               {
-                                                   return(
-                                                       <div key={index}>
-                                                           <input type="checkbox"
-                                                           style={{"display": "inline"}}
-                                                           name={tenureElement.text}
-                                                           value={tenureElement.value}
-                                                           checked={tenureElement.checked}
-                                                           onChange={e => {Tenure_OnChange(e)}} />
-                                                        <Label style={{"display": "inline"}}>{tenureElement.text}</Label></div>)
-                                               })
-                                            ) : ("")
-                                       }
-
-                                   </DropdownMenu>
-                               </UncontrolledDropdown>
-                        </FormGroup>
-                        </Col>
-                        <Col>
-                            <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                            <UncontrolledDropdown>
-                                   <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret>
-                                       Degrees
-                                   </DropdownToggle>
-                                   <DropdownMenu modifiers={modifiers} right className="btn-dropdown-items">
-                                       {
-                                           
-                                           Object.keys(degrees).length !== 0 ? (
-                                               degrees.map((positionElement, index) => 
-                                               {
-                                                   return(
-                                                       <div key={index}>
-                                                           <input type="checkbox"
-                                                           style={{"display": "inline"}}
-                                                           name={positionElement.text}
-                                                           value={positionElement.value}
-                                                           checked={positionElement.checked}
-                                                           onChange={e => {Degree_OnChange(e)}} />
-                                                        <Label style={{"display": "inline"}}>{positionElement.text}</Label></div>)
-                                               })
-                                            ) : ("")
-                                       }
-                                   </DropdownMenu>
-                               </UncontrolledDropdown>
-                        </FormGroup>
-                        </Col>
-                    </Row>
-                    <Row className="centered-filter-rows">
-                        <Col md={3} lg={3} xl={3}>
-                            <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                                <UncontrolledDropdown setActiveFromChild>
-                                    <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret>
-                                        {filterState.categoryLabel || "Performance Indicator"}
-                                    </DropdownToggle>
-                                    <DropdownMenu modifiers={modifiers} persist={false}>
-                                        <DropdownItem value="0" key={"cat-0"} onClick={onClickCategory}>All Performance Indicators</DropdownItem>
-                                        <DropdownItem divider/>
-                                        {
-                                            Object.keys(categories).length !== 0 ? (
-                                                categories.map((catElement, index) => {
-                                                    return(
-                                                        <DropdownItem key={"cat-" + index} onClick={onClickCategory} value={catElement.value} active={catElement.selected}>
-                                                            {catElement.text}
-                                                        </DropdownItem>
-                                                    )
-                                                })
-                                            ): ("")
-                                        }
-                                    </DropdownMenu>
-                                </UncontrolledDropdown>
-                            </FormGroup>
-                        </Col>
-                        <Col md={3} lg={3} xl={3}>
-                            <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+                                        </DropdownMenu>
+                                    </UncontrolledDropdown>
+                                </FormGroup>
+                                <FormGroup>
                                 <UncontrolledDropdown >
                                     <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret disabled={filterState.categoryId == 0}>
                                         Score
@@ -367,10 +304,68 @@ const CreateDirectoryFilters = (props) => {
                                     </DropdownMenu>
                                 </UncontrolledDropdown>
                             </FormGroup>
-                        </Col>
-                    </Row>
-                    </Form>
+                           </td>
+                           <td width="10%">
+                                <FormGroup>
+                                    <UncontrolledDropdown>
+                                        <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret>
+                                            Tenure
+                                        </DropdownToggle>
+                                        <DropdownMenu modifiers={modifiers} right className="btn-dropdown-items">
+                                            {
+                                                Object.keys(tenureRanges).length !== 0 ? (
+                                                    tenureRanges.map((tenureElement, index) => 
+                                                    {
+                                                        return(
+                                                            <div key={index}>
+                                                                <input type="checkbox"
+                                                                style={{"display": "inline"}}
+                                                                name={tenureElement.text}
+                                                                value={tenureElement.value}
+                                                                checked={tenureElement.checked}
+                                                                onChange={e => {Tenure_OnChange(e)}} />
+                                                                <Label style={{"display": "inline"}}>{tenureElement.text}</Label></div>)
+                                                    })
+                                                    ) : ("")
+                                            }
+
+                                        </DropdownMenu>
+                                    </UncontrolledDropdown>
+                                </FormGroup>
+                           </td>
+                           <td width="20%">
+                                <FormGroup>
+                                    <UncontrolledDropdown>
+                                        <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret>
+                                            Degrees
+                                        </DropdownToggle>
+                                        <DropdownMenu modifiers={modifiers} right className="btn-dropdown-items">
+                                            {
+                                                
+                                                Object.keys(degrees).length !== 0 ? (
+                                                    degrees.map((positionElement, index) => 
+                                                    {
+                                                        return(
+                                                            <div key={index}>
+                                                                <input type="checkbox"
+                                                                style={{"display": "inline"}}
+                                                                name={positionElement.text}
+                                                                value={positionElement.value}
+                                                                checked={positionElement.checked}
+                                                                onChange={e => {Degree_OnChange(e)}} />
+                                                                <Label style={{"display": "inline"}}>{positionElement.text}</Label></div>)
+                                                    })
+                                                    ) : ("")
+                                            }
+                                        </DropdownMenu>
+                                    </UncontrolledDropdown>
+                                </FormGroup>
+                           </td>
+                       </tr>
+                   </tbody>
+                </Table>
                 </div>
+                <PillsFilters handleRemove={removePillAndFilter} handleRemoveAll={removeAllPills}/>
             </div>
         );
     }
