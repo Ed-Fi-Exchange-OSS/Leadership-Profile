@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using LeadershipProfileAPI.Data.Models.ProfileSearchRequest;
 
@@ -6,6 +5,19 @@ namespace LeadershipProfileAPI.Tests.Extensions
 {
     public static class ProfileSearchRequestBodyExtensions
     {
+        public static ProfileSearchRequestBody AddYearsOfPriorExperience(this ProfileSearchRequestBody body, params ProfileSearchYearsOfPriorExperience.Range[] ranges)
+        {
+            body.YearsOfPriorExperienceRanges = ranges.Any()
+                ? new ProfileSearchYearsOfPriorExperience {Values = ranges}
+                : new ProfileSearchYearsOfPriorExperience
+                {
+                    Values = Enumerable.Range(0, 10)
+                        .Select(r => new ProfileSearchYearsOfPriorExperience.Range(r, r+1))
+                        .ToList()
+                };
+
+            return body;
+        }
 
         public static ProfileSearchRequestBody AddRatings(this ProfileSearchRequestBody body, ProfileSearchRequestRatings degrees = null)
         {
@@ -25,57 +37,29 @@ namespace LeadershipProfileAPI.Tests.Extensions
             return body;
         }
 
-        public static ProfileSearchRequestBody AddAssignments(this ProfileSearchRequestBody body,
-            ProfileSearchRequestAssignments assignments = null)
+        public static ProfileSearchRequestBody AddAssignments(this ProfileSearchRequestBody body, params int[] assignments)
         {
-            if (assignments != null)
-            {
-                body.Assignments = assignments;
-            }
-            else
-            {
-                body.Assignments = new ProfileSearchRequestAssignments
-                {
-                    StartDate = DateTime.UtcNow,
-                    Values = Enumerable.Range(0, 10).ToList()
-                };
-            }
+            body.Assignments = assignments.Any()
+                ? new ProfileSearchRequestAssignments { Values = assignments }
+                : new ProfileSearchRequestAssignments { Values = Enumerable.Range(0, 10).ToList() };
 
             return body;
         }
 
-        public static ProfileSearchRequestBody AddDegrees(this ProfileSearchRequestBody body, ProfileSearchRequestDegrees degrees = null)
+        public static ProfileSearchRequestBody AddDegrees(this ProfileSearchRequestBody body, params int[] degrees)
         {
-            if (degrees != null)
-            {
-                body.Degrees = degrees;
-            }
-            else
-            {
-                body.Degrees = new ProfileSearchRequestDegrees
-                {
-                    Values = Enumerable.Range(0, 10).ToList()
-                };
-            }
+            body.Degrees = degrees.Any()
+                ? new ProfileSearchRequestDegrees{ Values = degrees }
+                : new ProfileSearchRequestDegrees { Values = Enumerable.Range(0, 10).ToList() };
 
             return body;
         }
 
-
-        public static ProfileSearchRequestBody AddInstitutions(this ProfileSearchRequestBody body,
-            ProfileSearchRequestInstitution institutions = null)
+        public static ProfileSearchRequestBody AddInstitutions(this ProfileSearchRequestBody body, params int[] institutions)
         {
-            if (institutions != null)
-            {
-                body.Institutions = institutions;
-            }
-            else
-            {
-                body.Institutions = new ProfileSearchRequestInstitution
-                {
-                    Values = Enumerable.Range(0, 10).ToList()
-                };
-            }
+            body.Institutions = institutions.Any()
+                ? new ProfileSearchRequestInstitution { Values = institutions }
+                : new ProfileSearchRequestInstitution { Values = Enumerable.Range(0, 10).ToList() };
 
             return body;
         }

@@ -60,24 +60,27 @@ namespace LeadershipProfileAPI.Features.Search
 
             public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
             {
+                const int pageSize = 10;
                 var results = await _dbQueryData.GetSearchResultsAsync(
                     request.SearchRequestBody,
                     request.SortBy ?? "asc",
                     request.SortField ?? "id",
-                    request.Page ?? 1);
+                    request.Page ?? 1,
+                    pageSize);
 
                 var list = results.AsQueryable()
                     .ProjectTo<SearchResult>(_mapper.ConfigurationProvider)
                     .ToList();
 
                 var totalCount = await _dbQueryData.GetSearchResultsTotalsAsync(request.SearchRequestBody);
+                var pageCount = (totalCount + pageSize - 1) / pageSize;
 
                 return new Response
                 {
                     TotalCount = totalCount,
                     Page = request.Page,
                     Results = list,
-                    PageCount = results.Count
+                    PageCount = pageCount,
                 };
             }
         }
