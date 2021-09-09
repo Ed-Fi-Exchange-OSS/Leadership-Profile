@@ -48,7 +48,7 @@ namespace LeadershipProfileAPI.Features.Profile
         public class PerformanceRating
         {
             public string Category { get; set; }
-            public double Score { get; set; }
+            public decimal Score { get; set; }
         }
 
         public class PositionHistory
