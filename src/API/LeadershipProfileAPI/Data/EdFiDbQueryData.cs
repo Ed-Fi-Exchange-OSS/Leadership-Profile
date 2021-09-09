@@ -43,9 +43,6 @@ namespace LeadershipProfileAPI.Data
                 {"yearsOfService", "YearsOfService"},
                 {"position", "Assignment"},
                 {"highestDegree", "Degree"},
-                {"ratingCategory", "RatingCategory"},
-                {"ratingSubCategory", "RatingSubCategory"},
-                {"rating", "rating"},
                 {"school", "Institution"},
             };
 
