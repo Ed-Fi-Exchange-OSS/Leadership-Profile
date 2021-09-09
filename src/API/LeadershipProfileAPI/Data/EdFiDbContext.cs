@@ -17,6 +17,8 @@ namespace LeadershipProfileAPI.Data
         public DbSet<ProfilePositionHistory> ProfilePositionHistory { get; set; }
         public DbSet<StaffAdmin> StaffAdmins { get; set; }
         public DbSet<ProfileCertification> ProfileCertification { get; set; }
+        public DbSet<ProfileEvaluationObjective> ProfileEvaluationObjectives { get; set; }
+        public DbSet<ProfileEvaluationElement> ProfileEvaluationElements { get; set; }
         public DbSet<StaffProfessionalDevelopment> StaffProfessionalDevelopments { get; set; }
         public DbSet<StaffSearch> StaffSearches { get; set; }
         public DbSet<ListItemAssignment> ListItemAssignments { get; set; }
@@ -66,7 +68,15 @@ namespace LeadershipProfileAPI.Data
             modelBuilder.Entity<ProfileCertification>()
                 .ToView("vw_LeadershipProfileCertification", "edfi")
                 .HasNoKey();
-            
+
+            modelBuilder.Entity<ProfileEvaluationObjective>()
+                .ToView("vw_LeadershipProfileEvaluationObjective", "edfi")
+                .HasNoKey();
+
+            modelBuilder.Entity<ProfileEvaluationElement>()
+                .ToView("vw_LeadershipProfileEvaluationElement", "edfi")
+                .HasNoKey();
+
             modelBuilder.Entity<StaffSearch>()
                 .ToView("vw_StaffSearch", "edfi")
                 .HasNoKey();
