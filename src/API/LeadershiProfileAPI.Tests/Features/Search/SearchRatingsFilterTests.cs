@@ -20,10 +20,10 @@ namespace LeadershipProfileAPI.Tests.Features.Search
         }
 
         [Fact]
-        public async Task ShouldFilterByCategoryWithoutScore()
+        public async Task ShouldFilterByCategoryAndAnyScoreMagicValue()
         {
             var body = new ProfileSearchRequestBody()
-                .AddRatings("ADDRESS MISCONCEPTIONS");
+                .AddRatings("ADDRESS MISCONCEPTIONS", -1);
 
             var results = await SearchAllTestUtility.SearchForAllResults(body);
 
@@ -52,6 +52,22 @@ namespace LeadershipProfileAPI.Tests.Features.Search
             resultIds.ShouldNotContain("207264"); //3.650
             resultIds.ShouldNotContain("207256"); //2.550
             resultIds.ShouldNotContain(TestDataConstants.StaffUsis.MaryMuffet); //These users have no evals
+        }
+
+        [Fact]
+        public async Task ShouldNotFilterWhenScoreNotSet()
+        {
+            var body = new ProfileSearchRequestBody()
+                .AddRatings("ADDRESS MISCONCEPTIONS", 0);
+
+            var results = await SearchAllTestUtility.SearchForAllResults(body);
+
+            var resultIds = results.Select(r => r.StaffUniqueId).ToList();
+
+            resultIds.ShouldContain("207242");  //4.100
+            resultIds.ShouldContain("207256"); //2.550
+            resultIds.ShouldContain(TestDataConstants.StaffUsis.MaryMuffet); //These users have no evals
+            resultIds.ShouldContain(TestDataConstants.StaffUsis.BarryQuinoa); //These users have no evals
         }
     }
 }

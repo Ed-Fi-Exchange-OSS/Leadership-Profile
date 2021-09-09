@@ -294,7 +294,7 @@ const CreateDirectoryFilters = (props) => {
                                         Score
                                     </DropdownToggle>
                                     <DropdownMenu modifiers={modifiers} right>
-                                        <DropdownItem value="0" key={"score-0"} onClick={onClickScore}>All Scores</DropdownItem>
+                                        <DropdownItem value="-1" key={"score-0"} onClick={onClickScore}>All Scores</DropdownItem>
                                         {
                                             Object.keys(SCORE_OPTIONS).length !== 0 ? (
                                                 SCORE_OPTIONS.map((score, index) => {
