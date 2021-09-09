@@ -2,8 +2,9 @@
 {
     public class ProfileSearchRequestRatings
     {
-        public int CategoryId { get; set; }
-        public string SubCategory { get; set; }
+        public string Category { get; set; }
         public float Score { get; set; }
+
+        public bool IsPopulated => !string.IsNullOrWhiteSpace(Category);
     }
 }

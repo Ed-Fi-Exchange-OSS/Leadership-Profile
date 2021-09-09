@@ -52,7 +52,7 @@ namespace LeadershipProfileAPI.Data
             // Implement the view in SQL, call it here
             var sql = $@"
                 select 
-                     StaffUSI
+                     s.StaffUSI
                     ,StaffUniqueId
                     ,FirstName
                     ,MiddleName
@@ -64,7 +64,7 @@ namespace LeadershipProfileAPI.Data
                     ,Degree
                     ,Email
                     ,Telephone
-                from edfi.vw_StaffSearch
+                from edfi.vw_StaffSearch s
                 {ClauseRatingsConditionalJoin(body)}
                 {ClauseConditions(body)}
                 order by case when {fieldMapping[sortField]} is null then 1 else 0 end, {fieldMapping[sortField]} {sortBy}
