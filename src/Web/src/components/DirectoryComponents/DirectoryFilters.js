@@ -123,6 +123,7 @@ const CreateDirectoryFilters = (props) => {
             unCheckAllFromElement(positions, setPositions);
             unCheckAllFromElement(degrees, setDegrees);
             unCheckAllFromElement(filteredInstitutions, setFilteredInstitutions);
+            unCheckAllFromElement(tenureRanges, setTenureRanges);
             OnChangeSubmit(true);
         }
 
@@ -213,15 +214,17 @@ const CreateDirectoryFilters = (props) => {
                                                 Object.keys(positions).length !== 0 ? (
                                                     positions.map((positionElement, index) => 
                                                     {
-                                                        return(
-                                                            <div key={index}>
+                                                        return positionElement.checked ? "" : (
+                                                           <div key={index} className="filter-select-item">
+                                                              <Label>
                                                                 <input type="checkbox"
-                                                                style={{"display": "inline"}}
-                                                                name={positionElement.text}
-                                                                value={positionElement.value}
-                                                                checked={positionElement.checked}
-                                                                onChange={e => {Position_OnChange(e)}} />
-                                                                <Label style={{"display": "inline"}}>{positionElement.text}</Label></div>)
+                                                                       value={positionElement.value}
+                                                                       name={positionElement.text}
+                                                                       checked={positionElement.checked}
+                                                                       onChange={e => {Position_OnChange(e)}} />
+                                                                {positionElement.text}
+                                                              </Label>
+                                                           </div>)
                                                     })
                                                     ) : ("")
                                             }
@@ -265,18 +268,20 @@ const CreateDirectoryFilters = (props) => {
                                                     clearEvent={() => institutionFiltering('')} />
                                             {
                                                 Object.keys(filteredInstitutions).length !== 0 ? (
-                                                    filteredInstitutions.map((positionElement, index) => 
+                                                    filteredInstitutions.map((schoolElement, index) => 
                                                     {
-                                                        return(
-                                                            <div key={index}>
+                                                       return schoolElement.checked ? "" : (
+                                                         <div key={index} className="filter-select-item">
+                                                            <Label>
                                                                 <input type="checkbox"
-                                                                style={{"display": "inline"}}
-                                                                name={positionElement.text}
-                                                                value={positionElement.value}
-                                                                checked={positionElement.checked}
-                                                                onChange={e => {Institution_Onchange(e)}} />
-                                                                <Label style={{"display": "inline"}}>{positionElement.text}</Label></div>)
-                                                    })
+                                                                       name={schoolElement.text}
+                                                                       value={schoolElement.value}
+                                                                       checked={schoolElement.checked}
+                                                                       onChange={e => {Institution_Onchange(e)}} />
+                                                                {schoolElement.text}
+                                                            </Label>
+                                                          </div>)                                                    
+                                                      })
                                                     ) : ("")
                                             }
 
@@ -316,16 +321,18 @@ const CreateDirectoryFilters = (props) => {
                                                 Object.keys(tenureRanges).length !== 0 ? (
                                                     tenureRanges.map((tenureElement, index) => 
                                                     {
-                                                        return(
-                                                            <div key={index}>
+                                                        return tenureElement.checked ? "" : (
+                                                          <div key={index} className="filter-select-item">
+                                                            <Label>
                                                                 <input type="checkbox"
-                                                                style={{"display": "inline"}}
-                                                                name={tenureElement.text}
-                                                                value={tenureElement.value}
-                                                                checked={tenureElement.checked}
-                                                                onChange={e => {Tenure_OnChange(e)}} />
-                                                                <Label style={{"display": "inline"}}>{tenureElement.text}</Label></div>)
-                                                    })
+                                                                       name={tenureElement.text}
+                                                                       value={tenureElement.value}
+                                                                       checked={tenureElement.checked}
+                                                                       onChange={e => {Tenure_OnChange(e)}} />
+                                                                {tenureElement.text}
+                                                            </Label>
+                                                          </div>)                                                    
+                                                        })
                                                     ) : ("")
                                             }
 
@@ -343,18 +350,20 @@ const CreateDirectoryFilters = (props) => {
                                             {
                                                 
                                                 Object.keys(degrees).length !== 0 ? (
-                                                    degrees.map((positionElement, index) => 
+                                                    degrees.map((degreeElement, index) => 
                                                     {
-                                                        return(
-                                                            <div key={index}>
+                                                      return degreeElement.checked ? "" : (
+                                                       <div key={index} className="filter-select-item">
+                                                            <Label>
                                                                 <input type="checkbox"
-                                                                style={{"display": "inline"}}
-                                                                name={positionElement.text}
-                                                                value={positionElement.value}
-                                                                checked={positionElement.checked}
-                                                                onChange={e => {Degree_OnChange(e)}} />
-                                                                <Label style={{"display": "inline"}}>{positionElement.text}</Label></div>)
-                                                    })
+                                                                       name={degreeElement.text}
+                                                                       value={degreeElement.value}
+                                                                       checked={degreeElement.checked}
+                                                                       onChange={e => {Degree_OnChange(e)}} />
+                                                                {degreeElement.text}
+                                                            </Label>
+                                                        </div>)                                                    
+                                                      })
                                                     ) : ("")
                                             }
                                         </DropdownMenu>

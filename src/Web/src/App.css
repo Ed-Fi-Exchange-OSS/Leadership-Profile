@@ -97,6 +97,33 @@
   margin-right: 8px;
 }
 
+.filter-select-item {
+  font-weight: 400;
+  width: 100%;
+  color: #212529;
+}
+
+.filter-select-item label {
+  width: 100%;
+  display: inline-block;
+  padding: .25rem 1.5rem;
+}
+
+.filter-select-item label input{
+  display: none;
+}
+
+.filter-select-item:active label {
+  color: #ffffff;
+  background-color: #007bff;
+  border: 2px solid #16181b;
+}
+
+.filter-select-item:hover {
+  color: #16181b;
+  background-color: #f8f9fa;
+}
+
 /* Breadcrumbs */
 .previous-page, .current-page {
   height: 24px;
