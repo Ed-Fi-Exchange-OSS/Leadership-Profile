@@ -45,10 +45,11 @@ namespace LeadershipProfileAPI.Features.Profile
             public string Title { get; set; }
             public Dictionary<int, IEnumerable<PerformanceRating>> RatingsByYear { get; set; }
         }
+
         public class PerformanceRating
         {
             public string Category { get; set; }
-            public double Score { get; set; }
+            public decimal Score { get; set; }
         }
 
         public class PositionHistory
@@ -114,72 +115,45 @@ namespace LeadershipProfileAPI.Features.Profile
                     .ProjectTo<ProfessionalDevelopment>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);
 
-                response.Evaluations = GenerateMockData();
+                response.Evaluations = await BuildChartDataAsync(_dbContext, request.Id);
 
                 return response;
             }
 
-
-            private IEnumerable<PerformanceEvaluation> GenerateMockData()
+            private async Task<IEnumerable<PerformanceEvaluation>> BuildChartDataAsync(EdFiDbContext dbContext, string requestId)
             {
-                var overAllPerformanceRating2020 = new List<PerformanceRating>
-                {
-                    new PerformanceRating() { Category =  "Overall", Score = 3.0 },
-                    new PerformanceRating() { Category =  "Forever Learner", Score = 3.2 },
-                    new PerformanceRating() { Category =  "Promise 2 Purpose Investor", Score = 2.9 },
-                    new PerformanceRating() { Category =  "Student Focused", Score = 4.5 },
-                    new PerformanceRating() { Category =  "Technical Skills", Score = 4.2 },
-                };
+                var sections = new List<PerformanceEvaluation>();
 
-                var overAllPerformanceRating2021 = new List<PerformanceRating>
-                {
-                    new PerformanceRating() { Category =  "Overall", Score = 4.0 },
-                    new PerformanceRating() { Category =  "Forever Learner", Score = 4.2 },
-                    new PerformanceRating() { Category =  "Promise 2 Purpose Investor", Score = 3.9 },
-                    new PerformanceRating() { Category =  "Student Focused", Score = 2.5 },
-                    new PerformanceRating() { Category =  "Technical Skills", Score = 3.2 },
-                };
+                var staffObjectives = await _dbContext.ProfileEvaluationObjectives
+                    .Where(o => o.StaffUniqueId == requestId && o.EvalNumber == 1)
+                    .ToListAsync();
 
-                var flPerformanceRating2020 = new List<PerformanceRating>
-                {
-                    new PerformanceRating() { Category =  "Ethics and Standards", Score = 3.0 },
-                    new PerformanceRating() { Category = "Schedules for Core Leadership Tasks", Score = 3.2 },
-                    new PerformanceRating() { Category = "Strategic Planning", Score = 4.5  },
-                    new PerformanceRating() { Category = "Change Facilitation", Score = 3.2 },
-                    new PerformanceRating() { Category = "Coaching, Growth, Feedback, and Professional Development", Score = 4.5  }
-                };
+                var objectivesByYear = staffObjectives
+                    .GroupBy(o => o.SchoolYear)
+                    .ToDictionary(g => g.Key, g => g.Select(o => 
+                        new PerformanceRating { Category = o.ObjectiveTitle, Score = o.Rating }));
 
-                var flPerformanceRating2021 = new List<PerformanceRating>
-                {
-                    new PerformanceRating() { Category =  "Ethics and Standards", Score = 4.2 },
-                    new PerformanceRating() { Category = "Schedules for Core Leadership Tasks", Score = 4.2 },
-                    new PerformanceRating() { Category = "Strategic Planning", Score =3.9 },
-                    new PerformanceRating() { Category = "Change Facilitation", Score = 4.2 },
-                    new PerformanceRating() { Category = "Coaching, Growth, Feedback, and Professional Development", Score = 4.4  }
-                };
+                sections.Add(new PerformanceEvaluation { Title = "Overall", RatingsByYear = objectivesByYear });
 
-                var overallRatingsByYear = new Dictionary<int, IEnumerable<PerformanceRating>>
-                {
-                    {2020, overAllPerformanceRating2020}, {2021, overAllPerformanceRating2021}
-                };
+                var staffElements = await _dbContext.ProfileEvaluationElements
+                    .Where(e => e.StaffUniqueId == requestId && e.EvalNumber == 1)
+                    .ToListAsync();
 
-                var flRatingsByYear = new Dictionary<int, IEnumerable<PerformanceRating>>
-                {
-                    {2020, flPerformanceRating2020}, {2021, flPerformanceRating2021}
-                };
+                var evalsByObjective = staffElements
+                    .GroupBy(e => e.ObjectiveTitle)
+                    .Select(o => new PerformanceEvaluation
+                    {
+                        Title = o.Key,
+                        RatingsByYear = o
+                            .GroupBy(g => g.SchoolYear)
+                            .ToDictionary(g => g.Key, g => g.Select(e =>
+                                new PerformanceRating {Category = e.ElementTitle, Score = e.Rating}))
+                    })
+                    .OrderBy(o => o.Title);
 
-                var emptyRatingsByYear = new Dictionary<int, IEnumerable<PerformanceRating>>
-                {
-                    {2020,flPerformanceRating2020}, {2021, new List<PerformanceRating>()}
-                };
+                sections.AddRange(evalsByObjective);
 
-                return new List<PerformanceEvaluation>
-                {
-                    new PerformanceEvaluation() { Title = "Overall", RatingsByYear = overallRatingsByYear },
-                    new PerformanceEvaluation() { Title = "Forever Learner", RatingsByYear = flRatingsByYear },
-                    new PerformanceEvaluation() { Title = "Demo", RatingsByYear = flRatingsByYear },
-                    new PerformanceEvaluation() { Title = "No Data", RatingsByYear = emptyRatingsByYear},
-                };
+                return sections;
             }
         }
     }

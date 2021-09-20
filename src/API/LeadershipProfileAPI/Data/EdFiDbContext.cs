@@ -17,12 +17,13 @@ namespace LeadershipProfileAPI.Data
         public DbSet<ProfilePositionHistory> ProfilePositionHistory { get; set; }
         public DbSet<StaffAdmin> StaffAdmins { get; set; }
         public DbSet<ProfileCertification> ProfileCertification { get; set; }
+        public DbSet<ProfileEvaluationObjective> ProfileEvaluationObjectives { get; set; }
+        public DbSet<ProfileEvaluationElement> ProfileEvaluationElements { get; set; }
         public DbSet<StaffProfessionalDevelopment> StaffProfessionalDevelopments { get; set; }
         public DbSet<StaffSearch> StaffSearches { get; set; }
         public DbSet<ListItemAssignment> ListItemAssignments { get; set; }
         public DbSet<ListItemCategory> ListItemCategories { get; set; }
         public DbSet<ListItemDegree> ListItemDegrees { get; set; }
-        public DbSet<ListItemSubCategory> ListItemSubCategories { get; set; }
         public DbSet<ListItemInstitution> ListItemItemInstitutions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -37,10 +38,6 @@ namespace LeadershipProfileAPI.Data
 
             modelBuilder.Entity<ListItemDegree>()
                 .ToView("vw_ListAllDegrees", "edfi")
-                .HasNoKey();
-
-            modelBuilder.Entity<ListItemSubCategory>()
-                .ToView("vw_ListAllSubCategories", "edfi")
                 .HasNoKey();
 
             modelBuilder.Entity<ListItemInstitution>()
@@ -71,7 +68,15 @@ namespace LeadershipProfileAPI.Data
             modelBuilder.Entity<ProfileCertification>()
                 .ToView("vw_LeadershipProfileCertification", "edfi")
                 .HasNoKey();
-            
+
+            modelBuilder.Entity<ProfileEvaluationObjective>()
+                .ToView("vw_LeadershipProfileEvaluationObjective", "edfi")
+                .HasNoKey();
+
+            modelBuilder.Entity<ProfileEvaluationElement>()
+                .ToView("vw_LeadershipProfileEvaluationElement", "edfi")
+                .HasNoKey();
+
             modelBuilder.Entity<StaffSearch>()
                 .ToView("vw_StaffSearch", "edfi")
                 .HasNoKey();

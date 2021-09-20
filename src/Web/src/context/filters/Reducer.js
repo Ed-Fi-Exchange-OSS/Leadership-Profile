@@ -86,7 +86,7 @@ const Reducer = (state, action) => {
             return {
                 ...state,
                 categoryLabel: action.payload.text,
-                categoryId: action.payload.value
+                category: action.payload.value
             }
         }
         case setRatingScore: {
@@ -103,8 +103,7 @@ const Reducer = (state, action) => {
             return {
                 ...state,
                 score: 0,
-                categoryId: 0,
-                categoryLabel: '',
+                category: '',
                 pills: state.pills.filter(value => value !== action.payload)
             }
         }

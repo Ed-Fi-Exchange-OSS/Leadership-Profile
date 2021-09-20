@@ -2,10 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using LeadershipProfileAPI.Data;
-using LeadershipProfileAPI.Data.Models.ListItem;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,47 +19,39 @@ namespace LeadershipProfileAPI.Controllers.WebControls.DropDownList.MeasurementC
 
         public class Category
         {
+            public string Value { get; set; }
+
             public string Text { get; set; }
-            public int Value { get; set; }
+
+            public Category() { }
+            public Category(string value)
+            {
+                Value = value;
+                Text = value;
+            }
         }
 
         public class QueryHandler : IRequestHandler<Query, Response>
         {
             private readonly EdFiDbContext _dbContext;
-            private readonly IMapper _mapper;
 
-            public QueryHandler(EdFiDbContext dbContext, IMapper mapper)
+            public QueryHandler(EdFiDbContext dbContext)
             {
                 _dbContext = dbContext;
-                _mapper = mapper;
             }
 
-            public Task<Response> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
             {
-                //var list = await _dbContext.ListItemCategories
-                //    .ProjectTo<Category>(_mapper.ConfigurationProvider)
-                //    .ToListAsync(cancellationToken);
+                var list = await _dbContext.ListItemCategories
+                    .OrderBy(c => c.SortOrder)
+                    .Select(c => c.Category)
+                    .Distinct()
+                    .Select(c => new Category(c))
+                    .ToListAsync(cancellationToken);
 
-                /* TO-DO: Returning dummy data, replace this with code above when db view is updated */
-                var list = _mapper.Map<List<Category>> (DummyData());
-
-                var response = new Response
+                return new Response
                 {
-                    Categories = list.OrderBy(o => o.Text).ToList()
-                };
-
-                return Task.FromResult(response);
-            }
-
-            public List<ListItemCategory> DummyData()
-            {
-                return new List<ListItemCategory>
-                {
-                    new() { Text = "Forever Learner", Value = 1 },
-                    new() { Text = "Promise 2 Purpose Investor", Value = 2 },
-                    new() { Text = "Relationship Driven", Value = 3 },
-                    new() { Text = "Student Focused", Value = 4 },
-                    new() { Text = "Technical Skills", Value = 5 }
+                    Categories = list
                 };
             }
         }
