@@ -235,10 +235,9 @@ const CreateDirectoryFilters = (props) => {
                                 <FormGroup>
                                     <UncontrolledDropdown setActiveFromChild>
                                         <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret>
-                                            {filterState.categoryLabel || "Performance Indicator"}
+                                            {filterState.categoryLabel || "Performance Domain"}
                                         </DropdownToggle>
                                         <DropdownMenu modifiers={modifiers} persist={false}>
-                                            <DropdownItem value="" key={"cat-0"} onClick={onClickCategory}>All Performance Indicators</DropdownItem>
                                             <DropdownItem divider/>
                                             {
                                                 Object.keys(categories).length !== 0 ? (
