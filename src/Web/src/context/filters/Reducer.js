@@ -104,6 +104,7 @@ const Reducer = (state, action) => {
                 ...state,
                 score: 0,
                 category: '',
+                categoryLabel: '',
                 pills: state.pills.filter(value => value !== action.payload)
             }
         }
