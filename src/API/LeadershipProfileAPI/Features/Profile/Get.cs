@@ -29,7 +29,7 @@ namespace LeadershipProfileAPI.Features.Profile
             public string CurrentPosition { get; set; } = "Default Position";
             public string District { get; set; } = "Default School District";
             public string School { get; set; } = "Default High School";
-            public int YearsOfService { get; set; }
+            public decimal YearsOfService { get; set; }
             public string Phone { get; set; } = "+12320103203";
             public string Email { get; set; } = "default@email.com";
             public DateTime? StartDate { get; set; }

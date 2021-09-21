@@ -32,7 +32,7 @@ MiddleName,
 LastSurname,
 sa.City Location,
 ss.School,
-s.YearsOfPriorTeachingExperience YearsOfService,
+s.YearsOfPriorProfessionalExperience YearsOfService,
 se.Email,
 ss.Position,
 st.Telephone
