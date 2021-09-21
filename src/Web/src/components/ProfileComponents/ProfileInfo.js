@@ -31,14 +31,10 @@ const ProfileInfo = (props) => {
                             <tr>
                                 <td className="profile-info-icon"><EducationIconNavy /> </td>
                                 <td className="profile-info-text">{data.school}</td>
-                                {/* empty td to skip a column */}
-                                <td></td><td></td>
+                                <td className="profile-info-icon"><CalendarIcon /></td>
+                                <td className="profile-info-text">Last start date: {formatDate(data.startDate)}</td>        
                                 <td className="profile-info-icon"><MailIcon /></td>
                                 <td className="profile-info-text">{data.email}</td>
-                            </tr>
-                            <tr>
-                                <td className="profile-info-icon"><CalendarIcon /></td>
-                                <td className="profile-info-text">Last start date: {formatDate(data.startDate)}</td>              
                             </tr>
                         </tbody>
                     </table>

@@ -19,20 +19,11 @@ namespace LeadershipProfileAPI.Tests.Extensions
             return body;
         }
 
-        public static ProfileSearchRequestBody AddRatings(this ProfileSearchRequestBody body, ProfileSearchRequestRatings degrees = null)
+        public static ProfileSearchRequestBody AddRatings(this ProfileSearchRequestBody body, string category = null, float score = 0)
         {
-            if (degrees != null)
-            {
-                body.Ratings = degrees;
-            }
-            else
-            {
-                body.Ratings = new ProfileSearchRequestRatings
-                {
-                    CategoryId = 1,
-                    SubCategory = "Lorem Ipsum"
-                };
-            }
+            body.Ratings = category != null
+                ? new ProfileSearchRequestRatings { Category = category, Score = score, }
+                : new ProfileSearchRequestRatings { Category = "Lorem Ipsum", Score = 3,};
 
             return body;
         }

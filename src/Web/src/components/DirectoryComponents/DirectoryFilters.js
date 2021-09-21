@@ -57,7 +57,7 @@ const CreateDirectoryFilters = (props) => {
                     "Values": filterState.institutions
                 },
                 "Ratings": {
-                    "CategoryId": filterState.categoryId,
+                    "Category": filterState.category,
                     "Score": filterState.score
                 },
                 "YearsOfPriorExperienceRanges":{
@@ -74,7 +74,7 @@ const CreateDirectoryFilters = (props) => {
 
         function NameSearch_OnChange(value){
             setNameSearch(value);
-            if(value.length >= 3 || value.length === 0){
+            if(value.length >= 2 || value.length === 0){
                 sendFilter(FilterActions.setNameFilter, value);
             }
         }
@@ -141,7 +141,7 @@ const CreateDirectoryFilters = (props) => {
 
         function onClickCategory(e){
             // Clear filter/pill if default Category selected 
-            if(e.currentTarget.value == 0){
+            if(e.currentTarget.value === ''){
                 var ratingPill = filterState.pills.find(value => value.filter === pillTypes.Rating);
                 sendFilter(FilterActions.removeRating, ratingPill);
                 return;
@@ -290,11 +290,11 @@ const CreateDirectoryFilters = (props) => {
                                 </FormGroup>
                                 <FormGroup>
                                 <UncontrolledDropdown >
-                                    <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret disabled={filterState.categoryId == 0}>
+                                    <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret disabled={filterState.category == ''}>
                                         Score
                                     </DropdownToggle>
                                     <DropdownMenu modifiers={modifiers} right>
-                                        <DropdownItem value="0" key={"score-0"} onClick={onClickScore}>All Scores</DropdownItem>
+                                        <DropdownItem value="-1" key={"score-0"} onClick={onClickScore}>All Scores</DropdownItem>
                                         {
                                             Object.keys(SCORE_OPTIONS).length !== 0 ? (
                                                 SCORE_OPTIONS.map((score, index) => {
