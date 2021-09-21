@@ -81,7 +81,8 @@ namespace LeadershipProfileAPI.Data
 
             // Implement the view in SQL, call it here
             var sql = $@"
-                 select StaffUSI from edfi.vw_StaffSearch
+                 select s.StaffUSI from edfi.vw_StaffSearch s
+                 {ClauseRatingsConditionalJoin(body)}
                  {ClauseConditions(body)}
              ";
 
