@@ -56,6 +56,20 @@ namespace LeadershipProfileAPI.Tests.Features.Search
             resultIds.ShouldNotContain(TestDataConstants.StaffUsis.DonaPage); //Doctorate
         }
 
+        [Fact]
+        public async Task ShouldReturnFilteredResultTotal()
+        {
+            var bachelors = await GetDegreeValue("Bachelor's");
+
+            var body = new ProfileSearchRequestBody()
+                .AddDegrees(bachelors);
+
+            var result = await SearchAllTestUtility.SearchForPage(body);
+            var totalFilteredCount = (await SearchAllTestUtility.SearchForAllResults(body)).Count;
+
+            result.TotalCount.ShouldBe(totalFilteredCount);
+        }
+
         private async Task<int> GetDegreeValue(string degreeName)
         {
             var matchedDegree = await Testing.DbContextScopeExec(db

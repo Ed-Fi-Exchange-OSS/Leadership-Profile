@@ -27,6 +27,11 @@ namespace LeadershipProfileAPI.Tests.Features.Search
             return results;
         }
 
+        public static Task<List.Response> SearchForPage(ProfileSearchRequestBody body, int page = 1)
+        {
+            return SendSearch(body, page);
+        }
+
         [Fact]
         public async Task ShouldGetAllResults()
         {

@@ -79,5 +79,16 @@ namespace LeadershipProfileAPI.Tests.Features.Search
 
             resultIds.ShouldBe(TestDataConstants.StaffUsis.BarryQuinoa);
         }
+
+        [Fact]
+        public async Task ShouldReturnFilteredResultTotal()
+        {
+            var body = new ProfileSearchRequestBody { Name = "jack", };
+
+            var result = await SearchAllTestUtility.SearchForPage(body);
+            var totalFilteredCount = (await SearchAllTestUtility.SearchForAllResults(body)).Count;
+
+            result.TotalCount.ShouldBe(totalFilteredCount);
+        }
     }
 }

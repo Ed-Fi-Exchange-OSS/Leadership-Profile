@@ -50,5 +50,17 @@ namespace LeadershipProfileAPI.Tests.Features.Search
             resultIds.ShouldNotContain(TestDataConstants.StaffUsis.DonaPage); //35
             resultIds.ShouldNotContain(TestDataConstants.StaffUsis.BarryQuinoa); //4
         }
+
+        [Fact]
+        public async Task ShouldReturnFilteredResultTotal()
+        {
+            var body = new ProfileSearchRequestBody()
+                .AddYearsOfPriorExperience(new ProfileSearchYearsOfPriorExperience.Range(1, 5));
+
+            var result = await SearchAllTestUtility.SearchForPage(body);
+            var totalFilteredCount = (await SearchAllTestUtility.SearchForAllResults(body)).Count;
+
+            result.TotalCount.ShouldBe(totalFilteredCount);
+        }
     }
 }

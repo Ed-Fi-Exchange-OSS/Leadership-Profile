@@ -69,5 +69,17 @@ namespace LeadershipProfileAPI.Tests.Features.Search
             resultIds.ShouldContain(TestDataConstants.StaffUsis.MaryMuffet); //These users have no evals
             resultIds.ShouldContain(TestDataConstants.StaffUsis.BarryQuinoa); //These users have no evals
         }
+
+        [Fact]
+        public async Task ShouldReturnFilteredResultTotal()
+        {
+            var body = new ProfileSearchRequestBody()
+                .AddRatings("ADDRESS MISCONCEPTIONS", 4);
+
+            var result = await SearchAllTestUtility.SearchForPage(body);
+            var totalFilteredCount = (await SearchAllTestUtility.SearchForAllResults(body)).Count;
+
+            result.TotalCount.ShouldBe(totalFilteredCount);
+        }
     }
 }

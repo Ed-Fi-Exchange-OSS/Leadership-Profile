@@ -54,6 +54,19 @@ namespace LeadershipProfileAPI.Tests.Features.Search
             resultIds.ShouldNotContain(TestDataConstants.StaffUsis.MartaMasterson); //Teacher Only
         }
 
+        [Fact]
+        public async Task ShouldReturnFilteredResultTotal()
+        {
+            var teacher = await GetAssignmentValue("Teacher");
+
+            var body = new ProfileSearchRequestBody().AddAssignments(teacher);
+
+            var result = await SearchAllTestUtility.SearchForPage(body);
+            var totalFilteredCount = (await SearchAllTestUtility.SearchForAllResults(body)).Count;
+
+            result.TotalCount.ShouldBe(totalFilteredCount);
+        }
+
         private async Task<int> GetAssignmentValue(string assignmentName)
         {
             var matchedAssignment = await Testing.DbContextScopeExec(db

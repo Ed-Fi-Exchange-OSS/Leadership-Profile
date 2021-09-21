@@ -60,6 +60,18 @@ namespace LeadershipProfileAPI.Tests.Features.Search
             response.Results.ShouldBeEmpty();
         }
 
+        [Fact]
+        public async Task ShouldReturnFilteredResultTotal()
+        {
+            var body = new ProfileSearchRequestBody()
+                .AddInstitutions(TestDataConstants.SchoolIds.LemmElementary);
+
+            var result = await SearchAllTestUtility.SearchForPage(body);
+            var totalFilteredCount = (await SearchAllTestUtility.SearchForAllResults(body)).Count;
+
+            result.TotalCount.ShouldBe(totalFilteredCount);
+        }
+
         private Task<List.Response> SendSearchQuery(ProfileSearchRequestBody body, int page = 1)
         {
             return Testing.Send(new List.Query
