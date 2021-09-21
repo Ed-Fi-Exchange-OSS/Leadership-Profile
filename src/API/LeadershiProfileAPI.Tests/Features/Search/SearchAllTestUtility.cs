@@ -1,8 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using LeadershipProfileAPI.Data;
 using LeadershipProfileAPI.Data.Models.ProfileSearchRequest;
 using LeadershipProfileAPI.Features.Search;
+using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Xunit;
 
@@ -12,17 +16,13 @@ namespace LeadershipProfileAPI.Tests.Features.Search
     {
         public static async Task<List<List.SearchResult>> SearchForAllResults(ProfileSearchRequestBody body)
         {
-            var page = 1;
-            var firstResponse = await SendSearch(body, page);
-            var totalPages = firstResponse.PageCount;
-            var results = firstResponse.Results.ToList();
-
-            while (page < totalPages)
+            var results = await Testing.ScopeExec(async sp =>
             {
-                page++;
-                var response = await SendSearch(body, page);
-                results.AddRange(response.Results);
-            }
+                var query = sp.GetRequiredService<EdFiDbQueryData>();
+                var mapperConfig = sp.GetRequiredService<IMapper>().ConfigurationProvider;
+                var searches = await query.GetSearchResultsAsync(body, pageSize: int.MaxValue);
+                return searches.AsQueryable().ProjectTo<List.SearchResult>(mapperConfig).ToList();
+            });
 
             return results;
         }
