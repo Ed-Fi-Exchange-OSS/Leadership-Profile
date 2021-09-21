@@ -74,7 +74,7 @@ const CreateDirectoryFilters = (props) => {
 
         function NameSearch_OnChange(value){
             setNameSearch(value);
-            if(value.length >= 3 || value.length === 0){
+            if(value.length >= 2 || value.length === 0){
                 sendFilter(FilterActions.setNameFilter, value);
             }
         }
