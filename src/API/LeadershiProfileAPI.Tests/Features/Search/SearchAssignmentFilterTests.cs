@@ -25,6 +25,8 @@ namespace LeadershipProfileAPI.Tests.Features.Search
 
             var resultIds = results.Select(r => r.StaffUniqueId).ToList();
 
+            resultIds.Distinct().Count().ShouldBe(resultIds.Count);
+
             resultIds.ShouldContain(TestDataConstants.StaffUsis.BartJackson); //Current Teacher
             resultIds.ShouldContain(TestDataConstants.StaffUsis.MartaMasterson); //Current Teacher
             resultIds.ShouldNotContain(TestDataConstants.StaffUsis.JacksonBonham); //Never Teacher
