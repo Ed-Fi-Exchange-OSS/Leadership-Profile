@@ -16,6 +16,10 @@ specific language governing permissions and limitations under the License.
 
 See [NOTICES](NOTICES.md) for additional copyright and license notifications.
 
+## Application Overview
+
+See [Application Overview](./docs/application-overview.md) for further details.
+
 ## Setting up the development environment
 * You will either have to Clone or Fork the repo.
 * You will need to be added to the org and team to clone and work on the repo.
