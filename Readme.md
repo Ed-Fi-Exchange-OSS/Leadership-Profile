@@ -20,23 +20,28 @@ See [NOTICES](NOTICES.md) for additional copyright and license notifications.
 
 See [Application Overview](./docs/application-overview.md) for further details.
 
-## Setting up the development environment
-* You will either have to Clone or Fork the repo.
-* You will need to be added to the org and team to clone and work on the repo.
-* For Fork, you won't need to be added to the org. If you wish to bring the changes back, you can create PR. The commits must be signed.
-* If Commits are not signed, they can’t be merged. Please refer [this document](https://techdocs.ed-fi.org/display/ETKB/Signing+Git+Commits) for the setup.
-* Caution: If your commits are not signed, and you want to do that after the fact, it can be an arduous process. It is highly recommended to make sure this works before starting real dev work.
-* CLA must be signed [here](https://cla-assistant.io/Ed-Fi-Exchange-OSS/Leadership-Profile?pullRequest=3).
-
 ### Required software
 
 * .net 5 sdk (https://dotnet.microsoft.com/download/dotnet/5.0)
 * SQL Server 2019 (https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
-  * Alternatively use Docker for local development, see more info below
 * node.js (https://nodejs.org/)
-* docker
 * powershell
-* Papercut for local email testing (https://github.com/ChangemakerStudios/Papercut-SMTP)
+* docker _for development only_
+
+## Development Environment
+
+### Repository Access
+
+* Developers can either **clone** or **fork** the repository.
+  * If cloning the repo, users must be added to the org and team
+  * If forking, you won't need to be added to the org. If you wish to bring the changes back, you can create PR.
+* In both cases **The commits must be signed**.
+  * If Commits are not signed, they can’t be merged. Please refer [this document](https://techdocs.ed-fi.org/display/ETKB/Signing+Git+Commits) for the setup.
+  * Caution: If your commits are not signed, and you want to do that after the fact, it can be an arduous process. It is highly recommended to make sure this works before starting real dev work.
+  * CLA must be signed [here](https://cla-assistant.io/Ed-Fi-Exchange-OSS/Leadership-Profile?pullRequest=3).
+* Install the above _Required Software_ locally
+  * Docker can be used for local database, see more info below
+  * [Papercut](https://github.com/ChangemakerStudios/Papercut-SMTP) can be used for local email testing
 
 ### Setup
 
@@ -45,6 +50,7 @@ the application.
 * Run `Invoke-Psake DownloadDbTestData` in powershell from the project root folder.
 * Unzip and restore the backup in `testdata/EdFi_Ods_Populated_Template_TPDM_10.zip` to your local SQL Server instance.
 * Run the database migrations by running this powershell command from the project root folder:
+
 ```
 Invoke-Psake UpdateLocalDatabase
 ```
