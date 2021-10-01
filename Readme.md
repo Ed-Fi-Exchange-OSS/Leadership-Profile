@@ -39,21 +39,32 @@ See [Application Overview](./docs/application-overview.md) for further details.
   * If Commits are not signed, they can’t be merged. Please refer [this document](https://techdocs.ed-fi.org/display/ETKB/Signing+Git+Commits) for the setup.
   * Caution: If your commits are not signed, and you want to do that after the fact, it can be an arduous process. It is highly recommended to make sure this works before starting real dev work.
   * CLA must be signed [here](https://cla-assistant.io/Ed-Fi-Exchange-OSS/Leadership-Profile?pullRequest=3).
+
+### Setup Quick Start
+
+See [Developer Setup](./docs/developer-setup.md) for more details and options.
+
 * Install the above _Required Software_ locally
-  * Docker can be used for local database, see more info below
-  * [Papercut](https://github.com/ChangemakerStudios/Papercut-SMTP) can be used for local email testing
+* Run the `setup.ps1` powershell script to install the required powershell modules and build tools
+* Set up the database
+  * Run `Invoke-Psake DownloadDbTestData` to download the latest sample data backup
+  * Unzip and restore the backup in `testdata/EdFi_Ods_Populated_Template_TPDM_10.zip` to your local SQL Server instance
+  * Run `Invoke-Psake UpdateLocalDatabase` to migrate the database to the latest version
+* Launch the applications
+  * Open `src/API/LeadershipProfileAPI/LeadershipProfileAPI.sln` in Visual Studio and launch the LeadershipProfileAPI project
+  * Open `src/Web/` in a shell and run `npm install` followed by `npm start`
+* Navigate to `localhost`
 
-### Setup
+### Testing the application
 
-* Run the `setup.ps1` powershell script to install the required powershell modules and tools needed to build
-the application.
-* Run `Invoke-Psake DownloadDbTestData` in powershell from the project root folder.
-* Unzip and restore the backup in `testdata/EdFi_Ods_Populated_Template_TPDM_10.zip` to your local SQL Server instance.
-* Run the database migrations by running this powershell command from the project root folder:
+To run automated tests, use the following commands in PowerShell from the repository root:
 
-```
-Invoke-Psake UpdateLocalDatabase
-```
+* `Invoke-Psake Test`: Runs all the tests.
+* `Invoke-Psake TestAPI`: Runs the API related tests. It runs a docker container with a test database and then runs the API
+  test suite.
+* `Invoke-Psake TestFrontend`: Runs the frontend tests.
+
+More information on testing can be found in the [Developer Setup](./docs/developer-setup.md) docs.
 
 ## Building the application
 
@@ -62,79 +73,6 @@ This command will create two zip files in the `artifacts` folder:
 
 * LeadershipProfile-API
 * LeadershipProfile-Frontend
-
-## Testing the application
-
-These are the available powershell commands to test the application (run them from the projec root directory):
-
-* `Invoke-Psake TestAPI`: Runs the API related tests. It runs a docker container with a test database and then runs the API
-  test suite.
-* `Invoke-Psake TestFrontend`: Runs the frontend tests.
-* `Invoke-Psake Test`: Runs all the tests.
-
-### Test Data
-
-* Test Data is seeded for automated tests on the Test Database by default. To seed your dev database, run the migrations scripts under the `TEST` environment using `Invoke-Psake SeedLocalDatabase`
-
-## Running API
-
-It can be run directly from the Editor, such as Visual Studio. It must be running along with the React Web application for full functionality.
-
-* If using Visual Studio, set Startup to launch `LeadershipProfileAPI` (using dotnet and Kestrel, not IIS Express)
-
-### Use Docker for Local DB
-
-**Docker database is not recommended for use in a production environment.**
-
-Instead of a typical SQL Server installation, you can use Docker for the local database, similar to the test DB.
-
-* `Invoke-Psake RecreateLocalDockerDatabase`: Destroys and recreates a SQL Server container for local dev
-* `Invoke-Psake RestoreLocalDockerDatabase`: Restores the backup to the local DB without recreating the container
-* `Invoke-Psake UpdateLocalDockerDatabase`: Runs DB migration scripts against the Docker DB
-* `Invoke-Psake SetLocalDockerConnectionString`: Sets up local API configuration to use Docker DB
-* `Invoke-Psake ResetLocalDockerDatabase`: Combines all of the above to set or reset the Docker DB
-
-## Available React Scripts
-
-In the Web project directory, you can run the below scripts.
-You may need to manually install the `react-scripts` tool first:
-
-```shell
-npm i react-scripts
-```
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
 ## Email
 
