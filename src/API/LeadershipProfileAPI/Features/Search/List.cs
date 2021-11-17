@@ -42,6 +42,7 @@ namespace LeadershipProfileAPI.Features.Search
             public decimal YearsOfService { get; set; }
             public string Assignment { get; set; }
             public string Degree { get; set; }
+            public string SchoolType { get; set; }
             public string Institution { get; set; } = "Default Institution";
         }
 

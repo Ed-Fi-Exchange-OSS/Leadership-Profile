@@ -82,7 +82,7 @@ namespace LeadershipProfileAPI.Features.Account
                     // Get user by username from ASP.Net table
                     var user = await _signInManager.UserManager.FindByNameAsync(request.Username);
 
-                    // Don't reveal that the user does not exist or is not confirmed
+                    // Don't reveal that the user does not exist or is not confirmed, but give a feedback
                     if (user != null)
                     {
                         // Generate token and reset link
@@ -97,11 +97,17 @@ namespace LeadershipProfileAPI.Features.Account
                     else
                     {
                         _logger.LogWarning($"User record not found - username:{request.Username}");
+                        response.Result = false;
                     }
                 }
                 else
                 {
                     _logger.LogWarning($"Staff record not found - username:{request.Username}, staffuniqueid:{request.StaffUniqueId}");
+                    response.Result = false;
+                }
+
+                if (response.Result == false) {
+                    response.ResultMessage = "Error, please verify the data provided.";
                 }
 
                 return response;

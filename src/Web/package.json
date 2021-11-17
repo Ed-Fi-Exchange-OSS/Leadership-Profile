@@ -15,7 +15,7 @@
     "react-chartjs-2": "^3.0.4",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.0",
+    "react-scripts": "^4.0.0",
     "reactstrap": "^8.7.1",
     "secure-web-storage": "^1.0.2",
     "web-vitals": "^0.2.4"

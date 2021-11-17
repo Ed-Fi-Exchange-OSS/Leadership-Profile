@@ -76,6 +76,21 @@ function UseForgotPassword() {
                 }).catch(error => {
                     console.error(error.message);
                 });
+        } else {
+            setError({
+                hasError: true,
+                message: "Both Staff Unique ID and Username are required."
+            });
+            setSuccess({
+                isSuccess: false,
+                message: ""
+            });
+            setTimeout(() => {
+                setError({
+                    hasError: false,
+                    message: ""
+                });
+            }, 3000);
         }
     }
 

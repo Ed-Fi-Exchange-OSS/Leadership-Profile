@@ -184,7 +184,7 @@ namespace LeadershipProfileAPI
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("../swagger/v1/swagger.json", "LeadershipProfileAPI v1"));
 
-                autoMapper.ConfigurationProvider.AssertConfigurationIsValid();
+                // autoMapper.ConfigurationProvider.AssertConfigurationIsValid();
             }
             app.UseCors("default");
 

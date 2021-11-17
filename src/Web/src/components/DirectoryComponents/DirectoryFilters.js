@@ -14,7 +14,7 @@ const CreateDirectoryFilters = (props) => {
 
     function RenderFilters(data) {
         const {positions, setPositions, nameSearch, setNameSearch, 
-            degrees, setDegrees,
+            degrees, setDegrees, schoolCategories, setSchoolCategories,
             yearsOptionRange, setYearsOptionRange, 
             setYearRange, institutions, setInstitutions,
             filteredInstitutions, setFilteredInstitutions,
@@ -52,6 +52,9 @@ const CreateDirectoryFilters = (props) => {
                 "Degrees":{
                     "Values": filterState.degrees
                 },
+                "SchoolCategories":{
+                    "Values": filterState.schoolCategories
+                },
                 "Name": filterState.nameSearch,
                 "Institutions":{
                     "Values": filterState.institutions
@@ -81,6 +84,10 @@ const CreateDirectoryFilters = (props) => {
 
         function Degree_OnChange(e){
             CheckSelectedItem(e.currentTarget, degrees, setDegrees, pillTypes.Degree);
+        }
+
+        function SchoolCategory_OnChange(e){
+            CheckSelectedItem(e.currentTarget, schoolCategories, setSchoolCategories, pillTypes.SchoolCategory);
         }
 
         function YearOption_OnChange(value){
@@ -113,6 +120,9 @@ const CreateDirectoryFilters = (props) => {
             if(pill.filter === pillTypes.Tenure){
                 setCheckValueForElement(tenureRanges, setTenureRanges, pill.value, false);
             }
+            if(pill.filter === pillTypes.SchoolCategory){
+                setCheckValueForElement(schoolCategories, setSchoolCategories, pill.value, false);
+            }
 
             sendFilter(getTypeAction(pill.filter, false), pill);
             OnChangeSubmit();
@@ -124,6 +134,7 @@ const CreateDirectoryFilters = (props) => {
             unCheckAllFromElement(degrees, setDegrees);
             unCheckAllFromElement(filteredInstitutions, setFilteredInstitutions);
             unCheckAllFromElement(tenureRanges, setTenureRanges);
+            unCheckAllFromElement(schoolCategories, setSchoolCategories);
             OnChangeSubmit(true);
         }
 
@@ -202,6 +213,34 @@ const CreateDirectoryFilters = (props) => {
                             <td></td>
                            <td width="20%">
                                 <Searching onSearchValueChange = {NameSearch_OnChange} value={nameSearch}/>
+                                <FormGroup>
+                                    <UncontrolledDropdown>
+                                        <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret>
+                                            Degrees
+                                        </DropdownToggle>
+                                        <DropdownMenu modifiers={modifiers} right className="btn-dropdown-items">
+                                            {
+                                                
+                                                Object.keys(degrees).length !== 0 ? (
+                                                    degrees.map((degreeElement, index) => 
+                                                    {
+                                                      return degreeElement.checked ? "" : (
+                                                       <div key={index} className="filter-select-item">
+                                                            <Label>
+                                                                <input type="checkbox"
+                                                                       name={degreeElement.text}
+                                                                       value={degreeElement.value}
+                                                                       checked={degreeElement.checked}
+                                                                       onChange={e => {Degree_OnChange(e)}} />
+                                                                {degreeElement.text}
+                                                            </Label>
+                                                        </div>)                                                    
+                                                      })
+                                                    ) : ("")
+                                            }
+                                        </DropdownMenu>
+                                    </UncontrolledDropdown>
+                                </FormGroup>
                             </td>
                            <td width="20%">
                                 <FormGroup>
@@ -308,6 +347,64 @@ const CreateDirectoryFilters = (props) => {
                                     </DropdownMenu>
                                 </UncontrolledDropdown>
                             </FormGroup>
+                           </td>                           
+                           <td width="20%">
+                                {/* <FormGroup>
+                                    <UncontrolledDropdown>
+                                        <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret>
+                                            Degrees
+                                        </DropdownToggle>
+                                        <DropdownMenu modifiers={modifiers} right className="btn-dropdown-items">
+                                            {
+                                                
+                                                Object.keys(degrees).length !== 0 ? (
+                                                    degrees.map((degreeElement, index) => 
+                                                    {
+                                                      return degreeElement.checked ? "" : (
+                                                       <div key={index} className="filter-select-item">
+                                                            <Label>
+                                                                <input type="checkbox"
+                                                                       name={degreeElement.text}
+                                                                       value={degreeElement.value}
+                                                                       checked={degreeElement.checked}
+                                                                       onChange={e => {Degree_OnChange(e)}} />
+                                                                {degreeElement.text}
+                                                            </Label>
+                                                        </div>)                                                    
+                                                      })
+                                                    ) : ("")
+                                            }
+                                        </DropdownMenu>
+                                    </UncontrolledDropdown>
+                                </FormGroup> */}
+                                <FormGroup>
+                                    <UncontrolledDropdown>
+                                        <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret>
+                                            School Categories
+                                        </DropdownToggle>
+                                        <DropdownMenu modifiers={modifiers} right className="btn-dropdown-items">
+                                            {
+                                                
+                                                Object.keys(schoolCategories).length !== 0 ? (
+                                                    schoolCategories.map((schoolCategoryElement, index) => 
+                                                    {
+                                                      return schoolCategoryElement.checked ? "" : (
+                                                       <div key={index} className="filter-select-item">
+                                                            <Label>
+                                                                <input type="checkbox"
+                                                                       name={schoolCategoryElement.text}
+                                                                       value={schoolCategoryElement.value}
+                                                                       checked={schoolCategoryElement.checked}
+                                                                       onChange={e => {SchoolCategory_OnChange(e)}} />
+                                                                {schoolCategoryElement.text}
+                                                            </Label>
+                                                        </div>)                                                    
+                                                      })
+                                                    ) : ("")
+                                            }
+                                        </DropdownMenu>
+                                    </UncontrolledDropdown>
+                                </FormGroup>
                            </td>
                            <td width="10%">
                                 <FormGroup>
@@ -335,36 +432,6 @@ const CreateDirectoryFilters = (props) => {
                                                     ) : ("")
                                             }
 
-                                        </DropdownMenu>
-                                    </UncontrolledDropdown>
-                                </FormGroup>
-                           </td>
-                           <td width="20%">
-                                <FormGroup>
-                                    <UncontrolledDropdown>
-                                        <DropdownToggle className="form-group-filter-with-label btn-dropdown" caret>
-                                            Degrees
-                                        </DropdownToggle>
-                                        <DropdownMenu modifiers={modifiers} right className="btn-dropdown-items">
-                                            {
-                                                
-                                                Object.keys(degrees).length !== 0 ? (
-                                                    degrees.map((degreeElement, index) => 
-                                                    {
-                                                      return degreeElement.checked ? "" : (
-                                                       <div key={index} className="filter-select-item">
-                                                            <Label>
-                                                                <input type="checkbox"
-                                                                       name={degreeElement.text}
-                                                                       value={degreeElement.value}
-                                                                       checked={degreeElement.checked}
-                                                                       onChange={e => {Degree_OnChange(e)}} />
-                                                                {degreeElement.text}
-                                                            </Label>
-                                                        </div>)                                                    
-                                                      })
-                                                    ) : ("")
-                                            }
                                         </DropdownMenu>
                                     </UncontrolledDropdown>
                                 </FormGroup>

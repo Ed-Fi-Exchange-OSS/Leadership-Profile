@@ -10,6 +10,7 @@ function UseDirectoryFilters () {
     const [positions, setPositions] = useState([]);
     const [nameSearch, setNameSearch] = useState(filterState.nameSearch);
     const [degrees, setDegrees] = useState([]);
+    const [schoolCategories, setSchoolCategories] = useState([]);
     const [yearsOptionRange, setYearsOptionRange] = useState(-1);
     const [year, setYear] = useState('');
     const [yearRange, setYearRange] = useState({min: 0, max: 0})
@@ -28,6 +29,12 @@ function UseDirectoryFilters () {
     async function getDegrees(){
         fetchFilterData(`webcontrols/dropdownlist/degrees`, (response) => {
             responseSetter(response.degrees, setDegrees, filterState.degrees);
+        });
+    }
+
+    async function getSchoolCategories(){
+        fetchFilterData(`webcontrols/dropdownlist/schoolCategories`, (response) => {
+            responseSetter(response.schoolCategories, setSchoolCategories, filterState.schoolCategories);
         });
     }
 
@@ -117,6 +124,7 @@ function UseDirectoryFilters () {
     useEffect(() => {
         getPositions();
         getDegrees();
+        getSchoolCategories();
         getInstitutions();
         getCategories();
         getTenureRanges();
@@ -126,9 +134,9 @@ function UseDirectoryFilters () {
         setFilteredInstitutions(institutions);
     }, [institutions])
 
-    return {positions, nameSearch, degrees, yearsOptionRange, year, yearRange,
+    return {positions, nameSearch, degrees, schoolCategories, yearsOptionRange, year, yearRange,
         institutions, filteredInstitutions, filterInstitutionValue, categories, tenureRanges,
-         setPositions, setNameSearch, setDegrees, setYearsOptionRange, setYear, setYearRange,
+         setPositions, setNameSearch, setDegrees, setSchoolCategories, setYearsOptionRange, setYear, setYearRange,
          setInstitutions, setFilteredInstitutions, setFilterInstitutionValue,
         setCheckValueForElement, unCheckAllFromElement, setTenureRanges,
          setCategories};

@@ -71,6 +71,23 @@ namespace LeadershipProfileAPI.Features.Account
 
                     var user = new IdentityUser(request.Username) { Email = request.Email };
 
+                    if (request.Password.Length < 8) {
+                        response.Result = false;
+                        response.ResultMessage = "Password should contain at least 8 characters";
+                        return response;
+                    }
+
+                    if (!request.Password.Any(char.IsUpper)) {
+                        response.Result = false;
+                        response.ResultMessage = "Password should contain at least 1 upper case letter";
+                        return response;
+                    }
+                    if (!request.Password.Any(char.IsLower)) {
+                        response.Result = false;
+                        response.ResultMessage = "Password should contain at least 1 lower case letter";
+                        return response;
+                    }
+
                     var result = await _userManager.CreateAsync(user, request.Password).ConfigureAwait(false);
 
                     if (!result.Succeeded)
@@ -132,6 +149,7 @@ namespace LeadershipProfileAPI.Features.Account
                 }
 
                 response.Result = false;
+                response.ResultMessage = "Incorrect Staff ID.";
                 return response;
             }
         }

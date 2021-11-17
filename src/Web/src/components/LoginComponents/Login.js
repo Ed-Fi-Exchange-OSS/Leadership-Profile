@@ -33,8 +33,8 @@ const Login = () => {
                         Incorrect username or password.
                     </Alert>
                     : <div></div>}
-                    <Input type="submit" value="Submit" className="login-submit" />
-                    <a href="#"className="login-submit" onClick={e => handleOnClick(e)}>Forgot Password?</a>
+                    <Input type="submit" value="Submit" className="login-submit" />                    
+                    <a href="#"className="d-flex mt-2" onClick={e => handleOnClick(e)}>Forgot Password?</a>
                 </Form>
             </CardBody>
         </Card>

@@ -3,6 +3,7 @@ export const INITIAL_FILTERS_STATE = {
     institutions: [],
     positions: [],
     degrees: [],
+    schoolCategories: [],
     tenure: [],
     category:'',
     categoryLabel: '',
@@ -38,6 +39,7 @@ const PillType = {
     Institution: "INSTITUTION",
     Tenure: "TENURE",
     Degree: "DEGREE",
+    SchoolCategory: "SCHOOL_CATEGORY",
     Rating: "RATING"
 }
 

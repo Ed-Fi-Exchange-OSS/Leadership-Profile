@@ -2,7 +2,7 @@ import FilterActions from "./FilterActions";
 import {INITIAL_FILTERS_STATE} from "../../utils/Constants";
 
 const Reducer = (state, action) => {
-    const {setNameFilter, setPosition, removePosition, setIntitution, removeInstitution, 
+    const {setNameFilter, setPosition, removePosition, setIntitution, removeInstitution, setSchoolCategory, removeSchoolCategory,
         setDegree, removeDegree, setTenure, removeTenure, setRatingCategory, setRatingScore, removeRating, removePill, clearFilters} = FilterActions;
 
     switch(action.type){
@@ -73,6 +73,22 @@ const Reducer = (state, action) => {
             return {
                 ...state,
                 degrees: state.degrees.filter(value => value !== filterPill.value),
+                pills: state.pills.filter(value => value !== filterPill)
+            }
+        }
+        case setSchoolCategory: {
+            let filterPill = action.payload;
+            return {
+                ...state,
+                schoolCategories: [...state.schoolCategories, filterPill.value],
+                pills: [...state.pills, filterPill]
+            }
+        }
+        case removeSchoolCategory: {
+            let filterPill = action.payload;
+            return {
+                ...state,
+                schoolCategories: state.schoolCategories.filter(value => value !== filterPill.value),
                 pills: state.pills.filter(value => value !== filterPill)
             }
         }

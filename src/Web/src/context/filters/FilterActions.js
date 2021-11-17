@@ -6,6 +6,8 @@ const FilterActions = {
     removePosition: "REMOVE_POSITION",
     setDegree: "SET_DEGREE",
     removeDegree: "REMOVE_DEGREE",
+    setSchoolCategory: "SET_SCHOOL_CATEGORY",
+    removeSchoolCategory: "REMOVE_SCHOOL_CATEGORY",
     setYear: "SET_YEAR",
     removeYear: "REMOVE_YEAR",
     removePill: "REMOVE_PILL",

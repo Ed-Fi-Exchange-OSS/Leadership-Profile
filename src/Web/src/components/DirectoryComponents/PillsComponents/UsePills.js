@@ -42,7 +42,10 @@ const UsePills = () => {
                 return isAdd ? FilterActions.setIntitution : FilterActions.removeInstitution;
             }
             case pillTypes.Degree:{
-                return isAdd ? FilterActions.setDegree : FilterActions.removeDegree;
+                return isAdd ? FilterActions.setDegree : FilterActions.removeDegree;            
+            }
+            case pillTypes.SchoolCategory:{
+                return isAdd ? FilterActions.setSchoolCategory : FilterActions.removeSchoolCategory;
             }
             case pillTypes.Rating:{
                 return isAdd ? FilterActions.setRatingScore : FilterActions.removeRating;

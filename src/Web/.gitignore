@@ -2,3 +2,5 @@ build/*
 publish/*
 
 .env
+
+package-lock.json
