@@ -16,7 +16,7 @@ const Directory = () => {
     }
     
     return (
-        <div>
+        <div className="d-flex container-fluid flex-column"> 
             <div className='directory-div'>
                 <div className="directory-subtitle-controls">
                     <div></div>

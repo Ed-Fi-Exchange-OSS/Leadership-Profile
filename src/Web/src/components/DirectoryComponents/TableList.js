@@ -56,7 +56,7 @@ const CreateTableList = (props) => {
     }
 
     return (
-        <div>
+        <div className="table-responsive">
             {data != null ? RenderTable(data) : ''}
         </div>
     );

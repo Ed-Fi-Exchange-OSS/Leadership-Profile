@@ -19,7 +19,7 @@ import ResetPassword from './components/LoginComponents/ResetPassword';
 import FilterContextProvider from './context/filters/FilterContextProvider';
 
 function App() {
-  const { isAuthenticated } = AuthService()
+  const { isAuthenticated } = AuthService();
   const authenticated = isAuthenticated();
 
   return (
@@ -28,20 +28,20 @@ function App() {
       <Router>
         <React.Fragment>
           <div className="body">
-            <FilterContextProvider>
-              <LoggedInRoute exact path='/account/login' isAuthenticated={authenticated} component={Login} />
-              <Route exact path="/">
-                <Redirect to="/directory?page=1&sortBy=asc&sortField=id" />
-              </Route>
-              <PrivateRoute exact path="/:searchParams" isAuthenticated={authenticated} component={Directory} />
-              <PrivateRoute path="/profile/:id" isAuthenticated={authenticated} component={Profile} />
-            </FilterContextProvider>
-            <PrivateRoute path="/advanced/search">
-              <Redirect to="/directory?page=1&sortBy=asc&sortField=id" />
-            </PrivateRoute>
-            <Route exact path="/account/register" component={Registration} />         
-            <Route exact path="/account/forgotpassword" component={ForgotPassword} />
-            <Route exact path="/account/resetpassword" component={ResetPassword} />
+                <FilterContextProvider>
+                  <LoggedInRoute exact path='/account/login' isAuthenticated={authenticated} component={Login} />
+                  <Route exact path="/">
+                    <Redirect to="/directory?page=1&sortBy=asc&sortField=id" />
+                  </Route>
+                  <PrivateRoute exact path="/:searchParams" isAuthenticated={authenticated} component={Directory} />
+                  <PrivateRoute path="/profile/:id" isAuthenticated={authenticated} component={Profile} />
+                </FilterContextProvider>
+                <PrivateRoute path="/advanced/search">
+                  <Redirect to="/directory?page=1&sortBy=asc&sortField=id" />
+                </PrivateRoute>
+                <Route exact path="/account/register" component={Registration} />         
+                <Route exact path="/account/forgotpassword" component={ForgotPassword} />
+                <Route exact path="/account/resetpassword" component={ResetPassword} />
           </div>
         </React.Fragment>
       </Router>

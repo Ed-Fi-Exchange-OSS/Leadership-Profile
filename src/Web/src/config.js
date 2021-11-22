@@ -1,6 +1,6 @@
 function config() {
     var getUrl = window.location;
-    const API_URL = process.env.NODE_ENV === 'production' ? new URL(`${getUrl.protocol}//${getUrl.host}/api/`) : new URL('https://localhost:5001/');
+    const API_URL = process.env.NODE_ENV === 'production' ? new URL(`${getUrl.protocol}//${getUrl.host}/api/`) : new URL('https://192.168.100.33:5001/');
     const API_CONFIG = (method, body=null) => { 
         return {
             method: method,

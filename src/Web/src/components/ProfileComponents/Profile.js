@@ -20,7 +20,7 @@ const Profile = () => {
     }
  
     return (
-        <div>
+        <div className="d-flex flex-column container">
             <ProfileBreadcrumbMenu data={data} />
             <ProfileInfo data={data}/>
             <Nav className="profile-nav">

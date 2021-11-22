@@ -9,7 +9,7 @@ const ProfileInfo = (props) => {
     return (
         <Card body>
             <Row>
-                <Col sm="1">
+                <Col sm="3" lg="2">
                     <img src="https://tvline.com/wp-content/uploads/2014/08/school-of-rock.jpg?w=300&h=208&crop=1" alt="profile" className="rounded-circle profile-info-picture" />
                 </Col>
                 <Col>
