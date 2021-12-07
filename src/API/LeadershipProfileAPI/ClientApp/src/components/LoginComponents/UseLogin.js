@@ -35,7 +35,7 @@ function UseLogin() {
         if (password !== '' && username !== '') {
 
             let unmounted = false;
-            const apiUrl = new URL(API_URL + 'account/login');
+            const apiUrl = new URL(API_URL + 'user/login');
 
             fetch(apiUrl, API_CONFIG(
                 'POST', 

@@ -22,10 +22,10 @@ const Directory = () => {
                     <div></div>
                     <div className="view-style-buttons">
                         <span className="view-style-label">View Style</span>
-                        <button disabled={activeComponent == "table"} color="primary" className="btn btn-primary view-style-button-first view-style-button" onClick={() => setActiveComponent("table")}>
+                        <button disabled={activeComponent === "table"} color="primary" className="btn btn-primary view-style-button-first view-style-button" onClick={() => setActiveComponent("table")}>
                             <TableViewIcon />
                         </button>
-                        <button disabled={activeComponent == "card"} color="primary" className="btn btn-primary view-style-button" onClick={() => setActiveComponent("card")}>
+                        <button disabled={activeComponent === "card"} color="primary" className="btn btn-primary view-style-button" onClick={() => setActiveComponent("card")}>
                             <CardViewIcon />
                         </button>
                     </div>

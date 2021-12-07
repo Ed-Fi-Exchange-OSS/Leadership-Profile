@@ -11,8 +11,6 @@
         public decimal? YearsOfService { get; set; }
         public string Assignment { get; set; }
         public string Degree { get; set; }
-        // public string SchoolCategoryId { get; set; }
-        // public string InstitutionCategoryId { get; set; }
         public string Institution { get; set; }
         public string Email { get; set; }
         public string Telephone { get; set; }

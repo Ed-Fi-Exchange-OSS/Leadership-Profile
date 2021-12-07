@@ -88,7 +88,7 @@ namespace LeadershipProfileAPI.Features.Account
                         // Generate token and reset link
                         var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-                        var callbackUrl = $"<a href='{_configSettings.ResetPasswordBaseUrl}/Account/ResetPassword?username={request.Username}&token={token}' target='_blank'>{_configSettings.ResetPasswordBaseUrl}/Account/ResetPassword?username={request.Username}&token={token}</a>";
+                        var callbackUrl = $"<a href='{_configSettings.ResetPasswordBaseUrl}/User/ResetPassword?username={request.Username}&token={token}' target='_blank'>{_configSettings.ResetPasswordBaseUrl}/Account/ResetPassword?username={request.Username}&token={token}</a>";
 
                         var message = $"<h4>Please click the link below to reset your password.</h4><br/><br/>{callbackUrl}";
 

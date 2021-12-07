@@ -13,7 +13,7 @@ namespace LeadershipProfileAPI.Controllers
     [ApiController]
     [Route("[controller]")]
     [AllowAnonymous]
-    public class AccountController : ControllerBase
+    public class UserController : ControllerBase
     {
         private readonly IMediator _mediator;
 
@@ -21,7 +21,7 @@ namespace LeadershipProfileAPI.Controllers
         /// Initializes a new instance of the class
         /// </summary>
         /// <param name="mediator"></param>
-        public AccountController(IMediator mediator)
+        public UserController(IMediator mediator)
         {
             _mediator = mediator;
         }

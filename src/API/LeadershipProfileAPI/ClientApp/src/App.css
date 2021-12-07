@@ -377,16 +377,6 @@
   margin-bottom: 0!important;
 }
 
-/* Login */
-.login-card, .register-card {
-  /* width: 50%; */
-  /* margin: 0 auto; */
-}
-
-.table-responsive {
-  overflow-x: auto;
-}
-
 @media(min-width: 768px) {
   .login-card, .register-card {
     max-width: 700px;

@@ -4,13 +4,13 @@ with assignments as (
          , seoaa.StaffClassificationDescriptorId as [PositionId]
          , ksad.CodeValue  as [Position]
          , eo.EducationOrganizationId as [InstitutionId]
-		 , eoc.EducationOrganizationCategoryDescriptorId as [InstitutionCategoryId]
+		 , sc.SchoolCategoryDescriptorId as [InstitutionCategoryId]
          , eo.NameOfInstitution as [Institution]
          , seoaa.BeginDate as StartDate
          , Row_number() over (partition by seoaa.StaffUSI order by BeginDate desc) as "Number"
      from edfi.StaffEducationOrganizationAssignmentAssociation as seoaa
      join edfi.EducationOrganization eo on eo.EducationOrganizationId = seoaa.EducationOrganizationId
-	 left join edfi.EducationOrganizationCategory eoc on eoc.EducationOrganizationId = seoaa.EducationOrganizationId
+	 left join edfi.SchoolCategory sc on sc.SchoolId = seoaa.EducationOrganizationId
      join edfi.Descriptor as ksad on ksad.DescriptorId = seoaa.StaffClassificationDescriptorId
 )
 , staff_email (StaffUSI, Email) AS (
