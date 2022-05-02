@@ -69,9 +69,17 @@ namespace LeadershipProfileAPI.Data
                 {ClauseRatingsConditionalJoin(body)}
                 {ClauseConditions(body)}
                 order by case when {fieldMapping[sortField]} is null then 1 else 0 end, {fieldMapping[sortField]} {sortBy}
+             ";
+                // offset {(currentPage - 1) * pageSize} rows
+                // fetch next {pageSize} rows only
+
+                //If you passed pageSize 0 then won't apply pagination
+            if (currentPage != 0) { 
+                sql += $@"
                 offset {(currentPage - 1) * pageSize} rows
                 fetch next {pageSize} rows only
-             ";
+                ";
+            }
             return _edfiDbContext.StaffSearches.FromSqlRaw(sql, name).ToListAsync();
         }
 

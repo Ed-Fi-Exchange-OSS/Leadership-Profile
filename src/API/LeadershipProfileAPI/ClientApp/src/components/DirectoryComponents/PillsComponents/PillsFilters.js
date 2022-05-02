@@ -3,7 +3,7 @@ import { useFilterContext } from '../../../context/filters/UseFilterContext';
 import Pill from './Pill';
 
 const PillsFilters = (props) =>{
-    const { handleRemove, handleRemoveAll } = props;
+    const { handleRemove, handleRemoveAll} = props;
     const [pillState, send] = useFilterContext();
 
     const clearAll = () => {
@@ -18,7 +18,9 @@ const PillsFilters = (props) =>{
         <div>
             {pillState.pills.length > 0 && 
             <div className="selected-filters">
-                <a href="#" className="selected-filters-clear" onClick={() => clearAll()}>Clear All</a>
+                <div className="d-flex justify-content-end">
+                    <a href="#" className="selected-filters-clear mx-3" onClick={() => clearAll()}>Clear Filters</a>
+                </div>
                 <div className="selected-filters-wrapper">
                     <span>Active Filters:</span>
                         {

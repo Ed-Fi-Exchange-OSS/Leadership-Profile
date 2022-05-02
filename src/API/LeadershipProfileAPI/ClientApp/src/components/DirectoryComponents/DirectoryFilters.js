@@ -275,7 +275,7 @@ const CreateDirectoryFilters = (props) => {
 
     return (
       <div className="d-flex flex-column container-fluid" >
-          <div className="row p-2 mb-3" style={{backgroundColor: "#a6c1ff"}}>
+          <div className="row filters-form-container">
             <div class="col-sm-12 col-md-6 col-lg-3">
               <Searching
                 onSearchValueChange={NameSearch_OnChange}

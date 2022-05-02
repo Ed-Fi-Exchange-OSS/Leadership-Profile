@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+
+import { Button } from 'reactstrap';
+
 import { TableViewIcon, CardViewIcon } from '../Icons';
 import BreadcrumbList from '../Breadcrumb';
 import TableList from './TableList';
@@ -6,10 +9,11 @@ import CardList from './CardListComponents/CardList';
 import UseDirectory from './UseDirectory';
 import ErrorMessage from '../ErrorMessage';
 import DirectoryFilters from './DirectoryFilters';
+import ResultsDownload from '../../utils/ResultsDownload';
 
 const Directory = () => {
     const [activeComponent, setActiveComponent] = useState("table");
-    const { setColumnSort, sort, data, paging, setPage, error, setFilters } = UseDirectory();
+    const { setColumnSort, sort, data, exportData, paging, setPage, error, setFilters, exportResults, buttonRef } = UseDirectory();
     
     const callbackFilteredSearch = (searchData) => {
         setFilters(searchData);
@@ -34,6 +38,13 @@ const Directory = () => {
                 <DirectoryFilters directoryFilteredSearchCallback = {callbackFilteredSearch}/>
             </div>
             
+            <ResultsDownload dataSet={exportData} buttonRef={buttonRef}></ResultsDownload>
+            <div>
+                <a className="selected-filters-clear mx-3" onClick={() => exportResults()}>Export Results</a>
+            </div>
+            {/* <Button className="selected-filters-clear mx-3" onClick={() => exportResults()}>Export Results</Button> */}
+
+
             { error ? <ErrorMessage /> : '' }
             { activeComponent === "table" ? (
                 <TableList sort={sort} data={data} setColumnSort={setColumnSort} paging={paging} setPage={setPage} />

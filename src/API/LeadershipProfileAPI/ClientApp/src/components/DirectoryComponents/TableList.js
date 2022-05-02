@@ -14,21 +14,26 @@ const CreateTableList = (props) => {
                 <thead>
                     <tr><th></th>
                         <th width="20%">
-                            Name
+                            {/* Name */}
+                            NAME
                             <Sorting onSortChange={newStatus => setColumnSort('name', newStatus)}
                                 status={sort.category === 'name' ? sort.value : null} />
                         </th>
                         <th width="20%">
-                            Position
+                            {/* Position */}
+                            POSITION
                         </th>
                         <th width="30%">
-                            School 
+                            {/* School  */}
+                            SCHOOL 
                         </th>
                         <th width="10%">
-                            Years
+                            {/* Years */}
+                            YEARS
                         </th>
                         <th width="20%">
-                            Degree
+                            {/* Degree */}
+                            DEGREE
                         </th>
                     </tr>
                 </thead>
