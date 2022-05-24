@@ -6,3 +6,5 @@ SELECT
     pd.AttendanceDate
 FROM edfi.Staff s
 INNER JOIN tpdm.ProfessionalDevelopmentEventAttendance pd ON pd.PersonId = s.PersonId
+
+

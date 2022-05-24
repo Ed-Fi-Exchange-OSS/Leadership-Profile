@@ -19,7 +19,7 @@ properties {
 	$dbTestdataZipFile = "EdFi_Ods_Populated_Template_TPDM_10.zip"
 	$dbTestdataBakFile = "EdFi_Ods_Populated_Template_TPDM_10.bak"
 	$testDataFolder = "$projectRootDirectory/testdata"
-	$dbName = "EdFi_Ods_Sandbox_emptyKey"
+	$dbName = "EdFi_Ods_Populated_Template"
 	$dbBackupName = "EdFi_Ods_Populated_Template_Test"
 }
 
