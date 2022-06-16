@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using AutoMapper;
 using IdentityServer4;
 using IdentityServer4.AccessTokenValidation;
@@ -14,14 +11,18 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace LeadershipProfileAPI
 {
@@ -37,6 +38,7 @@ namespace LeadershipProfileAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
             var connectionString = Configuration.GetConnectionString("EdFi");
 
             services.AddDbContext<EdFiDbContext>(options => options.UseSqlServer(connectionString));
@@ -50,7 +52,7 @@ namespace LeadershipProfileAPI
 
             AddAuth(services, Configuration);
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Latest);
+            //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Latest);
 
             services.AddScoped<AuthenticationDelegatingHandler>();
 
@@ -66,12 +68,20 @@ namespace LeadershipProfileAPI
             services.AddTransient<IEmailSender, SmtpSender>();
             services.AddScoped<EdFiDbQueryData>();
 
-            services.AddControllers();
+            // services.AddControllers();
 
-            services.AddSwaggerGen(c =>
+            // services.AddSwaggerGen(c =>
+            // {
+            //     c.SwaggerDoc("v1", new OpenApiInfo { Title = "LeadershipProfileAPI", Version = "v1" });
+            //     c.CustomSchemaIds(type => type.ToString());
+            // });
+
+            services.AddControllersWithViews();
+
+            // In production, the React files will be served from this directory
+            services.AddSpaStaticFiles(configuration =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "LeadershipProfileAPI", Version = "v1" });
-                c.CustomSchemaIds(type => type.ToString());
+                configuration.RootPath = "ClientApp/build";
             });
         }
 
@@ -114,7 +124,6 @@ namespace LeadershipProfileAPI
 
                 options.RequireHttpsMetadata = false;
             });
-
 
             services.AddAuthorization(options =>
             {
@@ -176,29 +185,82 @@ namespace LeadershipProfileAPI
             });
         }
 
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMapper autoMapper)
         {
+            // app.UsePathBase(new PathString("/api"));
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("../swagger/v1/swagger.json", "LeadershipProfileAPI v1"));
+                //app.UseSwagger();
+                //app.UseSwaggerUI(c => c.SwaggerEndpoint("../swagger/v1/swagger.json", "LeadershipProfileAPI v1"));
 
-                autoMapper.ConfigurationProvider.AssertConfigurationIsValid();
+                //autoMapper.ConfigurationProvider.AssertConfigurationIsValid();
             }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+            }
+
             app.UseCors("default");
-
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseSpaStaticFiles();
 
-            app.UseRouting();
+
 
             app.UseIdentityServer();
 
             app.UseAuthentication();
 
+            
+            app.UseRouting();
+
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.UseEndpoints(endpoints => {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller}/{action=Index}/{id?}");
+            });
+
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "ClientApp";
+
+                if (env.IsDevelopment())
+                {
+                    //spa.UseReactDevelopmentServer(npmScript: "start");
+                    spa.UseProxyToSpaDevelopmentServer("http://localhost");
+                }
+            });
+            
+
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapControllerRoute(
+            //        name: "default",
+            //        pattern: "{controller}/{action=Index}/{id?}");
+
+
+            //    endpoints.MapControllers();
+
+            //    ////endpoints.MapFallbackToController("Login", "Account");
+            //});
+
+            //app.UseSpa(spa =>
+            //{
+            //    spa.Options.SourcePath = "ClientApp";
+
+            //    if (env.IsDevelopment())
+            //    {
+            //        spa.UseReactDevelopmentServer(npmScript: "start");
+            //    }
+            //});
         }
     }
 }

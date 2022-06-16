@@ -82,13 +82,13 @@ namespace LeadershipProfileAPI.Features.Account
                     // Get user by username from ASP.Net table
                     var user = await _signInManager.UserManager.FindByNameAsync(request.Username);
 
-                    // Don't reveal that the user does not exist or is not confirmed
+                    // Don't reveal that the user does not exist or is not confirmed, but give a feedback
                     if (user != null)
                     {
                         // Generate token and reset link
                         var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-                        var callbackUrl = $"<a href='{_configSettings.ResetPasswordBaseUrl}/Account/ResetPassword?username={request.Username}&token={token}' target='_blank'>{_configSettings.ResetPasswordBaseUrl}/Account/ResetPassword?username={request.Username}&token={token}</a>";
+                        var callbackUrl = $"<a href='{_configSettings.ResetPasswordBaseUrl}/User/ResetPassword?username={request.Username}&token={token}' target='_blank'>{_configSettings.ResetPasswordBaseUrl}/Account/ResetPassword?username={request.Username}&token={token}</a>";
 
                         var message = $"<h4>Please click the link below to reset your password.</h4><br/><br/>{callbackUrl}";
 
@@ -97,11 +97,17 @@ namespace LeadershipProfileAPI.Features.Account
                     else
                     {
                         _logger.LogWarning($"User record not found - username:{request.Username}");
+                        response.Result = false;
                     }
                 }
                 else
                 {
                     _logger.LogWarning($"Staff record not found - username:{request.Username}, staffuniqueid:{request.StaffUniqueId}");
+                    response.Result = false;
+                }
+
+                if (response.Result == false) {
+                    response.ResultMessage = "Error, please verify the data provided.";
                 }
 
                 return response;

@@ -12,11 +12,11 @@ Write-Host 'Install minver-cli'
 dotnet tool install --global minver-cli --version 2.3.1
 
 Write-Host 'Create envornment file for React'
-if (Test-Path .\src\Web\.env -PathType leaf)
+if (Test-Path .\src\API\LeadershipProfileAPI\ClientApp\.env -PathType leaf)
 {
     Write-Host 'React env file already exists'
 }
 else
 {
-    New-Item -Name ".env" -ItemType "file" -Value "REACT_APP_ENCRYPTION_SECRET_KEY=123456" -Path .\src\Web\
+    New-Item -Name ".env" -ItemType "file" -Value "REACT_APP_ENCRYPTION_SECRET_KEY=123456" -Path .\src\API\LeadershipProfileAPI\ClientApp\
 }

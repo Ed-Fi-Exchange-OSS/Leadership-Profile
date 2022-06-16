@@ -43,6 +43,7 @@ namespace LeadershipProfileAPI.Data
                 {"yearsOfService", "YearsOfService"},
                 {"position", "Assignment"},
                 {"highestDegree", "Degree"},
+                // {"highestDegree", "Degree"},
                 {"school", "Institution"},
             };
 
@@ -68,9 +69,17 @@ namespace LeadershipProfileAPI.Data
                 {ClauseRatingsConditionalJoin(body)}
                 {ClauseConditions(body)}
                 order by case when {fieldMapping[sortField]} is null then 1 else 0 end, {fieldMapping[sortField]} {sortBy}
+             ";
+                // offset {(currentPage - 1) * pageSize} rows
+                // fetch next {pageSize} rows only
+
+                //If you passed pageSize 0 then won't apply pagination
+            if (currentPage != 0) { 
+                sql += $@"
                 offset {(currentPage - 1) * pageSize} rows
                 fetch next {pageSize} rows only
-             ";
+                ";
+            }
             return _edfiDbContext.StaffSearches.FromSqlRaw(sql, name).ToListAsync();
         }
 
@@ -111,6 +120,7 @@ namespace LeadershipProfileAPI.Data
                     ClauseDegrees(body.Degrees),
                     ClauseName(),
                     ClauseInstitution(body.Institutions),
+                    ClauseSchoolCategory(body.SchoolCategories),
                     ClauseYearsOfExperience(body.YearsOfPriorExperienceRanges)
                 }
                 .Where(x => !string.IsNullOrWhiteSpace(x))
@@ -152,6 +162,17 @@ namespace LeadershipProfileAPI.Data
             if (institutions != null && institutions.Values.Any())
             {
                 var whereInstitutions = institutions.Values.Any() ? $"InstitutionId in ({string.Join(",", institutions.Values)})" : string.Empty;
+
+                return $"({whereInstitutions})";
+            }
+            return string.Empty;
+        }
+
+        private static string ClauseSchoolCategory(ProfileSearchRequestSchoolCategories schoolCategories)
+        {
+            if (schoolCategories != null && schoolCategories.Values.Any())
+            {
+                var whereInstitutions = schoolCategories.Values.Any() ? $"InstitutionCategoryId in ({string.Join(",", schoolCategories.Values)})" : string.Empty;
 
                 return $"({whereInstitutions})";
             }

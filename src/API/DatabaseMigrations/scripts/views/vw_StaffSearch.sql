@@ -4,11 +4,13 @@ with assignments as (
          , seoaa.StaffClassificationDescriptorId as [PositionId]
          , ksad.CodeValue  as [Position]
          , eo.EducationOrganizationId as [InstitutionId]
+		 , sc.SchoolCategoryDescriptorId as [InstitutionCategoryId]
          , eo.NameOfInstitution as [Institution]
          , seoaa.BeginDate as StartDate
          , Row_number() over (partition by seoaa.StaffUSI order by BeginDate desc) as "Number"
      from edfi.StaffEducationOrganizationAssignmentAssociation as seoaa
      join edfi.EducationOrganization eo on eo.EducationOrganizationId = seoaa.EducationOrganizationId
+	 left join edfi.SchoolCategory sc on sc.SchoolId = seoaa.EducationOrganizationId
      join edfi.Descriptor as ksad on ksad.DescriptorId = seoaa.StaffClassificationDescriptorId
 )
 , staff_email (StaffUSI, Email) AS (
@@ -41,7 +43,7 @@ select s.StaffUSI
      , a.PositionId   as StaffClassificationDescriptorId
      , a.Institution
      , a.InstitutionId
-
+	 , a.InstitutionCategoryId
      , degreeDescriptor.CodeValue as Degree
      , s.HighestCompletedLevelOfEducationDescriptorId
 
@@ -53,3 +55,6 @@ from edfi.Staff as s
          LEFT JOIN staff_email se ON se.StaffUSI = s.StaffUSI
          LEFT JOIN staff_telephone st ON st.StaffUSI = s.StaffUSI
 GO
+
+
+--546 results

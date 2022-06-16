@@ -136,7 +136,8 @@ namespace LeadershipProfileAPI.Features.Profile
                 sections.Add(new PerformanceEvaluation { Title = "Overall", RatingsByYear = objectivesByYear });
 
                 var staffElements = await _dbContext.ProfileEvaluationElements
-                    .Where(e => e.StaffUniqueId == requestId && e.EvalNumber == 1)
+                    // .Where(e => e.StaffUniqueId == requestId && e.EvalNumber == 1)
+                    .Where(e => e.StaffUniqueId == requestId)
                     .ToListAsync();
 
                 var evalsByObjective = staffElements
