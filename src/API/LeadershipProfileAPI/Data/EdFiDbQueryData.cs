@@ -53,7 +53,7 @@ namespace LeadershipProfileAPI.Data
             // Implement the view in SQL, call it here
             var sql = $@"
                 select 
-                     s.StaffUSI
+                     DISTINCT(s.StaffUSI)
                     ,StaffUniqueId
                     ,FirstName
                     ,MiddleName
@@ -68,7 +68,7 @@ namespace LeadershipProfileAPI.Data
                 from edfi.vw_StaffSearch s
                 {ClauseRatingsConditionalJoin(body)}
                 {ClauseConditions(body)}
-                order by case when {fieldMapping[sortField]} is null then 1 else 0 end, {fieldMapping[sortField]} {sortBy}
+                order by {fieldMapping[sortField]} {sortBy}
              ";
                 // offset {(currentPage - 1) * pageSize} rows
                 // fetch next {pageSize} rows only
