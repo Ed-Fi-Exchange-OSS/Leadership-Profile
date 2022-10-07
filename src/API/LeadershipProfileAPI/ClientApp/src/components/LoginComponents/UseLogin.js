@@ -53,7 +53,8 @@ function UseLogin() {
                     {
                         setError(false);
                         loginAuth(username); 
-                        history.push('/queue?count=10&page=1&sortBy=asc&sortField=id');
+                        // history.push('/queue?count=10&page=1&sortBy=asc&sortField=id');
+                        history.push('/landing');
                         history.go(0);
                     }
                     else 

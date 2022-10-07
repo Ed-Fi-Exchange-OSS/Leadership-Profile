@@ -613,3 +613,31 @@ h5{
   background-color: #a6c1ff;
   border-radius: 10px;
 }
+
+
+.h-200 {
+  height: 200px;
+}
+
+
+.cards-container {
+  width: 80%;
+}
+
+.orange {
+  background-color: orangered;
+}
+
+
+.projected-vacancy {
+  width: 70%;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+.m-table {
+  margin: 0.2rem;
+}
+
+.bg-orange {
+  background-color: orangered;
+}

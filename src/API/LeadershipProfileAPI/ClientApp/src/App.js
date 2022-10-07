@@ -11,6 +11,9 @@ import LoggedInRoute from './utils/LoggedInRoute';
 import Navigation from './components/Navigation';
 import Login from './components/LoginComponents/Login';
 import Directory from './components/DirectoryComponents/Directory';
+import VacancyReport from './components/VacancyReport/VacancyReport';
+import VacancyReportDetails from './components/VacancyReportDetails/VacancyReportDetails';
+import LandingPage from './components/LandingPageComponents/LandingPage';
 import Profile from './components/ProfileComponents/Profile';
 import Registration from './components/LoginComponents/Registration';
 import AuthService from './utils/auth-service';
@@ -31,15 +34,20 @@ function App() {
                 <FilterContextProvider>
                   <LoggedInRoute exact path='/account/login' isAuthenticated={authenticated} component={Login} />
                   <Route exact path="/">
-                    <Redirect to="/directory?page=1&sortBy=asc&sortField=id" />
+                    {/* <Redirect to="/directory?page=1&sortBy=asc&sortField=id" /> */}
+                    <Redirect to="/landing" />
                   </Route>
-                  <PrivateRoute exact path="/:searchParams" isAuthenticated={authenticated} component={Directory} />
+                  {/* <PrivateRoute exact path="/:searchParams" isAuthenticated={authenticated} component={LandingPage} /> */}
+                  <PrivateRoute exact path="/directory" isAuthenticated={authenticated} component={Directory} />
+                  <PrivateRoute exact path="/landing" isAuthenticated={authenticated} component={LandingPage} />
                   <PrivateRoute path="/profile/:id" isAuthenticated={authenticated} component={Profile} />
                 </FilterContextProvider>
                 <PrivateRoute path="/advanced/search">
                   <Redirect to="/directory?page=1&sortBy=asc&sortField=id" />
                 </PrivateRoute>
                 <Route exact path="/account/register" component={Registration} />         
+                <Route exact path="/vacancy-report" component={VacancyReport} />         
+                <Route exact path="/vacancy-report-detail" component={VacancyReportDetails} />         
                 <Route exact path="/account/forgotpassword" component={ForgotPassword} />
                 <Route exact path="/account/resetpassword" component={ResetPassword} />
           </div>
