@@ -640,4 +640,8 @@ h5{
 
 .bg-orange {
   background-color: orangered;
+} 
+
+.fw-bold {
+  font-weight: bold!important;
 }

@@ -12,6 +12,16 @@ import {
 import { Bar } from "react-chartjs-2";
 // import faker from 'faker';
 
+// import img1 from './res/img/img1.PNG'; // Tell webpack this JS file uses this image
+
+
+import {
+  Dropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+} from "reactstrap";
+
 import { Button } from "reactstrap";
 import {
   Container,
@@ -28,6 +38,10 @@ import { Link } from "react-router-dom";
 
 import { TableViewIcon, CardViewIcon } from "../Icons";
 import BreadcrumbList from "../Breadcrumb";
+
+import AditionalRiskFactors from "./AditionalRiskFactors/AditionalRiskFactors";
+import WhoHasLeft from "./WhoHasLeft/WhoHasLeft";
+
 // import CardList from './CardListComponents/CardList';
 // import UseLandingPage from './UseLandingPage';
 
@@ -67,11 +81,14 @@ export const data = {
       label: "Vacancy",
       data: [16, 24, 11, 49],
       backgroundColor: "rgba(63, 191, 127, 0.5)",
-    }
+    },
   ],
 };
 
 const VacancyReport = () => {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const toggle = () => setDropdownOpen((prevState) => !prevState);
+
   const [activeComponent, setActiveComponent] = useState("table");
   // const { setColumnSort, sort, data, exportData, paging, setPage, error, setFilters, exportResults, buttonRef } = UseDirectory();
 
@@ -80,203 +97,99 @@ const VacancyReport = () => {
   // }
 
   return (
-    <div className="d-flex container-fluid flex-column">
-
-      <div className="row mt-4 projected-vacancy">
-        <div className="w-100">
-          <h2 className="">Forecast Vacancies</h2>
-          <p className="directory-paragraph">
-            What historically has caused vacancies and what is out baseline
-            vacancy projection?
-          </p>
+    <div className="container flex-container">
+      <div className="row my-4">
+        <div className="col-md-3">
+          <Button outline color="primary">
+            <h5 className="pt-1">Forecast Vacancies</h5>
+          </Button>
         </div>
-      
-        <Card
-          className="my-2"
-          color="primary"
-          outline
-          style={{
-            width: "18rem",
-            marginTop: "100px",
-          }}
-        >
-          <CardBody>
-            <p> Description: </p>
-            <p> How to use this data: </p>
-            <p> Guiding Questions: </p>
-          </CardBody>
-        </Card>
+        <div className="col-md-3">
+          <Button outline color="primary">
+            <h5 className="pt-1">Identify Leaders</h5>
+          </Button>
+        </div>
+        <div className="col-md-3">
+          <Button outline color="primary">
+            <h5 className="pt-1">Select Leaders</h5>
+          </Button>
+        </div>
+        <div className="col-md-3">
+          <Button outline color="primary" className="w-100">
+            <h5 className="pt-1">Develop Leaders</h5>
+          </Button>
+        </div>
       </div>
-
-      <div className="row mt-4 projected-vacancy">
-        <div className="col-md-6">          
-          <div className="row mt-4">
-            <div className="col-md-4 m-auto">
-              <Link to={'/vacancy-report-details'}>
-
-                <Button sm>Expand View</Button>
-              </Link>
-            </div>
-            <div className="col-md-8">
-              <div className="row">
-                <div className="col-md-3"></div>
-                <div className="col-md-9 text-center">
-                  <h5 className="mx-auto px-auto">Projected Principals</h5>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-md-3 text-center">
-                  <div className="row">
-                    <span className="m-table">HS</span>
-                  </div>
-                </div>
-                <div className="col-md-9 text-center bg-orange">
-                  <span className="m-table"></span>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-md-3 text-center">
-                  <div className="row">
-                    <span className="m-table">MS</span>
-                  </div>
-                </div>
-                <div className="col-md-9 text-center bg-orange">
-                  <span className="m-table">1</span>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-md-3 text-center">
-                  <div className="row">
-                    <span className="m-table">ES</span>
-                  </div>
-                </div>
-                <div className="col-md-9 text-center bg-orange">
-                  <span className="m-table">2</span>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-md-3 text-center">
-                  <div className="row">
-                    <span className="m-table">Total</span>
-                  </div>
-                </div>
-                <div className="col-md-9 text-center bg-orange">
-                  <span className="m-table">3</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="row mt-5">
-            <h5>Cause of vacancy past 5 years</h5>          
-            <Bar options={options} data={data} />
-          </div>
-        </div>
+      <div className="row my-4">
         <div className="col-md-6">
-        <div className="row mt-4">
-            <div className="col-md-4 m-auto">
-              <Button sm>Expand View</Button>
-            </div>
-            <div className="col-md-8">
-              <div className="row">
-                <div className="col-md-3"></div>
-                <div className="col-md-9 text-center">
-                  <h5 className="mx-auto px-auto">Projected APs</h5>
+          <p>How many vacancies are projected?</p>
+        </div>
+        <div className="col-md-2">
+          <h6>Role</h6>
+        </div>
+        <div className="col-md-4 d-flex justify-content-end">
+          <Dropdown isOpen={dropdownOpen} toggle={toggle} className="ml-auto">
+            <DropdownToggle caret>Principal</DropdownToggle>
+            <DropdownMenu>
+              {/* <DropdownItem header>Header</DropdownItem> */}
+              <DropdownItem>Principal</DropdownItem>
+              <DropdownItem>AP</DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        </div>
+        <div className="row my-4">
+          <div className="col">
+            <div className="card">
+              <div className="card-body">
+                <div className="row">
+                  <p>1 to 7</p>
+                  <p>Principal</p>
                 </div>
-              </div>
-              <div className="row">
-                <div className="col-md-3 text-center">
-                  <div className="row">
-                    <span className="m-table">HS</span>
-                  </div>
+                <div className="row">
+                  <p>Projected Vacancies</p>
                 </div>
-                <div className="col-md-9 text-center bg-orange">
-                  <span className="m-table"></span>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-md-3 text-center">
-                  <div className="row">
-                    <span className="m-table">MS</span>
-                  </div>
-                </div>
-                <div className="col-md-9 text-center bg-orange">
-                  <span className="m-table">1</span>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-md-3 text-center">
-                  <div className="row">
-                    <span className="m-table">ES</span>
-                  </div>
-                </div>
-                <div className="col-md-9 text-center bg-orange">
-                  <span className="m-table">2</span>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-md-3 text-center">
-                  <div className="row">
-                    <span className="m-table">Total</span>
-                  </div>
-                </div>
-                <div className="col-md-9 text-center bg-orange">
-                  <span className="m-table">3</span>
-                </div>
+                <img alt="bars" src="/res/img/img1.png" width="100%" />
               </div>
             </div>
           </div>
-          <div className="row mt-5">
-            <h5>Cause of vacancy past 5 years</h5>          
-            <Bar options={options} data={data} />
+          <div className="col">
+            <div className="card">
+              <div className="card-body">
+                <div className="row">
+                  <p>ES</p>
+                </div>
+                <img alt="bars" src="/res/img/img1.png" width="100%" />
+              </div>
+            </div>
+          </div>
+          <div className="col">
+            <div className="card">
+              <div className="card-body">
+                <div className="row">
+                  <p>MS</p>
+                </div>
+                <img alt="bars" src="/res/img/img1.png" width="100%" />
+              </div>
+            </div>
+          </div>
+          <div className="col">
+            <div className="card">
+              <div className="card-body">
+                <div className="row">                  
+                  <p>HS</p>
+                </div>
+                <img alt="bars" src="" width="100%" />
+              </div>
+            </div>
           </div>
         </div>
       </div>
-
-      <Table className="mt-4">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Campus</th>
-            <th>Name</th>
-            <th>Campus Rating</th>
-            <th>Leave Date</th>
-            <th>Gender</th>
-            <th>Race</th>
-            <th>Performance Rating</th>
-          </tr>
-        </thead>
-        <tbody>
-          {/* <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>@mdo</td>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>@mdo</td>
-            <td>@mdo</td>
-          </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>Jacob</td>
-            <td>Thornton</td>
-            <td>@fat</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td>Larry</td>
-            <td>the Bird</td>
-            <td>@twitter</td>
-          </tr> */}
-        </tbody>
-      </Table>
-
-
-
-      <div>
-        {/* <a className="selected-filters-clear mx-3" onClick={() => exportResults()}>Export Results</a> */}
-      </div>
-      {/* <Button className="selected-filters-clear mx-3" onClick={() => exportResults()}>Export Results</Button> */}
+      <Row>        
+        <Col md="12">
+          <AditionalRiskFactors></AditionalRiskFactors>
+          <WhoHasLeft></WhoHasLeft>
+        </Col>
+      </Row>
     </div>
   );
 };
