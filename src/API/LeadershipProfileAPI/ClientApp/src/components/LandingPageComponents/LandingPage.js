@@ -68,8 +68,9 @@ const LandingPage = () => {
                 Examine the current pool of staff and consider who might be
                 ready or have high-potential to fill upcoming vacancies
               </CardText>
-              <Button>Go >></Button>
-            </Card>
+              <Link to={"/identify-leaders"}>
+                <Button className="w-100">Go >></Button>
+              </Link>            </Card>
           </Col>
           <Col sm="3">
             <Card body>

@@ -32,6 +32,142 @@ namespace LeadershipProfileAPI.Data
         /// <param name="currentPage">When paginating the data, which page of data should be returned</param>
         /// <param name="pageSize">The number of records returned in the result</param>
         /// <returns></returns>
+        // public Task<List<StaffSearch>> GetVacancyProjectionAsync(ProfileVacancyProjectionRequestBody body,
+        //     string sortBy = "asc", string sortField = "name", int currentPage = 1, int pageSize = 10)
+        // {
+        //     // Map the UI sorted field name to a table field name
+        //     var fieldMapping = new Dictionary<string, string>
+        //     {
+        //         {"id", "StaffUniqueId"},
+        //         {"name", "LastSurName"},
+        //         {"yearsOfService", "YearsOfService"},
+        //         {"position", "Assignment"},
+        //         {"highestDegree", "Degree"},
+        //         // {"highestDegree", "Degree"},
+        //         {"school", "Institution"},
+        //     };
+
+        //     // Add the 'name' value as sql parameter to avoid SQL injection from raw text
+        //     var name = new SqlParameter("name", body?.Name ?? string.Empty);
+
+        //     // Implement the view in SQL, call it here
+        //     var sql = $@"
+        //         select 
+        //              DISTINCT(s.StaffUSI)
+        //             ,StaffUniqueId
+        //             ,FirstName
+        //             ,MiddleName
+        //             ,LastSurname
+        //             ,FullName
+        //             ,YearsOfService
+        //             ,Assignment
+        //             ,Institution
+        //             ,Degree
+        //             ,Email
+        //             ,Telephone
+        //         from edfi.vw_StaffSearch s
+        //         {ClauseRatingsConditionalJoin(body)}
+        //         {ClauseConditions(body)}
+        //         order by {fieldMapping[sortField]} {sortBy}
+        //      ";
+        //         // offset {(currentPage - 1) * pageSize} rows
+        //         // fetch next {pageSize} rows only
+
+        //         //If you passed pageSize 0 then won't apply pagination
+        //     if (currentPage != 0) { 
+        //         sql += $@"
+        //         offset {(currentPage - 1) * pageSize} rows
+        //         fetch next {pageSize} rows only
+        //         ";
+        //     }
+        //     return _edfiDbContext.StaffSearches.FromSqlRaw(sql, name).ToListAsync();
+        // }
+
+        /// <summary>
+        /// Method sends raw SQL to the database and returns a queryable, paginated, collection of Staff records
+        /// matching the criteria and sorted by a field and direction
+        /// </summary>
+        /// <param name="body">Query parameters from the request body</param>
+        /// <param name="sortBy">Direction to sort the data</param>
+        /// <param name="sortField">Field to sort data on</param>
+        /// <param name="currentPage">When paginating the data, which page of data should be returned</param>
+        /// <param name="pageSize">The number of records returned in the result</param>
+        /// <returns></returns>
+        public Task<List<LeaderSearch>> GetLeaderSearchResultsAsync(int[] Roles)
+        {
+            // Map the UI sorted field name to a table field name
+            var fieldMapping = new Dictionary<string, string>
+            {
+                {"id", "StaffUniqueId"},
+                {"name", "LastSurName"},
+                {"yearsOfService", "YearsOfService"},
+                {"position", "Assignment"},
+                {"highestDegree", "Degree"},
+                // {"highestDegree", "Degree"},
+                {"school", "Institution"},
+            };
+
+            // Add the 'name' value as sql parameter to avoid SQL injection from raw text
+            string roles = System.String.Join(",", Roles);
+            var name = new SqlParameter("roles", roles);
+
+            // Implement the view in SQL, call it here
+            var whereClause = "";
+            // if (!Roles.Any(r => r == "0") && !Roles.Any(r => r == "1")) {
+                // whereClause
+            // }
+            if (!Roles.Any(r => r == 1)) {
+                whereClause = "WHERE [PositionTitle] NOT LIKE '%ASSIS%'";
+            }
+            if (!Roles.Any(r => r == 2)) {
+                whereClause = "WHERE [PositionTitle] LIKE '%ASSIS%'";
+            }            
+            var sql = $@"
+                select TOP 10
+                     
+                    *
+                from dbo.[vw_StaffVacancy] s
+                
+                {whereClause}
+                order by s.SchoolYear
+             ";
+            return _edfiDbContext.LeaderSearches.FromSqlRaw(sql, name).ToListAsync();
+        }
+
+
+        /// <summary>
+        /// Method sends raw SQL to the database and returns a queryable, paginated, collection of Staff records
+        /// matching the criteria and sorted by a field and direction
+        /// </summary>
+        /// <param name="body">Query parameters from the request body</param>
+        /// <param name="sortBy">Direction to sort the data</param>
+        /// <param name="sortField">Field to sort data on</param>
+        /// <param name="currentPage">When paginating the data, which page of data should be returned</param>
+        /// <param name="pageSize">The number of records returned in the result</param>
+        /// <returns></returns>
+        public Task<List<StaffVacancy>> GetVacancyProjectionResultsAsync(string Role)
+        {
+            
+            // Add the 'name' value as sql parameter to avoid SQL injection from raw text
+            var name = new SqlParameter("role", Role ?? string.Empty);
+
+            // Implement the view in SQL, call it here
+            var whereClause = Role != null ?                  
+                "WHERE [PositionTitle] " 
+                + (Role == "Principal" ? "NOT " : "") 
+                + "LIKE '%ASSIS%'" : "";
+                // DISTINCT(s.[Full Name Annon]),
+            var sql = $@"
+                select                 
+                    *
+                from dbo.[vw_StaffVacancy] s
+                {whereClause}
+                order by s.SchoolYear                
+             ";
+            //  from dbo.[vw_StaffVacancy] s
+            return _edfiDbContext.StaffVacancies.FromSqlRaw(sql, name).ToListAsync();
+        }
+
         public Task<List<StaffSearch>> GetSearchResultsAsync(ProfileSearchRequestBody body,
             string sortBy = "asc", string sortField = "name", int currentPage = 1, int pageSize = 10)
         {

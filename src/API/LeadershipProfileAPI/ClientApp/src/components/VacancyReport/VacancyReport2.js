@@ -65,7 +65,7 @@ export const data = {
   datasets: [
     {
       label: "Vacancy",
-      data: [16, 24, 11, 49],
+      data: [16, 24, 11, 17],
       backgroundColor: "rgba(63, 191, 127, 0.5)",
     }
   ],

@@ -21,6 +21,8 @@ namespace LeadershipProfileAPI.Data
         public DbSet<ProfileEvaluationElement> ProfileEvaluationElements { get; set; }
         public DbSet<StaffProfessionalDevelopment> StaffProfessionalDevelopments { get; set; }
         public DbSet<StaffSearch> StaffSearches { get; set; }
+        public DbSet<StaffVacancy> StaffVacancies { get; set; }
+        public DbSet<LeaderSearch> LeaderSearches { get; set; }
         public DbSet<ListItemAssignment> ListItemAssignments { get; set; }
         public DbSet<ListItemCategory> ListItemCategories { get; set; }
         public DbSet<ListItemDegree> ListItemDegrees { get; set; }

@@ -14,6 +14,7 @@ import Directory from './components/DirectoryComponents/Directory';
 import VacancyReport from './components/VacancyReport/VacancyReport';
 import VacancyReportDetails from './components/VacancyReportDetails/VacancyReportDetails';
 import LandingPage from './components/LandingPageComponents/LandingPage';
+import IdentifyLeaders from './components/IdentifyLeaders/IdentifyLeaders';
 import Profile from './components/ProfileComponents/Profile';
 import Registration from './components/LoginComponents/Registration';
 import AuthService from './utils/auth-service';
@@ -48,6 +49,7 @@ function App() {
                 <Route exact path="/account/register" component={Registration} />         
                 <Route exact path="/vacancy-report" component={VacancyReport} />         
                 <Route exact path="/vacancy-report-detail" component={VacancyReportDetails} />         
+                <Route exact path="/identify-leaders" component={IdentifyLeaders} />         
                 <Route exact path="/account/forgotpassword" component={ForgotPassword} />
                 <Route exact path="/account/resetpassword" component={ResetPassword} />
           </div>
