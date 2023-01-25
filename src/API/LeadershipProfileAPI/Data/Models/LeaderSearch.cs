@@ -29,6 +29,7 @@ namespace LeadershipProfileAPI.Data.Models
         public string Race { get; set; }
         public string TRSYrs { get; set; }
         public string RetElig { get; set; }
+        public Double OverallScore { get; set; }
         public Double Domain1 { get; set; }
         public Double Domain2 { get; set; }
         public Double Domain3 { get; set; }

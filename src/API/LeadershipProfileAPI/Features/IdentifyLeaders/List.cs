@@ -18,6 +18,10 @@ namespace LeadershipProfileAPI.Features.IdentifyLeaders
         public class Query : IRequest<Response>
         {
             public int[] Roles { get; set; }
+            public int[] SchoolLevels { get; set; }
+            public int[] HighestDegrees { get; set; }
+            public int[] HasCertification { get; set; }
+            public int[] OverallScore { get; set; }
             // public int? Page { get; set; }
             // public string SortField { get; set; }
             // public string SortBy { get; set; }
@@ -63,7 +67,13 @@ namespace LeadershipProfileAPI.Features.IdentifyLeaders
             public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
             {
                 const int pageSize = 10;
-                var results = await _dbQueryData.GetLeaderSearchResultsAsync(request.Roles);
+                var results = await _dbQueryData.GetLeaderSearchResultsAsync(
+                    request.Roles,
+                    request.SchoolLevels,
+                    request.HighestDegrees,
+                    request.HasCertification,
+                    request.OverallScore
+                );
 
                 // var list = results.AsQueryable()
                 //     .ProjectTo<SearchResult>(_mapper.ConfigurationProvider)

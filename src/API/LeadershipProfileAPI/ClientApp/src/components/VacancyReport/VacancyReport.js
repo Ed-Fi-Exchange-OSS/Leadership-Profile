@@ -127,6 +127,7 @@ const VacancyReport = () => {
     selectedRole,
     setSelectedRole,
     lineChartData1,
+    projectedVacancy,
     lineChartOptions,
     selectedSchoolLevel,
     setSelectedSchoolLevel
@@ -210,14 +211,16 @@ const VacancyReport = () => {
               <div className="card-body">
                 <div className="row">
                   <h5 className="color left-title">
-                    <span className="color bold-text yellow-color mr-1">
-                      {" "}
-                      1 to 7{" "}
-                    </span>
-                    { selectedRole ?? ""}
+                    {/* <span className="color bold-text yellow-color mr-1"> */}
+                        All campuses
+                    {/* </span> */}
+                    {/* { selectedRole ?? ""} */}
                   </h5>
-                  <h5 className="left-title bold-text yellow-color">
-                    Projected Vacancies
+                  <h5 className="color left-title">
+                    5-Year Average: {" "}
+                    <span className="color bold-text yellow-color mr-1">
+                      {projectedVacancy} Projected Vacancies
+                    </span>
                   </h5>
                 </div>
                 <div className="row">
@@ -236,7 +239,6 @@ const VacancyReport = () => {
                   </h5>
                 </div>
                 <div className="row">
-                  {/* <img alt="bars" src="/res/img/img1.png" width="100%" /> */}
                   <Line options={options} data={lineChartData2} />
                 </div>
               </div>
@@ -248,6 +250,21 @@ const VacancyReport = () => {
                 <div className="row">
                   <h5 className="left-title">
                     MS                    
+                  </h5>
+                </div>
+                <div className="row">
+                  {/* <img alt="bars" src="/res/img/img1.png" width="100%" /> */}
+                  <Line options={options} data={lineChartData3} />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-4" style={{cursor: "pointer"}} onClick={() => setSelectedSchoolLevel(3)}>
+            <div className={selectedSchoolLevel == 3 ? "card p-3 yellow-border" : "card p-3"}>
+              <div className="card-body">
+                <div className="row">
+                  <h5 className="left-title">
+                    HS                    
                   </h5>
                 </div>
                 <div className="row">
@@ -280,10 +297,10 @@ const VacancyReport = () => {
                     <th>Name</th>
                     <th>School</th>
                     <th>Level</th>
+                    <th>Vacancy Cause</th>
                     <th>Departure Date</th>
                     <th>Gender</th>
                     <th>Race</th>
-                    <th>Vacancy Cause</th>
                     {/* <th>Retirement reason</th> */}
                   </tr>
                 </thead>
@@ -299,10 +316,10 @@ const VacancyReport = () => {
                         </td>
                         <td>{element.schoolNameAnnon}</td>
                         <td>{element.schoolLevel}</td>
+                        <td>{element.vacancyCause}</td>
                         <td>{element.schoolYear}</td>
                         <td>{element.gender}</td>
                         <td>{element.race}</td>
-                        <td>{element.vacancyCause}</td>
                         <td></td>
                         {/* <td>@mdo</td> */}
                       </tr>
@@ -323,6 +340,18 @@ const VacancyReport = () => {
           { data && (
             <WhoHasLeft data={data}></WhoHasLeft>
           )}
+        </Col>
+      </Row>
+      <Row>
+        <Col md={10}>
+          <Link to={"/vacancy-report"}>
+            {'<<'} Forecast Vacancies
+          </Link>
+        </Col>
+        <Col md={2}>
+          <Link to={"/identify-leaders"}>
+            Develop Leaders {'>>'}
+          </Link>
         </Col>
       </Row>
     </div>

@@ -119,15 +119,15 @@ const LeadersCharts = () => {
   return (
     <div className="container flex-container">
         <Row>
-          <Col md="5">
+          {/* <Col md="5">
             <div style={{backgroundColor: 'rgba(237, 234, 238, 1)', padding: "0.5rem"}} className="p-2">
               22 leaders 'ready' for <br></br>
               50 projected vacancies
             </div>
-          </Col>
-          <Col md="7">
-            <p>Total Assistant Principals Selected</p>            
-            <p> 22 Total in Role Selected</p>
+          </Col> */}
+          <Col md="12">
+            {/* <p>Total Assistant Principals Selected</p>            
+            <p> 22 Total in Role Selected</p> */}
 
             <div  style={{height: '150px'}}>
               <Bar options={options} data={roleData} />

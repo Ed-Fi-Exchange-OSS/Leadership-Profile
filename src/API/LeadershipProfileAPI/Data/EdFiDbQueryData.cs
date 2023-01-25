@@ -93,7 +93,7 @@ namespace LeadershipProfileAPI.Data
         /// <param name="currentPage">When paginating the data, which page of data should be returned</param>
         /// <param name="pageSize">The number of records returned in the result</param>
         /// <returns></returns>
-        public Task<List<LeaderSearch>> GetLeaderSearchResultsAsync(int[] Roles)
+        public Task<List<LeaderSearch>> GetLeaderSearchResultsAsync(int[] Roles, int[] SchoolLevels, int[] HighestDegrees, int[] HasCertification, int[] OverallScore)
         {
             // Map the UI sorted field name to a table field name
             var fieldMapping = new Dictionary<string, string>
@@ -112,26 +112,81 @@ namespace LeadershipProfileAPI.Data
             var name = new SqlParameter("roles", roles);
 
             // Implement the view in SQL, call it here
-            var whereClause = "";
-            // if (!Roles.Any(r => r == "0") && !Roles.Any(r => r == "1")) {
-                // whereClause
-            // }
-            if (!Roles.Any(r => r == 1)) {
-                whereClause = "WHERE [PositionTitle] NOT LIKE '%ASSIS%'";
-            }
-            if (!Roles.Any(r => r == 2)) {
-                whereClause = "WHERE [PositionTitle] LIKE '%ASSIS%'";
-            }            
+
             var sql = $@"
                 select TOP 10
                      
                     *
                 from dbo.[vw_StaffVacancy] s
                 
-                {whereClause}
+                {LeadersClauseConditions(Roles, SchoolLevels, HighestDegrees, HasCertification, OverallScore)}
                 order by s.SchoolYear
              ";
             return _edfiDbContext.LeaderSearches.FromSqlRaw(sql, name).ToListAsync();
+        }
+
+        private static string LeadersClauseConditions(int[] Roles, int[] SchoolLevels, int[] HighestDegrees, int[] HasCertification, int[] OverallScore)
+        {
+            // if (body == null) return "--where excluded, no body provided";
+
+            var rolesDictionary = new Dictionary<int, string>();
+
+            rolesDictionary.Add(1, "Principal");
+            rolesDictionary.Add(2, "AP");
+            rolesDictionary.Add(3, "Teacher");
+            rolesDictionary.Add(4, "Teacher Leader");
+            var schoolLevelsDictionary = new Dictionary<int, string>();
+            schoolLevelsDictionary.Add(1, "EL");
+            schoolLevelsDictionary.Add(2, "MS");
+            schoolLevelsDictionary.Add(3, "HS");
+            var degreesDictionary = new Dictionary<int, string>();
+            degreesDictionary.Add(1, "Bachelors");
+            degreesDictionary.Add(2, "Masters");
+            degreesDictionary.Add(3, "Doctorate");
+            var scoreDictionary = new Dictionary<int, string>();
+            scoreDictionary.Add(1, "1");
+            scoreDictionary.Add(2, "2");
+            scoreDictionary.Add(3, "3");
+            scoreDictionary.Add(4, "4");
+            scoreDictionary.Add(5, "5");
+
+            var whereCondition = new[]
+                {
+                    Clause(Roles, rolesDictionary, "PositionTitle"),
+                    Clause(SchoolLevels, schoolLevelsDictionary, "SchoolLevel"),
+                    Clause(OverallScore, scoreDictionary, "OverallScore"),
+                    // Clause(Domain1, scoreDictionary, "Domain1"),
+                    // Clause(Domain2, scoreDictionary, "Domain2"),
+                    // Clause(Domain3, scoreDictionary, "Domain3"),
+                    // Clause(Domain4, scoreDictionary, "Domain4"),
+                    // Clause(Domain5, scoreDictionary, "Domain5")
+                    // Clause(HighestDegrees, degreesDictionary, "PositionTitle"),
+                    // Clause(HasCertification, hasCertificationDictionary, "PositionTitle"),
+                }
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .DefaultIfEmpty(string.Empty)
+                .Aggregate((x, y) => $"{x} and {y}");
+
+            return !string.IsNullOrWhiteSpace(whereCondition)
+                ? $"where {whereCondition}"
+                : "--where excluded, no conditions provided";
+        }
+
+        private static string Clause(int[] clause, Dictionary<int, string> clauseValues, string propertyName)
+        {
+            if (clause != null && clause.Any())
+            {
+                List<string> values = new List<string> { };
+                foreach (KeyValuePair<int, string> entry in clauseValues) {
+                    if (clause.Any(r => r == entry.Key)) values.Add(entry.Value);
+                }
+                // Provide the condition being searched for matching your schema. Example: "(d.DegreeId = 68)"
+                var whereProperty = clause.Any() ? $"{propertyName} in ('{string.Join("','", values)}')" : string.Empty;
+
+                return $"({whereProperty})";
+            }
+
+            return string.Empty;
         }
 
 
@@ -147,16 +202,20 @@ namespace LeadershipProfileAPI.Data
         /// <returns></returns>
         public Task<List<StaffVacancy>> GetVacancyProjectionResultsAsync(string Role)
         {
-            
+
             // Add the 'name' value as sql parameter to avoid SQL injection from raw text
             var name = new SqlParameter("role", Role ?? string.Empty);
 
             // Implement the view in SQL, call it here
-            var whereClause = Role != null ?                  
-                "WHERE [PositionTitle] " 
-                + (Role == "Principal" ? "NOT " : "") 
-                + "LIKE '%ASSIS%'" : "";
-                // DISTINCT(s.[Full Name Annon]),
+            // var whereClause = Role != null ?
+            //     "WHERE [PositionTitle] "
+            //     + (Role == "Principal" ? "NOT " : "")
+            //     + "LIKE '%ASSIS%'" : "";
+                        var whereClause = Role != null ?
+                "WHERE [PositionTitle] = "
+                + (Role == "Principal" ? "'Principal'" : "'AP'")
+                : "";
+            // DISTINCT(s.[Full Name Annon]),
             var sql = $@"
                 select                 
                     *
@@ -206,11 +265,12 @@ namespace LeadershipProfileAPI.Data
                 {ClauseConditions(body)}
                 order by {fieldMapping[sortField]} {sortBy}
              ";
-                // offset {(currentPage - 1) * pageSize} rows
-                // fetch next {pageSize} rows only
+            // offset {(currentPage - 1) * pageSize} rows
+            // fetch next {pageSize} rows only
 
-                //If you passed pageSize 0 then won't apply pagination
-            if (currentPage != 0) { 
+            //If you passed pageSize 0 then won't apply pagination
+            if (currentPage != 0)
+            {
                 sql += $@"
                 offset {(currentPage - 1) * pageSize} rows
                 fetch next {pageSize} rows only
@@ -245,6 +305,8 @@ namespace LeadershipProfileAPI.Data
 
             return $"{joinOnStaff}{onCategory}{andScore}";
         }
+
+
 
         private static string ClauseConditions(ProfileSearchRequestBody body)
         {

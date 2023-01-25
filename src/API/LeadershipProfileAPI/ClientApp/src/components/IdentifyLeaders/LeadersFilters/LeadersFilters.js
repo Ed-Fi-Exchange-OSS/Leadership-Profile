@@ -31,27 +31,37 @@ class LeadersFilters extends Component {
     super(props);    
 
     this.state = {
-      roles: [1,2,3],
-      schoolLevels: [],
-      highestDegree: [],
-      hasPrinciple: [],
+      roles: [1,2,3,4],
+      schoolLevels: [1, 2, 3],
+      highestDegrees: [1, 2, 3],
+      hasCertification: [1, 2],
+      overallScore: [1,2,3,4,5]
     };
 
     this.onCheckboxBtnClick = this.onCheckboxBtnClick.bind(this);
   }
 
-  onSliderUpdateHandler = () => {
+  onSliderUpdateHandler = (data, property) => {
+    // this.props.onFiltersValueChange(this.state);
+    console.log(data);
+    var newValue = [];
+    for(var i = parseInt(data[0]); i <= parseInt(data[1]); i++) {
+      if (i != 0) newValue.push(i);
+    }
+    this.state[property] = newValue;
     this.props.onFiltersValueChange(this.state);
   }
 
-  onCheckboxBtnClick = (selected) => {
-    const index = this.state.roles.indexOf(selected);
+  onCheckboxBtnClick = (filter, value) => {
+    const index = this.state[filter].indexOf(value);
     if (index < 0) {
-      this.state.roles.push(selected);
+      this.state[filter].push(value);
     } else {
-      this.state.roles.splice(index, 1);
+      this.state[filter].splice(index, 1);
     }
-    this.setState({ roles: [...this.state.roles] });
+    let newState = {};
+    newState[filter] =  this.state[filter];
+    this.setState(newState);
     console.log("Firing data fetch with: ", this.state);
     this.props.onFiltersValueChange(this.state);
   };
@@ -64,7 +74,7 @@ class LeadersFilters extends Component {
           <Col md="6" className="px-4">
           <FormGroup row className="d-block">
               <Col md="12">
-                <label>Average T-PESS Score</label>
+                <label>Average Score</label>
               </Col>
               <Col>
                 {/* <Nouislider range={{ min: 0, max: 100 }} start={[20, 80]} connect /> */}
@@ -80,7 +90,7 @@ class LeadersFilters extends Component {
                     min: 0,
                     max: 5,
                   }}
-                  onUpdate={() => this.onSliderUpdateHandler()}
+                  onUpdate={(data) => this.onSliderUpdateHandler(data, 'overallScore')}
                   pips= {{
                     mode: 'steps',
                     stepped: true,
@@ -91,34 +101,7 @@ class LeadersFilters extends Component {
             </FormGroup>
             <FormGroup row className="d-block">
               <Col md="12">
-                <label>Domain 1: Strong School Leadership and Planning</label>
-              </Col>
-              <Col>
-                {/* <Nouislider range={{ min: 0, max: 100 }} start={[20, 80]} connect /> */}
-                <Nouislider
-                  // key={item}
-                  // id={item}
-                  start={[0, 5]}
-                  step={1}
-                  connect={true}
-                  // connect={[true, false]}
-                  // orientation="vertical"
-                  range={{
-                    min: 0,
-                    max: 5,
-                  }}
-                  pips= {{
-                    mode: 'steps',
-                    stepped: true,
-                    density: 20
-                  }}
-                  // onUpdate={this.onUpdate(index)}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup row className="d-block">
-              <Col md="12">
-                <label>Domain 2: Effective Well-Supported Teachers</label>
+                <label>Domain 1</label>
               </Col>
               <Col>
                 {/* <Nouislider range={{ min: 0, max: 100 }} start={[20, 80]} connect /> */}
@@ -145,7 +128,34 @@ class LeadersFilters extends Component {
             </FormGroup>
             <FormGroup row className="d-block">
               <Col md="12">
-                <label>Domain 3: Positive School Culture</label>
+                <label>Domain 2</label>
+              </Col>
+              <Col>
+                {/* <Nouislider range={{ min: 0, max: 100 }} start={[20, 80]} connect /> */}
+                <Nouislider
+                  // key={item}
+                  // id={item}
+                  start={[0, 5]}
+                  step={1}
+                  connect={true}
+                  // connect={[true, false]}
+                  // orientation="vertical"
+                  range={{
+                    min: 0,
+                    max: 5,
+                  }}
+                  pips= {{
+                    mode: 'steps',
+                    stepped: true,
+                    density: 20
+                  }}
+                  // onUpdate={this.onUpdate(index)}
+                />
+              </Col>
+            </FormGroup>
+            <FormGroup row className="d-block">
+              <Col md="12">
+                <label>Domain 3</label>
               </Col>
               <Col>
                 {/* <Nouislider range={{ min: 0, max: 100 }} start={[20, 80]} connect /> */}
@@ -223,7 +233,7 @@ class LeadersFilters extends Component {
                   <Button
                     size="sm"
                     color="primary"
-                    onClick={() => this.onCheckboxBtnClick(1)}
+                    onClick={() => this.onCheckboxBtnClick('roles', 1)}
                     active={this.state.roles.includes(1)}
                     className="mx-1"
                   >
@@ -232,7 +242,7 @@ class LeadersFilters extends Component {
                   <Button
                     size="sm"
                     color="primary"
-                    onClick={() => this.onCheckboxBtnClick(2)}
+                    onClick={() => this.onCheckboxBtnClick('roles', 2)}
                     active={this.state.roles.includes(2)}
                     className="mx-1"
                   >
@@ -241,11 +251,20 @@ class LeadersFilters extends Component {
                   <Button
                     size="sm"
                     color="primary"
-                    onClick={() => this.onCheckboxBtnClick(3)}
+                    onClick={() => this.onCheckboxBtnClick('roles', 3)}
                     active={this.state.roles.includes(3)}
                     className="mx-1"
                   >
                     Teacher
+                  </Button>
+                  <Button
+                    size="sm"
+                    color="primary"
+                    onClick={() => this.onCheckboxBtnClick('roles', 4)}
+                    active={this.state.roles.includes(4)}
+                    className="mx-1 mt-1"
+                  >
+                    Teacher Leader
                   </Button>
                 </Row>
               </Col>
@@ -259,7 +278,7 @@ class LeadersFilters extends Component {
                   <Button
                     size="sm"
                     color="primary"
-                    onClick={() => this.onCheckboxBtnClick(1)}
+                    onClick={() => this.onCheckboxBtnClick('schoolLevels', 1)}
                     active={this.state.schoolLevels.includes(1)}
                     className="mx-1"
                   >
@@ -268,7 +287,7 @@ class LeadersFilters extends Component {
                   <Button
                     size="sm"
                     color="primary"
-                    onClick={() => this.onCheckboxBtnClick(2)}
+                    onClick={() => this.onCheckboxBtnClick('schoolLevels', 2)}
                     active={this.state.schoolLevels.includes(2)}
                     className="mx-1"
                   >
@@ -277,7 +296,7 @@ class LeadersFilters extends Component {
                   <Button
                     size="sm"
                     color="primary"
-                    onClick={() => this.onCheckboxBtnClick(3)}
+                    onClick={() => this.onCheckboxBtnClick('schoolLevels', 3)}
                     active={this.state.schoolLevels.includes(3)}
                     className="mx-1"
                   >
@@ -295,8 +314,8 @@ class LeadersFilters extends Component {
                   <Button
                     size="sm"
                     color="primary"
-                    onClick={() => this.onCheckboxBtnClick(1)}
-                    active={this.state.highestDegree.includes(1)}
+                    onClick={() => this.onCheckboxBtnClick('highestDegrees', 1)}
+                    active={this.state.highestDegrees.includes(1)}
                     className="mx-1"
                   >
                     Bachelors
@@ -304,8 +323,8 @@ class LeadersFilters extends Component {
                   <Button
                     size="sm"
                     color="primary"
-                    onClick={() => this.onCheckboxBtnClick(2)}
-                    active={this.state.highestDegree.includes(2)}
+                    onClick={() => this.onCheckboxBtnClick('highestDegrees', 2)}
+                    active={this.state.highestDegrees.includes(2)}
                     className="mx-1"
                   >
                     Masters
@@ -313,8 +332,8 @@ class LeadersFilters extends Component {
                   <Button
                     size="sm"
                     color="primary"
-                    onClick={() => this.onCheckboxBtnClick(3)}
-                    active={this.state.highestDegree.includes(3)}
+                    onClick={() => this.onCheckboxBtnClick('highestDegrees', 3)}
+                    active={this.state.highestDegrees.includes(3)}
                     className="mx-1"
                   >
                     Doctorate
@@ -331,8 +350,8 @@ class LeadersFilters extends Component {
                   <Button
                     size="sm"
                     color="primary"
-                    onClick={() => this.onCheckboxBtnClick(1)}
-                    active={this.state.hasPrinciple.includes(1)}
+                    onClick={() => this.onCheckboxBtnClick('hasCertification', 1)}
+                    active={this.state.hasCertification.includes(1)}
                     className="mx-1"
                   >
                     Yes
@@ -340,8 +359,8 @@ class LeadersFilters extends Component {
                   <Button
                     size="sm"
                     color="primary"
-                    onClick={() => this.onCheckboxBtnClick(2)}
-                    active={this.state.hasPrinciple.includes(2)}
+                    onClick={() => this.onCheckboxBtnClick('hasCertification', 2)}
+                    active={this.state.hasCertification.includes(2)}
                     className="mx-1"
                   >
                     No

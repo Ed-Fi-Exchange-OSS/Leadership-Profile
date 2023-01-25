@@ -58,6 +58,7 @@ function UseVacancyReport() {
       },
     ],
   });
+  const [projectedVacancy, setProjectedVacancy] = useState(0);
 
   let defaultOrFilteredConfig = API_CONFIG("GET");
 
@@ -108,6 +109,12 @@ function UseVacancyReport() {
             }
           }
 
+          setProjectedVacancy(Math.round([
+            vacancyCount.reduce(
+              (total, count) => total + count,
+              0 //add all years vacancies and stuff
+            ) / vacancyCount.length, // divide it by all years count
+          ]));
           var dataObject = vacancyCount.concat(
             Math.round([
               vacancyCount.reduce(
@@ -160,9 +167,10 @@ function UseVacancyReport() {
     selectedRole,
     setSelectedRole,
     lineChartData1,
+    projectedVacancy,
     lineChartOptions,
     selectedSchoolLevel,
-    setSelectedSchoolLevel
+    setSelectedSchoolLevel,    
   };
 }
 

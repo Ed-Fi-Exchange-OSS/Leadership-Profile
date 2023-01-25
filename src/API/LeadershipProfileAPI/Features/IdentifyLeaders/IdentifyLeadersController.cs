@@ -33,7 +33,11 @@ namespace LeadershipProfileAPI.Features.IdentifyLeaders
             var result = await _mediator.Send(
                 new List.Query
                 {
-                    Roles = body.Roles
+                    Roles = body.Roles,
+                    SchoolLevels = body.SchoolLevels,
+                    HighestDegrees = body.HighestDegrees,
+                    HasCertification = body.HasCertification,
+                    OverallScore = body.OverallScore
                 },
                 cancellationToken);
 

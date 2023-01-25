@@ -57,7 +57,8 @@ const LeadersTable = ({ data }) => {
                   <td>{staff.schoolNameAnnon}</td>
                   <td>
                     {/* <Link to={`profile/${207221}`} target="_blank"> */}
-                    <Link to={`profile/${207221}`}>{staff.fullNameAnnon}</Link>
+                    {/* <Link to={`profile/${207221}`}>{staff.fullNameAnnon}</Link> */}
+                    <Link to={`profile/${207221}`} target="_blank" rel="noopener noreferrer">{staff.fullNameAnnon}</Link>
                   </td>
                   <td>{staff.gender}</td>
                   <td>{staff.race}</td>
