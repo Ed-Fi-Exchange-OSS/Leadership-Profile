@@ -5,6 +5,8 @@ function UseWhoHasLeft(data) {
     const [ pieChartData, setPieChartData] = useState(null);
     const [ raceChartData, setRaceChartData] = useState(null);
     const [ genderChartData, setGenderChartData] = useState(null);
+    const [ mainNumber, setMainNumber] = useState(0);
+    const [ mainReason, setMainReason] = useState("");
     
     // var races = [
     //   "Other",
@@ -22,10 +24,10 @@ function UseWhoHasLeft(data) {
     ];
     var races = [
       "2orMore",
-      "A",
-      "AA",
-      "W",
-      "H",
+      "Asian",
+      "African American",
+      "White",
+      "Hispanic",
     ];
     const genders = ["M", "F"];
    
@@ -48,6 +50,15 @@ function UseWhoHasLeft(data) {
   
       const vacancyGroupedByCause = groupByCause(data);
       var pieChartCount = [];
+      var results = [0, ""];
+      causes.forEach(item => {
+        if (vacancyGroupedByCause[item].length > results[0]) {
+          results[0]= vacancyGroupedByCause[item].length;
+          results[1] = item;
+        }
+      });
+      setMainNumber(results[0]);
+      setMainReason(results[1]);
       causes.forEach(c => pieChartCount.push(vacancyGroupedByCause[c] ? vacancyGroupedByCause[c].length : 0));
       setPieChartData({
         labels: causes,
@@ -79,17 +90,17 @@ function UseWhoHasLeft(data) {
         labels: races,
         datasets: [
           {
-            label: "",
-            data: raceChartCount,
-            borderColor: "rgb(255, 99, 132)",
-            backgroundColor: "rgba(255, 99, 132, 0.5)",
-          },
-          {
-            label: "",
+            label: "Male",
             data: [1, 4, 2, 5, 7],
             borderColor: "rgb(53, 162, 235)",
             backgroundColor: "rgba(53, 162, 235, 0.5)",
           },
+          {
+            label: "Female",
+            data: raceChartCount,
+            borderColor: "rgb(255, 99, 132)",
+            backgroundColor: "rgba(255, 99, 132, 0.5)",
+          },          
         ],
       });
 
@@ -121,6 +132,8 @@ function UseWhoHasLeft(data) {
       pieChartData,
       raceChartData,
       genderChartData,
+      mainNumber,
+      mainReason
     };
 
 }

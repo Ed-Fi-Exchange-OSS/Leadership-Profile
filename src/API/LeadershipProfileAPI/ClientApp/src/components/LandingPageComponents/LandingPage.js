@@ -47,7 +47,7 @@ const LandingPage = () => {
         <Row className="cards-container mt-4 mx-auto ">
           <Col sm="3">
             <Card body>
-              <CardTitle tag="h5" className="mx-auto">
+              <CardTitle tag="h5" className="text-center">
                 Forecast Vacancies
               </CardTitle>
               <CardText className="h-200">
@@ -61,7 +61,7 @@ const LandingPage = () => {
           </Col>
           <Col sm="3">
             <Card body>
-              <CardTitle tag="h5" className="mx-auto">
+              <CardTitle tag="h5" className="text-center">
                 Identify Leaders
               </CardTitle>
               <CardText className="h-200">
@@ -74,7 +74,7 @@ const LandingPage = () => {
           </Col>
           <Col sm="3">
             <Card body>
-              <CardTitle tag="h5" className="mx-auto">
+              <CardTitle tag="h5" className="text-center">
                 Develop Leaders
               </CardTitle>
               <CardText className="h-200">
@@ -87,7 +87,7 @@ const LandingPage = () => {
           </Col>
           <Col sm="3">
             <Card body>
-              <CardTitle tag="h5" className="mx-auto">
+              <CardTitle tag="h5" className="text-center">
                 Select Leaders
               </CardTitle>
               <CardText className="h-200">

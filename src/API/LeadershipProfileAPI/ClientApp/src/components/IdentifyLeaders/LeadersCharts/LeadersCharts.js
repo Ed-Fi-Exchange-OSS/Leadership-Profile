@@ -126,21 +126,20 @@ const LeadersCharts = () => {
             </div>
           </Col> */}
           <Col md="12">
-            {/* <p>Total Assistant Principals Selected</p>            
-            <p> 22 Total in Role Selected</p> */}
+            <p>{0} Total Candidates Selected</p>
 
-            <div  style={{height: '150px'}}>
+            <div  style={{height: '250px'}}>
               <Bar options={options} data={roleData} />
             </div>
           </Col>
         </Row>
         <Row>
-          <Col style={{height: '180px'}}>
+          <Col style={{height: '250px'}}>
             <Bar options={options} data={raceData} />            
           </Col>          
         </Row>
         <Row>
-          <Col style={{height: '180px'}}>
+          <Col style={{height: '250px'}}>
             <Bar options={options} data={genderData} />            
           </Col>          
         </Row>

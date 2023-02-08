@@ -36,16 +36,17 @@ const LeadersTable = ({ data }) => {
             <th>#</th>
             <th>School Level</th>
             <th>School name</th>
+            <th>Role</th>
             <th>Full Name</th>
-            <th>Gender</th>
-            <th>Race/Ethnicity</th>
             <th>Tot Yrs Exp</th>
             <th>Average T-PESS Score</th>
-            <th>Domain 1: Strong School Leadership and Planning</th>
-            <th>Domain 2: Effective Well-Supported Teachers</th>
-            <th>Domain 3: Positive School Culture</th>
-            <th>Domain 4: High Quality Curriculum</th>
-            <th>Domain 5: Effective Instruction</th>
+            <th>Domain 1</th>
+            <th>Domain 2</th>
+            <th>Domain 3</th>
+            <th>Domain 4</th>
+            <th>Domain 5</th>
+            <th>Gender</th>
+            <th>Race/Ethnicity</th>
           </tr>
         </thead>
         <tbody>
@@ -55,13 +56,12 @@ const LeadersTable = ({ data }) => {
                   <th scope="row">{i + 1}</th>
                   <td>{staff.schoolLevel}</td>
                   <td>{staff.schoolNameAnnon}</td>
+                  <td>{staff.positionTitle}</td>
                   <td>
                     {/* <Link to={`profile/${207221}`} target="_blank"> */}
                     {/* <Link to={`profile/${207221}`}>{staff.fullNameAnnon}</Link> */}
                     <Link to={`profile/${207221}`} target="_blank" rel="noopener noreferrer">{staff.fullNameAnnon}</Link>
                   </td>
-                  <td>{staff.gender}</td>
-                  <td>{staff.race}</td>
                   <td>{staff.totYrsExp}</td>
                   <td>{(staff.domain1 + staff.domain2 + staff.domain3 + staff.domain4 + staff.domain5)/5}</td>
                   <td>{staff.domain1}</td>
@@ -69,6 +69,8 @@ const LeadersTable = ({ data }) => {
                   <td>{staff.domain3}</td>
                   <td>{staff.domain4}</td>
                   <td>{staff.domain5}</td>
+                  <td>{staff.gender}</td>
+                  <td>{staff.race}</td>
                   {/* {staff.domainsScore ? staff.domainsScore.map(score => (
 
             <td>{score}</td>

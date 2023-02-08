@@ -140,18 +140,18 @@ const AditionalRiskFactors = ({ data, selectedRole }) => {
               : ""}
           </Col>
         </Row>
-        <h6 className="left-title gray-bold-text">8 Eligible Now</h6>
-        <h6 className="left-title gray-bold-text">0 Eligible in 1-2 Years</h6>
+        <h6 className="left-title gray-bold-text">{eligibleForRetirementData ? eligibleForRetirementData.length : 0} Eligible Now</h6>
+        <h6 className="left-title blue-bold-text">0 Eligible in 1-2 Years</h6>
       </Col>
       <Col md="3" className="mt-3">
-        <h5 className="color left-title">
+        {/* <h5 className="color left-title">
           <span className="color green-bold-text mr-1">
             {" "}
             {currentPerformanceData ? currentPerformanceData.length : 0}{" "}
           </span>
           { selectedRole + "s" ?? "" }
-        </h5>
-        <h5 className="left-title green-bold-text">Current Principal Performance</h5>
+        </h5> */}
+        <h5 className="left-title green-bold-text">Current {selectedRole} Performance</h5>
         <Row className="my-3 retirement-max-height">
           <Col>
             {currentPerformanceData
@@ -187,8 +187,11 @@ const AditionalRiskFactors = ({ data, selectedRole }) => {
               : ""}
           </Col>
         </Row>
-        <h6 className="left-title green-bold-text">6 at Overall Score 1</h6>
-        <h6 className="left-title green-bold-text">14 at Overall Score 2</h6>
+        <h6 className="left-title green-bold-text">{currentPerformanceData ? currentPerformanceData.length : 0} at Overall Score 1</h6>
+        <h6 className="left-title blue-bold-text">{currentPerformanceData ? currentPerformanceData.length : 0} at Overall Score 2</h6>
+        <h6 className="left-title gray-bold-text">{currentPerformanceData ? currentPerformanceData.length : 0} at Overall Score 3</h6>
+        <h6 className="left-title yellow-bold-text">{currentPerformanceData ? currentPerformanceData.length : 0} at Overall Score 4</h6>
+        <h6 className="left-title orange-bold-text">{currentPerformanceData ? currentPerformanceData.length : 0} at Overall Score 5</h6>
       </Col>
     </Row>
   );

@@ -668,6 +668,18 @@ h5{
   color: gray;
   font-weight: bold;
 }
+.blue-bold-text {
+  color: blue;
+  font-weight: bold;
+}
+.yellow-bold-text {
+  color: yellow;
+  font-weight: bold;
+}
+.orange-bold-text {
+  color: orange;
+  font-weight: bold;
+}
 .green-bold-text {
   color: green;
   font-weight: bold;

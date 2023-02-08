@@ -16,7 +16,7 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
-  CloseButton
+  CloseButton,
 } from "reactstrap";
 
 import { Button } from "reactstrap";
@@ -53,35 +53,6 @@ ChartJS.register(
   Legend
 );
 
-export const options = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: "top",
-    },
-    title: {
-      display: true,
-      text: "",
-    },
-  },
-  maintainAspectRatio: true,
-  elements: {
-    point: {
-      radius : customRadius,
-      display: true
-    }
-  }
-};
-
-function customRadius( context )
-{
-  let index = context.dataIndex;
-  let value = context.dataset.data[ index ];
-  return index === 5 ?
-         10 :
-         2;
-}
-
 const labels = [2018, 2019, 2020, 2021, 2022, 2023];
 
 export const lineChartData2 = {
@@ -93,7 +64,7 @@ export const lineChartData2 = {
       borderColor: "rgb(212, 125, 70)",
       backgroundColor: "rgba(212, 125, 70, 0.5)",
     },
-  ], 
+  ],
 };
 
 export const lineChartData3 = {
@@ -126,30 +97,35 @@ const VacancyReport = () => {
     setSelectedVacancyYear,
     selectedRole,
     setSelectedRole,
-    lineChartData1,
+    lineChartData,
     projectedVacancy,
+    elementaryLineChartData,
+    projectedElementaryVacancy,
+    middleLineChartData,
+    projectedMiddleVacancy,
+    highLineChartData,
+    projectedHighVacancy,
     lineChartOptions,
     selectedSchoolLevel,
-    setSelectedSchoolLevel
+    setSelectedSchoolLevel,
   } = UseVacancyReport();
 
-
   const handleRoleSelection = (role) => {
-    if ( role != selectedRole) {
+    if (role != selectedRole) {
       fetchData(role);
       setSelectedRole(role);
     }
-  }
+  };
 
   const getYear = (index) => {
-    return labels[index]
-  }
+    return labels[index];
+  };
 
-  const getFilteredDatabyYear = (year)  => {
-    var result =  data.filter(d => d.schoolYear == year);
+  const getFilteredDatabyYear = (year) => {
+    var result = data.filter((d) => d.schoolYear == year);
     console.log("this are vacancies filtered by year:", year, result);
     return result;
-  }
+  };
 
   var role;
 
@@ -157,35 +133,51 @@ const VacancyReport = () => {
     // fetchData(role);
   });
 
-  
-
   return (
     <div className="container flex-container">
       <div className="row my-4">
-      <div className="col-md-3">
-        <Link to={"/vacancy-report"}>
-          <Button outline color="default" className="yellow-border bold-text w-100 d-flex justify-content-center" >
-            <h5 className="pt-1">Forecast Vacancies</h5>
-          </Button>
+        <div className="col-md-3">
+          <Link to={"/vacancy-report"}>
+            <Button
+              outline
+              color="default"
+              className="yellow-border bold-text w-100 d-flex justify-content-center"
+            >
+              <h5 className="pt-1">Forecast Vacancies</h5>
+            </Button>
           </Link>
         </div>
         <div className="col-md-3">
-        <Link to={"/identify-leaders"}>
-          <Button outline  color="default" className="gray-border bold-text  w-100 d-flex justify-content-center" >
-            <h5 className="pt-1">Identify Leaders</h5>
-          </Button>
+          <Link to={"/identify-leaders"}>
+            <Button
+              outline
+              color="default"
+              className="gray-border bold-text  w-100 d-flex justify-content-center"
+            >
+              <h5 className="pt-1">Identify Leaders</h5>
+            </Button>
           </Link>
         </div>
-        
+
         <div className="col-md-3">
-          <Button outline color="default" className="gray-border bold-text w-100 d-flex justify-content-center" >
+          <Button
+            outline
+            color="default"
+            className="gray-border bold-text w-100 d-flex justify-content-center"
+          >
             <h5 className="pt-1">Develop Leaders</h5>
           </Button>
         </div>
         <div className="col-md-3">
-          <Button outline  color="default" className="gray-border bold-text w-100 d-flex justify-content-center" >
-            <h5 className="pt-1">Select Leaders</h5>
-          </Button>
+          <Link to="/directory?page=1&sortBy=asc&sortField=id">
+            <Button
+              outline
+              color="default"
+              className="gray-border bold-text  w-100 d-flex justify-content-center"
+            >
+              <h5 className="pt-1">Select Leaders</h5>
+            </Button>
+          </Link>
         </div>
       </div>
       <div className="row my-4">
@@ -196,28 +188,46 @@ const VacancyReport = () => {
           <h3 className="fw-bold">Role</h3>
         </div>
         <div className="col-md-3 d-flex justify-content-end">
-          <Dropdown isOpen={dropdownOpen} toggle={toggle} className="ml-1 w-100" >
-            <DropdownToggle caret color="primary" className="w-100">{selectedRole}</DropdownToggle>
+          <Dropdown
+            isOpen={dropdownOpen}
+            toggle={toggle}
+            className="ml-1 w-100"
+          >
+            <DropdownToggle caret color="primary" className="w-100">
+              {selectedRole}
+            </DropdownToggle>
             <DropdownMenu>
               {/* <DropdownItem header>Header</DropdownItem> */}
-              <DropdownItem onClick={() => handleRoleSelection('Principal')}>Principal</DropdownItem>
-              <DropdownItem onClick={() => handleRoleSelection('AP')}>AP</DropdownItem>
+              <DropdownItem onClick={() => handleRoleSelection("Principal")}>
+                Principal
+              </DropdownItem>
+              <DropdownItem onClick={() => handleRoleSelection("AP")}>
+                AP
+              </DropdownItem>
             </DropdownMenu>
           </Dropdown>
         </div>
         <div className="row my-4">
-          <div className="col-md-4" style={{cursor: "pointer"}} onClick={() => setSelectedSchoolLevel(1)}>
-            <div className={selectedSchoolLevel == 1 ? "card p-3 yellow-border" : "card p-3"}>
+          <div
+            className="col-md-4"
+            style={{ cursor: "pointer" }}
+            onClick={() => setSelectedSchoolLevel(1)}
+          >
+            <div
+              className={
+                selectedSchoolLevel == 1 ? "card p-3 yellow-border" : "card p-3"
+              }
+            >
               <div className="card-body">
                 <div className="row">
                   <h5 className="color left-title">
                     {/* <span className="color bold-text yellow-color mr-1"> */}
-                        All campuses
+                    All campuses
                     {/* </span> */}
                     {/* { selectedRole ?? ""} */}
                   </h5>
                   <h5 className="color left-title">
-                    5-Year Average: {" "}
+                    5-Year Average:{" "}
                     <span className="color bold-text yellow-color mr-1">
                       {projectedVacancy} Projected Vacancies
                     </span>
@@ -225,61 +235,127 @@ const VacancyReport = () => {
                 </div>
                 <div className="row">
                   {/* <img alt="bars" src="/res/img/img1.png" width="100%" /> */}
-                  <Line options={lineChartOptions} data={lineChartData1} />
+                  <Line options={lineChartOptions} data={lineChartData} />
                 </div>
               </div>
             </div>
           </div>
-          <div className="col-md-4" style={{cursor: "pointer"}} onClick={() => setSelectedSchoolLevel(2)}>
-            <div className={selectedSchoolLevel == 2 ? "card p-3 yellow-border" : "card p-3"}>
-              <div className="card-body">
-                <div className="row">
-                  <h5 className="left-title">
-                    ES                    
-                  </h5>
+          <div className="col-md-8">
+            <div
+              className="row"
+              style={{
+                overflowX: "auto",
+                witheSpace: "nowrap",
+                flexWrap: "nowrap",
+              }}
+            >
+              <div
+                className="col-md-6 mb-2"
+                style={{ cursor: "pointer" }}
+                onClick={() => setSelectedSchoolLevel(2)}
+              >
+                <div
+                  className={
+                    selectedSchoolLevel == 2
+                      ? "card p-3 yellow-border"
+                      : "card p-3"
+                  }
+                >
+                  <div className="card-body">
+                    <div className="row">
+                      <h5 className="color left-title">
+                        {/* <span className="color bold-text yellow-color mr-1"> */}
+                        Elementary School
+                        {/* </span> */}
+                        {/* { selectedRole ?? ""} */}
+                      </h5>
+                      <h5 className="color left-title">
+                        5-Year Average:{" "}
+                        <span className="color bold-text yellow-color mr-1">
+                          {projectedElementaryVacancy} Projected Vacancies
+                        </span>
+                      </h5>
+                    </div>
+                    <div className="row">
+                      <Line
+                        options={lineChartOptions}
+                        data={elementaryLineChartData}
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div className="row">
-                  <Line options={options} data={lineChartData2} />
+              </div>
+              <div
+                className="col-md-6"
+                style={{ cursor: "pointer" }}
+                onClick={() => setSelectedSchoolLevel(3)}
+              >
+                <div
+                  className={
+                    selectedSchoolLevel == 3
+                      ? "card p-3 yellow-border"
+                      : "card p-3"
+                  }
+                >
+                  <div className="card-body">
+                    <div className="row">
+                      <h5 className="color left-title">Middle School</h5>
+                      <h5 className="color left-title">
+                        5-Year Average:{" "}
+                        <span className="color bold-text yellow-color mr-1">
+                          {projectedMiddleVacancy} Projected Vacancies
+                        </span>
+                      </h5>
+                    </div>
+                    <div className="row">
+                      {/* <img alt="bars" src="/res/img/img1.png" width="100%" /> */}
+                      <Line
+                        options={lineChartOptions}
+                        data={middleLineChartData}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                className="col-md-6"
+                style={{ cursor: "pointer" }}
+                onClick={() => setSelectedSchoolLevel(4)}
+              >
+                <div
+                  className={
+                    selectedSchoolLevel == 4
+                      ? "card p-3 yellow-border"
+                      : "card p-3"
+                  }
+                >
+                  <div className="card-body">
+                    <div className="row">
+                      <h5 className="color left-title">High School</h5>
+                      <h5 className="color left-title">
+                        5-Year Average:{" "}
+                        <span className="color bold-text yellow-color mr-1">
+                          {projectedHighVacancy} Projected Vacancies
+                        </span>
+                      </h5>
+                    </div>
+                    <div className="row">
+                      {/* <img alt="bars" src="/res/img/img1.png" width="100%" /> */}
+                      <Line
+                        options={lineChartOptions}
+                        data={highLineChartData}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="col-md-4" style={{cursor: "pointer"}} onClick={() => setSelectedSchoolLevel(3)}>
-            <div className={selectedSchoolLevel == 3 ? "card p-3 yellow-border" : "card p-3"}>
-              <div className="card-body">
-                <div className="row">
-                  <h5 className="left-title">
-                    MS                    
-                  </h5>
-                </div>
-                <div className="row">
-                  {/* <img alt="bars" src="/res/img/img1.png" width="100%" /> */}
-                  <Line options={options} data={lineChartData3} />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-4" style={{cursor: "pointer"}} onClick={() => setSelectedSchoolLevel(3)}>
-            <div className={selectedSchoolLevel == 3 ? "card p-3 yellow-border" : "card p-3"}>
-              <div className="card-body">
-                <div className="row">
-                  <h5 className="left-title">
-                    HS                    
-                  </h5>
-                </div>
-                <div className="row">
-                  {/* <img alt="bars" src="/res/img/img1.png" width="100%" /> */}
-                  <Line options={options} data={lineChartData3} />
-                </div>
-              </div>
-            </div>
-          </div>
-          
         </div>
       </div>
-      { selectedVacancyYear != null ? (
-        <Row>        
-          <Card className="w-100 mb-4">  
+      {selectedVacancyYear != null ? (
+        <Row>
+          <Card className="w-100 mb-4">
             {/* <CardHeader>
               <Row className="justify-content-between">                
                 <h4 className="mx-2 my-1">Vacancy from {getYear(selectedVacancyYear)} </h4>
@@ -287,9 +363,13 @@ const VacancyReport = () => {
                   onClick={() => setSelectedVacancyYear(null)} />  
               </Row>
             </CardHeader> */}
-            <CardBody>            
-            <Button close size="lg" className="mx-3"
-                  onClick={() => setSelectedVacancyYear(null)} />  
+            <CardBody>
+              <Button
+                close
+                size="lg"
+                className="mx-3"
+                onClick={() => setSelectedVacancyYear(null)}
+              />
               <Table borderless>
                 <thead>
                   <tr>
@@ -306,13 +386,15 @@ const VacancyReport = () => {
                 </thead>
                 <tbody>
                   {/* { data ? getFilteredDatabyYear(selectedVacancyYear).map( */}
-                  { data.filter(d => d.schoolYear == getYear(selectedVacancyYear)).map(
-                    (element, i) => (
-                      <tr key={'year-table-record-' + i}>
+                  {data
+                    .filter((d) => d.schoolYear == getYear(selectedVacancyYear))
+                    .map((element, i) => (
+                      <tr key={"year-table-record-" + i}>
                         <th scope="row">{i + 1}</th>
                         <td>
-                          {/* {element.fullNameAnnon} */}
-                          <Link to={`profile/${207221}`}>{element.fullNameAnnon}</Link>
+                          <Link to={`profile/${207221}`}>
+                            {element.fullNameAnnon}
+                          </Link>
                         </td>
                         <td>{element.schoolNameAnnon}</td>
                         <td>{element.schoolLevel}</td>
@@ -321,37 +403,34 @@ const VacancyReport = () => {
                         <td>{element.gender}</td>
                         <td>{element.race}</td>
                         <td></td>
-                        {/* <td>@mdo</td> */}
                       </tr>
-                    )
-                  )}          
+                    ))}
                 </tbody>
               </Table>
-            </CardBody>        
+            </CardBody>
           </Card>
         </Row>
-      ) : ""}
+      ) : (
+        ""
+      )}
       <Row>
         <Col md="12">
-          { data && (
-            <AditionalRiskFactors data={data} selectedRole={selectedRole}></AditionalRiskFactors>
+          {data && (
+            <AditionalRiskFactors
+              data={data}
+              selectedRole={selectedRole}
+            ></AditionalRiskFactors>
           )}
 
-          { data && (
-            <WhoHasLeft data={data}></WhoHasLeft>
-          )}
+          {data && <WhoHasLeft data={data} selectedRole={selectedRole}></WhoHasLeft>}
         </Col>
       </Row>
       <Row>
         <Col md={10}>
-          <Link to={"/vacancy-report"}>
-            {'<<'} Forecast Vacancies
-          </Link>
+          <Link to={"/vacancy-report"}>{"<<"} Vacancy Planning Cycle</Link>
         </Col>
         <Col md={2}>
-          <Link to={"/identify-leaders"}>
-            Develop Leaders {'>>'}
-          </Link>
+          <Link to={"/identify-leaders"}>Identify Leaders {">>"}</Link>
         </Col>
       </Row>
     </div>

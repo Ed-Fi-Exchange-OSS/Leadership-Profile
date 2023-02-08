@@ -95,13 +95,15 @@ const IdentifyLeaders = () => {
           </Button>
         </div>
         <div className="col-md-3">
-          <Button
-            outline
-            color="default"
-            className="gray-border bold-text w-100 d-flex justify-content-center"
-          >
-            <h5 className="pt-1">Select Leaders</h5>
-          </Button>
+          <Link to="/directory?page=1&sortBy=asc&sortField=id">
+            <Button
+              outline
+              color="default"
+              className="gray-border bold-text  w-100 d-flex justify-content-center"
+            >
+              <h5 className="pt-1">Select Leaders</h5>
+            </Button>
+          </Link>
         </div>
       </div>
       <Row>
@@ -111,12 +113,12 @@ const IdentifyLeaders = () => {
         {/* <Col md="6" className="p-3" style={{backgroundColor: 'ligthgray'}}> */}
         <Col md="6" className="p-3">
           <Row>
-            <Col>
+            <Col md="4">
               {/* <div className="col-md-2  d-flex justify-content-end"> */}
-              <h3 className="fw-bold">Pipeline</h3>
+              <h3 className="fw-bold text-center">Pipeline</h3>
               {/* </div>     */}
             </Col>
-            <Col>
+            <Col md="8">
               <Dropdown
                 isOpen={dropdownOpen}
                 toggle={toggle}
@@ -132,8 +134,8 @@ const IdentifyLeaders = () => {
                   >
                     Principal
                   </DropdownItem>
-                  <DropdownItem onClick={() => handlePipelineSelection("AP")}>
-                    AP
+                  <DropdownItem onClick={() => handlePipelineSelection("Assitant Principal")}>
+                    Assitant Principal
                   </DropdownItem>
                 </DropdownMenu>
               </Dropdown>
@@ -147,20 +149,16 @@ const IdentifyLeaders = () => {
         </Col>
       </Row>
       <Row>
-        <Col >
+        <Col>
           <LeadersTable data={data}></LeadersTable>
         </Col>
       </Row>
       <Row>
         <Col md={10}>
-          <Link to={"/vacancy-report"}>
-            {'<<'} Forecast Vacancies
-          </Link>
+          <Link to={"/vacancy-report"}>{"<<"} Vacancy Planning Cycle</Link>
         </Col>
         <Col md={2}>
-          <Link to={"/identify-leaders"}>
-            Develop Leaders {'>>'}
-          </Link>
+          <Link to={"/identify-leaders"}>Identify Leaders {">>"}</Link>
         </Col>
       </Row>
     </div>

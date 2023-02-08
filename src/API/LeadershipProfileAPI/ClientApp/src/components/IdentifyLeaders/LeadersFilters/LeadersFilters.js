@@ -69,12 +69,18 @@ class LeadersFilters extends Component {
   
   render() {
     return (
+      <Card style={{backgroundColor: 'lightgray'}}>
+        <CardTitle className="m-3" tag={'h4'}>
+          Criteria for Identification
+        </CardTitle>
+        <CardBody>
+
       <Form className="filters-form">
         <Row>
           <Col md="6" className="px-4">
           <FormGroup row className="d-block">
               <Col md="12">
-                <label>Average Score</label>
+                <label>Overall Performance Score:</label>
               </Col>
               <Col>
                 {/* <Nouislider range={{ min: 0, max: 100 }} start={[20, 80]} connect /> */}
@@ -101,7 +107,7 @@ class LeadersFilters extends Component {
             </FormGroup>
             <FormGroup row className="d-block">
               <Col md="12">
-                <label>Domain 1</label>
+                <label>Domain 1:</label>
               </Col>
               <Col>
                 {/* <Nouislider range={{ min: 0, max: 100 }} start={[20, 80]} connect /> */}
@@ -128,7 +134,7 @@ class LeadersFilters extends Component {
             </FormGroup>
             <FormGroup row className="d-block">
               <Col md="12">
-                <label>Domain 2</label>
+                <label>Domain 2:</label>
               </Col>
               <Col>
                 {/* <Nouislider range={{ min: 0, max: 100 }} start={[20, 80]} connect /> */}
@@ -155,7 +161,7 @@ class LeadersFilters extends Component {
             </FormGroup>
             <FormGroup row className="d-block">
               <Col md="12">
-                <label>Domain 3</label>
+                <label>Domain 3:</label>
               </Col>
               <Col>
                 {/* <Nouislider range={{ min: 0, max: 100 }} start={[20, 80]} connect /> */}
@@ -180,9 +186,9 @@ class LeadersFilters extends Component {
                 />
               </Col>
             </FormGroup>
-            {/* <FormGroup row className="d-block">
+            <FormGroup row className="d-block">
               <Col md="12">
-                <label>Domain 4: High Quality Curriculum</label>
+                <label>Domain 4:</label>
               </Col>
               <Col>
                 <Nouislider
@@ -203,7 +209,7 @@ class LeadersFilters extends Component {
             </FormGroup>
             <FormGroup row className="d-block">
               <Col md="12">
-                <label>Domain 5: Effective Instruction</label>
+                <label>Domain 5:</label>
               </Col>
               <Col>
                 <Nouislider
@@ -221,7 +227,7 @@ class LeadersFilters extends Component {
                   // onUpdate={this.onUpdate(index)}
                 />
               </Col>
-            </FormGroup> */}
+            </FormGroup>
           </Col>
           <Col md="6">
             <FormGroup row>
@@ -334,7 +340,7 @@ class LeadersFilters extends Component {
                     color="primary"
                     onClick={() => this.onCheckboxBtnClick('highestDegrees', 3)}
                     active={this.state.highestDegrees.includes(3)}
-                    className="mx-1"
+                    className="mx-1 mt-1"
                   >
                     Doctorate
                   </Button>
@@ -398,6 +404,8 @@ class LeadersFilters extends Component {
           </Col>
         </Row>
       </Form>
+        </CardBody>
+      </Card>
     );
   }
 }
