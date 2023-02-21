@@ -669,7 +669,7 @@ h5{
   font-weight: bold;
 }
 .blue-bold-text {
-  color: blue;
+  color: #56608a;
   font-weight: bold;
 }
 .yellow-bold-text {
@@ -683,6 +683,52 @@ h5{
 .green-bold-text {
   color: green;
   font-weight: bold;
+}
+
+.soft-green-bold-text {
+  color: #a3be7a;
+  font-weight: bold;
+}
+.soft-blue-bold-text {
+  color: #56608a;
+  font-weight: bold;
+}
+.soft-yellow-bold-text {
+  color: #cee32c;
+  font-weight: bold;
+}
+.soft-orange-bold-text {
+  color: #c3703c;
+  font-weight: bold;
+}
+
+.color-circle-5 {
+  background-color: #a3be7a;
+  font-weight: bold;
+}
+.color-circle-4 {
+  background-color: #56608a;
+}
+.color-circle-3 {
+  background-color: gray;
+}
+.color-circle-2 {
+  background-color: #cee32c;
+}
+.color-circle-1 {
+  background-color: #c3703c;
+}
+
+.circle {
+  margin-left: 3px;
+  margin-right: 3px;
+  margin-top: 3px;
+  margin-right: 3px;
+  width: 18px;
+  height: 18px;
+  border: 1px solid;
+  /* background-color: gray; */
+  border-radius: 20px;
 }
 
 .gray-circle {

@@ -21,7 +21,13 @@ namespace LeadershipProfileAPI.Features.IdentifyLeaders
             public int[] SchoolLevels { get; set; }
             public int[] HighestDegrees { get; set; }
             public int[] HasCertification { get; set; }
+            public int[] YearsOfExperience { get; set; }
             public int[] OverallScore { get; set; }
+            public int[] DomainOneScore { get; set; }
+            public int[] DomainTwoScore { get; set; }
+            public int[] DomainThreeScore { get; set; }
+            public int[] DomainFourScore { get; set; }
+            public int[] DomainFiveScore { get; set; }
             // public int? Page { get; set; }
             // public string SortField { get; set; }
             // public string SortBy { get; set; }
@@ -72,12 +78,18 @@ namespace LeadershipProfileAPI.Features.IdentifyLeaders
                     request.SchoolLevels,
                     request.HighestDegrees,
                     request.HasCertification,
-                    request.OverallScore
+                    request.YearsOfExperience,
+                    request.OverallScore,
+                    request.DomainOneScore,
+                    request.DomainTwoScore,
+                    request.DomainThreeScore,
+                    request.DomainFourScore,
+                    request.DomainFiveScore
                 );
 
                 // var list = results.AsQueryable()
                 //     .ProjectTo<SearchResult>(_mapper.ConfigurationProvider)
-                //     .ToList();
+                //     .ToList();77
 
                 
                 var list = results.AsQueryable()

@@ -155,10 +155,10 @@ const IdentifyLeaders = () => {
       </Row>
       <Row>
         <Col md={10}>
-          <Link to={"/vacancy-report"}>{"<<"} Vacancy Planning Cycle</Link>
+          <Link to={"/vacancy-report"}>{"<<"} Forecast Vacancy </Link>
         </Col>
         <Col md={2}>
-          <Link to={"/identify-leaders"}>Identify Leaders {">>"}</Link>
+          <Link to={"/identify-leaders"}> Develop Leaders {">>"}</Link>
         </Col>
       </Row>
     </div>

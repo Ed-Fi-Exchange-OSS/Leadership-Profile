@@ -94,7 +94,7 @@ const LeadersTable = ({ data }) => {
             <td></td>
             <td></td>
             <td></td>
-            <td></td>
+            <td>Download</td>
           </tr>
         </tbody>
       </Table>

@@ -19,5 +19,6 @@ namespace LeadershipProfileAPI.Data.Models
         public Double SchoolYear { get; set; }
         public string PositionTitle { get; set; }
         public string RetElig { get; set; }
+        public Double OverallScore { get; set; }
     }
 }

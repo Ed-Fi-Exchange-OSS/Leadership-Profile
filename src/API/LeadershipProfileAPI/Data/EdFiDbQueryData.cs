@@ -93,8 +93,19 @@ namespace LeadershipProfileAPI.Data
         /// <param name="currentPage">When paginating the data, which page of data should be returned</param>
         /// <param name="pageSize">The number of records returned in the result</param>
         /// <returns></returns>
-        public Task<List<LeaderSearch>> GetLeaderSearchResultsAsync(int[] Roles, int[] SchoolLevels, int[] HighestDegrees, int[] HasCertification, int[] OverallScore)
-        {
+        public Task<List<LeaderSearch>> GetLeaderSearchResultsAsync(
+            int[] Roles, 
+            int[] SchoolLevels, 
+            int[] HighestDegrees, 
+            int[] HasCertification, 
+            int[] YearsOfExperience, 
+            int[] OverallScore,
+            int[] DomainOneScore,
+            int[] DomainTwoScore,
+            int[] DomainThreeScore,
+            int[] DomainFourScore,
+            int[] DomainFiveScore
+        ) {
             // Map the UI sorted field name to a table field name
             var fieldMapping = new Dictionary<string, string>
             {
@@ -119,14 +130,25 @@ namespace LeadershipProfileAPI.Data
                     *
                 from dbo.[vw_StaffVacancy] s
                 
-                {LeadersClauseConditions(Roles, SchoolLevels, HighestDegrees, HasCertification, OverallScore)}
+                {LeadersClauseConditions(Roles, SchoolLevels, HighestDegrees, HasCertification, YearsOfExperience, OverallScore, DomainOneScore, DomainTwoScore, DomainThreeScore, DomainFourScore, DomainFiveScore)}
                 order by s.SchoolYear
              ";
             return _edfiDbContext.LeaderSearches.FromSqlRaw(sql, name).ToListAsync();
         }
 
-        private static string LeadersClauseConditions(int[] Roles, int[] SchoolLevels, int[] HighestDegrees, int[] HasCertification, int[] OverallScore)
-        {
+        private static string LeadersClauseConditions(
+            int[] Roles, 
+            int[] SchoolLevels, 
+            int[] HighestDegrees, 
+            int[] HasCertification, 
+            int[] YearsOfExperience, 
+            int[] OverallScore,
+            int[] DomainOneScore,
+            int[] DomainTwoScore,
+            int[] DomainThreeScore,
+            int[] DomainFourScore,
+            int[] DomainFiveScore            
+        ) {
             // if (body == null) return "--where excluded, no body provided";
 
             var rolesDictionary = new Dictionary<int, string>();
@@ -155,11 +177,11 @@ namespace LeadershipProfileAPI.Data
                     Clause(Roles, rolesDictionary, "PositionTitle"),
                     Clause(SchoolLevels, schoolLevelsDictionary, "SchoolLevel"),
                     Clause(OverallScore, scoreDictionary, "OverallScore"),
-                    // Clause(Domain1, scoreDictionary, "Domain1"),
-                    // Clause(Domain2, scoreDictionary, "Domain2"),
-                    // Clause(Domain3, scoreDictionary, "Domain3"),
-                    // Clause(Domain4, scoreDictionary, "Domain4"),
-                    // Clause(Domain5, scoreDictionary, "Domain5")
+                    Clause(DomainOneScore, scoreDictionary, "Domain1"),
+                    Clause(DomainTwoScore, scoreDictionary, "Domain2"),
+                    Clause(DomainThreeScore, scoreDictionary, "Domain3"),
+                    Clause(DomainFourScore, scoreDictionary, "Domain4"),
+                    Clause(DomainFiveScore, scoreDictionary, "Domain5"),
                     // Clause(HighestDegrees, degreesDictionary, "PositionTitle"),
                     // Clause(HasCertification, hasCertificationDictionary, "PositionTitle"),
                 }
@@ -177,7 +199,8 @@ namespace LeadershipProfileAPI.Data
             if (clause != null && clause.Any())
             {
                 List<string> values = new List<string> { };
-                foreach (KeyValuePair<int, string> entry in clauseValues) {
+                foreach (KeyValuePair<int, string> entry in clauseValues)
+                {
                     if (clause.Any(r => r == entry.Key)) values.Add(entry.Value);
                 }
                 // Provide the condition being searched for matching your schema. Example: "(d.DegreeId = 68)"
@@ -207,11 +230,7 @@ namespace LeadershipProfileAPI.Data
             var name = new SqlParameter("role", Role ?? string.Empty);
 
             // Implement the view in SQL, call it here
-            // var whereClause = Role != null ?
-            //     "WHERE [PositionTitle] "
-            //     + (Role == "Principal" ? "NOT " : "")
-            //     + "LIKE '%ASSIS%'" : "";
-                        var whereClause = Role != null ?
+            var whereClause = Role != null ?
                 "WHERE [PositionTitle] = "
                 + (Role == "Principal" ? "'Principal'" : "'AP'")
                 : "";

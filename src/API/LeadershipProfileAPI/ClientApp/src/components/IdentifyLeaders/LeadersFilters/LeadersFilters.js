@@ -35,7 +35,13 @@ class LeadersFilters extends Component {
       schoolLevels: [1, 2, 3],
       highestDegrees: [1, 2, 3],
       hasCertification: [1, 2],
-      overallScore: [1,2,3,4,5]
+      yearsOfExperience: [1, 2],
+      overallScore: [1, 2, 3, 4, 5],
+      domainOneScore: [1, 2, 3, 4, 5],
+      domainTwoScore: [1, 2, 3, 4, 5],
+      domainThreeScore: [1, 2, 3, 4, 5],
+      domainFourScore: [1, 2, 3, 4, 5],
+      domainFiveScore: [1, 2, 3, 4, 5]
     };
 
     this.onCheckboxBtnClick = this.onCheckboxBtnClick.bind(this);
@@ -128,7 +134,7 @@ class LeadersFilters extends Component {
                     stepped: true,
                     density: 20
                   }}
-                  // onUpdate={this.onUpdate(index)}
+                  onUpdate={(data) => this.onSliderUpdateHandler(data, 'domainOneScore')}
                 />
               </Col>
             </FormGroup>
@@ -155,7 +161,7 @@ class LeadersFilters extends Component {
                     stepped: true,
                     density: 20
                   }}
-                  // onUpdate={this.onUpdate(index)}
+                  onUpdate={(data) => this.onSliderUpdateHandler(data, 'domainTwoScore')}
                 />
               </Col>
             </FormGroup>
@@ -182,7 +188,7 @@ class LeadersFilters extends Component {
                     stepped: true,
                     density: 20
                   }}
-                  // onUpdate={this.onUpdate(index)}
+                  onUpdate={(data) => this.onSliderUpdateHandler(data, 'domainThreeScore')}
                 />
               </Col>
             </FormGroup>
@@ -191,6 +197,7 @@ class LeadersFilters extends Component {
                 <label>Domain 4:</label>
               </Col>
               <Col>
+                {/* <Nouislider range={{ min: 0, max: 100 }} start={[20, 80]} connect /> */}
                 <Nouislider
                   // key={item}
                   // id={item}
@@ -203,7 +210,12 @@ class LeadersFilters extends Component {
                     min: 0,
                     max: 5,
                   }}
-                  // onUpdate={this.onUpdate(index)}
+                  pips= {{
+                    mode: 'steps',
+                    stepped: true,
+                    density: 20
+                  }}
+                  onUpdate={(data) => this.onSliderUpdateHandler(data, 'domainFourScore')}
                 />
               </Col>
             </FormGroup>
@@ -212,6 +224,7 @@ class LeadersFilters extends Component {
                 <label>Domain 5:</label>
               </Col>
               <Col>
+                {/* <Nouislider range={{ min: 0, max: 100 }} start={[20, 80]} connect /> */}
                 <Nouislider
                   // key={item}
                   // id={item}
@@ -224,7 +237,12 @@ class LeadersFilters extends Component {
                     min: 0,
                     max: 5,
                   }}
-                  // onUpdate={this.onUpdate(index)}
+                  pips= {{
+                    mode: 'steps',
+                    stepped: true,
+                    density: 20
+                  }}
+                  onUpdate={(data) => this.onSliderUpdateHandler(data, 'domainFiveScore')}
                 />
               </Col>
             </FormGroup>

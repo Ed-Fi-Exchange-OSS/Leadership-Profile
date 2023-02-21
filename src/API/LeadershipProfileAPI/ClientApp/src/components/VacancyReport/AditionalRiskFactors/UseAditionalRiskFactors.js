@@ -3,7 +3,10 @@ import { useState, useEffect } from "react";
 function UseAditionalRiskFactors(data) {    
     const [ vacancyRateData, setVacancyRateData] = useState(null);
     const [ eligibleForRetirementData, setEligibleForRetirementData] = useState(null);
+    const [ eligibleForRetirementNowCount, setEligibleForRetirementNowCount] = useState(null);
+    const [ eligibleForRetirementSoonCount, setEligibleForRetirementSoonCount] = useState(null);
     const [ currentPerformanceData, setCurrentPerformanceData] = useState(null);
+    const [ scoreCount, setScoreCount ] = useState(null);
     
     
     const causes = [
@@ -31,7 +34,26 @@ function UseAditionalRiskFactors(data) {
               byProp[vacancyProp].push(vacancy);
               return byProp;
             }, []);
-  
+
+      var scoreC = [
+        data.filter(s => Math.round(s.overallScore) == 1).length,
+        data.filter(s => Math.round(s.overallScore) == 2).length,
+        data.filter(s => Math.round(s.overallScore) == 3).length,
+        data.filter(s => Math.round(s.overallScore) == 4).length,
+        data.filter(s => Math.round(s.overallScore) == 5).length
+      ]
+
+      setScoreCount(scoreC);
+
+      /**
+       * Count staff sligible for retirement now or soon (1-2 years).
+       */
+      setEligibleForRetirementNowCount(data.filter(s => s.retElig == 0).length);
+      setEligibleForRetirementSoonCount(data.filter(s => [1, 2].includes(Number(s.retElig))).length);
+
+      /**
+       * 
+       */
       const vacancyGroupedBySchool = groupByProp(data, "schoolNameAnnon");
       var schoolsArray = [];
       for (const key in vacancyGroupedBySchool) {
@@ -55,26 +77,24 @@ function UseAditionalRiskFactors(data) {
       setVacancyRateData(schoolsArray);
 
 
-      // var staffEligibleForRetirement = data.filter(d => d.retElig == 0);
       var staffEligibleForRetirement = schoolsArray.map(school => {
-        let newSchool = {
+        return {
           schoolName: school.name,
-          eligibles: school.vacancy.filter(v => v.retElig == 0)
+          eligibles: school.vacancy.filter(v => [0, 1, 2].includes(Number(v.retElig)))
         };
-        return newSchool;
       }).filter(ns => ns.eligibles.length);
       setEligibleForRetirementData(staffEligibleForRetirement);
 
-      // var staffEligibleForRetirement = data.filter(d => d.retElig == 0);
+
       var staffPerformance = schoolsArray.map(school => {
         let newSchool = {
           name: school.name,
-          staff: school.vacancy.filter(v => v.retElig == 0)
+          // staff: school.vacancy.filter(v => v.retElig == 0)
+          staff: school.vacancy
         };
         return newSchool;
       }).filter(ns => ns.staff.length);
       setCurrentPerformanceData(staffPerformance);
-
 
     }, []);
 
@@ -82,7 +102,10 @@ function UseAditionalRiskFactors(data) {
     return {
       vacancyRateData,
       eligibleForRetirementData,
+      eligibleForRetirementNowCount,
+      eligibleForRetirementSoonCount,
       currentPerformanceData,
+      scoreCount
     };
 
 }

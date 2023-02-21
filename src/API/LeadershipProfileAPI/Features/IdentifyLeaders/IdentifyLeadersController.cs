@@ -37,7 +37,13 @@ namespace LeadershipProfileAPI.Features.IdentifyLeaders
                     SchoolLevels = body.SchoolLevels,
                     HighestDegrees = body.HighestDegrees,
                     HasCertification = body.HasCertification,
-                    OverallScore = body.OverallScore
+                    YearsOfExperience = body.YearsOfExperience,
+                    OverallScore = body.OverallScore,
+                    DomainOneScore = body.DomainOneScore,
+                    DomainTwoScore = body.DomainTwoScore,
+                    DomainThreeScore = body.DomainThreeScore,
+                    DomainFourScore = body.DomainFourScore,
+                    DomainFiveScore = body.DomainFiveScore
                 },
                 cancellationToken);
 

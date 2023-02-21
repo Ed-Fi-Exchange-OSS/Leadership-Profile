@@ -33,10 +33,6 @@ function UseVacancyReport() {
       if (element.length > 0 && element[0].index < 5) {
         console.log(element, element[0].index);
         setSelectedVacancyYear(element[0].index);
-        // console.log("new selected year: ", selectedVacancyYear);
-        // element,element[0]._datasetInde[]
-        // you can also get dataset of your selected element
-        // console.log(data.datasets[element[0]._datasetIndex])
       }
     },
     elements: {
@@ -45,6 +41,19 @@ function UseVacancyReport() {
         display: true,
       },
     },
+    scales: {
+      nothing: '',
+      y: [
+        {
+          ticks: {
+            // precision: 0,
+            beginAtZero: true,
+            callback: function (value) { if (Number.isInteger(value)) { return value; } },
+            stepSize: 1
+          },
+        },
+      ],
+    }
   });
   const labels = ["2018", "2019", "2020", "2021", "2022", "2023"];
   const [lineChartData, setLineChartData] = useState({
