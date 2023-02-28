@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { useEffect, useRef } from "react";
 
+import * as FileSaver from "file-saver";
+import * as XLSX from "xlsx";
+
+
 import {
   Dropdown,
   DropdownToggle,
@@ -26,11 +30,35 @@ import config from "../../../config";
 
 import UseLeadersTable from "./UseLeadersTable";
 
+import { useDownloadExcel } from 'react-export-table-to-excel';
+
 const LeadersTable = ({ data }) => {
+
+  const exportAsExcel = () => {
+    const fileType =
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+  const fileExtension = ".xlsx";
+
+  const exportToCSV = (apiData, fileName) => {
+    const ws = XLSX.utils.json_to_sheet(apiData);
+    const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const data = new Blob([excelBuffer], { type: fileType });
+    FileSaver.saveAs(data, fileName + fileExtension);
+    };
+  };
+
+  const tableRef = useRef(null);
+
+  const { onDownload } = useDownloadExcel({
+    currentTableRef: tableRef.current,
+    filename: 'Users table',
+    sheet: 'Users'
+})
  
   return (
     <div className="container flex-container">
-      <Table>
+      <table ref={tableRef} className="table">
         <thead>
           <tr>
             <th>#</th>
@@ -87,17 +115,18 @@ const LeadersTable = ({ data }) => {
             <td></td>
             <td></td>
             <td>
-              <a href="#"> View All</a>
+              <a href="#"> View All </a>
             </td>
             <td></td>
             <td></td>
             <td></td>
             <td></td>
             <td></td>
-            <td>Download</td>
+            {/* <a href="#" onClick={exportAsExcel} > Download </a> */}
+            <a href="#" onClick={onDownload} > Download </a>
           </tr>
         </tbody>
-      </Table>
+      </table>
     </div>
   );
 };

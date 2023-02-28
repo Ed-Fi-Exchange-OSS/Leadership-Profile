@@ -54,9 +54,10 @@ const AditionalRiskFactors = ({ data, selectedRole }) => {
       <Col md="6" className="mt-3">
         <h5 className="color left-title">
           <span className="color orange-bold-text mr-1">
-            {data ? data.averagePrincipal : 0}%
+            {selectedRole == "Principal" ? 20 : 35} %
           </span>
-          Average { selectedRole }
+          {/* Average { selectedRole } */}
+          Turnover 5 years
         </h5>
         <h5 className="left-title">5-Year Vacancy Rate</h5>
         <Row className="my-3">
