@@ -32,6 +32,220 @@ namespace LeadershipProfileAPI.Data
         /// <param name="currentPage">When paginating the data, which page of data should be returned</param>
         /// <param name="pageSize">The number of records returned in the result</param>
         /// <returns></returns>
+        // public Task<List<StaffSearch>> GetVacancyProjectionAsync(ProfileVacancyProjectionRequestBody body,
+        //     string sortBy = "asc", string sortField = "name", int currentPage = 1, int pageSize = 10)
+        // {
+        //     // Map the UI sorted field name to a table field name
+        //     var fieldMapping = new Dictionary<string, string>
+        //     {
+        //         {"id", "StaffUniqueId"},
+        //         {"name", "LastSurName"},
+        //         {"yearsOfService", "YearsOfService"},
+        //         {"position", "Assignment"},
+        //         {"highestDegree", "Degree"},
+        //         // {"highestDegree", "Degree"},
+        //         {"school", "Institution"},
+        //     };
+
+        //     // Add the 'name' value as sql parameter to avoid SQL injection from raw text
+        //     var name = new SqlParameter("name", body?.Name ?? string.Empty);
+
+        //     // Implement the view in SQL, call it here
+        //     var sql = $@"
+        //         select 
+        //              DISTINCT(s.StaffUSI)
+        //             ,StaffUniqueId
+        //             ,FirstName
+        //             ,MiddleName
+        //             ,LastSurname
+        //             ,FullName
+        //             ,YearsOfService
+        //             ,Assignment
+        //             ,Institution
+        //             ,Degree
+        //             ,Email
+        //             ,Telephone
+        //         from edfi.vw_StaffSearch s
+        //         {ClauseRatingsConditionalJoin(body)}
+        //         {ClauseConditions(body)}
+        //         order by {fieldMapping[sortField]} {sortBy}
+        //      ";
+        //         // offset {(currentPage - 1) * pageSize} rows
+        //         // fetch next {pageSize} rows only
+
+        //         //If you passed pageSize 0 then won't apply pagination
+        //     if (currentPage != 0) { 
+        //         sql += $@"
+        //         offset {(currentPage - 1) * pageSize} rows
+        //         fetch next {pageSize} rows only
+        //         ";
+        //     }
+        //     return _edfiDbContext.StaffSearches.FromSqlRaw(sql, name).ToListAsync();
+        // }
+
+        /// <summary>
+        /// Method sends raw SQL to the database and returns a queryable, paginated, collection of Staff records
+        /// matching the criteria and sorted by a field and direction
+        /// </summary>
+        /// <param name="body">Query parameters from the request body</param>
+        /// <param name="sortBy">Direction to sort the data</param>
+        /// <param name="sortField">Field to sort data on</param>
+        /// <param name="currentPage">When paginating the data, which page of data should be returned</param>
+        /// <param name="pageSize">The number of records returned in the result</param>
+        /// <returns></returns>
+        public Task<List<LeaderSearch>> GetLeaderSearchResultsAsync(
+            int[] Roles, 
+            int[] SchoolLevels, 
+            int[] HighestDegrees, 
+            int[] HasCertification, 
+            int[] YearsOfExperience, 
+            int[] OverallScore,
+            int[] DomainOneScore,
+            int[] DomainTwoScore,
+            int[] DomainThreeScore,
+            int[] DomainFourScore,
+            int[] DomainFiveScore
+        ) {
+            // Map the UI sorted field name to a table field name
+            var fieldMapping = new Dictionary<string, string>
+            {
+                {"id", "StaffUniqueId"},
+                {"name", "LastSurName"},
+                {"yearsOfService", "YearsOfService"},
+                {"position", "Assignment"},
+                {"highestDegree", "Degree"},
+                // {"highestDegree", "Degree"},
+                {"school", "Institution"},
+            };
+
+            // Add the 'name' value as sql parameter to avoid SQL injection from raw text
+            string roles = System.String.Join(",", Roles);
+            var name = new SqlParameter("roles", roles);
+
+            // Implement the view in SQL, call it here
+
+            var sql = $@"
+                select TOP 10
+                     
+                    *
+                from dbo.[vw_StaffVacancy] s
+                
+                {LeadersClauseConditions(Roles, SchoolLevels, HighestDegrees, HasCertification, YearsOfExperience, OverallScore, DomainOneScore, DomainTwoScore, DomainThreeScore, DomainFourScore, DomainFiveScore)}
+                order by s.SchoolYear
+             ";
+            return _edfiDbContext.LeaderSearches.FromSqlRaw(sql, name).ToListAsync();
+        }
+
+        private static string LeadersClauseConditions(
+            int[] Roles, 
+            int[] SchoolLevels, 
+            int[] HighestDegrees, 
+            int[] HasCertification, 
+            int[] YearsOfExperience, 
+            int[] OverallScore,
+            int[] DomainOneScore,
+            int[] DomainTwoScore,
+            int[] DomainThreeScore,
+            int[] DomainFourScore,
+            int[] DomainFiveScore            
+        ) {
+            // if (body == null) return "--where excluded, no body provided";
+
+            var rolesDictionary = new Dictionary<int, string>();
+
+            rolesDictionary.Add(1, "Principal");
+            rolesDictionary.Add(2, "AP");
+            rolesDictionary.Add(3, "Teacher");
+            rolesDictionary.Add(4, "Teacher Leader");
+            var schoolLevelsDictionary = new Dictionary<int, string>();
+            schoolLevelsDictionary.Add(1, "EL");
+            schoolLevelsDictionary.Add(2, "MS");
+            schoolLevelsDictionary.Add(3, "HS");
+            var degreesDictionary = new Dictionary<int, string>();
+            degreesDictionary.Add(1, "Bachelors");
+            degreesDictionary.Add(2, "Masters");
+            degreesDictionary.Add(3, "Doctorate");
+            var scoreDictionary = new Dictionary<int, string>();
+            scoreDictionary.Add(1, "1");
+            scoreDictionary.Add(2, "2");
+            scoreDictionary.Add(3, "3");
+            scoreDictionary.Add(4, "4");
+            scoreDictionary.Add(5, "5");
+
+            var whereCondition = new[]
+                {
+                    Clause(Roles, rolesDictionary, "PositionTitle"),
+                    Clause(SchoolLevels, schoolLevelsDictionary, "SchoolLevel"),
+                    Clause(OverallScore, scoreDictionary, "OverallScore"),
+                    Clause(DomainOneScore, scoreDictionary, "Domain1"),
+                    Clause(DomainTwoScore, scoreDictionary, "Domain2"),
+                    Clause(DomainThreeScore, scoreDictionary, "Domain3"),
+                    Clause(DomainFourScore, scoreDictionary, "Domain4"),
+                    Clause(DomainFiveScore, scoreDictionary, "Domain5"),
+                    // Clause(HighestDegrees, degreesDictionary, "PositionTitle"),
+                    // Clause(HasCertification, hasCertificationDictionary, "PositionTitle"),
+                }
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .DefaultIfEmpty(string.Empty)
+                .Aggregate((x, y) => $"{x} and {y}");
+
+            return !string.IsNullOrWhiteSpace(whereCondition)
+                ? $"where {whereCondition}"
+                : "--where excluded, no conditions provided";
+        }
+
+        private static string Clause(int[] clause, Dictionary<int, string> clauseValues, string propertyName)
+        {
+            if (clause != null && clause.Any())
+            {
+                List<string> values = new List<string> { };
+                foreach (KeyValuePair<int, string> entry in clauseValues)
+                {
+                    if (clause.Any(r => r == entry.Key)) values.Add(entry.Value);
+                }
+                // Provide the condition being searched for matching your schema. Example: "(d.DegreeId = 68)"
+                var whereProperty = clause.Any() ? $"{propertyName} in ('{string.Join("','", values)}')" : string.Empty;
+
+                return $"({whereProperty})";
+            }
+
+            return string.Empty;
+        }
+
+
+        /// <summary>
+        /// Method sends raw SQL to the database and returns a queryable, paginated, collection of Staff records
+        /// matching the criteria and sorted by a field and direction
+        /// </summary>
+        /// <param name="body">Query parameters from the request body</param>
+        /// <param name="sortBy">Direction to sort the data</param>
+        /// <param name="sortField">Field to sort data on</param>
+        /// <param name="currentPage">When paginating the data, which page of data should be returned</param>
+        /// <param name="pageSize">The number of records returned in the result</param>
+        /// <returns></returns>
+        public Task<List<StaffVacancy>> GetVacancyProjectionResultsAsync(string Role)
+        {
+
+            // Add the 'name' value as sql parameter to avoid SQL injection from raw text
+            var name = new SqlParameter("role", Role ?? string.Empty);
+
+            // Implement the view in SQL, call it here
+            var whereClause = Role != null ?
+                "WHERE [PositionTitle] = "
+                + (Role == "Principal" ? "'Principal'" : "'AP'")
+                : "";
+            // DISTINCT(s.[Full Name Annon]),
+            var sql = $@"
+                select                 
+                    *
+                from dbo.[vw_StaffVacancy] s
+                {whereClause}
+                order by s.SchoolYear                
+             ";
+            //  from dbo.[vw_StaffVacancy] s
+            return _edfiDbContext.StaffVacancies.FromSqlRaw(sql, name).ToListAsync();
+        }
+
         public Task<List<StaffSearch>> GetSearchResultsAsync(ProfileSearchRequestBody body,
             string sortBy = "asc", string sortField = "name", int currentPage = 1, int pageSize = 10)
         {
@@ -70,11 +284,12 @@ namespace LeadershipProfileAPI.Data
                 {ClauseConditions(body)}
                 order by {fieldMapping[sortField]} {sortBy}
              ";
-                // offset {(currentPage - 1) * pageSize} rows
-                // fetch next {pageSize} rows only
+            // offset {(currentPage - 1) * pageSize} rows
+            // fetch next {pageSize} rows only
 
-                //If you passed pageSize 0 then won't apply pagination
-            if (currentPage != 0) { 
+            //If you passed pageSize 0 then won't apply pagination
+            if (currentPage != 0)
+            {
                 sql += $@"
                 offset {(currentPage - 1) * pageSize} rows
                 fetch next {pageSize} rows only
@@ -109,6 +324,8 @@ namespace LeadershipProfileAPI.Data
 
             return $"{joinOnStaff}{onCategory}{andScore}";
         }
+
+
 
         private static string ClauseConditions(ProfileSearchRequestBody body)
         {

@@ -44,7 +44,6 @@ const Directory = () => {
             </div>
             {/* <Button className="selected-filters-clear mx-3" onClick={() => exportResults()}>Export Results</Button> */}
 
-
             { error ? <ErrorMessage /> : '' }
             { activeComponent === "table" ? (
                 <TableList sort={sort} data={data} setColumnSort={setColumnSort} paging={paging} setPage={setPage} />

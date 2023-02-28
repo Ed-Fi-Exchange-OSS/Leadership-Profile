@@ -5,7 +5,7 @@ with evaluationRatings as (
          , eorr.Rating
          , eorr.EvaluationDate
          , Row_number() over (partition by eorr.PersonId, eorr.EvaluationObjectiveTitle order by eorr.EvaluationDate desc, eorr.CreateDate desc) as "Number"
-    from tpdm.EvaluationObjectiveRatingResult eorr
+    from tpdm.EvaluationElementRatingResult eorr
     join edfi.Staff as staff on staff.PersonId = eorr.PersonId
 )
 
