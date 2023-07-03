@@ -15,6 +15,7 @@ import {
 
 import { HeaderLogo } from './images'
 import AuthService from '../utils/auth-service';
+import IngestDateService from '../utils/ingest-date-service';
 import LogoutService from '../utils/logout-service';
 import config from '../config';
 
@@ -27,14 +28,22 @@ const Navigation = (props) => {
 
   const toggle = () => setIsOpen(!isOpen);
 
+  const { getLastIngestionDate } = IngestDateService();
+  const lastIngestionDate = getLastIngestionDate();
+  
   return (
     <div>
       <Navbar expand="md">
           <NavbarBrand href="/"><HeaderLogo/> {SCHOOL_HEADER}</NavbarBrand>
           <NavbarToggler onClick={toggle} />
           <Collapse isOpen={isOpen} navbar>
-            {isAuthenticated() ? 
-            <Nav className="ml-auto">
+            <span className="ml-auto badge badge-pill badge-success">
+              { lastIngestionDate.ItemsProccessed.toLocaleString(undefined, {maximumFractionDigits: 0}) } records<br />
+              { Intl.DateTimeFormat("en-US", { dateStyle: "short" }).format(lastIngestionDate.Date) }
+            </span>
+
+            {isAuthenticated() ?
+            <Nav>
                 <UncontrolledDropdown nav inNavbar>
                   <DropdownToggle nav caret>
                       <span className="dot"></span>
@@ -46,7 +55,7 @@ const Navigation = (props) => {
                       </DropdownItem>
                   </DropdownMenu>
                   </UncontrolledDropdown>
-              </Nav>
+              </Nav> 
             : 
             <Nav className="ml-auto">
               <NavItem>

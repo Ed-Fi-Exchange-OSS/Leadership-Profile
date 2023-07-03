@@ -1,3 +1,5 @@
+$ISD = "Garland ISD"
+$lastDataInfoFile= "lastDataInfo.json"
 
 # Configuration: Set appopriate values
 $Config = @{
@@ -36,7 +38,7 @@ Function PostToEdfi($dataJSON, $endPoint)
     $token = $OAuthResponse.access_token
 
     $Headers = @{
-		"Accept" = "application/json"
+        "Accept" = "application/json"
         "Authorization" = "Bearer $token"
         "Content-Type" = "application/json"
     }
@@ -206,7 +208,7 @@ Function CopyErrorLogToDestination($errorLogPath){
 }
 
 Function Init()
-{   
+{
 	$error.clear()
 	
     # Enable Logging
@@ -221,6 +223,9 @@ Function Init()
     Write-Host "Creating a Json Object"
     Create-Json
 
+    Write-Host "Creating JSon file with ingest info"
+    UpdateLastDataInfoFile $ISD $totalCount $lastDataInfoFile
+
     Stop-Transcript
 	
 	$errorLogPath = RenameLogOnError $logPath
@@ -228,5 +233,29 @@ Function Init()
 	
 	Clean20DayOldLogs
 }
+
+Function UpdateLastDataInfoFile()
+{
+    Param (
+        [Parameter(Mandatory=$true)]
+        [string] $isd,
+        [Parameter(Mandatory=$true)]
+        [int] $ItemsProccessed,
+        [Parameter(Mandatory=$true)]
+        [string] $File
+        )
+
+    $lastDataInfo = @"
+{
+    "ISD": "Garland ISD",
+    "Date": "$(Get-Date (Get-Date).ToUniversalTime() -UFormat '+%Y-%m-%dT%H:%M:%S.000Z')",
+    "ItemsProccessed": $ItemsProccessed
+}
+"@
+
+    Write-Host $lastDataInfo
+    $lastDataInfo | Out-File $File
+}
+
 # Execute\Init the task
 Init
