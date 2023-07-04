@@ -11,6 +11,7 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
+  Tooltip,
 } from 'reactstrap';
 
 import { HeaderLogo } from './images'
@@ -30,6 +31,13 @@ const Navigation = (props) => {
 
   const { getLastIngestionDate } = IngestDateService();
   const lastIngestionDate = getLastIngestionDate();
+ 
+  const [tooltipOpen, setTooltipOpen] = useState(false);
+  const toggleTooltip = () => setTooltipOpen(!tooltipOpen);
+  const [tooltipOpenCount, setTooltipOpenCount] = useState(false);
+  const toggleTooltipCount = () => setTooltipOpenCount(!tooltipOpenCount);
+  const [tooltipOpenDate, setTooltipOpenDate] = useState(false);
+  const toggleTooltipDate = () => setTooltipOpenDate(!tooltipOpenDate);
   
   return (
     <div>
@@ -37,10 +45,23 @@ const Navigation = (props) => {
           <NavbarBrand href="/"><HeaderLogo/> {SCHOOL_HEADER}</NavbarBrand>
           <NavbarToggler onClick={toggle} />
           <Collapse isOpen={isOpen} navbar>
-            <span className="ml-auto badge badge-pill badge-success">
-              { lastIngestionDate.ItemsProccessed.toLocaleString(undefined, {maximumFractionDigits: 0}) } records<br />
-              { Intl.DateTimeFormat("en-US", { dateStyle: "short" }).format(lastIngestionDate.Date) }
+            <span className="ml-auto badge badge-pill badge-success pl-4 pr-4">
+              <span id="refreshPill">
+                { lastIngestionDate.ItemsProccessed.toLocaleString(undefined, {maximumFractionDigits: 0}) } records<br />
+                { Intl.DateTimeFormat("en-US", { dateStyle: "short" }).format(lastIngestionDate.Date) }
+                <Tooltip target="refreshPill" isOpen={tooltipOpen} toggle={toggleTooltip}> The data was refreshed </Tooltip>
+              </span>
             </span>
+            <span className="badge badge-pill badge-success m-2">
+              <span id="refreshCountPill">{ lastIngestionDate.ItemsProccessed.toLocaleString(undefined, {maximumFractionDigits: 0}) } records<br /></span>
+              <Tooltip target="refreshCountPill" isOpen={tooltipOpenCount} toggle={toggleTooltipCount}> Records refreshed </Tooltip>
+            </span>
+           
+            <span className="badge badge-pill badge-success m-2">
+              <span id='refreshDatePill'>{ Intl.DateTimeFormat("en-US", { dateStyle: "short" }).format(lastIngestionDate.Date) }</span>
+              <Tooltip target="refreshDatePill" isOpen={tooltipOpenDate} toggle={toggleTooltipDate}> The data was refreshed as of </Tooltip>
+            </span>
+
 
             {isAuthenticated() ?
             <Nav>
