@@ -91,7 +91,8 @@ const LeadersTable = ({ data }) => {
                     <Link to={`profile/${207221}`} target="_blank" rel="noopener noreferrer">{staff.fullNameAnnon}</Link>
                   </td>
                   <td>{staff.totYrsExp}</td>
-                  <td>{(staff.domain1 + staff.domain2 + staff.domain3 + staff.domain4 + staff.domain5)/5}</td>
+                  {/* <td>{(staff.domain1 + staff.domain2 + staff.domain3 + staff.domain4 + staff.domain5)/5}</td> */}
+                  <td>{staff.overallScore}</td>
                   <td>{staff.domain1}</td>
                   <td>{staff.domain2}</td>
                   <td>{staff.domain3}</td>
@@ -123,10 +124,10 @@ const LeadersTable = ({ data }) => {
             <td></td>
             <td></td>
             {/* <a href="#" onClick={exportAsExcel} > Download </a> */}
-            <a href="#" onClick={onDownload} > Download </a>
-          </tr>
+          </tr>            
         </tbody>
       </table>
+      <a href="#" onClick={onDownload} > Download </a>
     </div>
   );
 };

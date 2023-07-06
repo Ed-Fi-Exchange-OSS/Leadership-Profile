@@ -107,11 +107,7 @@ const AditionalRiskFactors = ({ data, selectedRole }) => {
         </Row>
       </Col>
       <Col md="3" className="mt-3">
-        <h5 className="color left-title">
-          <span className="color gray-bold-text mr-1"> {eligibleForRetirementNowCount ?? 0} </span>
-          { selectedRole + "s" ?? "" }
-        </h5>
-        <h5 className="left-title gray-bold-text">Eligible for Retirement</h5>
+        <h5 className="left-title gray-bold-text">{ selectedRole ?? ""} Eligibility for Retirement</h5>
         <Row className="my-3 retirement-max-height">
           <Col>
             {eligibleForRetirementData
