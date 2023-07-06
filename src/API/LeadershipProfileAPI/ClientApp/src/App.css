@@ -7,6 +7,8 @@
   /* width: 1440px; */
 }
 
+
+
 .navbar {
   background-color: #fff;
   height: 96px;
@@ -814,4 +816,26 @@ h5{
   height: 5rem;
   /* margin-right: 0.4rem;
   margin-left: 0.2rem; */
+}
+
+html {
+  font-size: 1rem;
+}
+
+@include media-breakpoint-up(sm) {
+  html {
+    font-size: 1.2rem;
+  }
+}
+
+@include media-breakpoint-up(md) {
+  html {
+    font-size: 1.4rem;
+  }
+}
+
+@include media-breakpoint-up(lg) {
+  html {
+    font-size: 1.6rem;
+  }
 }
