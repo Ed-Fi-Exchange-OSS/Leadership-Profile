@@ -29,7 +29,7 @@ $Config = @{
 
 # ================================================================================================
 # TODO: Move code to get token out of this function and reuse the token in multiple calls to PostToEdfi
-function PostToEdfi($dataJSON, $endPoint, $valuesType="Records") {
+function PostToEdfi($dataJSON, $endPoint, $valuesType="Records", [Scriptblock]$getId) {
     $BaseApiUrl = $Config.BaseApiUrl
     $EdFiUrl = $Config.EdFiUrl
     $OAuthUrl = "$BaseApiUrl" + $Config.OAuthUrl
@@ -69,14 +69,19 @@ function PostToEdfi($dataJSON, $endPoint, $valuesType="Records") {
         $i++
         $percent = [Math]::Round((($i * 100) / $totalCount), 1, [MidpointRounding]::ToEven)
         Write-Progress -Activity "Posting $valuesType" -Status "Item $i/$totalCount [$percent %]" -PercentComplete $percent
-        $staffRecord = ConvertTo-Json $rowJSOn
+        $record = ConvertTo-Json $rowJSOn
         try {
-            $result = Invoke-RestMethod -Uri $uri -Method Post -Headers $Headers -Body $staffRecord
+            $result = Invoke-RestMethod -Uri $uri -Method Post -Headers $Headers -Body $record
         }
         catch {
-            Write-Host "$i) An error occurred: $uri"
-            Write-Host "$staffRecord"
-            Write-Host $_
+            $ErrorMesg = [PSCustomObject]@{
+                Reg      = $i
+                RecordId = $(&$getId $record)
+                Error    = $_.messsage
+                Uri      = $uri
+            }
+
+            Write-Output $ErrorMesg
         }
     }
     # ================================================================================================
@@ -86,7 +91,7 @@ function PostToEdfi($dataJSON, $endPoint, $valuesType="Records") {
 # ================================================================================================
 
 function Load-Staff() {  
-    Write-Host "Working file '"  $Config.StaffSourceFle "'"
+    Write-Host "Working file '$($Config.StaffSourceFle)'"
     $dataJSON = (
         Import-Csv $Config.StaffSourceFle -Header StaffUSI, StaffUniqueId, FirstName, MiddleName, LastSurname, 
         StaffClassification, YearsOfProfessionalExperience, BirthDate, SexDescriptor, RaceDescriptor, 
@@ -160,7 +165,7 @@ function Post-Staff($jsonData) {
 }
 
 function Load-School() {  
-    Write-Host "Working file '"  $Config.SchoolSourceFle "'"
+    Write-Host "Working file '$($Config.SchoolSourceFle)'"
     $dataJSON = (
         Import-Csv $Config.SchoolSourceFle -Header SchoolId, DistrictId, NameOfInstitution, ShortnameOfInstitution, 
         SchoolCategory, AddressStreet, AddressCity, AddressZipCode, PhoneNumber |
@@ -259,11 +264,12 @@ function Load-StaffSchoolAssociation() {
 }
 
 function Post-StaffEducationOrganizationAssignmentAssociations($jsonData, $staffClassificationMap) {
-    $endPoint = "/ed-fi/schools"
+    $endPoint = "/ed-fi/staffEducationOrganizationAssignmentAssociations"
 
     $records = ($jsonData | ForEach-Object {
             $staffUniqueId = [System.Security.SecurityElement]::Escape($_.StaffUniqueId).Trim()
             $staffClassification = $staffClassificationMap[$staffUniqueId]
+
             $staffClassificationDescriptor = if($staffClassification){ "uri://ed-fi.org/StaffClassificationDescriptor#$staffClassification" } else { $null}
 
             [PSCustomObject]@{
@@ -276,8 +282,8 @@ function Post-StaffEducationOrganizationAssignmentAssociations($jsonData, $staff
             }
         })
 
-    # PostToEdfi $records $endPoint "Schools"
-    $records   
+    PostToEdfi $records $endPoint "Staff-Education Organization Assignment Associations" { param($staff) $staff.StaffUniqueId }
+    #$records   
 }
 
 function Load-User() {  
