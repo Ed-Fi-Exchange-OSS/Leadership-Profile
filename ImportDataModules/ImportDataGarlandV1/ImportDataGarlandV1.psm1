@@ -1,40 +1,11 @@
-# Configuration: Set appopriate values
-$Config = @{
-    SchoolSourceFile         = "Data\garland-data-20230704\20230629_GarlandISD_School.CSV"
-    #StaffSourceFile          = "Data\garland-data-20230704\20230629_GarlandISD_Staff.small.CSV"
-    StaffSourceFile          = "Data\garland-data-20230704\20230629_GarlandISD_Staff.CSV"
-    StaffOrgAssignSourceFile = "Data\garland-data-20230704\20230629_GarlandISD_StaffOrgAssign.CSV"
-    CertificatesSourceFile   = "Data\garland-data-20230704\20230629_GarlandISD_Certificates.CSV"
-    UsersSourceFile          = "Data\garland-data-20230704\20230629_GarlandISD_User.CSV"
-
-    ErrorsOutputFile         = "Data\garland-data-20230704\Errors.txt"
-
-    OAuthUrl                = "/oauth/token"
-    # BaseApiUrl              = 'https://api.ed-fi.org/v5.3/api'
-    BaseApiUrl              = 'https://pc-slayerwood:443/WebApi'
-    EdFiUrl                 = "/data/v3"
-    # Key                     = "RvcohKz9zHI4"
-    # Secret                  = "E1iEFusaNf81xzCxwHfbolkC"
-    Key                     = "abqdlvFektKS"
-    Secret                  = "ec6NlGHpxT09lNisWmMmzViP"
-
-    NamesPace               = "uri://mybps.org"
-    logRootPath             = "Logs"
-
-    ISD                     = "Garland ISD"
-    ISDCounty               = "Dallas"
-    ISDStateAbbreviation    = "TX"
-
-    lastDataInfoFile        = "lastDataInfo.json"
-    errorsInfoFile          = "lastDataErrors.json" # TODO
-}
+$ModuleVersion = '1.0.0'
+$Description = 'Module with V1 of Garlands functions to import data using the ED-FI API'
+$FunctionsToExport = 'Import-EdData'
 
 # Region Garland Specific Functions
 function TransformStaff() {
     process {
         $staffUniqueId = [System.Security.SecurityElement]::Escape($_.StaffUniqueId).Trim()
-
-        #$StaffClassificationMap[$staffUniqueId] = [System.Security.SecurityElement]::Escape($_.StaffClassification).Trim()
 
         $sexDescriptor = switch ([System.Security.SecurityElement]::Escape($_.SexDescriptor)) {
             "F" { "uri://ed-fi.org/SexDescriptor#Female" }
@@ -169,7 +140,6 @@ function TransformStaffEducationOrganizationAssignmentAssociations($staffClassif
   }
 }
 
-
 function Load-User() {  
     Write-Host "Working file '"  $Config.UsersSourceFle "'"
     $dataJSON = (
@@ -179,7 +149,7 @@ function Load-User() {
     return $dataJSON
 }
 
-Function Import-EdData() {
+Function Import-EdData($Config) {
     Import-Module .\ImportDataModules\ImportDataBasicFunctions -Force
 
     $StaffFileHeaders = 'StaffUSI', 'StaffUniqueId', 'FirstName', 'MiddleName', 'LastSurname', 'StaffClassification', 
@@ -193,8 +163,6 @@ Function Import-EdData() {
 
     $OnError = {param($errorObj) AddtoErrorFile -Errors $errorObj -FilePath $Config.ErrorsOutputFile}
 
-    <#
-    #>
     Write-Progress -Activity "Processing Schools" -PercentComplete -1
     Add-Content -Path $Config.ErrorsOutputFile -Value "`r`n$($Config.SchoolSourceFile)`r`n"
 
@@ -212,10 +180,11 @@ Function Import-EdData() {
         NPost -Config $Config -EndPoint "/ed-fi/staffs" -GetRecordId { param($staff) $staff.StaffUniqueId } -OnError $OnError |
         ShowProggress -valuesType "Staff" 
 
-    # # Write-Progress -Activity "Loading Staff" -PercentComplete -1
-    # # $res = NLoad $StaffFileHeaders $Config.StaffSourceFile | 
-    # #     Tap -ScriptBlock { $StaffClassificationMap[[System.Security.SecurityElement]::Escape($_.StaffUniqueId)] = [System.Security.SecurityElement]::Escape($_.StaffClassification).Trim() } |
-    # #     ShowProggress -valuesType "Staff" 
+    # Write-Progress -Activity "Loading Staff" -PercentComplete -1
+    # $StaffClassificationMap = @{}
+    # $res = NLoad $StaffFileHeaders $Config.StaffSourceFile | 
+    #     Tap -ScriptBlock {param($record) $StaffClassificationMap[[System.Security.SecurityElement]::Escape($record.StaffUniqueId)] = [System.Security.SecurityElement]::Escape($record.StaffClassification).Trim() } |
+    #     ShowProggress -valuesType "Staff" 
 
     Write-Progress -Activity "Processing Staff-Education Organization Assignment Associations" -PercentComplete -1
     Add-Content -Path $Config.ErrorsOutputFile -Value "`r`n$($Config.StaffOrgAssignSourceFile)`r`n"
@@ -227,7 +196,7 @@ Function Import-EdData() {
 
     # $userData = Load-User
     # $userData
-    Remove-Module -Name ImportDataBasicFunctions -Foce
+    Remove-Module -Name ImportDataBasicFunctions -Force
 }
 
-Import-EdData
+Export-ModuleMember -Function Import-EdData

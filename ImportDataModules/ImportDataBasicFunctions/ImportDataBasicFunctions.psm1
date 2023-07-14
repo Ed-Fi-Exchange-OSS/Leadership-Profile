@@ -22,6 +22,7 @@ function GetToken {
             Grant_type    = 'client_credentials'
         }
 
+        Write-Progress -Activity "Getting token" -PercentComplete -1
         $OAuthResponse = Invoke-RestMethod -Uri "$OAuthUrl" -Method Post -Body $FormData
         $script:EdfiToken = $OAuthResponse.access_token
     }
