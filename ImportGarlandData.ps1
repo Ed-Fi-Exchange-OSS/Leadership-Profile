@@ -7,6 +7,8 @@ $Config = @{
     CertificatesSourceFile   = "Data\garland-data-20230704\20230629_GarlandISD_Certificates.CSV"
     UsersSourceFile          = "Data\garland-data-20230704\20230629_GarlandISD_User.CSV"
 
+    ErrorsOutputFile         = "Data\garland-data-20230704\Errors.txt"
+
     OAuthUrl                = "/oauth/token"
     # BaseApiUrl              = 'https://api.ed-fi.org/v5.3/api'
     BaseApiUrl              = 'https://pc-slayerwood:443/WebApi'
@@ -27,139 +29,7 @@ $Config = @{
     errorsInfoFile          = "lastDataErrors.json" # TODO
 }
 
-
-$StaffFileHeaders = 'StaffUSI', 'StaffUniqueId', 'FirstName', 'MiddleName', 'LastSurname', 'StaffClassification', 
-                    'YearsOfProfessionalExperience', 'BirthDate', 'SexDescriptor', 'RaceDescriptor', 
-                    'Email', 'StateAbbreviationDescriptor', 'City', 'PostalCode' 
-
-$SchoolFileHeaders = 'SchoolId', 'DistrictId', 'NameOfInstitution', 'ShortnameOfInstitution', 
-                     'SchoolCategory', 'AddressStreet', 'AddressCity', 'AddressZipCode', 'PhoneNumber'
-
-$StaffOrgAssignFileHeaders = 'StaffUniqueId', 'SchoolId', 'PositionTitle', 'BeginDate', 'EndDate', 'SeparationReasonDescriptor'              
-
-# ================================================================================================
-# Reuse token
-$EdfiToken = $null
-function GetToken {
-    if( [String]::IsNullOrWhiteSpace($EdfiToken)){
-        $OAuthUrl = "$($Config.BaseApiUrl)$($Config.OAuthUrl)"
-            
-        $FormData = @{
-            Client_id     = $Config.Key
-            Client_secret = $Config.Secret
-            Grant_type    = 'client_credentials'
-        }
-
-        $OAuthResponse = Invoke-RestMethod -Uri "$OAuthUrl" -Method Post -Body $FormData
-        $EdfiToken = $OAuthResponse.access_token
-    }
-    return $EdfiToken    
-}
-
-function Load-User() {  
-    Write-Host "Working file '"  $Config.UsersSourceFle "'"
-    $dataJSON = (
-        Import-Csv $Config.UsersSourceFle -Header StaffUSI, DistrictId , FirstName, MiddleName, LastName, Email, 
-        SexDescriptor, StaffClassification, IsSupportStaff | Select-Object -Skip 1 
-    )
-    return $dataJSON
-}
-
-function NLoad($headers, $sourceFilePath) {
-    return Import-Csv $sourceFilePath -Header $headers | Select-Object -Skip 1
-}
-
-function NPost(){
-    [CmdletBinding()]
-    param (
-        [Parameter(ValueFromPipeline = $true)]
-        $InputObject,
-        [Parameter(Mandatory = $true)]
-        $EndPoint,
-        [ScriptBlock]
-        $OnError,
-        [ScriptBlock]
-        $GetRecordId
-    )    
-
-    begin {
-        $BaseApiUrl = $Config.BaseApiUrl
-        $EdFiUrl = $Config.EdFiUrl
-    
-        # * Get a token *
-        $token = GetToken
-        # ================================================================================================
-    
-        $Headers = @{
-            "Accept"        = "application/json"
-            "Authorization" = "Bearer $token"
-            "Content-Type"  = "application/json"
-        }
-    
-        $uri = "$BaseApiUrl$EdFiUrl$EndPoint"
-
-        $global:PostErrors = 0
-        $i = 0
-    }
-    process {
-        $jsonRecord = ConvertTo-Json $InputObject
-        try {
-            $i++
-            $result = Invoke-RestMethod -Uri $uri -Method Post -Headers $Headers -Body $jsonRecord
-        }
-        catch {
-            $global:PostErrors++
-            $recordId = if($GetRecordId){ &$GetRecordId $InputObject }
-            $ErrorObj = [PSCustomObject]@{
-                Reg      = $i
-                #Record   = $InputObject
-                RecordId = $recordId
-                Uri      = $uri
-                Error    = ($_.ErrorDetails.Message | ConvertFrom-Json ).message
-            }
-
-            if($OnError){
-                &$OnError $ErrorObj
-            } else {
-                #Write-Error "Reg $i, RecordId '$recordId' EndPoint '$EndPoint', Error: $($ErrorObj.Error)"
-            }
-        }
-        return $result
-    }
-}
-
-function Tap {
-    [CmdletBinding()]
-    param (
-        [Parameter(ValueFromPipeline = $true)]
-        $InputObject,
-        [Parameter(Mandatory = $true)]
-        [ScriptBlock]
-        $ScriptBlock
-    )    
-
-    process {
-        &$ScriptBlock $InputObject
-        return $InputObject
-    }
-}
-
-function ShowProggress($valuesType) {
-    begin { 
-      $i =  0 
-      $sw = [System.Diagnostics.Stopwatch]::StartNew()    
-    }
-    process {
-      if ($sw.Elapsed.TotalMilliseconds -ge 500) {
-          Write-Progress -Activity "Processing Staff" -Status "Posting $valuesType" -CurrentOperation "Item $i$(if($PostErrors -gt 0){" [$PostErrors errors]"})" -PercentComplete -1
-          $sw.Reset(); $sw.Start()
-      }
-      $i++
-
-      return $_
-    }
-}
-
+# Region Garland Specific Functions
 function TransformStaff() {
     process {
         $staffUniqueId = [System.Security.SecurityElement]::Escape($_.StaffUniqueId).Trim()
@@ -298,43 +168,66 @@ function TransformStaffEducationOrganizationAssignmentAssociations($staffClassif
     }    
   }
 }
-function AddToErrorFile([PSCustomObject]$errors) {
-    Add-Content -Path ".\errors.txt" -Value ($errors | Format-List | Out-String).Trim()
+
+
+function Load-User() {  
+    Write-Host "Working file '"  $Config.UsersSourceFle "'"
+    $dataJSON = (
+        Import-Csv $Config.UsersSourceFle -Header StaffUSI, DistrictId , FirstName, MiddleName, LastName, Email, 
+        SexDescriptor, StaffClassification, IsSupportStaff | Select-Object -Skip 1 
+    )
+    return $dataJSON
 }
 
-Function Main() {
-    Set-Content -Path ".\errors.txt" -Value ""
+Function Import-EdData() {
+    Import-Module .\ImportDataModules\ImportDataBasicFunctions -Force
+
+    $StaffFileHeaders = 'StaffUSI', 'StaffUniqueId', 'FirstName', 'MiddleName', 'LastSurname', 'StaffClassification', 
+    'YearsOfProfessionalExperience', 'BirthDate', 'SexDescriptor', 'RaceDescriptor', 
+    'Email', 'StateAbbreviationDescriptor', 'City', 'PostalCode' 
+    $SchoolFileHeaders = 'SchoolId', 'DistrictId', 'NameOfInstitution', 'ShortnameOfInstitution', 
+        'SchoolCategory', 'AddressStreet', 'AddressCity', 'AddressZipCode', 'PhoneNumber'
+    $StaffOrgAssignFileHeaders = 'StaffUniqueId', 'SchoolId', 'PositionTitle', 'BeginDate', 'EndDate', 'SeparationReasonDescriptor'     
+
+    Set-Content -Path $Config.ErrorsOutputFile -Value "$(Get-Date -Format 'yyyy-MM-ddTHH:mm:ss')"
+
+    $OnError = {param($errorObj) AddtoErrorFile -Errors $errorObj -FilePath $Config.ErrorsOutputFile}
 
     <#
     #>
     Write-Progress -Activity "Processing Schools" -PercentComplete -1
-    NLoad $SchoolFileHeaders $Config.SchoolSourceFile | 
+    Add-Content -Path $Config.ErrorsOutputFile -Value "`r`n$($Config.SchoolSourceFile)`r`n"
+
+    $res = NLoad $SchoolFileHeaders $Config.SchoolSourceFile | 
         TransformSchool |
-        NPost -EndPoint "/ed-fi/schools" -GetRecordId { param($school) $school.SchoolId } -OnError ${function:AddToErrorFile} |
+        NPost -Config $Config -EndPoint "/ed-fi/schools" -GetRecordId { param($school) $school.SchoolId } -OnError $OnError |
         ShowProggress -valuesType "School" 
 
     Write-Progress -Activity "Processing Staff" -PercentComplete -1
+    Add-Content -Path $Config.ErrorsOutputFile -Value "`r`n$($Config.StaffSourceFile)`r`n"
     $StaffClassificationMap = @{}
-    NLoad $StaffFileHeaders $Config.StaffSourceFile | 
+    $res = NLoad $StaffFileHeaders $Config.StaffSourceFile | 
         Tap -ScriptBlock { $StaffClassificationMap[[System.Security.SecurityElement]::Escape($_.StaffUniqueId)] = [System.Security.SecurityElement]::Escape($_.StaffClassification).Trim() } | 
         TransformStaff | 
-        NPost -EndPoint "/ed-fi/staffs" -GetRecordId { param($staff) $staff.StaffUniqueId } -OnError  ${function:AddToErrorFile} |
+        NPost -Config $Config -EndPoint "/ed-fi/staffs" -GetRecordId { param($staff) $staff.StaffUniqueId } -OnError $OnError |
         ShowProggress -valuesType "Staff" 
 
-    # Write-Progress -Activity "Loading Staff" -PercentComplete -1
-    # $res = NLoad $StaffFileHeaders $Config.StaffSourceFile | 
-    #     Tap -ScriptBlock { $StaffClassificationMap[[System.Security.SecurityElement]::Escape($_.StaffUniqueId)] = [System.Security.SecurityElement]::Escape($_.StaffClassification).Trim() } |
-    #     ShowProggress -valuesType "Staff" 
+    # # Write-Progress -Activity "Loading Staff" -PercentComplete -1
+    # # $res = NLoad $StaffFileHeaders $Config.StaffSourceFile | 
+    # #     Tap -ScriptBlock { $StaffClassificationMap[[System.Security.SecurityElement]::Escape($_.StaffUniqueId)] = [System.Security.SecurityElement]::Escape($_.StaffClassification).Trim() } |
+    # #     ShowProggress -valuesType "Staff" 
 
     Write-Progress -Activity "Processing Staff-Education Organization Assignment Associations" -PercentComplete -1
-    NLoad $StaffOrgAssignFileHeaders $Config.StaffOrgAssignSourceFile |
+    Add-Content -Path $Config.ErrorsOutputFile -Value "`r`n$($Config.StaffOrgAssignSourceFile)`r`n"
+    $res = NLoad $StaffOrgAssignFileHeaders $Config.StaffOrgAssignSourceFile |
         TransformStaffEducationOrganizationAssignmentAssociations $StaffClassificationMap |
-        NPost -EndPoint "/ed-fi/staffEducationOrganizationAssignmentAssociations" -GetRecordId { param($staffEdOrg) 
-            $staffEdOrg.StaffReference.StaffUniqueId } -OnError ${function:AddToErrorFile} |
+        NPost -Config $Config -EndPoint "/ed-fi/staffEducationOrganizationAssignmentAssociations" -GetRecordId { param($staffEdOrg) 
+            $staffEdOrg.StaffReference.StaffUniqueId } -OnError $OnError |
         ShowProggress -valuesType "Staff-Education Organization" 
 
     # $userData = Load-User
     # $userData
+    Remove-Module -Name ImportDataBasicFunctions -Foce
 }
 
-Main
+Import-EdData
