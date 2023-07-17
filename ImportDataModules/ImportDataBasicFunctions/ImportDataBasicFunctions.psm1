@@ -13,7 +13,7 @@ function GetToken {
         $Config
     )    
 
-    if( [String]::IsNullOrWhiteSpace($EdfiToken)){
+    if ( [String]::IsNullOrWhiteSpace($EdfiToken)) {
         $OAuthUrl = "$($Config.BaseApiUrl)$($Config.OAuthUrl)"
             
         $FormData = @{
@@ -22,7 +22,7 @@ function GetToken {
             Grant_type    = 'client_credentials'
         }
 
-        Write-Progress -Activity "Getting token" -PercentComplete -1
+        Write-Progress -Activity 'Getting token' -PercentComplete -1
         $OAuthResponse = Invoke-RestMethod -Uri "$OAuthUrl" -Method Post -Body $FormData
         $script:EdfiToken = $OAuthResponse.access_token
     }
@@ -33,12 +33,12 @@ function NLoad($headers, $sourceFilePath) {
     return Import-Csv $sourceFilePath -Header $headers | Select-Object -Skip 1
 }
 
-function NPost(){
+function NPost() {
     [CmdletBinding()]
     param (
         [Parameter(ValueFromPipeline = $true)]
         $InputObject,
-        [Parameter(Mandatory = $true)]
+        #[Parameter(Mandatory = $true)]
         $EndPoint,
         [Parameter(Mandatory = $true)]
         $Config,
@@ -57,36 +57,38 @@ function NPost(){
         # ================================================================================================
     
         $Headers = @{
-            "Accept"        = "application/json"
-            "Authorization" = "Bearer $token"
-            "Content-Type"  = "application/json"
+            'Accept'        = 'application/json'
+            'Authorization' = "Bearer $token"
+            'Content-Type'  = 'application/json'
         }
     
         $uri = "$BaseApiUrl$EdFiUrl$EndPoint"
 
-        $script:PostErrors = 0
         $i = 0
     }
     process {
+        if($InputObject.ObjectType){
+            $uri = "$BaseApiUrl$EdFiUrl/ed-fi/$($InputObject.ObjectType)"
+        }
         $jsonRecord = ConvertTo-Json $InputObject
         try {
             $i++
             $result = Invoke-RestMethod -Uri $uri -Method Post -Headers $Headers -Body $jsonRecord
         }
         catch {
-            $script:PostErrors++
-            $recordId = if($GetRecordId){ &$GetRecordId $InputObject }
+            $recordId = if ($GetRecordId) { &$GetRecordId $InputObject }
             $ErrorObj = [PSCustomObject]@{
                 Reg      = $i
-                #Record   = $InputObject
-                RecordId = $recordId
                 Uri      = $uri
-                Error    = ($_.ErrorDetails.Message | ConvertFrom-Json ).message
+                RecordId = $recordId
+                Record   = ($InputObject | ConvertTo-Json)
+                Error    = $_.ErrorDetails.Message
             }
 
-            if($OnError){
+            if ($OnError) {
                 &$OnError $ErrorObj
-            } else {
+            }
+            else {
                 #Write-Error "Reg $i, RecordId '$recordId' EndPoint '$EndPoint', Error: $($ErrorObj.Error)"
             }
         }
@@ -112,20 +114,83 @@ function Tap {
 
 function ShowProggress($valuesType) {
     begin { 
-      $i =  0 
-      $sw = [System.Diagnostics.Stopwatch]::StartNew()    
+        $i = 0 
+        $sw = [System.Diagnostics.Stopwatch]::StartNew()    
     }
     process {
-      if ($sw.Elapsed.TotalMilliseconds -ge 500) {
-          Write-Progress -Activity "Processing Staff" -Status "Posting $valuesType" -CurrentOperation "Item $i$(if($script:PostErrors -gt 0){" [$script:PostErrors errors]"})" -PercentComplete -1
-          $sw.Reset(); $sw.Start()
-      }
-      $i++
+        if ($sw.Elapsed.TotalMilliseconds -ge 500) {
+            Write-Progress -Activity 'Processing Staff' -Status "Posting $valuesType" -CurrentOperation "Item $i$(if($script:PostErrors -gt 0){" [$script:PostErrors errors]"})" -PercentComplete -1
+            $sw.Reset(); $sw.Start()
+        }
+        $i++
 
-      return $_
+        return $_
     }
 }
 
-function AddToErrorFile([PSCustomObject]$Errors, $FilePath = ".\errors.txt") {
+$script:PostErrors = 0
+function AddToErrorFile([PSCustomObject]$Errors, $FilePath = '.\errors.txt') {
+    $script:PostErrors++
     Add-Content -Path $FilePath -Value "$(($Errors | Format-List | Out-String).Trim())`r`n"
+}
+
+function FilterDistinct {
+    [CmdletBinding()]
+    param(
+        [parameter(ValueFromPipeline)]
+        $InputObject,
+        [Parameter(Mandatory = $true)]
+        [ScriptBlock]
+        $GetIdScriptBlock
+    )
+
+    begin {
+        $IdList = @{}
+    }
+    process {
+        $id = (&$GetIdScriptBlock $InputObject)
+        if ([String]::IsNullOrWhiteSpace($id)) {
+            return $InputObject
+        }
+        if (!$IdList.ContainsKey($id)) {
+            $IdList[$id] = $true
+            return $InputObject
+        }
+    }
+}
+
+function GetGradeLevels {
+    param (
+        $SchoolCategory
+    )
+    
+    $gradeLevels = switch ($SchoolCategory) {
+        'Elementary School' {
+            (
+                [PSCustomObject]@{ GradeLevelDescriptor = 'uri://ed-fi.org/GradeLevelDescriptor#Kindergarten' },
+                [PSCustomObject]@{ GradeLevelDescriptor = 'uri://ed-fi.org/GradeLevelDescriptor#First grade' },
+                [PSCustomObject]@{ GradeLevelDescriptor = 'uri://ed-fi.org/GradeLevelDescriptor#Second grade' },
+                [PSCustomObject]@{ GradeLevelDescriptor = 'uri://ed-fi.org/GradeLevelDescriptor#Third grade' },
+                [PSCustomObject]@{ GradeLevelDescriptor = 'uri://ed-fi.org/GradeLevelDescriptor#Fourth grade' },
+                [PSCustomObject]@{ GradeLevelDescriptor = 'uri://ed-fi.org/GradeLevelDescriptor#Fifth grade' }
+            )
+        }
+        'Middle School' {
+            (
+                [PSCustomObject]@{ GradeLevelDescriptor = 'uri://ed-fi.org/GradeLevelDescriptor#Sixth grade' },
+                [PSCustomObject]@{ GradeLevelDescriptor = 'uri://ed-fi.org/GradeLevelDescriptor#Seventh grade' },
+                [PSCustomObject]@{ GradeLevelDescriptor = 'uri://ed-fi.org/GradeLevelDescriptor#Eighth grade' }
+            )
+        }
+        'High School' {
+            (
+                [PSCustomObject]@{ GradeLevelDescriptor = 'uri://ed-fi.org/GradeLevelDescriptor#Ninth grade' },
+                [PSCustomObject]@{ GradeLevelDescriptor = 'uri://ed-fi.org/GradeLevelDescriptor#Eleventh grade' },
+                [PSCustomObject]@{ GradeLevelDescriptor = 'uri://ed-fi.org/GradeLevelDescriptor#Tenth grade' },
+                [PSCustomObject]@{ GradeLevelDescriptor = 'uri://ed-fi.org/GradeLevelDescriptor#Twelfth grade' }
+            )
+        }
+        Default { @(,, [PSCustomObject]@{ GradeLevelDescriptor = 'uri://ed-fi.org/GradeLevelDescriptor#Other' } ) }
+    }
+    return $gradeLevels
 }
