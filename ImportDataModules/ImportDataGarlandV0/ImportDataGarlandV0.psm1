@@ -107,7 +107,7 @@ function Transform([scriptblock]$OnError) {
     $school = ($_ | TransformSchool)
     if(!$school.SchoolId){ 
         $importError = [ImportError]@{            
-            Record   = $_
+            Record   = $school
             ErrorDetails    = "SchoolId is null"
         }
         if ($OnError) {
@@ -131,7 +131,7 @@ Function Import-EdData($Config) {
     'EndDate', 'ReasonEndDate', 'School Year', 'PositionTitle', 'Age', 'YearsOfProfessionalExperience', 'SexDescriptor', 'RaceDescriptor', 'Degree Level', 'Email'
 
     Set-Content -Path $Config.ErrorsOutputFile -Value "$(Get-Date -Format 'yyyy-MM-ddTHH:mm:ss')"
-    Add-Content -Path $Config.ErrorsOutputFile -Value "`r`n$($Config.SchoolSourceFile)`r`n"
+    Add-Content -Path $Config.ErrorsOutputFile -Value "`r`n$($Config.V0SourceFile)`r`n"
 
     Write-Progress -Activity "Importing data from $($Config.SchoolSourceFile)" -PercentComplete -1
 
@@ -142,10 +142,10 @@ Function Import-EdData($Config) {
         NPost -Config $Config |
         WriteToFileIfImportError -FilePath $Config.ErrorsOutputFile |
         CountResults |
-        ShowProggress -Activity "Importing data from $($Config.SchoolSourceFile)" |
-        Select-Object -Last 1 @{Name='ISD';Expression={"Garland ISD"}},@{Name='Date';Expression={Get-Date}}, *
+        ShowProggress -Activity "Importing data from $($Config.V0SourceFile)" |
+        Select-Object -Last 1 @{Name='ISD';Expression={$Config.ISD}},@{Name='Date';Expression={Get-Date}}, *
 
-    $res | ConvertTo-Json
+    $res | Format-List
 }
 
 Export-ModuleMember -Function Import-EdData

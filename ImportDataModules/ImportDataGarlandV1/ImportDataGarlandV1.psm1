@@ -135,6 +135,8 @@ Function Import-EdData($Config) {
 
     Add-Content -Path $Config.ErrorsOutputFile -Value "`r`n$($Config.SchoolSourceFile)`r`n"
 
+    Write-Progress -Activity "Importing data from $($Config.SchoolSourceFile)" -PercentComplete -1
+
     $res = NLoad $SchoolFileHeaders $Config.SchoolSourceFile | 
         TransformSchool |
         NPost -Config $Config |
@@ -173,7 +175,7 @@ Function Import-EdData($Config) {
         ShowProggress -Activity "Importing data" -Status "Importing data from $($Config.StaffOrgAssignSourceFile)" |
         Select-Object -Last 1
 
-    $res | Select-Object @{Name='ISD';Expression={"Garland ISD"}},@{Name='Date';Expression={Get-Date}}, * | ConvertTo-Json
+    $res | Select-Object @{Name='ISD';Expression={$Config.ISD}},@{Name='Date';Expression={Get-Date}}, * | ConvertTo-Json
 }
 
 Export-ModuleMember -Function Import-EdData

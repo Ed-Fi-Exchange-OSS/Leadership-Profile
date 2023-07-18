@@ -200,10 +200,15 @@ function CountResults {
         $InputValue,
         $InitialValues)
     begin {
-        $reduced = $InitialValues ?? [PSCustomObject]@{
-            Success = 0
-            Errors  = 0
-        }    
+        $reduced = if ($InitialValues) {
+            $InitialValues
+        }
+        else {
+            [PSCustomObject]@{
+                Success = 0
+                Errors  = 0
+            }   
+        } 
     }
     process {
         if ($InputValue -is [ImportError]) {
@@ -263,8 +268,8 @@ function WriteToFileIfImportError {
         if($InputObject -is [ImportError]){
             $toWrite = [PSCustomObject]@{
                 Uri          = $InputObject.Uri
-                Record       = ($InputObject.Record | ConvertTo-Json)
-                ErrorDetails = ($InputObject.ErrorDetails | ConvertTo-Json)
+                Record       = ($InputObject.Record | ConvertTo-Json -Depth 10)
+                ErrorDetails = ($InputObject.ErrorDetails | ConvertTo-Json -Depth 10)
             }
             Add-Content -Path $FilePath -Value "$(($toWrite | Format-List | Out-String).Trim())`r`n"    
         }
@@ -310,7 +315,7 @@ class ImportError {
 #Classes EdFi
 
 class EdFiSchool {
-    [int64] $SchoolId
+    [System.Nullable[int64]]$SchoolId
     [string]$NameOfInstitution
     [string]$ShortnameOfInstitution
     [Object]$LocalEducationAgencyReference

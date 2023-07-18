@@ -6,11 +6,11 @@ $Config = @{
     StaffOrgAssignSourceFile = "Data\garland-data-20230704\20230629_GarlandISD_StaffOrgAssign.CSV"
     CertificatesSourceFile   = "Data\garland-data-20230704\20230629_GarlandISD_Certificates.CSV"
     UsersSourceFile          = "Data\garland-data-20230704\20230629_GarlandISD_User.CSV"
+    #ErrorsOutputFile         = "Data\garland-data-20230704\Errors.txt"
 
     V0SourceFile             = "Data\garland-data-0\20230104_AP_P Info.csv"
     ErrorsOutputFile         = "Data\garland-data-0\Errors.txt"
 
-    #ErrorsOutputFile         = "Data\garland-data-20230704\Errors.txt"
 
     OAuthUrl                = "/oauth/token"
     # BaseApiUrl              = 'https://api.ed-fi.org/v5.3/api'
@@ -53,4 +53,4 @@ Import-Module .\ImportDataModules\ImportDataGarlandV0 -Force
 Import-EdData $Config
 
 Remove-Module -Name ImportDataGarlandV0 -Force
-CleanPS
+#CleanPS
