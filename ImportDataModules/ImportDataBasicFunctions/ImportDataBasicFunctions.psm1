@@ -331,7 +331,7 @@ class EdFiStaff {
     [string]$StaffUniqueId
     [string]$LastSurname
     [string]$FirstName
-    [string]$MiddleName
+    [Object]$MiddleName # it's a string but object is used to be able to set it null
     [string]$BirthDate
     [string]$SexDescriptor
     [string]$Races

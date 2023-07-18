@@ -149,7 +149,7 @@ function Transform([scriptblock]$OnError) {
     $school = ($_ | TransformSchool)
     if(!$school.SchoolId){ 
         $importError = [ImportError]@{            
-            Record   = $school
+            Record   = $_
             ErrorDetails    = "SchoolId is null"
         }
         if ($OnError) {
