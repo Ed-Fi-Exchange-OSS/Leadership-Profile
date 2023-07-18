@@ -107,6 +107,7 @@ function GetEndPointByType([Type]$ClassType){
     switch ($ClassType.Name) {
         'EdFiSchool' { '/ed-fi/schools' }
         'EdFiStaff' { '/ed-fi/staffs' }
+        'EdFiStaffOrgEmployment' { '/ed-fi/staffEducationOrganizationEmploymentAssociations' }
         'EdFiStaffOrgAssociations' { '/ed-fi/staffEducationOrganizationAssignmentAssociations' }
         Default {$null}
     }
@@ -150,14 +151,13 @@ function NPost() {
         $i = 0
     }
     process {
-        $EndPoint = GetEndPointByType $InputObject.GetType()
         if($InputObject -is [ImportError]){ return $InputObject}
+        $EndPoint = GetEndPointByType $InputObject.GetType()
         if($EndPoint){
             $uri = "$BaseApiUrl$EdFiUrl$EndPoint"
         }
         $jsonRecord = ConvertTo-Json $InputObject
         try {
-            $i++
             $result = Invoke-RestMethod -Uri $uri -Method Post -Headers $Headers -Body $jsonRecord
             Write-Output $InputObject
         }
@@ -315,7 +315,7 @@ class ImportError {
 #Classes EdFi
 
 class EdFiSchool {
-    [System.Nullable[int64]]$SchoolId
+    [int64]$SchoolId
     [string]$NameOfInstitution
     [string]$ShortnameOfInstitution
     [Object]$LocalEducationAgencyReference
@@ -339,6 +339,16 @@ class EdFiStaff {
     [int]$YearsOfPriorProfessionalExperience
     [string]$Email
     [Object[]]$Address
+}
+
+class EdFiStaffOrgEmployment {
+    [object]$EducationOrganizationReference
+    [object]$StaffReference
+    [string]$EmploymentStatusDescriptor
+    [string]$HireDate
+    [object]$EndDate # it's a string but object is used to be able to set it null
+    [object]$SeparationDescriptor  # it's a string but object is used to be able to set it null
+    [object]$SeparationReasonDescriptor  # it's a string but object is used to be able to set it null
 }
 
 class EdFiStaffOrgAssociations {

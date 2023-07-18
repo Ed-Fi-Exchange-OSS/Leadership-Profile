@@ -158,14 +158,6 @@ Function Import-EdData($Config) {
         ShowProggress -Activity "Importing data" -Status "Importing data from $($Config.StaffSourceFile)" |
         Select-Object -Last 1
 
-    #$res | ConvertTo-Json
-
-    # Write-Progress -Activity "Loading Staff" -PercentComplete -1
-    # $StaffClassificationMap = @{}
-    # $res = NLoad $StaffFileHeaders $Config.StaffSourceFile | 
-    #     Tap -ScriptBlock {param($record) $StaffClassificationMap[[System.Security.SecurityElement]::Escape($record.StaffUniqueId)] = [System.Security.SecurityElement]::Escape($record.StaffClassification).Trim() } |
-    #     ShowProggress -Activity "Calculating Staff Classification Map" 
-
     Add-Content -Path $Config.ErrorsOutputFile -Value "`r`n$($Config.StaffOrgAssignSourceFile)`r`n"
     $res = NLoad $StaffOrgAssignFileHeaders $Config.StaffOrgAssignSourceFile |
         TransformStaffEducationOrganizationAssignmentAssociations $StaffClassificationMap |
