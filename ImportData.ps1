@@ -15,6 +15,7 @@ $Config = @{
     OAuthUrl                = "/oauth/token"
     # BaseApiUrl              = 'https://api.ed-fi.org/v5.3/api'
     BaseApiUrl              = 'https://pc-slayerwood:443/WebApi'
+    #BaseApiUrl              = 'https://EC2AMAZ-JKHA7SB/WebApi'
     EdFiUrl                 = "/data/v3"
     # Key                     = "RvcohKz9zHI4"
     # Secret                  = "E1iEFusaNf81xzCxwHfbolkC"
@@ -28,8 +29,7 @@ $Config = @{
     ISDCounty               = "Dallas"
     ISDStateAbbreviation    = "TX"
 
-    lastDataInfoFile        = "lastDataInfo.json"
-    errorsInfoFile          = "lastDataErrors.json" # TODO
+    LastDataInfoFile        = "lastDataInfo.json"
 }
 
 function SetupPS() {
@@ -50,7 +50,10 @@ function CleanPS() {
 SetupPS
 Import-Module .\ImportDataModules\ImportDataGarlandV0 -Force
 
-Import-EdData $Config
+$res = (Import-EdData $Config)
+
+Set-Content -Path $Config.LastDataInfoFile -Value ($res | ConvertTo-Json)
+$res | Format-List
 
 Remove-Module -Name ImportDataGarlandV0 -Force
 #CleanPS

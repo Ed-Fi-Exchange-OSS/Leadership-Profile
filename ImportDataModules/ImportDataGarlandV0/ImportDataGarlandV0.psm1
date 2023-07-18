@@ -192,7 +192,7 @@ Function Import-EdData($Config) {
         ShowProggress -Activity "Importing data from $($Config.V0SourceFile)" |
         Select-Object -Last 1 @{Name='ISD';Expression={$Config.ISD}},@{Name='Date';Expression={Get-Date}}, *
 
-    $res | Format-List
+    return $res 
 }
 
 Export-ModuleMember -Function Import-EdData

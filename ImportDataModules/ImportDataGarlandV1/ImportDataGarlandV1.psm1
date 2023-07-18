@@ -167,7 +167,7 @@ Function Import-EdData($Config) {
         ShowProggress -Activity "Importing data" -Status "Importing data from $($Config.StaffOrgAssignSourceFile)" |
         Select-Object -Last 1
 
-    $res | Select-Object @{Name='ISD';Expression={$Config.ISD}},@{Name='Date';Expression={Get-Date}}, * | ConvertTo-Json
+    return (Select-Object @{Name='ISD';Expression={$Config.ISD}},@{Name='Date';Expression={Get-Date}}, *)
 }
 
 Export-ModuleMember -Function Import-EdData
