@@ -1,3 +1,5 @@
+using module ..\ImportDataBasicFunctions\ImportDataBasicFunctions.psm1
+
 $ModuleVersion = '1.0.0'
 $Description = 'Module with V0 of Garlands functions to import data using the ED-FI API'
 $FunctionsToExport = 'Import-EdData'
@@ -25,7 +27,7 @@ function TransformStaff() {
         }
         $races = if ($race -ne '') { (,, [PSCustomObject]@{raceDescriptor = 'uri://ed-fi.org/RaceDescriptor#' + $race } ) } else { $null }
 
-        return [PSCustomObject]@{
+        return [EdFiStaff]@{
             StaffUniqueId                      = $staffUniqueId
 
             LastSurname                        = $fullName[0]
@@ -38,7 +40,6 @@ function TransformStaff() {
             YearsOfPriorProfessionalExperience = [int][System.Security.SecurityElement]::Escape($_.YearsOfProfessionalExperience)
             Email                              = [System.Security.SecurityElement]::Escape($_.Email)
             #Address                            = $address
-            ObjectType                         = "staffs"
         }    
     }
 }
@@ -56,7 +57,7 @@ function TransformSchool {
         [Array]$gradeLevels = GetGradeLevels $schoolCategory
         $schoolId = if ($_.SchoolId -eq '') { $null } else { [System.Nullable[int64]]$_.SchoolId }
 
-        return [PSCustomObject]@{
+        return [EdFiSchool]@{
             SchoolId                        = $schoolId
             NameOfInstitution               = [System.Security.SecurityElement]::Escape($_.NameOfInstitution)
             LocalEducationAgencyReference   = [PSCustomObject]@{
@@ -69,7 +70,6 @@ function TransformSchool {
             
             SchoolCategories                = (, [PSCustomObject]@{ SchoolCategoryDescriptor = 'uri://ed-fi.org/SchoolCategoryDescriptor#' + [System.Security.SecurityElement]::Escape($schoolCategory) })
             GradeLevels                     = $gradeLevels
-            ObjectType                      = "schools"
         }    
     }
 }
@@ -91,14 +91,13 @@ function TransformStaffEducationOrganizationAssignmentAssociations($staffClassif
         }
         else { $null }
 
-        [PSCustomObject]@{
+        return [EdFiStaffOrgAssociations]@{
             EducationOrganizationReference = [PSCustomObject]@{ EducationOrganizationId = [int64]($_.SchoolId) }
             StaffReference                 = [PSCustomObject]@{ StaffUniqueId = $staffUniqueId }
             BeginDate                      = ([System.Security.SecurityElement]::Escape($_.BeginDate) | Get-Date -Format 'yyyy-MM-dd')
             EndDate                        = if ($_.EndDate -ne "CURRENT") { ([System.Security.SecurityElement]::Escape($_.EndDate) | Get-Date -Format 'yyyy-MM-dd') } else { $null }
             PositionTitle                  = [System.Security.SecurityElement]::Escape($_.PositionTitle)
             StaffClassificationDescriptor  = $staffClassificationDescriptor
-            ObjectType                     = "staffEducationOrganizationAssignmentAssociations"
         }    
     }
 }
@@ -107,11 +106,16 @@ function Transform([scriptblock]$OnError) {
   process {
     $school = ($_ | TransformSchool)
     if(!$school.SchoolId){ 
-        (&$OnError ([PSCustomObject]@{
-            Record   = ($_ | ConvertTo-Json)
-            Error    = "SchoolId is null"
-        }))
-        return 
+        $importError = [ImportError]@{            
+            Record   = $_
+            ErrorDetails    = "SchoolId is null"
+        }
+        if ($OnError) {
+            &$OnError $importError
+        } else {
+            Write-Output $importError
+        }
+        return
     }
     Write-Output $school
 
@@ -132,37 +136,26 @@ Function Import-EdData($Config) {
 
     $OnError = { param($errorObj) AddtoErrorFile -Errors $errorObj -FilePath $Config.ErrorsOutputFile }
 
-    Write-Progress -Activity 'Processing Schools' -PercentComplete -1
     Add-Content -Path $Config.ErrorsOutputFile -Value "`r`n$($Config.SchoolSourceFile)`r`n"
 
+    Write-Progress -Activity "Importing data from $($Config.SchoolSourceFile)" -PercentComplete -1
+
     $res = NLoad $Headers $Config.V0SourceFile | 
-        Transform -OnError $OnError |
-        ForEach-Object -Process { if($_.ObjectType -eq "schools") { return (FilterDistinct -InputObject $_ -GetIdScriptBlock { $args.SchoolId }) } else { $_ } }|
-        ForEach-Object -Process { if($_.ObjectType -eq "staffs") { return (FilterDistinct -InputObject $_ -GetIdScriptBlock { $args.StaffUniqueId }) } else { $_ } } |
-        NPost -Config $Config -GetRecordId { param($rec) switch ($rec.ObjectType) {
-                'schools' { $rec.SchoolId }
-                'staffs' { $rec.StaffUniqueId }
-                'staffEducationOrganizationAssignmentAssociations' { $rec.StaffUniqueId }
+        Transform |
+        FilterDistinct -IfScriptBlock {$args.GetType() -eq "EdFiSchool"} -GetIdScriptBlock { $args.SchoolId } |
+        FilterDistinct -IfScriptBlock {$args.GetType() -eq "EdFiStaffs"} -GetIdScriptBlock { $args.StaffUniqueId } |
+        NPost -Config $Config -GetRecordId { param($rec) switch ($rec.GetType()) {
+                'EdFiSchool' { $rec.SchoolId }
+                'EdFiStaffs' { $rec.StaffUniqueId }
+                'EdFiStaffOrgAssociations' { $rec.StaffUniqueId }
             } 
-        } -OnError $OnError |
-        ShowProggress -valuesType '' 
+        } |
+        WriteToFileIfImportError -FilePath $Config.ErrorsOutputFile |
+        CountResults |
+        ShowProggress -Activity "Importing data from $($Config.SchoolSourceFile)" |
+        Select-Object -Last 1 @{Name='ISD';Expression={"Garland ISD"}},@{Name='Date';Expression={Get-Date}}, *
 
-    # $res = NLoad $Headers $Config.V0SourceFile | 
-    #     TransformSchool |
-    #     FilterDistinct -GetIdScriptBlock { $args.SchoolId } |
-    #     NPost -Config $Config -EndPoint '/ed-fi/schools' -GetRecordId { param($rec) $rec.SchoolId } -OnError $OnError |
-    #     ShowProggress -valuesType 'School' 
-
-    # $res = NLoad $Headers $Config.V0SourceFile | 
-    #     TransformStaff |
-    #     FilterDistinct -GetIdScriptBlock { $args.StaffUniqueId } |
-    #     NPost -Config $Config -EndPoint '/ed-fi/staffs' -GetRecordId { param($rec) $rec.StaffUniqueId } -OnError $OnError |
-    #     ShowProggress -valuesType 'Staff' 
-
-    # $res = NLoad $Headers $Config.V0SourceFile | 
-    #     TransformStaffEducationOrganizationAssignmentAssociations |
-    #     NPost -Config $Config -EndPoint '/ed-fi/staffEducationOrganizationAssignmentAssociations' -GetRecordId { param($rec) $rec.StaffUniqueId } -OnError $OnError |
-    #     ShowProggress -valuesType 'Staff Education Organization Assignment Associations' 
+    $res | ConvertTo-Json
 
     Remove-Module -Name ImportDataBasicFunctions -Force
 }
