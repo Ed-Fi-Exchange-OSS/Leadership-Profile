@@ -1,8 +1,51 @@
+using module ..\ImportDataBasicFunctions\ImportDataBasicFunctions.psm1
+
 $ModuleVersion = '1.0.0'
 $Description = 'Module with V1 of Garlands functions to import data using the ED-FI API'
 $FunctionsToExport = 'Import-EdData'
 
 # Region Garland Specific Functions
+
+function TransformSchool {
+    process {
+        $schoolCategory = [System.Security.SecurityElement]::Escape($_.SchoolCategory)
+        [Array]$gradeLevels = GetGradeLevels $schoolCategory
+
+        $phoneNumber = [System.Security.SecurityElement]::Escape($_.PhoneNumber).Trim()
+        [Array]$institutionTelephones = if ([String]::IsNullOrWhiteSpace($phoneNumber) -eq $false) {
+            (, [PSCustomObject]@{
+                InstitutionTelephoneNumberTypeDescriptor = "uri://ed-fi.org/InstitutionTelephoneNumberTypeDescriptor#Main"
+                TelephoneNumber                          = [System.Security.SecurityElement]::Escape($_.PhoneNumber)
+            })
+        }
+        else { $null }
+
+        return [EdFiSchool]@{
+            SchoolId                        = [int64][System.Security.SecurityElement]::Escape($_.SchoolId)
+            NameOfInstitution               = [System.Security.SecurityElement]::Escape($_.NameOfInstitution)
+            ShortnameOfInstitution          = [System.Security.SecurityElement]::Escape($_.ShortnameOfInstitution)
+            LocalEducationAgencyReference   = [PSCustomObject]@{
+                #LocalEducationAgencyId = $_.DistrictId
+                LocalEducationAgencyId = 4820340
+            }
+            EducationOrganizationCategories = (, [PSCustomObject]@{
+                    EducationOrganizationCategoryDescriptor = "uri://ed-fi.org/EducationOrganizationCategoryDescriptor#School"
+                })
+            Addresses                       = (, [PSCustomObject]@{
+                    AddressTypeDescriptor       = "uri://ed-fi.org/AddressTypeDescriptor#Physical"
+                    City                        = [System.Security.SecurityElement]::Escape($_.AddressCity)
+                    PostalCode                  = [System.Security.SecurityElement]::Escape($_.AddressZipCode)
+                    StateAbbreviationDescriptor = "uri://ed-fi.org/StateAbbreviationDescriptor#" + $Config.ISDStateAbbreviation
+                    StreetNumberName            = [System.Security.SecurityElement]::Escape($_.AddressStreet.Trim())
+                    NameOfCounty                = $Config.ISDCounty
+                })
+            InstitutionTelephones           = $institutionTelephones
+            SchoolCategories                = (, [PSCustomObject]@{ SchoolCategoryDescriptor = "uri://ed-fi.org/SchoolCategoryDescriptor#" + [System.Security.SecurityElement]::Escape($_.SchoolCategory) })
+            GradeLevels                     = $gradeLevels
+        }    
+    }
+}
+
 function TransformStaff() {
     process {
         $staffUniqueId = [System.Security.SecurityElement]::Escape($_.StaffUniqueId).Trim()
@@ -25,15 +68,15 @@ function TransformStaff() {
         }
         $races = if ($race -ne "") { (, , [PSCustomObject]@{raceDescriptor = 'uri://ed-fi.org/RaceDescriptor#' + $race } ) } else { $null }
 
-        $address = if (($_.StateAbbreviationDescriptor + $_.City + $_.PostalCode).Trim() -eq "") { $null } else {
-            (, , [PSCustomObject]@{
+        [array]$address = if (($_.StateAbbreviationDescriptor + $_.City + $_.PostalCode).Trim() -eq "") { $null } else {
+            (, [PSCustomObject]@{
                 StateAbbreviationDescriptor = [System.Security.SecurityElement]::Escape($_.StateAbbreviationDescriptor)
                 City                        = [System.Security.SecurityElement]::Escape($_.City)
                 PostalCode                  = [System.Security.SecurityElement]::Escape($_.PostalCode)
             })
         }
 
-        return [PSCustomObject]@{
+        return [EdFiStaff]@{
             StaffUniqueId                      = $staffUniqueId
             # FirstName     = "Secret"
             # LastSurname   = "Secret"
@@ -51,85 +94,16 @@ function TransformStaff() {
     }
 }
 
-function TransformSchool {
-    process {
-        $schoolCategory = [System.Security.SecurityElement]::Escape($_.SchoolCategory)
-        $gradeLevels = switch ($schoolCategory) {
-            "Elementary School" {
-                (
-                    [PSCustomObject]@{ GradeLevelDescriptor = "uri://ed-fi.org/GradeLevelDescriptor#Kindergarten" },
-                    [PSCustomObject]@{ GradeLevelDescriptor = "uri://ed-fi.org/GradeLevelDescriptor#First grade" },
-                    [PSCustomObject]@{ GradeLevelDescriptor = "uri://ed-fi.org/GradeLevelDescriptor#Second grade" },
-                    [PSCustomObject]@{ GradeLevelDescriptor = "uri://ed-fi.org/GradeLevelDescriptor#Third grade" },
-                    [PSCustomObject]@{ GradeLevelDescriptor = "uri://ed-fi.org/GradeLevelDescriptor#Fourth grade" },
-                    [PSCustomObject]@{ GradeLevelDescriptor = "uri://ed-fi.org/GradeLevelDescriptor#Fifth grade" }
-                )
-            }
-            "Middle School" {
-                (
-                    [PSCustomObject]@{ GradeLevelDescriptor = "uri://ed-fi.org/GradeLevelDescriptor#Sixth grade" },
-                    [PSCustomObject]@{ GradeLevelDescriptor = "uri://ed-fi.org/GradeLevelDescriptor#Seventh grade" },
-                    [PSCustomObject]@{ GradeLevelDescriptor = "uri://ed-fi.org/GradeLevelDescriptor#Eighth grade" }
-                )
-            }
-            "High School" {
-                (
-                    [PSCustomObject]@{ GradeLevelDescriptor = "uri://ed-fi.org/GradeLevelDescriptor#Ninth grade" },
-                    [PSCustomObject]@{ GradeLevelDescriptor = "uri://ed-fi.org/GradeLevelDescriptor#Eleventh grade" },
-                    [PSCustomObject]@{ GradeLevelDescriptor = "uri://ed-fi.org/GradeLevelDescriptor#Tenth grade" },
-                    [PSCustomObject]@{ GradeLevelDescriptor = "uri://ed-fi.org/GradeLevelDescriptor#Twelfth grade" }
-                )
-            }
-            "All Levels" { (, , [PSCustomObject]@{ GradeLevelDescriptor = "uri://ed-fi.org/GradeLevelDescriptor#Other" }) }
-            Default { $null }
-        }
-
-        $phoneNumber = [System.Security.SecurityElement]::Escape($_.PhoneNumber).Trim()
-        $institutionTelephones = if ([String]::IsNullOrWhiteSpace($phoneNumber)) {
-            (, , [PSCustomObject]@{
-                InstitutionTelephoneNumberTypeDescriptor = "uri://ed-fi.org/InstitutionTelephoneNumberTypeDescriptor#Main"
-                TelephoneNumber                          = [System.Security.SecurityElement]::Escape($_.PhoneNumber)
-            })
-        }
-        else { $null }
-
-        return [PSCustomObject]@{
-            SchoolId                        = [int64][System.Security.SecurityElement]::Escape($_.SchoolId)
-            NameOfInstitution               = [System.Security.SecurityElement]::Escape($_.NameOfInstitution)
-            ShortnameOfInstitution          = [System.Security.SecurityElement]::Escape($_.ShortnameOfInstitution)
-            LocalEducationAgencyReference   = [PSCustomObject]@{
-                #LocalEducationAgencyId = $_.DistrictId
-                LocalEducationAgencyId = 4820340
-            }
-            EducationOrganizationCategories = (, [PSCustomObject]@{
-                    EducationOrganizationCategoryDescriptor = "uri://ed-fi.org/EducationOrganizationCategoryDescriptor#School"
-                })
-            Addresses                       = (, [PSCustomObject]@{
-                    AddressTypeDescriptor       = "uri://ed-fi.org/AddressTypeDescriptor#Physical"
-                    City                        = [System.Security.SecurityElement]::Escape($_.AddressCity)
-                    PostalCode                  = [System.Security.SecurityElement]::Escape($_.AddressZipCode)
-                    StateAbbreviationDescriptor = "uri://ed-fi.org/StateAbbreviationDescriptor#" + $Config.ISDStateAbbreviation
-                    StreetNumberName            = [System.Security.SecurityElement]::Escape($_.AddressStreet.Trim())
-                    NameOfCounty                = $Config.ISDCounty
-                })
-            InstitutionTelephones           = $institutionTelephones
-            SchoolCategories                = (, [PSCustomObject]@{ SchoolCategoryDescriptor = "uri://ed-fi.org/SchoolCategoryDescriptor#" + [System.Security.SecurityElement]::Escape($_.SchoolCategory) })
-            GradeLevels                     = $gradeLevels
-            Discriminator                   = "edfi.School"
-        }    
-    }
-}
-
 function TransformStaffEducationOrganizationAssignmentAssociations($staffClassificationMap) {
   process {
     $staffUniqueId = [System.Security.SecurityElement]::Escape($_.StaffUniqueId).Trim()
     $staffClassification = $staffClassificationMap[$staffUniqueId]
 
     $staffClassificationDescriptor = if( ![String]::IsNullOrWhiteSpace($staffClassification)){ 
-        "uri://ed-fi.org/StaffClassificationDescriptor#$staffClassification" 
+        "uri://ed-fi.org/StaffClassificationDescriptor#$staffClassification"
     } else { $null}
 
-    [PSCustomObject]@{
+    return [EdFiStaffOrgAssociations]@{
         EducationOrganizationReference  = [PSCustomObject]@{ EducationOrganizationId = [int64][System.Security.SecurityElement]::Escape($_.SchoolId) }
         StaffReference                  = [PSCustomObject]@{ StaffUniqueId = $staffUniqueId }
         BeginDate                       = ([System.Security.SecurityElement]::Escape($_.BeginDate) | Get-Date -Format 'yyyy-MM-dd')
@@ -150,8 +124,6 @@ function Load-User() {
 }
 
 Function Import-EdData($Config) {
-    Import-Module .\ImportDataModules\ImportDataBasicFunctions -Force
-
     $SchoolFileHeaders = 'SchoolId', 'DistrictId', 'NameOfInstitution', 'ShortnameOfInstitution', 
         'SchoolCategory', 'AddressStreet', 'AddressCity', 'AddressZipCode', 'PhoneNumber'
     $StaffFileHeaders = 'StaffUSI', 'StaffUniqueId', 'FirstName', 'MiddleName', 'LastSurname', 'StaffClassification', 
@@ -161,42 +133,47 @@ Function Import-EdData($Config) {
 
     Set-Content -Path $Config.ErrorsOutputFile -Value "$(Get-Date -Format 'yyyy-MM-ddTHH:mm:ss')"
 
-    $OnError = {param($errorObj) AddtoErrorFile -Errors $errorObj -FilePath $Config.ErrorsOutputFile}
-
-    Write-Progress -Activity "Processing Schools" -PercentComplete -1
     Add-Content -Path $Config.ErrorsOutputFile -Value "`r`n$($Config.SchoolSourceFile)`r`n"
 
     $res = NLoad $SchoolFileHeaders $Config.SchoolSourceFile | 
         TransformSchool |
-        NPost -Config $Config -EndPoint "/ed-fi/schools" -GetRecordId { param($school) $school.SchoolId } -OnError $OnError |
-        ShowProggress -valuesType "School" 
+        NPost -Config $Config |
+        WriteToFileIfImportError -FilePath $Config.ErrorsOutputFile |
+        CountResults |
+        ShowProggress -Activity "Importing data" -Status "Importing data from $($Config.SchoolSourceFile)" |
+        Select-Object -Last 1
 
-    Write-Progress -Activity "Processing Staff" -PercentComplete -1
+    #$res | ConvertTo-Json
+
     Add-Content -Path $Config.ErrorsOutputFile -Value "`r`n$($Config.StaffSourceFile)`r`n"
     $StaffClassificationMap = @{}
     $res = NLoad $StaffFileHeaders $Config.StaffSourceFile | 
         Tap -ScriptBlock { $StaffClassificationMap[[System.Security.SecurityElement]::Escape($_.StaffUniqueId)] = [System.Security.SecurityElement]::Escape($_.StaffClassification).Trim() } | 
         TransformStaff | 
-        NPost -Config $Config -EndPoint "/ed-fi/staffs" -GetRecordId { param($staff) $staff.StaffUniqueId } -OnError $OnError |
-        ShowProggress -valuesType "Staff" 
+        NPost -Config $Config |
+        WriteToFileIfImportError -FilePath $Config.ErrorsOutputFile |
+        CountResults -InitialValues $res  |
+        ShowProggress -Activity "Importing data" -Status "Importing data from $($Config.StaffSourceFile)" |
+        Select-Object -Last 1
+
+    #$res | ConvertTo-Json
 
     # Write-Progress -Activity "Loading Staff" -PercentComplete -1
     # $StaffClassificationMap = @{}
     # $res = NLoad $StaffFileHeaders $Config.StaffSourceFile | 
     #     Tap -ScriptBlock {param($record) $StaffClassificationMap[[System.Security.SecurityElement]::Escape($record.StaffUniqueId)] = [System.Security.SecurityElement]::Escape($record.StaffClassification).Trim() } |
-    #     ShowProggress -valuesType "Staff" 
+    #     ShowProggress -Activity "Calculating Staff Classification Map" 
 
-    Write-Progress -Activity "Processing Staff-Education Organization Assignment Associations" -PercentComplete -1
     Add-Content -Path $Config.ErrorsOutputFile -Value "`r`n$($Config.StaffOrgAssignSourceFile)`r`n"
     $res = NLoad $StaffOrgAssignFileHeaders $Config.StaffOrgAssignSourceFile |
         TransformStaffEducationOrganizationAssignmentAssociations $StaffClassificationMap |
-        NPost -Config $Config -EndPoint "/ed-fi/staffEducationOrganizationAssignmentAssociations" -GetRecordId { param($staffEdOrg) 
-            $staffEdOrg.StaffReference.StaffUniqueId } -OnError $OnError |
-        ShowProggress -valuesType "Staff-Education Organization" 
+        NPost -Config $Config |
+        WriteToFileIfImportError -FilePath $Config.ErrorsOutputFile |
+        CountResults -InitialValues $res |
+        ShowProggress -Activity "Importing data" -Status "Importing data from $($Config.StaffOrgAssignSourceFile)" |
+        Select-Object -Last 1
 
-    # $userData = Load-User
-    # $userData
-    Remove-Module -Name ImportDataBasicFunctions -Force
+    $res | Select-Object @{Name='ISD';Expression={"Garland ISD"}},@{Name='Date';Expression={Get-Date}}, * | ConvertTo-Json
 }
 
 Export-ModuleMember -Function Import-EdData

@@ -5,6 +5,36 @@ $Description = 'Module with V0 of Garlands functions to import data using the ED
 $FunctionsToExport = 'Import-EdData'
 
 # Region Garland Specific Functions
+function TransformSchool {
+    process {
+        $schoolCategory = [System.Security.SecurityElement]::Escape($_.SchoolCategory)
+        $schoolCategory = switch ($schoolCategory) {
+            'ES' { 'Elementary School' }
+            'MS' { 'Middle School' }
+            'HS' { 'High School' }
+            'CO' { 'Other Combination' }
+            Default { $_ }
+        }
+        [Array]$gradeLevels = GetGradeLevels $schoolCategory
+        $schoolId = if ($_.SchoolId -eq '') { $null } else { [System.Nullable[int64]]$_.SchoolId }
+
+        return [EdFiSchool]@{
+            SchoolId                        = $schoolId
+            NameOfInstitution               = [System.Security.SecurityElement]::Escape($_.NameOfInstitution)
+            LocalEducationAgencyReference   = [PSCustomObject]@{
+                #LocalEducationAgencyId = $_.DistrictId
+                LocalEducationAgencyId = 4820340
+            }
+            EducationOrganizationCategories = (, [PSCustomObject]@{
+                    EducationOrganizationCategoryDescriptor = 'uri://ed-fi.org/EducationOrganizationCategoryDescriptor#School'
+                })
+            
+            SchoolCategories                = (, [PSCustomObject]@{ SchoolCategoryDescriptor = 'uri://ed-fi.org/SchoolCategoryDescriptor#' + [System.Security.SecurityElement]::Escape($schoolCategory) })
+            GradeLevels                     = $gradeLevels
+        }    
+    }
+}
+
 function TransformStaff() {
     process {
         $staffUniqueId = [System.Security.SecurityElement]::Escape($_.StaffUniqueId).Trim()
@@ -40,36 +70,6 @@ function TransformStaff() {
             YearsOfPriorProfessionalExperience = [int][System.Security.SecurityElement]::Escape($_.YearsOfProfessionalExperience)
             Email                              = [System.Security.SecurityElement]::Escape($_.Email)
             #Address                            = $address
-        }    
-    }
-}
-
-function TransformSchool {
-    process {
-        $schoolCategory = [System.Security.SecurityElement]::Escape($_.SchoolCategory)
-        $schoolCategory = switch ($schoolCategory) {
-            'ES' { 'Elementary School' }
-            'MS' { 'Middle School' }
-            'HS' { 'High School' }
-            'CO' { 'Other Combination' }
-            Default { $_ }
-        }
-        [Array]$gradeLevels = GetGradeLevels $schoolCategory
-        $schoolId = if ($_.SchoolId -eq '') { $null } else { [System.Nullable[int64]]$_.SchoolId }
-
-        return [EdFiSchool]@{
-            SchoolId                        = $schoolId
-            NameOfInstitution               = [System.Security.SecurityElement]::Escape($_.NameOfInstitution)
-            LocalEducationAgencyReference   = [PSCustomObject]@{
-                #LocalEducationAgencyId = $_.DistrictId
-                LocalEducationAgencyId = 4820340
-            }
-            EducationOrganizationCategories = (, [PSCustomObject]@{
-                    EducationOrganizationCategoryDescriptor = 'uri://ed-fi.org/EducationOrganizationCategoryDescriptor#School'
-                })
-            
-            SchoolCategories                = (, [PSCustomObject]@{ SchoolCategoryDescriptor = 'uri://ed-fi.org/SchoolCategoryDescriptor#' + [System.Security.SecurityElement]::Escape($schoolCategory) })
-            GradeLevels                     = $gradeLevels
         }    
     }
 }
@@ -127,15 +127,10 @@ function Transform([scriptblock]$OnError) {
 }
 
 Function Import-EdData($Config) {
-    Import-Module .\ImportDataModules\ImportDataBasicFunctions -Force
-
     $Headers = 'StaffUniqueId', 'FullName', 'SchoolId', 'SchoolCategory', 'NameOfInstitution', 'StaffClassification', 'BeginDate', 
     'EndDate', 'ReasonEndDate', 'School Year', 'PositionTitle', 'Age', 'YearsOfProfessionalExperience', 'SexDescriptor', 'RaceDescriptor', 'Degree Level', 'Email'
 
     Set-Content -Path $Config.ErrorsOutputFile -Value "$(Get-Date -Format 'yyyy-MM-ddTHH:mm:ss')"
-
-    $OnError = { param($errorObj) AddtoErrorFile -Errors $errorObj -FilePath $Config.ErrorsOutputFile }
-
     Add-Content -Path $Config.ErrorsOutputFile -Value "`r`n$($Config.SchoolSourceFile)`r`n"
 
     Write-Progress -Activity "Importing data from $($Config.SchoolSourceFile)" -PercentComplete -1
@@ -144,20 +139,13 @@ Function Import-EdData($Config) {
         Transform |
         FilterDistinct -IfScriptBlock {$args.GetType() -eq "EdFiSchool"} -GetIdScriptBlock { $args.SchoolId } |
         FilterDistinct -IfScriptBlock {$args.GetType() -eq "EdFiStaffs"} -GetIdScriptBlock { $args.StaffUniqueId } |
-        NPost -Config $Config -GetRecordId { param($rec) switch ($rec.GetType()) {
-                'EdFiSchool' { $rec.SchoolId }
-                'EdFiStaffs' { $rec.StaffUniqueId }
-                'EdFiStaffOrgAssociations' { $rec.StaffUniqueId }
-            } 
-        } |
+        NPost -Config $Config |
         WriteToFileIfImportError -FilePath $Config.ErrorsOutputFile |
         CountResults |
         ShowProggress -Activity "Importing data from $($Config.SchoolSourceFile)" |
         Select-Object -Last 1 @{Name='ISD';Expression={"Garland ISD"}},@{Name='Date';Expression={Get-Date}}, *
 
     $res | ConvertTo-Json
-
-    Remove-Module -Name ImportDataBasicFunctions -Force
 }
 
 Export-ModuleMember -Function Import-EdData

@@ -128,9 +128,7 @@ function NPost() {
         [Parameter(Mandatory = $true)]
         $Config,
         [ScriptBlock]
-        $OnError,
-        [ScriptBlock]
-        $GetRecordId
+        $OnError
     )    
 
     begin {
@@ -199,18 +197,19 @@ function CountResults {
     [CmdletBinding()]
     param(
         [parameter(ValueFromPipeline)]
-        $InputValue
-    )
+        $InputValue,
+        $InitialValues)
     begin {
-        $reduced = [PSCustomObject]@{
+        $reduced = $InitialValues ?? [PSCustomObject]@{
             Success = 0
-            Errors = 0
-        }
+            Errors  = 0
+        }    
     }
     process {
-        if($InputValue -is [ImportError]){
+        if ($InputValue -is [ImportError]) {
             $reduced.Errors++
-        } else {
+        }
+        else {
             $reduced.Success++
         }
         return $reduced
@@ -233,7 +232,7 @@ function ShowProggress($Activity = 'Processing', $Status) {
             $progressParams = @{
                 Activity = $Activity
                 Status = $Status
-                CurrentOperation = "Item $($reduced.Success)$(if($reduced.Errors -gt 0){" [$($reduced.Errors) errors]"})" 
+                CurrentOperation = "$($reduced.Success) posted successfully$(if($reduced.Errors -gt 0){" [$($reduced.Errors) errors]"})" 
                 PercentComplete = -1
             }
             
@@ -328,6 +327,7 @@ class EdFiStaff {
     [string]$LastSurname
     [string]$FirstName
     [string]$MiddleName
+    [string]$BirthDate
     [string]$SexDescriptor
     [string]$Races
     [bool]$HispanicLatinoEthnicity
