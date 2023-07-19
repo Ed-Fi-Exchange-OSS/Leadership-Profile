@@ -40,8 +40,8 @@ function TransformStaff() {
         $staffUniqueId = [System.Security.SecurityElement]::Escape($_.StaffUniqueId).Trim()
 
         $sexDescriptor = switch ([System.Security.SecurityElement]::Escape($_.SexDescriptor)) {
-            'F' { 'uri://ed-fi.org/SexDescriptor#Female' }
-            'M' { 'uri://ed-fi.org/SexDescriptor#Male' }
+            'Female' { 'uri://ed-fi.org/SexDescriptor#Female' }
+            'Male' { 'uri://ed-fi.org/SexDescriptor#Male' }
         }
         #$fullName = [System.Security.SecurityElement]::Escape($_.FullName).Trim() -split ", " -split " "
 
