@@ -150,7 +150,7 @@ Function Import-EdData($Config) {
     Add-Content -Path $Config.ErrorsOutputFile -Value "`r`n$($Config.StaffSourceFile)`r`n"
     $StaffClassificationMap = @{}
     $res = NLoad $StaffFileHeaders $Config.StaffSourceFile | 
-        Tap -ScriptBlock { $StaffClassificationMap[[System.Security.SecurityElement]::Escape($_.StaffUniqueId)] = [System.Security.SecurityElement]::Escape($_.StaffClassification).Trim() } | 
+        Tap -ScriptBlock { $StaffClassificationMap[[System.Security.SecurityElement]::Escape($args.StaffUniqueId)] = [System.Security.SecurityElement]::Escape($args.StaffClassification).Trim() } | 
         TransformStaff | 
         NPost -Config $Config |
         WriteToFileIfImportError -FilePath $Config.ErrorsOutputFile |
@@ -167,7 +167,7 @@ Function Import-EdData($Config) {
         ShowProggress -Activity "Importing data" -Status "Importing data from $($Config.StaffOrgAssignSourceFile)" |
         Select-Object -Last 1
 
-    return (Select-Object @{Name='ISD';Expression={$Config.ISD}},@{Name='Date';Expression={Get-Date}}, *)
+    return $res
 }
 
 Export-ModuleMember -Function Import-EdData

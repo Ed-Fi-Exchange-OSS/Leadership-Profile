@@ -29,44 +29,6 @@ function GetToken {
     return $script:EdfiToken    
 }
 
-function PostToEdFi() {
-    [CmdletBinding()]
-    param (
-        [Parameter(ValueFromPipeline = $true)]
-        $InputObject,
-        #[Parameter(Mandatory = $true)]
-        $EndPoint,
-        [Parameter(Mandatory = $true)]
-        $Config
-    )    
-
-    begin {
-        $BaseApiUrl = $Config.BaseApiUrl
-        $EdFiUrl = $Config.EdFiUrl
-    
-        # * Get a token *
-        $token = GetToken $Config
-        # ================================================================================================
-    
-        $Headers = @{
-            'Accept'        = 'application/json'
-            'Authorization' = "Bearer $token"
-            'Content-Type'  = 'application/json'
-        }
-    
-        $uri = "$BaseApiUrl$EdFiUrl$EndPoint"
-    }
-    process {
-        if($InputObject.ObjectType){
-            $uri = "$BaseApiUrl$EdFiUrl/ed-fi/$($InputObject.ObjectType)"
-        }
-        $jsonRecord = ConvertTo-Json $InputObject
-        $result = Invoke-RestMethod -Uri $uri -Method Post -Headers $Headers -Body $jsonRecord
-
-        $InputObject
-    }
-}
-
 function GetGradeLevels {
     param (
         $SchoolCategory
@@ -129,7 +91,8 @@ function NPost() {
         [Parameter(Mandatory = $true)]
         $Config,
         [ScriptBlock]
-        $OnError
+        $OnError,
+        $EndPoint
     )    
 
     begin {
@@ -145,15 +108,13 @@ function NPost() {
             'Authorization' = "Bearer $token"
             'Content-Type'  = 'application/json'
         }
-    
-        $uri = "$BaseApiUrl$EdFiUrl$EndPoint"
-
-        $i = 0
+            
+        $uri = if ($PSBoundParameters.ContainsKey('EndPoint')) { "$BaseApiUrl$EdFiUrl$EndPoint" } else { $null }
     }
     process {
-        if($InputObject -is [ImportError]){ return $InputObject}
-        $EndPoint = GetEndPointByType $InputObject.GetType()
-        if($EndPoint){
+        if ($InputObject -is [ImportError]){ return $InputObject }
+        if (-not $PSBoundParameters.ContainsKey('EndPoint')) {
+            $EndPoint = GetEndPointByType $InputObject.GetType()
             $uri = "$BaseApiUrl$EdFiUrl$EndPoint"
         }
         $jsonRecord = ConvertTo-Json $InputObject
@@ -232,6 +193,8 @@ function ShowProggress($Activity = 'Processing', $Status) {
     process {
         if(($_ | Get-Member -name "Success" )){
             $reduced = $_
+        } else {
+            $reduced.Success++
         }
         if ($sw.Elapsed.TotalMilliseconds -ge 500) {
             $progressParams = @{
@@ -334,7 +297,7 @@ class EdFiStaff {
     [Object]$MiddleName # it's a string but object is used to be able to set it null
     [string]$BirthDate
     [string]$SexDescriptor
-    [string]$Races
+    [Object]$Races
     [bool]$HispanicLatinoEthnicity
     [int]$YearsOfPriorProfessionalExperience
     [string]$Email

@@ -85,7 +85,7 @@ function TransformStaffEducationOrganizationEmploymentAssociations {
         $staffUniqueId = [System.Security.SecurityElement]::Escape($_.StaffUniqueId).Trim()
 
         $separationDescriptor = if ($_.EndDate -ne 'CURRENT') {
-            'uri://ed-fi.org/SeparationDescriptor#' + $(switch ([System.Security.SecurityElement]::Escape($_.SeparationReason)) {
+            'uri://ed-fi.org/SeparationDescriptor#' + $(switch ($_.SeparationReason) {
                 'Retirement' { 'Other' }
                 'Attrition' { 'Involuntary separation' }
                 'Internal Transfer' { 'Mutual agreement' }
@@ -95,7 +95,7 @@ function TransformStaffEducationOrganizationEmploymentAssociations {
         } else { $null }
 
         [object]$separationReasonDescriptor = if ($_.EndDate -ne 'CURRENT') {
-            'uri://ed-fi.org/SeparationReasonDescriptor#' + $(switch ([System.Security.SecurityElement]::Escape($_.SeparationReason)) {
+            'uri://ed-fi.org/SeparationReasonDescriptor#' + $(switch ($_.SeparationReason) {
                 'Retirement' { 'Retirement' }
                 'Attrition' { 'Layoff' }
                 'Internal Transfer' { 'Change of assignment' }
@@ -190,7 +190,7 @@ Function Import-EdData($Config) {
         WriteToFileIfImportError -FilePath $Config.ErrorsOutputFile |
         CountResults |
         ShowProggress -Activity "Importing data from $($Config.V0SourceFile)" |
-        Select-Object -Last 1 @{Name='ISD';Expression={$Config.ISD}},@{Name='Date';Expression={Get-Date}}, *
+        Select-Object -Last 1
 
     return $res 
 }
