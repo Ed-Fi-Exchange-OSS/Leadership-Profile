@@ -47,13 +47,15 @@ function TransformStaff() {
 
         $race = [System.Security.SecurityElement]::Escape($_.RaceDescriptor)
         $hispanicLatinoEthnicity = if ($race -eq 'Hispanic/Latino') { $true } else { $null }
+        
+        # Used in app, must be added to descriptors: Hispanic, Two or More Races
         $race = switch ($race) {
             'Black or African American'         { 'Black - African American' }
             'Amer Ind or Alaska Native'         { 'American Indian - Alaska Native' }
             'Native Hawaiian/Other Pac Isl'     { 'Native Hawaiian - Pacific Islander' }
-            'Hispanic/Latino'                   { 'Other' }
-            'Two or More Races'                 { 'Other' }
-            Default { $race }
+            'Hispanic/Latino'                   { 'Hispanic' }
+            'Two or More Races'                 { 'Two or More Races' }
+            Default { $_ }
         }
         $races = if ($race -ne '') { (,, [PSCustomObject]@{raceDescriptor = 'uri://ed-fi.org/RaceDescriptor#' + $race } ) } else { $null }
 
@@ -94,12 +96,13 @@ function TransformStaffEducationOrganizationEmploymentAssociations {
             })
         } else { $null }
 
+        # Used in app, must be added to descriptors: Attrition, Internal Transfer, Internal Promotion
         [object]$separationReasonDescriptor = if ($_.EndDate -ne 'CURRENT') {
             'uri://ed-fi.org/SeparationReasonDescriptor#' + $(switch ($_.SeparationReason) {
                 'Retirement' { 'Retirement' }
-                'Attrition' { 'Layoff' }
-                'Internal Transfer' { 'Change of assignment' }
-                'Internal Promotion' { 'Change of assignment' }
+                'Attrition' { 'Attrition' }
+                'Internal Transfer' { 'Internal Transfer' }
+                'Internal Promotion' { 'Internal Promotion' }
                 Default { 'Other' }
             })
         } else { $null }  
