@@ -59,12 +59,12 @@ function TransformStaff() {
         $race = [System.Security.SecurityElement]::Escape($_.RaceDescriptor)
         $hispanicLatinoEthnicity = if ($race -eq "Hispanic/Latino") { $true } else { $null }
         $race = switch ($race) {
-            "African American" { "Black - African American" }
-            "American Indian" { "American Indian - Alaska Native" }
-            "Native Hawaiian Pacific Islander" { "Native Hawaiian - Pacific Islander" }
-            "Hispanic/Latino" { "Other" }
-            "Two or More" { "Other" }
-            Default { $_ }
+            "African American"                  { "Black - African American" }
+            "American Indian"                   { "American Indian - Alaska Native" }
+            "Native Hawaiian Pacific Islander"  { "Native Hawaiian - Pacific Islander" }
+            "Hispanic/Latino"                   { "Hispanic" }
+            "Two or More"                       { "Two or More Races" }
+            Default                             { $_ }
         }
         $races = if ($race -ne "") { (, , [PSCustomObject]@{raceDescriptor = 'uri://ed-fi.org/RaceDescriptor#' + $race } ) } else { $null }
 

@@ -9,10 +9,10 @@ function TransformSchool {
     process {
         $schoolCategory = [System.Security.SecurityElement]::Escape($_.SchoolCategory)
         $schoolCategory = switch ($schoolCategory) {
-            'ES' { 'Elementary School' }
-            'MS' { 'Middle School' }
-            'HS' { 'High School' }
-            'CO' { 'Other Combination' }
+            'ES'    { 'Elementary School' }
+            'MS'    { 'Middle School' }
+            'HS'    { 'High School' }
+            'CO'    { 'Other Combination' }
             Default { $_ }
         }
         [Array]$gradeLevels = GetGradeLevels $schoolCategory
@@ -55,7 +55,7 @@ function TransformStaff() {
             'Native Hawaiian/Other Pac Isl'     { 'Native Hawaiian - Pacific Islander' }
             'Hispanic/Latino'                   { 'Hispanic' }
             'Two or More Races'                 { 'Two or More Races' }
-            Default { $_ }
+            Default                             { $_ }
         }
         $races = if ($race -ne '') { (,, [PSCustomObject]@{raceDescriptor = 'uri://ed-fi.org/RaceDescriptor#' + $race } ) } else { $null }
 
@@ -88,22 +88,23 @@ function TransformStaffEducationOrganizationEmploymentAssociations {
 
         $separationDescriptor = if ($_.EndDate -ne 'CURRENT') {
             'uri://ed-fi.org/SeparationDescriptor#' + $(switch ($_.SeparationReason) {
-                'Retirement' { 'Other' }
-                'Attrition' { 'Involuntary separation' }
-                'Internal Transfer' { 'Mutual agreement' }
-                'Internal Promotion' { 'Mutual agreement' }
-                Default { 'Other' }
+                'Retirement'            { 'Other' }
+                'Attrition'             { 'Involuntary separation' }
+                'Internal Transfer'     { 'Mutual agreement' }
+                'Internal Promotion'    { 'Mutual agreement' }
+                Default                 { 'Other' }
             })
         } else { $null }
 
         # Used in app, must be added to descriptors: Attrition, Internal Transfer, Internal Promotion
         [object]$separationReasonDescriptor = if ($_.EndDate -ne 'CURRENT') {
             'uri://ed-fi.org/SeparationReasonDescriptor#' + $(switch ($_.SeparationReason) {
-                'Retirement' { 'Retirement' }
-                'Attrition' { 'Attrition' }
-                'Internal Transfer' { 'Internal Transfer' }
-                'Internal Promotion' { 'Internal Promotion' }
-                Default { 'Other' }
+                'Retirement'            { 'Retirement' }
+                'Attrition'             { 'Attrition' }
+                'Internal Transfer'     { 'Internal Transfer' }
+                'Internal Promotion'    { 'Internal Promotion' }
+                ''                      { 'Unknown' }
+                Default                 { 'Other' }
             })
         } else { $null }  
 
@@ -126,10 +127,10 @@ function TransformStaffEducationOrganizationAssignmentAssociations($staffClassif
 
         $staffClassification = [System.Security.SecurityElement]::Escape($_.StaffClassification).Trim()
         $staffClassification = switch ($staffClassification) {
-            'AP' { 'Assistant Principal' }
-            'Central Office Admin' { 'LEA Administrator' }
+            'AP'                        { 'Assistant Principal' }
+            'Central Office Admin'      { 'LEA Administrator' }
             'Central Office Specialist' { 'LEA Specialist' }
-            Default { $_ }
+            Default                     { $_ }
         }
         $staffClassificationDescriptor = if ( ![String]::IsNullOrWhiteSpace($staffClassification)) { 
             "uri://ed-fi.org/StaffClassificationDescriptor#$staffClassification" 
