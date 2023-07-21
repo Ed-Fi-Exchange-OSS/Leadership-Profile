@@ -64,7 +64,7 @@ function TransformStaff() {
             "Native Hawaiian Pacific Islander" { "Native Hawaiian - Pacific Islander" }
             "Hispanic/Latino" { "Other" }
             "Two or More" { "Other" }
-            Default { $race }
+            Default { $_ }
         }
         $races = if ($race -ne "") { (, , [PSCustomObject]@{raceDescriptor = 'uri://ed-fi.org/RaceDescriptor#' + $race } ) } else { $null }
 

@@ -71,7 +71,7 @@ function GetEndPointByType([Type]$ClassType){
         'EdFiStaff' { '/ed-fi/staffs' }
         'EdFiStaffOrgEmployment' { '/ed-fi/staffEducationOrganizationEmploymentAssociations' }
         'EdFiStaffOrgAssociations' { '/ed-fi/staffEducationOrganizationAssignmentAssociations' }
-        Default {$null}
+        Default {$null} # TODO: Must throw an exception
     }
 }
 

@@ -47,14 +47,18 @@ function CleanPS() {
     }
 }
 
-SetupPS
-Import-Module .\ImportDataModules\ImportDataGarlandV0 -Force
+function Main {
+    SetupPS
+    Import-Module .\ImportDataModules\ImportDataGarlandV0 -Force
 
-$res = (Import-EdData $Config)
-$res = $res | Select-Object @{Name='ISD';Expression={$Config.ISD}}, @{Name='Date';Expression={Get-Date}}, *
+    $res = (Import-EdData $Config)
+    $res = $res | Select-Object @{Name='ISD';Expression={$Config.ISD}}, @{Name='Date';Expression={Get-Date}}, *
 
-Set-Content -Path $Config.LastDataInfoFile -Value ($res | ConvertTo-Json)
-$res | Format-List
+    Set-Content -Path $Config.LastDataInfoFile -Value ($res | ConvertTo-Json)
+    $res | Format-List
 
-Remove-Module -Name ImportDataGarlandV0 -Force
-#CleanPS
+    Remove-Module -Name ImportDataGarlandV0 -Force
+    #CleanPS
+}
+
+Main

@@ -180,7 +180,7 @@ Function Import-EdData($Config) {
     Set-Content -Path $Config.ErrorsOutputFile -Value "$(Get-Date -Format 'yyyy-MM-ddTHH:mm:ss')"
     Add-Content -Path $Config.ErrorsOutputFile -Value "`r`n$($Config.V0SourceFile)`r`n"
 
-    Write-Progress -Activity "Importing data from $($Config.SchoolSourceFile)" -PercentComplete -1
+    Write-Progress -Activity "Importing data from $($Config.V0SourceFile)" -PercentComplete -1
 
     $res = NLoad $Headers $Config.V0SourceFile | 
         Transform |
