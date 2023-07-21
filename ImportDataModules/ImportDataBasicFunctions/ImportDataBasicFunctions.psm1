@@ -96,6 +96,7 @@ function NPost() {
     )    
 
     begin {
+        $supportedTypes = ([EdFiSchool], [EdFiStaff], [EdFiStaffOrgEmployment], [EdFiStaffOrgAssociations])
         $BaseApiUrl = $Config.BaseApiUrl
         $EdFiUrl = $Config.EdFiUrl
     
@@ -112,7 +113,7 @@ function NPost() {
         $uri = if ($PSBoundParameters.ContainsKey('EndPoint')) { "$BaseApiUrl$EdFiUrl$EndPoint" } else { $null }
     }
     process {
-        if ($InputObject -is [ImportError]){ return $InputObject }
+        if ($InputObject.GetType() -notin $supportedTypes){ return $InputObject }
         if (-not $PSBoundParameters.ContainsKey('EndPoint')) {
             $EndPoint = GetEndPointByType $InputObject.GetType()
             $uri = "$BaseApiUrl$EdFiUrl$EndPoint"

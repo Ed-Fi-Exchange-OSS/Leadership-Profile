@@ -7,6 +7,13 @@ $FunctionsToExport = 'Import-EdData'
 # Region Garland Specific Functions
 function TransformSchool {
     process {
+        if ($_.SchoolId.Trim() -eq '') {
+            return [ImportError]@{            
+                Record   = $_
+                ErrorDetails    = "SchoolId is null"
+            }
+        }
+
         $schoolCategory = [System.Security.SecurityElement]::Escape($_.SchoolCategory)
         $schoolCategory = switch ($schoolCategory) {
             'ES'    { 'Elementary School' }
@@ -16,10 +23,9 @@ function TransformSchool {
             Default { $_ }
         }
         [Array]$gradeLevels = GetGradeLevels $schoolCategory
-        $schoolId = if ($_.SchoolId -eq '') { $null } else { [int64]$_.SchoolId }
 
         return [EdFiSchool]@{
-            SchoolId                        = $schoolId
+            SchoolId                        = [int64]$_.SchoolId
             NameOfInstitution               = [System.Security.SecurityElement]::Escape($_.NameOfInstitution)
             LocalEducationAgencyReference   = [PSCustomObject]@{
                 #LocalEducationAgencyId = $_.DistrictId
@@ -151,17 +157,12 @@ function TransformStaffEducationOrganizationAssignmentAssociations($staffClassif
 function Transform([scriptblock]$OnError) {
   process {
     $school = ($_ | TransformSchool)
-    if(!$school.SchoolId){ 
-        $importError = [ImportError]@{            
-            Record   = $_
-            ErrorDetails    = "SchoolId is null"
-        }
+    if($school -is  [ImportError]){ 
         if ($OnError) {
-            &$OnError $importError
-        } else {
-            Write-Output $importError
+            &$OnError $school
         }
-        return
+        
+        return $school
     }
     Write-Output $school
 
