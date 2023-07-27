@@ -56,14 +56,21 @@ function TransformStaff() {
         
         # Used in app, must be added to descriptors: Hispanic, Two or More Races
         $race = switch ($race) {
-            'Black or African American'         { 'Black - African American' }
+            'Asian'                             { 'Asian' }
             'Amer Ind or Alaska Native'         { 'American Indian - Alaska Native' }
-            'Native Hawaiian/Other Pac Isl'     { 'Native Hawaiian - Pacific Islander' }
+            'Black or African American'         { 'Black - African American' }
+            'Black or African-American'         { 'Black - African American' }
             'Hispanic/Latino'                   { 'Hispanic' }
+            'Native Hawaiian/Other Pac Isl'     { 'Native Hawaiian - Pacific Islander' }
             'Two or More Races'                 { 'Two or More Races' }
+            'White'                             { 'White' }
             Default                             { $_ }
         }
         $races = if ($race -ne '') { (,, [PSCustomObject]@{raceDescriptor = 'uri://ed-fi.org/RaceDescriptor#' + $race } ) } else { $null }
+
+        $levelOfEducation = switch(){
+
+        }
 
         return [EdFiStaff]@{
             StaffUniqueId                      = $staffUniqueId
@@ -96,8 +103,8 @@ function TransformStaffEducationOrganizationEmploymentAssociations {
             'uri://ed-fi.org/SeparationDescriptor#' + $(switch ($_.SeparationReason) {
                 'Retirement'            { 'Other' }
                 'Attrition'             { 'Involuntary separation' }
-                'Internal Transfer'     { 'Mutual agreement' }
-                'Internal Promotion'    { 'Mutual agreement' }
+                'Transfer'              { 'Mutual agreement' }
+                'Promotion'             { 'Mutual agreement' }
                 Default                 { 'Other' }
             })
         } else { $null }
@@ -107,8 +114,8 @@ function TransformStaffEducationOrganizationEmploymentAssociations {
             'uri://ed-fi.org/SeparationReasonDescriptor#' + $(switch ($_.SeparationReason) {
                 'Retirement'            { 'Retirement' }
                 'Attrition'             { 'Attrition' }
-                'Internal Transfer'     { 'Internal Transfer' }
-                'Internal Promotion'    { 'Internal Promotion' }
+                'Transfer'              { 'Internal Transfer' }
+                'Promotion'             { 'Internal Promotion' }
                 ''                      { 'Unknown' }
                 Default                 { 'Other' }
             })
@@ -148,7 +155,8 @@ function TransformStaffEducationOrganizationAssignmentAssociations($staffClassif
             StaffReference                 = [PSCustomObject]@{ StaffUniqueId = $staffUniqueId }
             BeginDate                      = ([System.Security.SecurityElement]::Escape($_.BeginDate) | Get-Date -Format 'yyyy-MM-dd')
             EndDate                        = if ($_.EndDate -ne 'CURRENT') { ([System.Security.SecurityElement]::Escape($_.EndDate) | Get-Date -Format 'yyyy-MM-dd') } else { $null }
-            PositionTitle                  = [System.Security.SecurityElement]::Escape($_.PositionTitle)
+#             PositionTitle                  = [System.Security.SecurityElement]::Escape($_.PositionTitle)
+#            PositionTitle                  = [System.Security.SecurityElement]::Escape($_.StaffClassification)
             StaffClassificationDescriptor  = $staffClassificationDescriptor
         }    
     }
@@ -178,9 +186,7 @@ function Transform([scriptblock]$OnError) {
 
 Function Import-EdData($Config) {
     $Headers = 'StaffUniqueId', 'LastSurname', 'FirstName', 'MiddleName', 'SchoolId', 'SchoolCategory', 'NameOfInstitution', 'StaffClassification', 'BeginDate', 
-    'EndDate', 'SeparationReason', 'School Year', 'PositionTitle', 'Age', 'YearsOfProfessionalExperience', 'SexDescriptor', 'RaceDescriptor', 'Degree Level', 'Email'
-
-    #Employee ID,Last Name,First Name,Middle Name,School Number,School Level,School Name,Role,Start Date,End Date,Reason End Date,School Year,Position Title,Age,Tot Yrs Exp,Gender,Ethnicity/Race,Degree Level,Email
+    'EndDate', 'SeparationReason', 'School Year', 'Age', 'YearsOfProfessionalExperience', 'SexDescriptor', 'RaceDescriptor', 'Degree Level', 'Email'
 
     Set-Content -Path $Config.ErrorsOutputFile -Value "$(Get-Date -Format 'yyyy-MM-ddTHH:mm:ss')"
     Add-Content -Path $Config.ErrorsOutputFile -Value "`r`n$($Config.V0SourceFile)`r`n"
