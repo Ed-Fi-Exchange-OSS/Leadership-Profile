@@ -68,23 +68,32 @@ function TransformStaff() {
         }
         $races = if ($race -ne '') { (,, [PSCustomObject]@{raceDescriptor = 'uri://ed-fi.org/RaceDescriptor#' + $race } ) } else { $null }
 
-        $levelOfEducation = switch(){
+        $levelOfEducation = 'uri://ed-fi.org/LevelOfEducationDescriptor#' + $(switch($_.highestCompletedLevelOfEducationDescriptor){
+            'Bachelors Degree' { "Bachelor's" }
+            'Doctors Degree' { 'Doctorate' }
+            'Masters Degree'  { "Master's" }
+            Default { $_ }
+        })
 
-        }
+        $email = [System.Security.SecurityElement]::Escape($_.Email).Trim()
+        $emails = if (-not [String]::IsNullOrWhiteSpace($email)){(,, [PSCustomObject]@{
+            ElectronicMailTypeDescriptor = "uri://ed-fi.org/ElectronicMailTypeDescriptor#Organization"
+            ElectronicMailAddress        = $email
+        })} else { $null }
 
         return [EdFiStaff]@{
-            StaffUniqueId                      = $staffUniqueId
-
-            LastSurname                        = [System.Security.SecurityElement]::Escape($_.LastSurname)
-            FirstName                          = [System.Security.SecurityElement]::Escape($_.FirstName)
-            MiddleName                         = if(![string]::IsNullOrWhiteSpace($_.MiddleName)){[System.Security.SecurityElement]::Escape($_.MiddleName)}else{$null}
-            #BirthDate                          = ([System.Security.SecurityElement]::Escape($_.BirthDate) | Get-Date -Format 'yyyy-MM-dd')
-            SexDescriptor                      = $sexDescriptor
-            Races                              = $races
-            HispanicLatinoEthnicity            = $hispanicLatinoEthnicity
-            YearsOfPriorProfessionalExperience = [int][System.Security.SecurityElement]::Escape($_.YearsOfProfessionalExperience)
-            Email                              = [System.Security.SecurityElement]::Escape($_.Email)
-            #Address                            = $address
+            StaffUniqueId                              = $staffUniqueId
+            LastSurname                                = [System.Security.SecurityElement]::Escape($_.LastSurname)
+            FirstName                                  = [System.Security.SecurityElement]::Escape($_.FirstName)
+            MiddleName                                 = if(![string]::IsNullOrWhiteSpace($_.MiddleName)){[System.Security.SecurityElement]::Escape($_.MiddleName)}else{$null}
+            #BirthDate                                  = ([System.Security.SecurityElement]::Escape($_.BirthDate) | Get-Date -Format 'yyyy-MM-dd')
+            SexDescriptor                              = $sexDescriptor
+            Races                                      = $races
+            HispanicLatinoEthnicity                    = $hispanicLatinoEthnicity
+            YearsOfPriorProfessionalExperience         = [int][System.Security.SecurityElement]::Escape($_.YearsOfProfessionalExperience)
+            ElectronicMails                            = $emails
+            #Address                                    = $address
+            HighestCompletedLevelOfEducationDescriptor = $levelOfEducation
         }    
     }
 }
@@ -186,7 +195,7 @@ function Transform([scriptblock]$OnError) {
 
 Function Import-EdData($Config) {
     $Headers = 'StaffUniqueId', 'LastSurname', 'FirstName', 'MiddleName', 'SchoolId', 'SchoolCategory', 'NameOfInstitution', 'StaffClassification', 'BeginDate', 
-    'EndDate', 'SeparationReason', 'School Year', 'Age', 'YearsOfProfessionalExperience', 'SexDescriptor', 'RaceDescriptor', 'Degree Level', 'Email'
+    'EndDate', 'SeparationReason', 'School Year', 'Age', 'YearsOfProfessionalExperience', 'SexDescriptor', 'RaceDescriptor', 'HighestCompletedLevelOfEducationDescriptor', 'Email'
 
     Set-Content -Path $Config.ErrorsOutputFile -Value "$(Get-Date -Format 'yyyy-MM-ddTHH:mm:ss')"
     Add-Content -Path $Config.ErrorsOutputFile -Value "`r`n$($Config.V0SourceFile)`r`n"

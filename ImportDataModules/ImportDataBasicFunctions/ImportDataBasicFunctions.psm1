@@ -298,11 +298,12 @@ class EdFiStaff {
     [Object]$MiddleName # it's a string but object is used to be able to set it null
     [string]$BirthDate
     [string]$SexDescriptor
-    [Object]$Races
+    [Object[]]$Races
     [bool]$HispanicLatinoEthnicity
     [int]$YearsOfPriorProfessionalExperience
-    [string]$Email
+    [Object[]]$ElectronicMails
     [Object[]]$Address
+    [Object]$HighestCompletedLevelOfEducationDescriptor
 }
 
 class EdFiStaffOrgEmployment {
