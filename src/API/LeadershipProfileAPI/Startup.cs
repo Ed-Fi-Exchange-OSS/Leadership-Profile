@@ -41,14 +41,14 @@ namespace LeadershipProfileAPI
 
             var connectionString = Configuration.GetConnectionString("EdFi");
 
-            services.AddDbContext<EdFiDbContext>(options => options.UseSqlServer(connectionString));
+            services.AddDbContext<EdFiDbContext>(options => options.UseSqlServer(connectionString).LogTo(Console.WriteLine));
 
             services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
             services.Configure<DataCorrectionSettings>(Configuration.GetSection("DataCorrection"));
             services.Configure<ApplicationConfiguration>(Configuration.GetSection("ApplicationConfiguration"));
 
             services.AddDbContext<EdFiIdentityDbContext>(options => options.UseSqlServer(connectionString));
-            services.AddDbContext<EdFiDbContext>(options => options.UseSqlServer(connectionString));
+            //services.AddDbContext<EdFiDbContext>(options => options.UseSqlServer(connectionString));
 
             AddAuth(services, Configuration);
 

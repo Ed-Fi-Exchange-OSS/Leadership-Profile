@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using LeadershipProfileAPI.Data.Models;
 using LeadershipProfileAPI.Data.Models.ProfileSearchRequest;
@@ -223,27 +224,17 @@ namespace LeadershipProfileAPI.Data
         /// <param name="currentPage">When paginating the data, which page of data should be returned</param>
         /// <param name="pageSize">The number of records returned in the result</param>
         /// <returns></returns>
-        public Task<List<StaffVacancy>> GetVacancyProjectionResultsAsync(string Role)
+        static string[] vacancyCauses =  new string[] {"Internal Transfer", "Internal Promotion", "Attrition", "Retirement"};
+        public Task<List<StaffVacancy>> GetVacancyProjectionResultsAsync(string Role, CancellationToken cancellationToken)
         {
-
-            // Add the 'name' value as sql parameter to avoid SQL injection from raw text
-            var name = new SqlParameter("role", Role ?? string.Empty);
-
-            // Implement the view in SQL, call it here
-            var whereClause = Role != null ?
-                "WHERE [PositionTitle] = "
-                + (Role == "Principal" ? "'Principal'" : "'AP'")
-                : "";
-            // DISTINCT(s.[Full Name Annon]),
-            var sql = $@"
-                select                 
-                    *
-                from dbo.[vw_StaffVacancy] s
-                {whereClause}
-                order by s.SchoolYear                
-             ";
-            //  from dbo.[vw_StaffVacancy] s
-            return _edfiDbContext.StaffVacancies.FromSqlRaw(sql, name).ToListAsync();
+            var query = _edfiDbContext.StaffVacancies.Where(v => vacancyCauses.Contains(v.VacancyCause));
+            if (!string.IsNullOrWhiteSpace(Role)){
+                var queryRole = Role == "Principal" ? "Principal" : "Assistant Principal";
+                query = query.Where(v => v.PositionTitle.Equals(queryRole));
+            }
+            query = query.OrderBy(v => v.SchoolYear);
+            
+            return query.ToListAsync(cancellationToken);
         }
 
         public Task<List<StaffSearch>> GetSearchResultsAsync(ProfileSearchRequestBody body,
