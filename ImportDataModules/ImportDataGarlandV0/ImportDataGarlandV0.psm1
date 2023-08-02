@@ -114,6 +114,7 @@ function TransformStaffEducationOrganizationEmploymentAssociations {
                 'Attrition'             { 'Involuntary separation' }
                 'Transfer'              { 'Mutual agreement' }
                 'Promotion'             { 'Mutual agreement' }
+                ''                      { if (($_.EndDate | Get-Date -Format 'MM-dd') -eq '06-30') { 'Finished Year' } else { $null } }
                 Default                 { 'Other' }
             })
         } else { $null }
@@ -165,7 +166,7 @@ function TransformStaffEducationOrganizationAssignmentAssociations($staffClassif
             BeginDate                      = ([System.Security.SecurityElement]::Escape($_.BeginDate) | Get-Date -Format 'yyyy-MM-dd')
             EndDate                        = if ($_.EndDate -ne 'CURRENT') { ([System.Security.SecurityElement]::Escape($_.EndDate) | Get-Date -Format 'yyyy-MM-dd') } else { $null }
 #             PositionTitle                  = [System.Security.SecurityElement]::Escape($_.PositionTitle)
-#            PositionTitle                  = [System.Security.SecurityElement]::Escape($_.StaffClassification)
+            PositionTitle                  = [System.Security.SecurityElement]::Escape($_.StaffClassification)
             StaffClassificationDescriptor  = $staffClassificationDescriptor
         }    
     }
@@ -193,23 +194,82 @@ function Transform([scriptblock]$OnError) {
   }
 }
 
+function TransformPerformanceEvaluationRating {
+    [CmdletBinding()]
+    param(
+        [parameter(ValueFromPipeline)]
+        $InputObject
+    )
+
+    process {
+        $average =  [int]$InputObject.Average
+        $ratingResultTitle = GetRatingResultTitle $average
+
+        return [EdFiPerformanceEvaluationRating]@{
+            PerformanceEvaluationReference             = [PSCustomObject]@{
+                EducationOrganizationId             = 4820340
+                EvaluationPeriodDescriptor          = 'uri://tpdm.ed-fi.org/EvaluationPeriodDescriptor#BOY'
+                PerformanceEvaluationTitle          = 'TPESS Fall Evaluation'
+                PerformanceEvaluationTypeDescriptor = 'uri://tpdm.ed-fi.org/PerformanceEvaluationTypeDescriptor#Formal Evaluation'
+                SchoolYear                          = 2022
+                TermDescriptor                      = 'uri://ed-fi.org/TermDescriptor#Fall Semester'
+            }
+            PersonReference                            = [PSCustomObject]@{
+                PersonId               = [System.Security.SecurityElement]::Escape($_.StaffUniqueId).Trim()
+                SourceSystemDescriptor = 'uri://ed-fi.org/SourceSystemDescriptor#District'
+            }
+            ActualDate                                 = '2021-10-01'
+            PerformanceEvaluationRatingLevelDescriptor = "uri://tpdm.ed-fi.org/PerformanceEvaluationRatingLevelDescriptor#$ratingResultTitle"
+            Results                                    = (, [PSCustomObject]@{
+                Rating                       = $average
+                RatingResultTitle            = $ratingResultTitle
+                ResultDatatypeTypeDescriptor = 'uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer'
+            })
+        }
+    }
+}
+function TransformTPESS(){
+    process {
+        $per = ($_ | TransformPerformanceEvaluationRating)
+        Write-Output $per
+    }
+}
+
 Function Import-EdData($Config) {
     $Headers = 'StaffUniqueId', 'LastSurname', 'FirstName', 'MiddleName', 'SchoolId', 'SchoolCategory', 'NameOfInstitution', 'StaffClassification', 'BeginDate', 
     'EndDate', 'SeparationReason', 'School Year', 'Age', 'YearsOfProfessionalExperience', 'SexDescriptor', 'RaceDescriptor', 'HighestCompletedLevelOfEducationDescriptor', 'Email'
 
     Set-Content -Path $Config.ErrorsOutputFile -Value "$(Get-Date -Format 'yyyy-MM-ddTHH:mm:ss')"
-    Add-Content -Path $Config.ErrorsOutputFile -Value "`r`n$($Config.V0SourceFile)`r`n"
+    Add-Content -Path $Config.ErrorsOutputFile -Value "`r`n$($Config.V0EmployeesSourceFile)`r`n"
 
-    Write-Progress -Activity "Importing data from $($Config.V0SourceFile)" -PercentComplete -1
+<#     Write-Progress -Activity "Importing data from $($Config.V0EmployeesSourceFile)" -PercentComplete -1
 
-    $res = NLoad $Headers $Config.V0SourceFile | 
+    $res = NLoad $Headers $Config.V0EmployeesSourceFile | 
         Transform |
         FilterDistinct -IfScriptBlock {$args.GetType() -eq 'EdFiSchool'} -GetIdScriptBlock { $args.SchoolId } |
         FilterDistinct -IfScriptBlock {$args.GetType() -eq 'EdFiStaffs'} -GetIdScriptBlock { $args.StaffUniqueId } |
         NPost -Config $Config |
         WriteToFileIfImportError -FilePath $Config.ErrorsOutputFile |
         CountResults |
-        ShowProggress -Activity "Importing data from $($Config.V0SourceFile)" |
+        ShowProggress -Activity "Importing data from $($Config.V0EmployeesSourceFile)" |
+        Select-Object -Last 1 #>
+
+    $Headers = 'StaffUniqueId','Full Name','Role','Campus','Admin Years Principal in GISD','Supervisor',
+        '1_1','1_2','1_3','1_4','1_5',
+        '2_1','2_2','2_3','2_4',
+        '3_1','3_2','3_3','3_4',
+        '4_1','4_2',
+        '5_1','5_2','5_3','5_4','5_5',
+        'Average'
+    
+    Write-Progress -Activity "Importing data from $($Config.V0TPESSSourceFile)" -PercentComplete -1
+    
+    $res = NLoad $Headers $Config.V0TPESSSourceFile | 
+        TransformTPESS |
+        NPost -Config $Config |
+        WriteToFileIfImportError -FilePath $Config.ErrorsOutputFile |
+        CountResults |
+        ShowProggress -Activity "Importing data from $($Config.V0TPESSSourceFile)" |
         Select-Object -Last 1
 
     return $res 

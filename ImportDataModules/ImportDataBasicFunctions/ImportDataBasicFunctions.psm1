@@ -4,7 +4,7 @@ $Description = 'Module with basic functions to import data using the ED-FI API'
 
 
 # ===================================================================================================================
-# EFI Functions
+# EDFI Functions
 # Reuse token
 $script:EdfiToken = $null
 function GetToken {
@@ -71,10 +71,21 @@ function GetEndPointByType([Type]$ClassType){
         'EdFiStaff' { '/ed-fi/staffs' }
         'EdFiStaffOrgEmployment' { '/ed-fi/staffEducationOrganizationEmploymentAssociations' }
         'EdFiStaffOrgAssociations' { '/ed-fi/staffEducationOrganizationAssignmentAssociations' }
+        'EdFiPerformanceEvaluationRating' { '/tpdm/performanceEvaluationRatings'}
         Default {$null} # TODO: Must throw an exception
     }
 }
 
+function GetRatingResultTitle([int]$Result) {
+    return $(switch ($Result) {
+        1 { 'Ineffective' }
+        2 { 'Developing' }
+        3 { 'Effective' }
+        4 { 'Accomplished' }
+        5 { 'Highly Effective' }
+        Default {}
+    })
+}
 # ===================================================================================================================
 
 # ===================================================================================================================
@@ -96,7 +107,7 @@ function NPost() {
     )    
 
     begin {
-        $supportedTypes = ([EdFiSchool], [EdFiStaff], [EdFiStaffOrgEmployment], [EdFiStaffOrgAssociations])
+        $supportedTypes = ([EdFiSchool], [EdFiStaff], [EdFiStaffOrgEmployment], [EdFiStaffOrgAssociations], [EdFiPerformanceEvaluationRating])
         $BaseApiUrl = $Config.BaseApiUrl
         $EdFiUrl = $Config.EdFiUrl
     
@@ -323,6 +334,14 @@ class EdFiStaffOrgAssociations {
     [string]$EndDate
     [string]$PositionTitle
     [string]$StaffClassificationDescriptor
+}
+
+class EdFiPerformanceEvaluationRating {
+    [Object]$PerformanceEvaluationReference
+    [Object]$PersonReference
+    [string]$ActualDate
+    [string]$PerformanceEvaluationRatingLevelDescriptor
+    [Object[]]$Results
 }
 
 # ===================================================================================================================

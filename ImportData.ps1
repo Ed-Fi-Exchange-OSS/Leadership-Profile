@@ -8,7 +8,8 @@ $Config = @{
     UsersSourceFile          = "Data\garland-data-20230704\20230629_GarlandISD_User.CSV"
     #ErrorsOutputFile         = "Data\garland-data-20230704\Errors.txt"
 
-    V0SourceFile             = "Data\garland-data-0\20230104_GISD_LeadershipPortal_test3.xlsx - Employees.csv"
+    V0EmployeesSourceFile    = "Data\garland-data-0\230731_GISD_LeadershipPortal_testdata4.xlsx - Employees.csv"
+    V0TPESSSourceFile        = "Data\garland-data-0\230731_GISD_LeadershipPortal_testdata4.xlsx - AP_P T-PESS.csv"
     ErrorsOutputFile         = "Data\garland-data-0\Errors.txt"
 
 
