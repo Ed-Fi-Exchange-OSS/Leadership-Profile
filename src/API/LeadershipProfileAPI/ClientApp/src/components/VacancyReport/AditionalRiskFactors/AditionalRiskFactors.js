@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Col, Popover, Row } from "reactstrap";
-import { Button, CardText, CardSubtitle, CardTitle, CardBody, CardImg, Card, Tooltip } from "reactstrap";
+import { Col, Row } from "reactstrap";
+import { Tooltip } from "reactstrap";
 import UseAditionalRiskFactors from "./UseAditionalRiskFactors";
 
 
@@ -60,7 +60,7 @@ const AditionalRiskFactors = ({ data, selectedRole }) => {
           Turnover 5 years
         </h5>
         <h5 className="left-title">5-Year Vacancy Rate</h5>
-        <Row className="my-3">
+        <Row className="my-3 retirement-max-height">
           <Col>
             {vacancyRateData
               ? vacancyRateData.map((school, i) => (
