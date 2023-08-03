@@ -11,11 +11,11 @@ function GetToken {
     param (
         [Parameter(Mandatory = $true)]
         $Config
-    )    
+    )
 
     if ( [String]::IsNullOrWhiteSpace($EdfiToken)) {
         $OAuthUrl = "$($Config.BaseApiUrl)$($Config.OAuthUrl)"
-            
+
         $FormData = @{
             Client_id     = $Config.Key
             Client_secret = $Config.Secret
@@ -26,14 +26,14 @@ function GetToken {
         $OAuthResponse = Invoke-RestMethod -Uri "$OAuthUrl" -Method Post -Body $FormData
         $script:EdfiToken = $OAuthResponse.access_token
     }
-    return $script:EdfiToken    
+    return $script:EdfiToken
 }
 
 function GetGradeLevels {
     param (
         $SchoolCategory
     )
-    
+
     $gradeLevels = switch ($SchoolCategory) {
         'Elementary School' {
             (
@@ -67,12 +67,15 @@ function GetGradeLevels {
 
 function GetEndPointByType([Type]$ClassType){
     switch ($ClassType.Name) {
-        'EdFiSchool' { '/ed-fi/schools' }
-        'EdFiStaff' { '/ed-fi/staffs' }
-        'EdFiStaffOrgEmployment' { '/ed-fi/staffEducationOrganizationEmploymentAssociations' }
-        'EdFiStaffOrgAssociations' { '/ed-fi/staffEducationOrganizationAssignmentAssociations' }
-        'EdFiPerformanceEvaluationRating' { '/tpdm/performanceEvaluationRatings'}
-        Default {$null} # TODO: Must throw an exception
+        'EdFiSchool'                      { '/ed-fi/schools' }
+        'EdFiStaff'                       { '/ed-fi/staffs' }
+        'EdFiStaffOrgEmployment'          { '/ed-fi/staffEducationOrganizationEmploymentAssociations' }
+        'EdFiStaffOrgAssociations'        { '/ed-fi/staffEducationOrganizationAssignmentAssociations' }
+        'EdFiPerformanceEvaluationRating' { '/tpdm/performanceEvaluationRatings' }
+        'EdFiEvaluationRating'            { '/tpdm/evaluationRatings' }
+        'EdFiEvaluationObjectiveRating'   { '/tpdm/evaluationObjectiveRatings' }
+        'EdFiEvaluationElementRating'     { '/tpdm/evaluationElementRatings' }
+        Default                           {$null} # TODO: Must throw an exception
     }
 }
 
@@ -104,23 +107,24 @@ function NPost() {
         [ScriptBlock]
         $OnError,
         $EndPoint
-    )    
+    )
 
     begin {
-        $supportedTypes = ([EdFiSchool], [EdFiStaff], [EdFiStaffOrgEmployment], [EdFiStaffOrgAssociations], [EdFiPerformanceEvaluationRating])
+        $supportedTypes = ([EdFiSchool], [EdFiStaff], [EdFiStaffOrgEmployment], [EdFiStaffOrgAssociations],
+            [EdFiPerformanceEvaluationRating], [EdFiEvaluationRating], [EdFiEvaluationObjectiveRating], [EdFiEvaluationElementRating])
         $BaseApiUrl = $Config.BaseApiUrl
         $EdFiUrl = $Config.EdFiUrl
-    
+
         # * Get a token *
         $token = GetToken $Config
         # ================================================================================================
-    
+
         $Headers = @{
             'Accept'        = 'application/json'
             'Authorization' = "Bearer $token"
             'Content-Type'  = 'application/json'
         }
-            
+
         $uri = if ($PSBoundParameters.ContainsKey('EndPoint')) { "$BaseApiUrl$EdFiUrl$EndPoint" } else { $null }
     }
     process {
@@ -138,7 +142,7 @@ function NPost() {
             $ErrorObj = [ImportError]@{
                 Uri             = $uri
                 Record          = $InputObject
-                ErrorDetails    = $_.ErrorDetails
+                ErrorDetails    = $_.ErrorDetails ?? $_.ToString()
             }
 
             if ($OnError) {
@@ -158,7 +162,7 @@ function Tap {
         [Parameter(Mandatory = $true)]
         [ScriptBlock]
         $ScriptBlock
-    )    
+    )
 
     process {
         &$ScriptBlock $InputObject
@@ -180,8 +184,8 @@ function CountResults {
             [PSCustomObject]@{
                 Success = 0
                 Errors  = 0
-            }   
-        } 
+            }
+        }
     }
     process {
         if ($InputValue -is [ImportError]) {
@@ -195,12 +199,12 @@ function CountResults {
 }
 
 function ShowProggress($Activity = 'Processing', $Status) {
-    begin { 
+    begin {
         $reduced = [PSCustomObject]@{
             Success = 0
             Errors = 0
         }
-        $sw = [System.Diagnostics.Stopwatch]::StartNew()    
+        $sw = [System.Diagnostics.Stopwatch]::StartNew()
     }
     process {
         if(($_ | Get-Member -name "Success" )){
@@ -212,10 +216,10 @@ function ShowProggress($Activity = 'Processing', $Status) {
             $progressParams = @{
                 Activity = $Activity
                 Status = $Status
-                CurrentOperation = "$($reduced.Success) posted successfully$(if($reduced.Errors -gt 0){" [$($reduced.Errors) errors]"})" 
+                CurrentOperation = "$($reduced.Success) posted successfully$(if($reduced.Errors -gt 0){" [$($reduced.Errors) errors]"})"
                 PercentComplete = -1
             }
-            
+
             if ([string]::IsNullOrWhiteSpace($status)) {
                 $progressParams.Remove("Status")
             }
@@ -246,11 +250,11 @@ function WriteToFileIfImportError {
                 Record       = ($InputObject.Record | ConvertTo-Json -Depth 10)
                 ErrorDetails = ($InputObject.ErrorDetails | ConvertTo-Json -Depth 10)
             }
-            Add-Content -Path $FilePath -Value "$(($toWrite | Format-List | Out-String).Trim())`r`n"    
+            Add-Content -Path $FilePath -Value "$(($toWrite | Format-List | Out-String).Trim())`r`n"
         }
         return $InputObject
     }
-} 
+}
 
 function FilterDistinct {
     [CmdletBinding()]
@@ -342,6 +346,25 @@ class EdFiPerformanceEvaluationRating {
     [string]$ActualDate
     [string]$PerformanceEvaluationRatingLevelDescriptor
     [Object[]]$Results
+}
+
+class EdFiEvaluationRating {
+    [string]$EvaluationDate
+    [Object]$EvaluationReference
+    [Object]$PerformanceEvaluationRatingReference
+    [Object[]]$Results
+}
+
+class EdFiEvaluationObjectiveRating {
+    [Object]$EvaluationObjectiveReference
+    [Object]$EvaluationRatingReference
+}
+
+class EdFiEvaluationElementRating {
+    [Object]$EvaluationElementReference
+    [Object]$EvaluationObjectiveRatingReference
+    [string]$EvaluationElementRatingLevelDescriptor
+    [Object]$Results
 }
 
 # ===================================================================================================================

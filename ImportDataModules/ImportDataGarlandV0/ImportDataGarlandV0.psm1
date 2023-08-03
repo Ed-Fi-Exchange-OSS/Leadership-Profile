@@ -4,11 +4,72 @@ $ModuleVersion = '1.0.0'
 $Description = 'Module with V0 of Garlands functions to import data using the ED-FI API'
 $FunctionsToExport = 'Import-EdData'
 
+# ===========================================================================
+# P-TESS Configuration
+$LocalEducationAgencyId = 4820340
+$SchoolYear = 2022
+$PerformanceEvaluationTitle          = 'TPESS Fall Evaluation'
+$PerformanceEvaluationTypeDescriptor = 'uri://tpdm.ed-fi.org/PerformanceEvaluationTypeDescriptor#Formal Evaluation'
+$EvaluationDate                      = '2021-10-01T16:00:00.0Z'
+$EvaluationTitle                     = 'Texas Principal Evaluation & Support Systems'
+$EvaluationPeriodDescriptor          = 'uri://tpdm.ed-fi.org/EvaluationPeriodDescriptor#BOY'
+$TermDescriptor                      = 'uri://ed-fi.org/TermDescriptor#Fall Semester'
+$SourceSystemDescriptor              = 'uri://ed-fi.org/SourceSystemDescriptor#District'
+
+$Domains = (
+    [PSCustomObject]@{
+        Name = 'Domain 1: Strong School Leadership and Planning'
+        Indicators = (
+            'Indicator 1.1: Ethics and Standards',
+            'Indicator 1.2: Schedules for Core Leadership Tasks',
+            'Indicator 1.3: Strategic Planning',
+            'Indicator 1.4: Change Facilitation',
+            'Indicator 1.5: Coaching, Growth, Feedback, and Professional Development'
+        )
+    },
+    [PSCustomObject]@{
+        Name = 'Domain 2: Effective, Well-Supported Teachers'
+        Indicators = (
+            'Indicator 2.1: Human Capital',
+            'Indicator 2.2: Talent Management',
+            'Indicator 2.3: Observations, Feedback, and Coaching',
+            'Indicator 2.4: Professional Development'
+        )
+    },
+    [PSCustomObject]@{
+        Name = 'Domain 3: Positive School Culture'
+        Indicators = (
+            'Indicator 3.1: Safe Environment and High Expectations',
+            'Indicator 3.2: Behavioral Expectations and Management Systems',
+            'Indicator 3.3: Proactive and Responsive Student Support Services',
+            'Indicator 3.4: Involving Families and Community'
+        )
+    },
+    [PSCustomObject]@{
+        Name = 'Domain 4: High-Quality Curriculum'
+        Indicators = (
+            'Indicator 4.1: Standards-based Curricula and Assessments',
+            'Indicator 4.2: Instructional Resources and Professional Development'
+        )
+    },
+    [PSCustomObject]@{
+        Name = 'Domain 5: Effective Instruction'
+        Indicators = (
+            'Indicator 5.1: High-Performing Instructional Leadership Team',
+            'Indicator 5.2: Objective-Driven Plans',
+            'Indicator 5.3: Effective Classroom Routines and Instructional Strategies',
+            'Indicator 5.4: Data-Driven Instruction',
+            'Indicator 5.5: Response to Intervention'
+        )
+    }
+)
+
+# ===========================================================================
 # Region Garland Specific Functions
 function TransformSchool {
     process {
         if ($_.SchoolId.Trim() -eq '') {
-            return [ImportError]@{            
+            return [ImportError]@{
                 Record   = $_
                 ErrorDetails    = "SchoolId is null"
             }
@@ -29,15 +90,15 @@ function TransformSchool {
             NameOfInstitution               = [System.Security.SecurityElement]::Escape($_.NameOfInstitution)
             LocalEducationAgencyReference   = [PSCustomObject]@{
                 #LocalEducationAgencyId = $_.DistrictId
-                LocalEducationAgencyId = 4820340
+                LocalEducationAgencyId = $LocalEducationAgencyId
             }
             EducationOrganizationCategories = (, [PSCustomObject]@{
                     EducationOrganizationCategoryDescriptor = 'uri://ed-fi.org/EducationOrganizationCategoryDescriptor#School'
                 })
-            
+
             SchoolCategories                = (, [PSCustomObject]@{ SchoolCategoryDescriptor = 'uri://ed-fi.org/SchoolCategoryDescriptor#' + [System.Security.SecurityElement]::Escape($schoolCategory) })
             GradeLevels                     = $gradeLevels
-        }    
+        }
     }
 }
 
@@ -53,7 +114,7 @@ function TransformStaff() {
 
         $race = [System.Security.SecurityElement]::Escape($_.RaceDescriptor)
         $hispanicLatinoEthnicity = if ($race -eq 'Hispanic/Latino') { $true } else { $null }
-        
+
         # Used in app, must be added to descriptors: Hispanic, Two or More Races
         $race = switch ($race) {
             'Asian'                             { 'Asian' }
@@ -94,7 +155,7 @@ function TransformStaff() {
             ElectronicMails                            = $emails
             #Address                                    = $address
             HighestCompletedLevelOfEducationDescriptor = $levelOfEducation
-        }    
+        }
     }
 }
 
@@ -129,7 +190,7 @@ function TransformStaffEducationOrganizationEmploymentAssociations {
                 ''                      { 'Unknown' }
                 Default                 { 'Other' }
             })
-        } else { $null }  
+        } else { $null }
 
         return [EdFiStaffOrgEmployment]@{
             EducationOrganizationReference = [PSCustomObject]@{ EducationOrganizationId = [int64]($_.SchoolId) }
@@ -139,10 +200,10 @@ function TransformStaffEducationOrganizationEmploymentAssociations {
             EndDate                        = if ($_.EndDate -ne 'CURRENT') { ([System.Security.SecurityElement]::Escape($_.EndDate) | Get-Date -Format 'yyyy-MM-dd') } else { $null }
             SeparationDescriptor           = $separationDescriptor
             SeparationReasonDescriptor     = $separationReasonDescriptor
-        }        
+        }
     }
 }
-  
+
 function TransformStaffEducationOrganizationAssignmentAssociations($staffClassificationMap) {
     process {
         if($_.SchoolId -eq '') { return }
@@ -155,8 +216,8 @@ function TransformStaffEducationOrganizationAssignmentAssociations($staffClassif
             'Central Office Specialist' { 'LEA Specialist' }
             Default                     { $_ }
         }
-        $staffClassificationDescriptor = if ( ![String]::IsNullOrWhiteSpace($staffClassification)) { 
-            "uri://ed-fi.org/StaffClassificationDescriptor#$staffClassification" 
+        $staffClassificationDescriptor = if ( ![String]::IsNullOrWhiteSpace($staffClassification)) {
+            "uri://ed-fi.org/StaffClassificationDescriptor#$staffClassification"
         }
         else { $null }
 
@@ -168,18 +229,18 @@ function TransformStaffEducationOrganizationAssignmentAssociations($staffClassif
 #             PositionTitle                  = [System.Security.SecurityElement]::Escape($_.PositionTitle)
             PositionTitle                  = [System.Security.SecurityElement]::Escape($_.StaffClassification)
             StaffClassificationDescriptor  = $staffClassificationDescriptor
-        }    
+        }
     }
 }
 
 function Transform([scriptblock]$OnError) {
   process {
     $school = ($_ | TransformSchool)
-    if($school -is  [ImportError]){ 
+    if($school -is  [ImportError]){
         if ($OnError) {
             &$OnError $school
         }
-        
+
         return $school
     }
     Write-Output $school
@@ -194,6 +255,10 @@ function Transform([scriptblock]$OnError) {
   }
 }
 
+function GetPerformanceEvaluationReference() {
+    return
+}
+
 function TransformPerformanceEvaluationRating {
     [CmdletBinding()]
     param(
@@ -202,26 +267,147 @@ function TransformPerformanceEvaluationRating {
     )
 
     process {
-        $average =  [int]$InputObject.Average
-        $ratingResultTitle = GetRatingResultTitle $average
+        $average =  [float]$InputObject.Average
+        $ratingResultTitle = GetRatingResultTitle ([float]::Truncate($average))
 
         return [EdFiPerformanceEvaluationRating]@{
             PerformanceEvaluationReference             = [PSCustomObject]@{
-                EducationOrganizationId             = 4820340
-                EvaluationPeriodDescriptor          = 'uri://tpdm.ed-fi.org/EvaluationPeriodDescriptor#BOY'
-                PerformanceEvaluationTitle          = 'TPESS Fall Evaluation'
-                PerformanceEvaluationTypeDescriptor = 'uri://tpdm.ed-fi.org/PerformanceEvaluationTypeDescriptor#Formal Evaluation'
-                SchoolYear                          = 2022
-                TermDescriptor                      = 'uri://ed-fi.org/TermDescriptor#Fall Semester'
+                EducationOrganizationId             = $LocalEducationAgencyId
+                EvaluationPeriodDescriptor          = $EvaluationPeriodDescriptor
+                PerformanceEvaluationTitle          = $PerformanceEvaluationTitle
+                PerformanceEvaluationTypeDescriptor = $PerformanceEvaluationTypeDescriptor
+                SchoolYear                          = $SchoolYear
+                TermDescriptor                      = $TermDescriptor
             }
             PersonReference                            = [PSCustomObject]@{
                 PersonId               = [System.Security.SecurityElement]::Escape($_.StaffUniqueId).Trim()
-                SourceSystemDescriptor = 'uri://ed-fi.org/SourceSystemDescriptor#District'
+                SourceSystemDescriptor = $SourceSystemDescriptor
             }
-            ActualDate                                 = '2021-10-01'
+            ActualDate                                 = $EvaluationDate.Substring(0,10)
             PerformanceEvaluationRatingLevelDescriptor = "uri://tpdm.ed-fi.org/PerformanceEvaluationRatingLevelDescriptor#$ratingResultTitle"
             Results                                    = (, [PSCustomObject]@{
                 Rating                       = $average
+                RatingResultTitle            = $ratingResultTitle
+                ResultDatatypeTypeDescriptor = 'uri://ed-fi.org/ResultDatatypeTypeDescriptor#Decimal'
+            })
+        }
+    }
+}
+
+function TransformEvaluationRating {
+    [CmdletBinding()]
+    param(
+        [parameter(ValueFromPipeline)]
+        $InputObject
+    )
+
+    process {
+        return [EdFiEvaluationRating]@{
+            EvaluationDate                       = $EvaluationDate
+            EvaluationReference                  = [PSCustomObject]@{
+                EducationOrganizationId             = $LocalEducationAgencyId
+                EvaluationPeriodDescriptor          = $EvaluationPeriodDescriptor
+                EvaluationTitle                     = $EvaluationTitle
+                PerformanceEvaluationTitle          = $PerformanceEvaluationTitle
+                PerformanceEvaluationTypeDescriptor = $PerformanceEvaluationTypeDescriptor
+                SchoolYear                          = $SchoolYear
+                TermDescriptor                      = $TermDescriptor
+            }
+            PerformanceEvaluationRatingReference = [PSCustomObject]@{
+                EducationOrganizationId             = $LocalEducationAgencyId
+                EvaluationPeriodDescriptor          = $EvaluationPeriodDescriptor
+                PerformanceEvaluationTitle          = $PerformanceEvaluationTitle
+                PerformanceEvaluationTypeDescriptor = $PerformanceEvaluationTypeDescriptor
+                PersonId                            = [System.Security.SecurityElement]::Escape($_.StaffUniqueId).Trim()
+                SourceSystemDescriptor              = $SourceSystemDescriptor
+                SchoolYear                          = $SchoolYear
+                TermDescriptor                      = $TermDescriptor
+            }
+        }
+    }
+}
+
+function TransformEvaluationObjectiveRating {
+    [CmdletBinding()]
+    param(
+        [parameter(ValueFromPipeline)]
+        $InputObject,
+        [parameter(Mandatory)]
+        [string]$Domain
+    )
+
+    process {
+        return [EdFiEvaluationObjectiveRating]@{
+            EvaluationObjectiveReference   = [PSCustomObject]@{
+                EducationOrganizationId             = $LocalEducationAgencyId
+                EvaluationObjectiveTitle            = $Domain
+                EvaluationPeriodDescriptor          = $EvaluationPeriodDescriptor
+                EvaluationTitle                     = $EvaluationTitle
+                PerformanceEvaluationTitle          = $PerformanceEvaluationTitle
+                PerformanceEvaluationTypeDescriptor = $PerformanceEvaluationTypeDescriptor
+                SchoolYear                          = $SchoolYear
+                TermDescriptor                      = $TermDescriptor
+            }
+            EvaluationRatingReference      = [PSCustomObject]@{
+                EducationOrganizationId             = $LocalEducationAgencyId
+                EvaluationDate                      = $EvaluationDate
+                EvaluationPeriodDescriptor          = $EvaluationPeriodDescriptor
+                EvaluationTitle                     = $EvaluationTitle
+                PerformanceEvaluationTitle          = $PerformanceEvaluationTitle
+                PerformanceEvaluationTypeDescriptor = $PerformanceEvaluationTypeDescriptor
+                PersonId                            = [System.Security.SecurityElement]::Escape($_.StaffUniqueId).Trim()
+                SchoolYear                          = $SchoolYear
+                SourceSystemDescriptor              = $SourceSystemDescriptor
+                TermDescriptor                      = $TermDescriptor
+            }
+        }
+    }
+}
+
+
+function TransformEvaluationElementRating {
+    [CmdletBinding()]
+    param(
+        [parameter(ValueFromPipeline)]
+        $InputObject,
+        [parameter(Mandatory)]
+        [string]$Domain,
+        [parameter(Mandatory)]
+        [string]$Indicator
+    )
+
+    process {
+        $rating =  [float]$InputObject."$Indicator"
+        $ratingResultTitle = GetRatingResultTitle ([int][float]::Truncate($rating))
+
+        return [EdFiEvaluationElementRating]@{
+            EvaluationElementReference             = [PSCustomObject]@{
+                EducationOrganizationId             = $LocalEducationAgencyId
+                EvaluationElementTitle              = $Indicator
+                EvaluationObjectiveTitle            = $Domain
+                EvaluationPeriodDescriptor          = $EvaluationPeriodDescriptor
+                EvaluationTitle                     = $EvaluationTitle
+                PerformanceEvaluationTitle          = $PerformanceEvaluationTitle
+                PerformanceEvaluationTypeDescriptor = $PerformanceEvaluationTypeDescriptor
+                SchoolYear                          = $SchoolYear
+                TermDescriptor                      = $TermDescriptor                
+            }
+            EvaluationObjectiveRatingReference     = [PSCustomObject]@{
+                EducationOrganizationId             = $LocalEducationAgencyId
+                EvaluationDate                      = $EvaluationDate
+                EvaluationObjectiveTitle            = $Domain
+                EvaluationPeriodDescriptor          = $EvaluationPeriodDescriptor
+                EvaluationTitle                     = $EvaluationTitle
+                PerformanceEvaluationTitle          = $PerformanceEvaluationTitle
+                PerformanceEvaluationTypeDescriptor = $PerformanceEvaluationTypeDescriptor
+                PersonId                            = [System.Security.SecurityElement]::Escape($_.StaffUniqueId).Trim()
+                SchoolYear                          = $SchoolYear
+                SourceSystemDescriptor              = $SourceSystemDescriptor
+                TermDescriptor                      = $TermDescriptor                
+            }
+            EvaluationElementRatingLevelDescriptor = "uri://tpdm.ed-fi.org/EvaluationElementRatingLevelDescriptor#$ratingResultTitle"
+            Results                                = (,[PSCustomObject]@{
+                Rating                       = ([float]::Truncate($rating))
                 RatingResultTitle            = $ratingResultTitle
                 ResultDatatypeTypeDescriptor = 'uri://ed-fi.org/ResultDatatypeTypeDescriptor#Integer'
             })
@@ -230,13 +416,31 @@ function TransformPerformanceEvaluationRating {
 }
 function TransformTPESS(){
     process {
-        $per = ($_ | TransformPerformanceEvaluationRating)
-        Write-Output $per
+        Write-Output ($_ | TransformPerformanceEvaluationRating)
+
+        Write-Output ($_ | TransformEvaluationRating)
+
+        foreach ($domain in $Domains) {
+            Write-Output ($_ | TransformEvaluationObjectiveRating -Domain $domain.Name)
+            foreach ($indicator in $domain.Indicators) {
+                Write-Output ($_ | TransformEvaluationElementRating -Domain $domain.Name -Indicator $indicator)
+            }
+        }
     }
 }
 
+Function GetPersonId($Obj){
+    return $(switch ($Obj.GetType().Name) {
+        'EdFiPerformanceEvaluationRating'   { $Obj.PersonReference.PersonId }
+        'EdFiEvaluationRating'              { $Obj.PerformanceEvaluationRatingReference.PersonId }
+        'EdFiEvaluationObjectiveRating'     { $Obj.EvaluationRatingReference.PersonId }
+        'EdFiEvaluationElementRating'       { $Obj.EvaluationObjectiveRatingReference.PersonId }
+        Default { $null }
+    })
+}
+
 Function Import-EdData($Config) {
-    $Headers = 'StaffUniqueId', 'LastSurname', 'FirstName', 'MiddleName', 'SchoolId', 'SchoolCategory', 'NameOfInstitution', 'StaffClassification', 'BeginDate', 
+    $Headers = 'StaffUniqueId', 'LastSurname', 'FirstName', 'MiddleName', 'SchoolId', 'SchoolCategory', 'NameOfInstitution', 'StaffClassification', 'BeginDate',
     'EndDate', 'SeparationReason', 'School Year', 'Age', 'YearsOfProfessionalExperience', 'SexDescriptor', 'RaceDescriptor', 'HighestCompletedLevelOfEducationDescriptor', 'Email'
 
     Set-Content -Path $Config.ErrorsOutputFile -Value "$(Get-Date -Format 'yyyy-MM-ddTHH:mm:ss')"
@@ -244,7 +448,7 @@ Function Import-EdData($Config) {
 
 <#     Write-Progress -Activity "Importing data from $($Config.V0EmployeesSourceFile)" -PercentComplete -1
 
-    $res = NLoad $Headers $Config.V0EmployeesSourceFile | 
+    $res = NLoad $Headers $Config.V0EmployeesSourceFile |
         Transform |
         FilterDistinct -IfScriptBlock {$args.GetType() -eq 'EdFiSchool'} -GetIdScriptBlock { $args.SchoolId } |
         FilterDistinct -IfScriptBlock {$args.GetType() -eq 'EdFiStaffs'} -GetIdScriptBlock { $args.StaffUniqueId } |
@@ -255,24 +459,43 @@ Function Import-EdData($Config) {
         Select-Object -Last 1 #>
 
     $Headers = 'StaffUniqueId','Full Name','Role','Campus','Admin Years Principal in GISD','Supervisor',
-        '1_1','1_2','1_3','1_4','1_5',
-        '2_1','2_2','2_3','2_4',
-        '3_1','3_2','3_3','3_4',
-        '4_1','4_2',
-        '5_1','5_2','5_3','5_4','5_5',
+        'Indicator 1.1: Ethics and Standards',
+        'Indicator 1.2: Schedules for Core Leadership Tasks',
+        'Indicator 1.3: Strategic Planning',
+        'Indicator 1.4: Change Facilitation',
+        'Indicator 1.5: Coaching, Growth, Feedback, and Professional Development',
+        'Indicator 2.1: Human Capital',
+        'Indicator 2.2: Talent Management',
+        'Indicator 2.3: Observations, Feedback, and Coaching',
+        'Indicator 2.4: Professional Development',
+        'Indicator 3.1: Safe Environment and High Expectations',
+        'Indicator 3.2: Behavioral Expectations and Management Systems',
+        'Indicator 3.3: Proactive and Responsive Student Support Services',
+        'Indicator 3.4: Involving Families and Community',
+        'Indicator 4.1: Standards-based Curricula and Assessments',
+        'Indicator 4.2: Instructional Resources and Professional Development',
+        'Indicator 5.1: High-Performing Instructional Leadership Team',
+        'Indicator 5.2: Objective-Driven Plans',
+        'Indicator 5.3: Effective Classroom Routines and Instructional Strategies',
+        'Indicator 5.4: Data-Driven Instruction',
+        'Indicator 5.5: Response to Intervention',
         'Average'
-    
+
     Write-Progress -Activity "Importing data from $($Config.V0TPESSSourceFile)" -PercentComplete -1
-    
-    $res = NLoad $Headers $Config.V0TPESSSourceFile | 
+    Add-Content -Path $Config.ErrorsOutputFile -Value "`r`n$($Config.V0TPESSSourceFile)`r`n"
+
+    $staffUniqueIdWithError = @{}
+    $res = NLoad $Headers $Config.V0TPESSSourceFile |
         TransformTPESS |
+        Where-Object { -not $staffUniqueIdWithError.ContainsKey( (GetPersonId $_)) } |
         NPost -Config $Config |
+        Tap -ScriptBlock { if($args[0] -is [ImportError]){ $staffUniqueIdWithError[(GetPersonId $args[0].Record)] = $true } }| 
         WriteToFileIfImportError -FilePath $Config.ErrorsOutputFile |
         CountResults |
         ShowProggress -Activity "Importing data from $($Config.V0TPESSSourceFile)" |
         Select-Object -Last 1
 
-    return $res 
+    return $res
 }
 
 Export-ModuleMember -Function Import-EdData
