@@ -92,7 +92,7 @@ const LeadersTable = ({ data }) => {
                   </td>
                   <td>{staff.totYrsExp}</td>
                   {/* <td>{(staff.domain1 + staff.domain2 + staff.domain3 + staff.domain4 + staff.domain5)/5}</td> */}
-                  <td>{staff.overallScore}</td>
+                  <td>{staff.overallScore.toFixed(2)}</td>
                   <td>{staff.domain1}</td>
                   <td>{staff.domain2}</td>
                   <td>{staff.domain3}</td>

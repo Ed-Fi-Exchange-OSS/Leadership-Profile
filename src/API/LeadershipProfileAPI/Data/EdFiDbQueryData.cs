@@ -155,13 +155,13 @@ namespace LeadershipProfileAPI.Data
             var rolesDictionary = new Dictionary<int, string>();
 
             rolesDictionary.Add(1, "Principal");
-            rolesDictionary.Add(2, "AP");
+            rolesDictionary.Add(2, "Assistant Principal");
             rolesDictionary.Add(3, "Teacher");
             rolesDictionary.Add(4, "Teacher Leader");
             var schoolLevelsDictionary = new Dictionary<int, string>();
-            schoolLevelsDictionary.Add(1, "EL");
-            schoolLevelsDictionary.Add(2, "MS");
-            schoolLevelsDictionary.Add(3, "HS");
+            schoolLevelsDictionary.Add(1, "Elementary School");
+            schoolLevelsDictionary.Add(2, "Middle School");
+            schoolLevelsDictionary.Add(3, "High School");
             var degreesDictionary = new Dictionary<int, string>();
             degreesDictionary.Add(1, "Bachelors");
             degreesDictionary.Add(2, "Masters");
