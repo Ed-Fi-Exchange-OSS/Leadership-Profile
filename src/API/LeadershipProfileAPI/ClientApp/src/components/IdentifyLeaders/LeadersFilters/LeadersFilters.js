@@ -50,11 +50,11 @@ class LeadersFilters extends Component {
   onSliderUpdateHandler = (data, property) => {
     // this.props.onFiltersValueChange(this.state);
     console.log(data);
-    var newValue = [];
-    for(var i = parseInt(data[0]); i <= parseInt(data[1]); i++) {
-      if (i != 0) newValue.push(i);
-    }
-    this.state[property] = newValue;
+    //var newValue = [];
+    //for(var i = parseInt(data[0]); i <= parseInt(data[1]); i++) {
+    //  if (i != 0) newValue.push(i);
+    //}
+    this.state[property] = data;
     this.props.onFiltersValueChange(this.state);
   }
 
@@ -72,6 +72,21 @@ class LeadersFilters extends Component {
     this.props.onFiltersValueChange(this.state);
   };
 
+
+  format = {
+    to: function (value) {
+      return String(value);
+    },
+    from: function (value) {
+      return Number(value);
+  }};
+
+  filterPips = function(value, type) {
+    return value % 5 == 0 ? 1
+      : value % 1 == 0 ? 2
+      : 0;
+  }
+ 
   
   render() {
     return (
@@ -102,11 +117,12 @@ class LeadersFilters extends Component {
                     min: 0,
                     max: 5,
                   }}
+                  format={this.format}
                   onUpdate={(data) => this.onSliderUpdateHandler(data, 'overallScore')}
                   pips= {{
                     mode: 'steps',
-                    stepped: true,
-                    density: 20
+                    density: 100,
+                    filter: () => 1
                   }}
                 />
               </Col>
@@ -129,10 +145,11 @@ class LeadersFilters extends Component {
                     min: 0,
                     max: 5,
                   }}
+                  format={this.format}
                   pips= {{
                     mode: 'steps',
-                    stepped: true,
-                    density: 20
+                    density: 100,
+                    filter: () => 1
                   }}
                   onUpdate={(data) => this.onSliderUpdateHandler(data, 'domainOneScore')}
                 />
@@ -156,10 +173,11 @@ class LeadersFilters extends Component {
                     min: 0,
                     max: 5,
                   }}
+                  format={this.format}
                   pips= {{
                     mode: 'steps',
-                    stepped: true,
-                    density: 20
+                    density: 100,
+                    filter: () => 1
                   }}
                   onUpdate={(data) => this.onSliderUpdateHandler(data, 'domainTwoScore')}
                 />
@@ -183,10 +201,11 @@ class LeadersFilters extends Component {
                     min: 0,
                     max: 5,
                   }}
+                  format={this.format}
                   pips= {{
                     mode: 'steps',
-                    stepped: true,
-                    density: 20
+                    density: 100,
+                    filter: () => 1
                   }}
                   onUpdate={(data) => this.onSliderUpdateHandler(data, 'domainThreeScore')}
                 />
@@ -210,10 +229,11 @@ class LeadersFilters extends Component {
                     min: 0,
                     max: 5,
                   }}
+                  format={this.format}
                   pips= {{
                     mode: 'steps',
-                    stepped: true,
-                    density: 20
+                    density: 100,
+                    filter: () => 1
                   }}
                   onUpdate={(data) => this.onSliderUpdateHandler(data, 'domainFourScore')}
                 />
@@ -237,10 +257,11 @@ class LeadersFilters extends Component {
                     min: 0,
                     max: 5,
                   }}
+                  format={this.format}
                   pips= {{
                     mode: 'steps',
-                    stepped: true,
-                    density: 20
+                    density: 100,
+                    filter: () => 1
                   }}
                   onUpdate={(data) => this.onSliderUpdateHandler(data, 'domainFiveScore')}
                 />
@@ -411,10 +432,10 @@ class LeadersFilters extends Component {
                     max: 36,
                   }}
                   pips= {{
-                    mode: 'range',
-                    stepped: true,
-                    density: 5
-                  }}
+                    mode: 'count',
+                    values: 6,
+                    density: 4,
+                }}
                   // onUpdate={this.onUpdate(index)}
                 />
               </Col>

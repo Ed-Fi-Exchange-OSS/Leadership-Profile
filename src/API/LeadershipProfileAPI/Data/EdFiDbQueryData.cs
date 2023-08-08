@@ -107,17 +107,20 @@ namespace LeadershipProfileAPI.Data
             int[] DomainFourScore,
             int[] DomainFiveScore
         ) {
-            // Map the UI sorted field name to a table field name
-            var fieldMapping = new Dictionary<string, string>
-            {
-                {"id", "StaffUniqueId"},
-                {"name", "LastSurName"},
-                {"yearsOfService", "YearsOfService"},
-                {"position", "Assignment"},
-                {"highestDegree", "Degree"},
-                // {"highestDegree", "Degree"},
-                {"school", "Institution"},
-            };
+            var result = _edfiDbContext.LeaderSearches.AsQueryable()
+                .ApplyMappedFilter(Roles, IQueryableLeaderSearchExtensions.rolesDictionary, s => s.PositionTitle)
+                .ApplyMappedFilter(SchoolLevels, IQueryableLeaderSearchExtensions.schoolLevelsDictionary, s => s.SchoolLevel)
+                .ApplyRangeFilter(OverallScore, s => s.OverallScore)
+                .ApplyRangeFilter(DomainOneScore, s => s.Domain1)
+                .ApplyRangeFilter(DomainTwoScore, s => s.Domain2)
+                .ApplyRangeFilter(DomainThreeScore, s => s.Domain3)
+                .ApplyRangeFilter(DomainFourScore, s => s.Domain4)
+                .ApplyRangeFilter(DomainFiveScore, s => s.Domain5)
+                .Take(10);
+
+            return result.ToListAsync();
+
+            /*
 
             // Add the 'name' value as sql parameter to avoid SQL injection from raw text
             string roles = System.String.Join(",", Roles);
@@ -135,6 +138,7 @@ namespace LeadershipProfileAPI.Data
                 order by s.SchoolYear
              ";
             return _edfiDbContext.LeaderSearches.FromSqlRaw(sql, name).ToListAsync();
+            */
         }
 
         private static string LeadersClauseConditions(

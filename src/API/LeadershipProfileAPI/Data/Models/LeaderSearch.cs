@@ -8,6 +8,7 @@ namespace LeadershipProfileAPI.Data.Models
     [Keyless]
     public class LeaderSearch
     {
+        public string StaffUniqueId {get; set;}
         // [Key]
         // [Column("Full Name Annon")]
         public String FullNameAnnon { get; set; }

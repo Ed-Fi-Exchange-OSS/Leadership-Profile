@@ -88,7 +88,7 @@ const LeadersTable = ({ data }) => {
                   <td>
                     {/* <Link to={`profile/${207221}`} target="_blank"> */}
                     {/* <Link to={`profile/${207221}`}>{staff.fullNameAnnon}</Link> */}
-                    <Link to={`profile/${207221}`} target="_blank" rel="noopener noreferrer">{staff.fullNameAnnon}</Link>
+                    <Link to={`profile/${staff.staffUniqueId}`} target="_blank">{staff.fullNameAnnon}</Link>
                   </td>
                   <td>{staff.totYrsExp}</td>
                   {/* <td>{(staff.domain1 + staff.domain2 + staff.domain3 + staff.domain4 + staff.domain5)/5}</td> */}

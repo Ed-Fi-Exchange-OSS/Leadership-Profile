@@ -147,8 +147,11 @@ namespace LeadershipProfileAPI.Features.Profile
                         Title = o.Key,
                         RatingsByYear = o
                             .GroupBy(g => g.SchoolYear)
-                            .ToDictionary(g => g.Key, g => g.Select(e =>
-                                new PerformanceRating {Category = e.ElementTitle, Score = e.Rating}))
+                            .ToDictionary(g => g.Key, 
+                                g => g
+                                    .OrderBy(g => g.ElementTitle)
+                                    .Select(e => new PerformanceRating {Category = e.ElementTitle, Score = e.Rating})
+                            )
                     })
                     .OrderBy(o => o.Title);
 

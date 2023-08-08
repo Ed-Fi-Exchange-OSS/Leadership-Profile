@@ -91,6 +91,10 @@ namespace LeadershipProfileAPI.Data
             modelBuilder.Entity<StaffVacancy>()
                 .ToView("vw_StaffVacancy", "dbo")
                 .HasNoKey();
+
+            modelBuilder.Entity<LeaderSearch>()
+                .ToView("vw_LeaderSearch", "dbo")
+                .HasNoKey();        
         }
     }
 
