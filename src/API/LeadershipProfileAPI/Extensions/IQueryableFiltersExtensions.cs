@@ -2,9 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using LeadershipProfileAPI.Data.Models;
 
-public static class IQueryableLeaderSearchExtensions
+public static class IQueryableFiltersExtensions
 {
     public static Dictionary<int, string> rolesDictionary = new Dictionary<int, string>() {
                 {1, "Principal"},
@@ -25,44 +24,43 @@ public static class IQueryableLeaderSearchExtensions
                 {3, "Doctorate"}
             };
 
-    public static IQueryable<LeaderSearch> ApplyMappedFilter(
-        this IQueryable<LeaderSearch> query,
+    public static IQueryable<TEntity> ApplyMappedListFilter<TEntity, TValues>(
+        this IQueryable<TEntity> query,
         int[] values,
-        Dictionary<int, string> mapper,
-        Expression<Func<LeaderSearch, string>> field)
+        Dictionary<int, TValues> mapper,
+        Expression<Func<TEntity, TValues>> field)
     {
         if (values == null || !values.Any())
             return query;
 
-        var labels = values.Select(r => mapper.GetValueOrDefault(r, "Map-not-Found")).ToList();
+        var labels = values.Select(r => mapper.GetValueOrDefault<int, TValues>(r)).ToList();
 
         var parameter = field.Parameters.Single();
         var valueList = Expression.Constant(labels.ToList());
         var containsCall = Expression.Call(
             typeof(Enumerable),
             "Contains",
-            new[] { typeof(string) },
+            new[] { typeof(TValues) },
             Expression.Constant(labels),
             field.Body);
 
-        var lambda = Expression.Lambda<Func<LeaderSearch, bool>>(containsCall, parameter);
+        var lambda = Expression.Lambda<Func<TEntity, bool>>(containsCall, parameter);
         return query.Where(lambda);       
     }
 
-    public static IQueryable<LeaderSearch> ApplyRangeFilter(
-        this IQueryable<LeaderSearch> query,
-        int[] values,
-        Expression<Func<LeaderSearch, double>> field)
+    public static IQueryable<TEntity> ApplyRangeFilter<TEntity, TValues>(
+        this IQueryable<TEntity> query,
+        TValues[] values,
+        Expression<Func<TEntity, double>> field) where TValues : IComparable<TValues>
     {
         if (values == null || !values.Any())
             return query;
 
-        var dValues = values.Select(v => Convert.ToDouble(v)).ToList();
         var parameter = field.Parameters.Single();
-        var lowerBound = Expression.GreaterThanOrEqual(field.Body, Expression.Constant(dValues[0]));
-        var upperBound = Expression.LessThanOrEqual(field.Body, Expression.Constant(dValues.Last()));
+        var lowerBound = Expression.GreaterThanOrEqual(field.Body, Expression.Constant(values[0]));
+        var upperBound = Expression.LessThanOrEqual(field.Body, Expression.Constant(values.Last()));
         var betweenFilter = Expression.AndAlso(lowerBound, upperBound);
-        var lambda = Expression.Lambda<Func<LeaderSearch, bool>>(betweenFilter, parameter);
+        var lambda = Expression.Lambda<Func<TEntity, bool>>(betweenFilter, parameter);
 
         return query.Where(lambda);
     }

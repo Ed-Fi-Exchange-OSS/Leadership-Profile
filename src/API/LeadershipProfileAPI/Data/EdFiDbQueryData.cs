@@ -108,14 +108,14 @@ namespace LeadershipProfileAPI.Data
             int[] DomainFiveScore
         ) {
             var result = _edfiDbContext.LeaderSearches.AsQueryable()
-                .ApplyMappedFilter(Roles, IQueryableLeaderSearchExtensions.rolesDictionary, s => s.PositionTitle)
-                .ApplyMappedFilter(SchoolLevels, IQueryableLeaderSearchExtensions.schoolLevelsDictionary, s => s.SchoolLevel)
-                .ApplyRangeFilter(OverallScore, s => s.OverallScore)
-                .ApplyRangeFilter(DomainOneScore, s => s.Domain1)
-                .ApplyRangeFilter(DomainTwoScore, s => s.Domain2)
-                .ApplyRangeFilter(DomainThreeScore, s => s.Domain3)
-                .ApplyRangeFilter(DomainFourScore, s => s.Domain4)
-                .ApplyRangeFilter(DomainFiveScore, s => s.Domain5)
+                .ApplyMappedListFilter(Roles, IQueryableFiltersExtensions.rolesDictionary, s => s.PositionTitle)
+                .ApplyMappedListFilter(SchoolLevels, IQueryableFiltersExtensions.schoolLevelsDictionary, s => s.SchoolLevel)
+                .ApplyRangeFilter(OverallScore?.Select(i => (double)i).ToArray(), s => s.OverallScore)
+                .ApplyRangeFilter(DomainOneScore?.Select(i => (double)i).ToArray(), s => s.Domain1)
+                .ApplyRangeFilter(DomainTwoScore?.Select(i => (double)i).ToArray(), s => s.Domain2)
+                .ApplyRangeFilter(DomainThreeScore?.Select(i => (double)i).ToArray(), s => s.Domain3)
+                .ApplyRangeFilter(DomainFourScore?.Select(i => (double)i).ToArray(), s => s.Domain4)
+                .ApplyRangeFilter(DomainFiveScore?.Select(i => (double)i).ToArray(), s => s.Domain5)
                 .Take(10);
 
             return result.ToListAsync();

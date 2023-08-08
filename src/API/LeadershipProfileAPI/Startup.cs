@@ -48,7 +48,6 @@ namespace LeadershipProfileAPI
             services.Configure<ApplicationConfiguration>(Configuration.GetSection("ApplicationConfiguration"));
 
             services.AddDbContext<EdFiIdentityDbContext>(options => options.UseSqlServer(connectionString));
-            //services.AddDbContext<EdFiDbContext>(options => options.UseSqlServer(connectionString));
 
             AddAuth(services, Configuration);
 
