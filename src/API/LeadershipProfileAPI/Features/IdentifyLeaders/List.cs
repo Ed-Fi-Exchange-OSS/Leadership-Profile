@@ -1,15 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using LeadershipProfileAPI.Data;
 using LeadershipProfileAPI.Data.Models;
-using LeadershipProfileAPI.Data.Models.ProfileSearchRequest;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace LeadershipProfileAPI.Features.IdentifyLeaders
 {

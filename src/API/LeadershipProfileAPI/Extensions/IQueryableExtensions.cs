@@ -57,6 +57,66 @@ namespace LeadershipProfileAPI.Extensions
 
             return null;
         }
-    }
 
+        /// <summary>
+        /// Adds an "in" filter to the query. Values are mapped using <paramref  name="mapper"/>. 
+        /// If <paramref name="values"/> array is null or empty, it does nothing.
+        /// </summary>
+        /// <param name="query">Query to add the filter to</param>
+        /// <param name="values">List of values that will be mapped to the actual values used in the filter</param>
+        /// <param name="mapper">Dictionary that maps the id's to the values</param>
+        /// <param name="field">Expression that selects the entoty field used to filter</param>
+        /// <typeparam name="TEntity">Query's Entity type</typeparam>
+        /// <typeparam name="TValues">Comparison field's type</typeparam>
+        /// <returns></returns>
+        public static IQueryable<TEntity> ApplyMappedListFilter<TEntity, TValues>(
+            this IQueryable<TEntity> query,
+            int[] values,
+            Dictionary<int, TValues> mapper,
+            Expression<Func<TEntity, TValues>> field)
+        {
+            if (values == null || !values.Any())
+                return query;
+
+            var labels = values.Select(r => mapper.GetValueOrDefault<int, TValues>(r)).ToList();
+
+            var parameter = field.Parameters.Single();
+            var valueList = Expression.Constant(labels.ToList());
+            var containsCall = Expression.Call(
+                typeof(Enumerable),
+                "Contains",
+                new[] { typeof(TValues) },
+                Expression.Constant(labels),
+                field.Body);
+
+            var lambda = Expression.Lambda<Func<TEntity, bool>>(containsCall, parameter);
+            return query.Where(lambda);
+        }
+
+        /// <summary>
+        /// Adds a filter that checks if the feld is in the range of the firs and last values in <paramref name="values"/>
+        /// </summary>
+        /// <param name="query">Query to add the filter to</param>
+        /// <param name="values">Array with the min and max values</param>
+        /// <param name="field">Expression that selects the entoty field used to filter</param>
+        /// <typeparam name="TEntity">Query's Entity type</typeparam>
+        /// <typeparam name="TValues">Comparison field's type</typeparam>
+        /// <returns></returns>
+        public static IQueryable<TEntity> ApplyRangeFilter<TEntity, TValues>(
+            this IQueryable<TEntity> query,
+            TValues[] values,
+            Expression<Func<TEntity, TValues>> field) where TValues : IComparable<TValues>
+        {
+            if (values == null || !values.Any())
+                return query;
+
+            var parameter = field.Parameters.Single();
+            var lowerBound = Expression.GreaterThanOrEqual(field.Body, Expression.Constant(values[0]));
+            var upperBound = Expression.LessThanOrEqual(field.Body, Expression.Constant(values.Last()));
+            var betweenFilter = Expression.AndAlso(lowerBound, upperBound);
+            var lambda = Expression.Lambda<Func<TEntity, bool>>(betweenFilter, parameter);
+
+            return query.Where(lambda);
+        }
+    }
 }

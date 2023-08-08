@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using LeadershipProfileAPI.Data.Models;
 using LeadershipProfileAPI.Data.Models.ProfileSearchRequest;
+using LeadershipProfileAPI.Extensions;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +17,23 @@ namespace LeadershipProfileAPI.Data
     public class EdFiDbQueryData
     {
         private readonly EdFiDbContext _edfiDbContext;
+        private static readonly Dictionary<int, string> _rolesDictionary = new() {
+                {1, "Principal"},
+                {2, "Assistant Principal"},
+                {3, "Teacher"},
+                {4, "Teacher Leader"}
+            };
+        private static readonly Dictionary<int, string> _schoolLevelsDictionary = new() {
+                {1, "Elementary School"},
+                {2, "Middle School"},
+                {3, "High School"}
+            };
+        private static readonly Dictionary<int, string> _degreesDictionary = new(){
+                {1, "Bachelors"},
+                {2, "Masters"},
+                {3, "Doctorate"}
+            };
+
 
         /// <summary>
         /// Initializes a new instance of the class
@@ -84,6 +102,9 @@ namespace LeadershipProfileAPI.Data
         //     return _edfiDbContext.StaffSearches.FromSqlRaw(sql, name).ToListAsync();
         // }
 
+
+
+
         /// <summary>
         /// Method sends raw SQL to the database and returns a queryable, paginated, collection of Staff records
         /// matching the criteria and sorted by a field and direction
@@ -94,22 +115,24 @@ namespace LeadershipProfileAPI.Data
         /// <param name="currentPage">When paginating the data, which page of data should be returned</param>
         /// <param name="pageSize">The number of records returned in the result</param>
         /// <returns></returns>
+
         public Task<List<LeaderSearch>> GetLeaderSearchResultsAsync(
-            int[] Roles, 
-            int[] SchoolLevels, 
-            int[] HighestDegrees, 
-            int[] HasCertification, 
-            int[] YearsOfExperience, 
+            int[] Roles,
+            int[] SchoolLevels,
+            int[] HighestDegrees,
+            int[] HasCertification,
+            int[] YearsOfExperience,
             int[] OverallScore,
             int[] DomainOneScore,
             int[] DomainTwoScore,
             int[] DomainThreeScore,
             int[] DomainFourScore,
             int[] DomainFiveScore
-        ) {
+        )
+        {
             var result = _edfiDbContext.LeaderSearches.AsQueryable()
-                .ApplyMappedListFilter(Roles, IQueryableFiltersExtensions.rolesDictionary, s => s.PositionTitle)
-                .ApplyMappedListFilter(SchoolLevels, IQueryableFiltersExtensions.schoolLevelsDictionary, s => s.SchoolLevel)
+                .ApplyMappedListFilter(Roles, _rolesDictionary, s => s.PositionTitle)
+                .ApplyMappedListFilter(SchoolLevels, _schoolLevelsDictionary, s => s.SchoolLevel)
                 .ApplyRangeFilter(OverallScore?.Select(i => (double)i).ToArray(), s => s.OverallScore)
                 .ApplyRangeFilter(DomainOneScore?.Select(i => (double)i).ToArray(), s => s.Domain1)
                 .ApplyRangeFilter(DomainTwoScore?.Select(i => (double)i).ToArray(), s => s.Domain2)
@@ -119,41 +142,22 @@ namespace LeadershipProfileAPI.Data
                 .Take(10);
 
             return result.ToListAsync();
-
-            /*
-
-            // Add the 'name' value as sql parameter to avoid SQL injection from raw text
-            string roles = System.String.Join(",", Roles);
-            var name = new SqlParameter("roles", roles);
-
-            // Implement the view in SQL, call it here
-
-            var sql = $@"
-                select TOP 10
-                     
-                    *
-                from dbo.[vw_StaffVacancy] s
-                
-                {LeadersClauseConditions(Roles, SchoolLevels, HighestDegrees, HasCertification, YearsOfExperience, OverallScore, DomainOneScore, DomainTwoScore, DomainThreeScore, DomainFourScore, DomainFiveScore)}
-                order by s.SchoolYear
-             ";
-            return _edfiDbContext.LeaderSearches.FromSqlRaw(sql, name).ToListAsync();
-            */
         }
 
         private static string LeadersClauseConditions(
-            int[] Roles, 
-            int[] SchoolLevels, 
-            int[] HighestDegrees, 
-            int[] HasCertification, 
-            int[] YearsOfExperience, 
+            int[] Roles,
+            int[] SchoolLevels,
+            int[] HighestDegrees,
+            int[] HasCertification,
+            int[] YearsOfExperience,
             int[] OverallScore,
             int[] DomainOneScore,
             int[] DomainTwoScore,
             int[] DomainThreeScore,
             int[] DomainFourScore,
-            int[] DomainFiveScore            
-        ) {
+            int[] DomainFiveScore
+        )
+        {
             // if (body == null) return "--where excluded, no body provided";
 
             var rolesDictionary = new Dictionary<int, string>();
@@ -228,16 +232,17 @@ namespace LeadershipProfileAPI.Data
         /// <param name="currentPage">When paginating the data, which page of data should be returned</param>
         /// <param name="pageSize">The number of records returned in the result</param>
         /// <returns></returns>
-        static string[] vacancyCauses =  new string[] {"Internal Transfer", "Internal Promotion", "Attrition", "Retirement"};
+        static string[] vacancyCauses = new string[] { "Internal Transfer", "Internal Promotion", "Attrition", "Retirement" };
         public Task<List<StaffVacancy>> GetVacancyProjectionResultsAsync(string Role, CancellationToken cancellationToken)
         {
             var query = _edfiDbContext.StaffVacancies.Where(v => vacancyCauses.Contains(v.VacancyCause));
-            if (!string.IsNullOrWhiteSpace(Role)){
+            if (!string.IsNullOrWhiteSpace(Role))
+            {
                 var queryRole = Role == "Principal" ? "Principal" : "Assistant Principal";
                 query = query.Where(v => v.PositionTitle.Equals(queryRole));
             }
             query = query.OrderBy(v => v.SchoolYear);
-            
+
             return query.ToListAsync(cancellationToken);
         }
 
