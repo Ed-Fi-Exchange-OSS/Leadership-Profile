@@ -11,7 +11,7 @@ namespace LeadershipProfileAPI.Features.Search
 {
     [TypeFilter(typeof(ApiExceptionFilter))]
     [ApiController]
-    [Route("search")]
+    [Route("api/search")]
     [Authorize(Roles = "Admin")]
     public class SearchController : ControllerBase
     {

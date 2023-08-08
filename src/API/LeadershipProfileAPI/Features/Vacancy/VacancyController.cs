@@ -13,7 +13,7 @@ namespace LeadershipProfileAPI.Features.Vacancy
 {
     [TypeFilter(typeof(ApiExceptionFilter))]
     [ApiController]
-    [Route("vacancy")]
+    [Route("api/vacancy")]
     // [Authorize(Roles = "Admin")]
     // [AllowAnonymous]
 

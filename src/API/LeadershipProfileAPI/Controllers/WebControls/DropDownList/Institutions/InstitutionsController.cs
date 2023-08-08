@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 namespace LeadershipProfileAPI.Controllers.WebControls.DropDownList.Institutions
 {
     [TypeFilter(typeof(ApiExceptionFilter))]
-    [Route("webcontrols/dropdownlist/institutions")]
+    [Route("api/webcontrols/dropdownlist/institutions")]
     [ApiController]
     [Authorize]
     public class InstitutionsController : ControllerBase

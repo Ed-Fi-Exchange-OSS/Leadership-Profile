@@ -11,7 +11,7 @@ namespace LeadershipProfileAPI.Controllers
 {
     [TypeFilter(typeof(ApiExceptionFilter))]
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [AllowAnonymous]
     public class UserController : ControllerBase
     {
