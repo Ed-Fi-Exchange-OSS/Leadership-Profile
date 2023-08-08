@@ -169,25 +169,26 @@ function TransformStaffEducationOrganizationEmploymentAssociations {
         if ($_.SchoolId -eq '') { return }
         $staffUniqueId = [System.Security.SecurityElement]::Escape($_.StaffUniqueId).Trim()
 
+        $separationReasonDescriptorCodeValue = if ( $_.EndDate -ne 'CURRENT' -and ($_.EndDate | Get-Date -Format 'MM-dd') -eq '06-30') { 'Finished Year' } else { $null }
+
         $separationDescriptor = if ($_.EndDate -ne 'CURRENT') {
             'uri://ed-fi.org/SeparationDescriptor#' + $(switch ($_.SeparationReason) {
                 'Retirement'            { 'Other' }
                 'Attrition'             { 'Involuntary separation' }
                 'Transfer'              { 'Mutual agreement' }
                 'Promotion'             { 'Mutual agreement' }
-                ''                      { if (($_.EndDate | Get-Date -Format 'MM-dd') -eq '06-30') { 'Finished Year' } else { $null } }
                 Default                 { 'Other' }
             })
         } else { $null }
 
         # Used in app, must be added to descriptors: Attrition, Internal Transfer, Internal Promotion
-        [object]$separationReasonDescriptor = if ($_.EndDate -ne 'CURRENT') {
+        [object]$separationReasonDescriptor = if ($_.EndDate -ne 'CURRENT' ) {
             'uri://ed-fi.org/SeparationReasonDescriptor#' + $(switch ($_.SeparationReason) {
                 'Retirement'            { 'Retirement' }
                 'Attrition'             { 'Attrition' }
                 'Transfer'              { 'Internal Transfer' }
                 'Promotion'             { 'Internal Promotion' }
-                ''                      { 'Unknown' }
+                ''                      { $separationReasonDescriptorCodeValue ?? 'Unknown' }
                 Default                 { 'Other' }
             })
         } else { $null }
@@ -363,7 +364,6 @@ function TransformEvaluationObjectiveRating {
         }
     }
 }
-
 
 function TransformEvaluationElementRating {
     [CmdletBinding()]
