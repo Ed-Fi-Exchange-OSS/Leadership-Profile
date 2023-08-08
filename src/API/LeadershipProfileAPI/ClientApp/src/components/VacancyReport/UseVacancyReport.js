@@ -131,59 +131,41 @@ function UseVacancyReport() {
           return;
         }
 
-        const groupByYear = (a) => {
-          const years = ['2022', '2021', '2020', '2019', '2018'];
-          // const years = ['2023', '2022', '2021', '2020', '2019', '2018'];
-          let b = a.reduce((byGroup, vacancy) => {
-            const { schoolYear } = vacancy;
-            byGroup[schoolYear] = byGroup[schoolYear] ?? [];
-            byGroup[schoolYear].push(vacancy);
-            return byGroup;
-          }, {});
-          years.forEach(y =>  {
-            if (!b.hasOwnProperty(y)) b[y] = [];
-          });
-          return b;
-        }
-
         const getDataObject = (projectionData, borderColor, backgroundColor, schoolLevel = "All") => {
-          var vacancyByYear = groupByYear(projectionData);
-          // console.log("vacancy by year:", vacancyByYear);
+          const years = [2022, 2021, 2020, 2019, 2018];
 
-          var vacancyCount = [];
-
-          for (var key in vacancyByYear) {
-            if (
-              vacancyByYear.hasOwnProperty(key) &&
-              Array.isArray(vacancyByYear[key])
-            ) {
-              var count = vacancyByYear[key].length;
-              vacancyCount.push(count);
-            }
-          }
+          let totalVacancies = 0;
+          const vacancyCount = projectionData
+            .filter(
+              (d) => schoolLevel === "All" || d.schoolLevel === schoolLevel
+            )
+            .reduce((acc, cur) => {
+              totalVacancies = 1 + totalVacancies;
+              acc[cur.schoolYear] = 1 + (acc[cur.schoolYear] ?? 0);
+              return acc;
+            }, Object.create(null));
 
           let newProjectedVacancy = Math.round([
-            vacancyCount.reduce(
-              (total, count) => total + count,
-              0 //add all years vacancies and stuff
-            ) / vacancyCount.length, // divide it by all years count
+            totalVacancies / Object.keys(vacancyCount).length, // divide it by all years count
           ]);
-          var dataObject = vacancyCount.concat(newProjectedVacancy);
-          switch (schoolLevel){
-            case "EL":
+
+          const vacancyCountList = years.map((y) => vacancyCount[y] ?? 0);
+          var dataObject = vacancyCountList.concat(newProjectedVacancy);
+
+          switch (schoolLevel) {
+            case "Elementary School":
               setProjectedElementaryVacancy(newProjectedVacancy);
               break;
-            case "MS":
+            case "Middle School":
               setProjectedMiddleVacancy(newProjectedVacancy);
               break;
-            case "HS":
+            case "High School":
               setProjectedHighVacancy(newProjectedVacancy);
               break;
             default:
               setProjectedVacancy(newProjectedVacancy);
-              break;                
+              break;
           }
-          // console.log("projection vacancy", dataObject);
 
           return {
             labels,
@@ -205,12 +187,12 @@ function UseVacancyReport() {
               setData(response.results);
               setLineChartData(getDataObject(response.results, "rgb(255, 99, 132)", "rgba(255, 99, 132, 0.5)"));
               // setLineChartData(getDataObject(data));
-              let elementarySchoolData = response.results.filter(v => v.schoolLevel == 'EL');
-              setElementaryLineChartData(getDataObject(elementarySchoolData, "rgb(212, 125, 70)", "rgba(212, 125, 70, 0.5)", "EL"));
-              let middleSchoolData = response.results.filter(v => v.schoolLevel == 'MS');
-              setMiddleLineChartData(getDataObject(middleSchoolData, "rgb(91, 101, 145)", "rgba(91, 101, 145, 0.5)", "MS"));
-              let highSchoolData = response.results.filter(v => v.schoolLevel == 'HS');
-              setHighLineChartData(getDataObject(highSchoolData, "rgb(91, 101, 145)", "rgba(91, 101, 145, 0.5)", "HS"));
+              let elementarySchoolData = response.results.filter(v => v.schoolLevel == 'Elementary School');
+              setElementaryLineChartData(getDataObject(elementarySchoolData, "rgb(212, 125, 70)", "rgba(212, 125, 70, 0.5)", "Elementary School"));
+              let middleSchoolData = response.results.filter(v => v.schoolLevel == 'Middle School');
+              setMiddleLineChartData(getDataObject(middleSchoolData, "rgb(91, 101, 145)", "rgba(91, 101, 145, 0.5)", "Middle School"));
+              let highSchoolData = response.results.filter(v => v.schoolLevel == 'High School');
+              setHighLineChartData(getDataObject(highSchoolData, "rgb(91, 101, 145)", "rgba(91, 101, 145, 0.5)", "High School"));
             }
           }
         });

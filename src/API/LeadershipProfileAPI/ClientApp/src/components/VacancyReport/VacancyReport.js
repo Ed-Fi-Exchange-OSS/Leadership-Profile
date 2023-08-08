@@ -9,32 +9,25 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { Bar, Line } from "react-chartjs-2";
+import { Line } from "react-chartjs-2";
 
 import {
   Dropdown,
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
-  CloseButton,
 } from "reactstrap";
 
 import { Button } from "reactstrap";
 import {
-  Container,
   Row,
   Col,
   Card,
-  CardHeader,
   CardBody,
-  CardTitle,
-  CardText,
 } from "reactstrap";
 import { Table } from "reactstrap";
 import { Link } from "react-router-dom";
 
-import { TableViewIcon, CardViewIcon } from "../Icons";
-import BreadcrumbList from "../Breadcrumb";
 
 import AditionalRiskFactors from "./AditionalRiskFactors/AditionalRiskFactors";
 import WhoHasLeft from "./WhoHasLeft/WhoHasLeft";
@@ -120,6 +113,17 @@ const VacancyReport = () => {
   const getYear = (index) => {
     return labels[index];
   };
+
+  const getSchoolLevel = (index) => {
+    console.log('getSchoolLevel:', {index})
+    switch (index) {
+      case 1: return '[ALL]';
+      case 2: return 'Elementary School';
+      case 3: return 'Middle School';
+      case 4: return 'High School';
+      default: return null;
+    }
+  }
 
   const getFilteredDatabyYear = (year) => {
     var result = data.filter((d) => d.schoolYear == year);
@@ -211,7 +215,7 @@ const VacancyReport = () => {
           <div
             className="col-md-4"
             style={{ cursor: "pointer" }}
-            onClick={() => setSelectedSchoolLevel(1)}
+            onClick={() => setSelectedSchoolLevel(1) }
           >
             <div
               className={
@@ -387,7 +391,7 @@ const VacancyReport = () => {
                 <tbody>
                   {/* { data ? getFilteredDatabyYear(selectedVacancyYear).map( */}
                   {data
-                    .filter((d) => d.schoolYear == getYear(selectedVacancyYear))
+                    .filter((d) => d.schoolYear == getYear(selectedVacancyYear) && ([d.schoolLevel, '[ALL]'].includes(getSchoolLevel(selectedSchoolLevel))))
                     .map((element, i) => (
                       <tr key={"year-table-record-" + i}>
                         <th scope="row">{i + 1}</th>
