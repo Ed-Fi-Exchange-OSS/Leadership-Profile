@@ -146,10 +146,13 @@ function UseVacancyReport() {
             }, Object.create(null));
 
           let newProjectedVacancy = Math.round([
-            totalVacancies / Object.keys(vacancyCount).length, // divide it by all years count
+            totalVacancies / years.length, // divide it by all years count
           ]);
+          console.log('Projectioons:', { schoolLevel, totalVacancies, years: years.length, newProjectedVacancy})
 
-          const vacancyCountList = years.map((y) => vacancyCount[y] ?? 0);
+          const vacancyCountList = years
+            .sort((a, b) => a - b)
+            .map((y) => vacancyCount[y] ?? 0);
           var dataObject = vacancyCountList.concat(newProjectedVacancy);
 
           switch (schoolLevel) {
