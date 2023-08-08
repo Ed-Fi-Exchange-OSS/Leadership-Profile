@@ -392,7 +392,7 @@ const VacancyReport = () => {
                       <tr key={"year-table-record-" + i}>
                         <th scope="row">{i + 1}</th>
                         <td>
-                          <Link to={`profile/${207221}`}>
+                          <Link to={`profile/${element.staffUniqueId}`} target="_blank" >
                             {element.fullNameAnnon}
                           </Link>
                         </td>
