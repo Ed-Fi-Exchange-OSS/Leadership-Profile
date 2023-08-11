@@ -139,6 +139,23 @@ namespace LeadershipProfileAPI.Data
                 .ApplyRangeFilter(DomainThreeScore?.Select(i => (double)i).ToArray(), s => s.Domain3)
                 .ApplyRangeFilter(DomainFourScore?.Select(i => (double)i).ToArray(), s => s.Domain4)
                 .ApplyRangeFilter(DomainFiveScore?.Select(i => (double)i).ToArray(), s => s.Domain5)
+                .Select(l => new LeaderSearch {
+                    StaffUniqueId = l.StaffUniqueId,
+                    FullNameAnnon = l.FullNameAnnon,
+                    SchoolLevel = l.SchoolLevel,
+                    SchoolNameAnnon = l.SchoolNameAnnon,
+                    Job = l.Job,
+                    TotYrsExp = l.TotYrsExp,
+                    Race = l.Race,
+                    Gender = l.Gender,
+                    Domain1 = l.Domain1,
+                    Domain2 = l.Domain2,
+                    Domain3 = l.Domain3,
+                    Domain4 = l.Domain4,
+                    Domain5 = l.Domain5,
+                    OverallScore = l.OverallScore
+                })
+                .Distinct()
                 .Take(10);
 
             return result.ToListAsync();
