@@ -1,36 +1,42 @@
 # Configuration: Set appopriate values
 $Config = @{
-    SchoolSourceFile         = "Data\garland-data-20230704\20230629_GarlandISD_School.CSV"
-    #StaffSourceFile          = "Data\garland-data-20230704\20230629_GarlandISD_Staff.small.CSV"
-    StaffSourceFile          = "Data\garland-data-20230704\20230629_GarlandISD_Staff.CSV"
-    StaffOrgAssignSourceFile = "Data\garland-data-20230704\20230629_GarlandISD_StaffOrgAssign.CSV"
-    CertificatesSourceFile   = "Data\garland-data-20230704\20230629_GarlandISD_Certificates.CSV"
-    UsersSourceFile          = "Data\garland-data-20230704\20230629_GarlandISD_User.CSV"
-    #ErrorsOutputFile         = "Data\garland-data-20230704\Errors.txt"
+    V1Files         = [PSCustomObject]@{
+        School         = "Data\garland-data-20230704\20230629_GarlandISD_School.CSV"
+        #Staff          = "Data\garland-data-20230704\20230629_GarlandISD_Staff.small.CSV"
+        Staff          = "Data\garland-data-20230704\20230629_GarlandISD_Staff.CSV"
+        StaffOrgAssign = "Data\garland-data-20230704\20230629_GarlandISD_StaffOrgAssign.CSV"
+        Certificates   = "Data\garland-data-20230704\20230629_GarlandISD_Certificates.CSV"
+        Users          = "Data\garland-data-20230704\20230629_GarlandISD_User.CSV"
+        Errors         = "Data\garland-data-20230704\Errors.txt"
+    }
 
-    V0EmployeesSourceFile    = "Data\garland-data-0\230731_GISD_LeadershipPortal_testdata4.xlsx - Employees.csv"
-    V0TPESSSourceFile        = "Data\garland-data-0\230731_GISD_LeadershipPortal_testdata4.xlsx - AP_P T-PESS.csv"
-    ErrorsOutputFile         = "Data\garland-data-0\Errors.txt"
+    V0Files         = [PSCustomObject]@{
+        Employees = "Data\garland-data-0\230731_GISD_LeadershipPortal_testdata4.xlsx - Employees.csv"
+        TPESS     = "Data\garland-data-0\230731_GISD_LeadershipPortal_testdata4.xlsx - AP_P T-PESS.csv"
+        ProfDev   = "Data\garland-data-0\230731_GISD_LeadershipPortal_testdata4.xlsx - AP_P PD.csv"
+        Errors    = "Data\garland-data-0\Errors.txt"
+    }
 
+    OAuthUrl             = "/oauth/token"
+    EdFiUrl              = "/data/v3"
 
-    OAuthUrl                = "/oauth/token"
-    # BaseApiUrl              = 'https://api.ed-fi.org/v5.3/api'
-    BaseApiUrl              = 'https://pc-slayerwood:443/WebApi'
-    #BaseApiUrl              = 'https://EC2AMAZ-JKHA7SB/WebApi'
-    EdFiUrl                 = "/data/v3"
-    # Key                     = "RvcohKz9zHI4"
-    # Secret                  = "E1iEFusaNf81xzCxwHfbolkC"
-    Key                     = "abqdlvFektKS"
-    Secret                  = "ec6NlGHpxT09lNisWmMmzViP"
+    # BaseApiUrl           = 'https://api.ed-fi.org/v5.3/api'
+    # Key                  = "RvcohKz9zHI4"
+    # Secret               = "E1iEFusaNf81xzCxwHfbolkC"
 
-    NamesPace               = "uri://mybps.org"
-    logRootPath             = "Logs"
+    BaseApiUrl           = 'https://pc-slayerwood:443/WebApi'
+    # BaseApiUrl           = 'https://ec2amaz-jkha7sb:443/WebApi'
+    Key                  = "abqdlvFektKS"
+    Secret               = "ec6NlGHpxT09lNisWmMmzViP"
 
-    ISD                     = "Garland ISD"
-    ISDCounty               = "Dallas"
-    ISDStateAbbreviation    = "TX"
+    NamesPace            = "uri://mybps.org"
+    logRootPath          = "Logs"
 
-    LastDataInfoFile        = "lastDataInfo.json"
+    ISD                  = "Garland ISD"
+    ISDCounty            = "Dallas"
+    ISDStateAbbreviation = "TX"
+
+    LastDataInfoFile     = "lastDataInfo.json"
 }
 
 function SetupPS() {

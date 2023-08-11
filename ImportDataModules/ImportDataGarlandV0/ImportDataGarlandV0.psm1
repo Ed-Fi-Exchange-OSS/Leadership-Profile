@@ -439,25 +439,29 @@ Function GetPersonId($Obj){
     })
 }
 
-Function Import-EdData($Config) {
+Function Import-EdDataStaff($Config, $PreviousResults) {
     $Headers = 'StaffUniqueId', 'LastSurname', 'FirstName', 'MiddleName', 'SchoolId', 'SchoolCategory', 'NameOfInstitution', 'StaffClassification', 'BeginDate',
     'EndDate', 'SeparationReason', 'School Year', 'Age', 'YearsOfProfessionalExperience', 'SexDescriptor', 'RaceDescriptor', 'HighestCompletedLevelOfEducationDescriptor', 'Email'
 
-    Set-Content -Path $Config.ErrorsOutputFile -Value "$(Get-Date -Format 'yyyy-MM-ddTHH:mm:ss')"
-    Add-Content -Path $Config.ErrorsOutputFile -Value "`r`n$($Config.V0EmployeesSourceFile)`r`n"
+    Add-Content -Path $Config.ErrorsOutputFile -Value "`r`n$($Config.V0Files.Employees)`r`n"
 
-<#     Write-Progress -Activity "Importing data from $($Config.V0EmployeesSourceFile)" -PercentComplete -1
+    Write-Progress -Activity "Importing data from $($Config.V0Files.Employees)" -PercentComplete -1
 
-    $res = NLoad $Headers $Config.V0EmployeesSourceFile |
+    $res = NLoad $Headers $Config.V0Files.Employees |
         Transform |
         FilterDistinct -IfScriptBlock {$args.GetType() -eq 'EdFiSchool'} -GetIdScriptBlock { $args.SchoolId } |
         FilterDistinct -IfScriptBlock {$args.GetType() -eq 'EdFiStaffs'} -GetIdScriptBlock { $args.StaffUniqueId } |
         NPost -Config $Config |
-        WriteToFileIfImportError -FilePath $Config.ErrorsOutputFile |
-        CountResults |
-        ShowProggress -Activity "Importing data from $($Config.V0EmployeesSourceFile)" |
-        Select-Object -Last 1 #>
+        WriteToFileIfImportError -FilePath $Config.V0Files.Errors |
+        CountResults -InitialValues $PreviousResults |
+        ShowProggress -Activity "Importing data from $($Config.V0Files.Employees)" |
+        Select-Object -Last 1
 
+    return $res
+}
+
+
+Function Import-EdDataTPESS($Config, $PreviousResults) {
     $Headers = 'StaffUniqueId','Full Name','Role','Campus','Admin Years Principal in GISD','Supervisor',
         'Indicator 1.1: Ethics and Standards',
         'Indicator 1.2: Schedules for Core Leadership Tasks',
@@ -481,20 +485,35 @@ Function Import-EdData($Config) {
         'Indicator 5.5: Response to Intervention',
         'Average'
 
-    Write-Progress -Activity "Importing data from $($Config.V0TPESSSourceFile)" -PercentComplete -1
-    Add-Content -Path $Config.ErrorsOutputFile -Value "`r`n$($Config.V0TPESSSourceFile)`r`n"
+    Write-Progress -Activity "Importing data from $($Config.V0Files.TPESS)" -PercentComplete -1
+    Add-Content -Path $Config.ErrorsOutputFile -Value "`r`n$($Config.V0Files.TPESS)`r`n"
 
     $staffUniqueIdWithError = @{}
-    $res = NLoad $Headers $Config.V0TPESSSourceFile |
+    $res = NLoad $Headers $Config.V0Files.TPESS |
         TransformTPESS |
         Where-Object { -not $staffUniqueIdWithError.ContainsKey( (GetPersonId $_)) } |
         NPost -Config $Config |
         Tap -ScriptBlock { if($args[0] -is [ImportError]){ $staffUniqueIdWithError[(GetPersonId $args[0].Record)] = $true } }| 
-        WriteToFileIfImportError -FilePath $Config.ErrorsOutputFile |
-        CountResults |
-        ShowProggress -Activity "Importing data from $($Config.V0TPESSSourceFile)" |
+        WriteToFileIfImportError -FilePath $Config.V0Files.Errors |
+        CountResults -InitialValues $PreviousResults |
+        ShowProggress -Activity "Importing data from $($Config.V0Files.TPESS)" |
         Select-Object -Last 1
+        
+    return $res
+}
 
+Function Import-EdDataProfDev($Config, $PreviousResults) {
+    $Headers = 'StaffUniqueId', 'Full Name', 'Email', 'Location', 'Job', 'Position', 'Title', 'CourseStartDate', 'CourseEndDate'
+
+    Write-Progress -Activity "Importing data from $($Config.V0Files.ProfDev)" -PercentComplete -1
+    Add-Content -Path $Config.ErrorsOutputFile -Value "`r`n$($Config.V0Files.ProfDev)`r`n"
+}
+
+Function Import-EdData($Config) {
+    Set-Content -Path $Config.ErrorsOutputFile -Value "$(Get-Date -Format 'yyyy-MM-ddTHH:mm:ss')"
+    # $res = Import-EdDataStaff $Config
+    # $res = Import-EdDataTPESS $Config $res
+    $res = Import-EdDataProfDev $Config $res
     return $res
 }
 
