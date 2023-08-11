@@ -129,12 +129,14 @@ function TransformStaff() {
         }
         $races = if ($race -ne '') { (,, [PSCustomObject]@{raceDescriptor = 'uri://ed-fi.org/RaceDescriptor#' + $race } ) } else { $null }
 
-        $levelOfEducation = 'uri://ed-fi.org/LevelOfEducationDescriptor#' + $(switch($_.highestCompletedLevelOfEducationDescriptor){
-            'Bachelors Degree' { "Bachelor's" }
-            'Doctors Degree' { 'Doctorate' }
-            'Masters Degree'  { "Master's" }
-            Default { $_ }
-        })
+        $levelOfEducation = if ($_.highestCompletedLevelOfEducationDescriptor -eq '') {
+            'uri://ed-fi.org/LevelOfEducationDescriptor#' + $(switch ($_.highestCompletedLevelOfEducationDescriptor) {
+                    'Bachelors Degree'  { "Bachelor's" }
+                    'Doctors Degree'    { 'Doctorate' }
+                    'Masters Degree'    { "Master's" }
+                    Default             { $_ }
+                })
+        }
 
         $email = [System.Security.SecurityElement]::Escape($_.Email).Trim()
         $emails = if (-not [String]::IsNullOrWhiteSpace($email)){(,, [PSCustomObject]@{
