@@ -33,6 +33,7 @@ namespace LeadershipProfileAPI.Features.Search
                     Page = query.Page,
                     SortBy = query.SortBy,
                     SortField = query.SortField,
+                    OnlyActive = query.OnlyActive,
                     SearchRequestBody = body
                 },
                 cancellationToken);

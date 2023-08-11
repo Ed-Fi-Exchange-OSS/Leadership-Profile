@@ -264,7 +264,7 @@ namespace LeadershipProfileAPI.Data
         }
 
         public Task<List<StaffSearch>> GetSearchResultsAsync(ProfileSearchRequestBody body,
-            string sortBy = "asc", string sortField = "name", int currentPage = 1, int pageSize = 10)
+            string sortBy = "asc", string sortField = "name", int currentPage = 1, int pageSize = 10, bool onlyActive = false)
         {
             // Map the UI sorted field name to a table field name
             var fieldMapping = new Dictionary<string, string>
@@ -298,7 +298,7 @@ namespace LeadershipProfileAPI.Data
                     ,Telephone
                 from edfi.vw_StaffSearch s
                 {ClauseRatingsConditionalJoin(body)}
-                {ClauseConditions(body)}
+                {ClauseConditions(body, onlyActive)}
                 order by {fieldMapping[sortField]} {sortBy}
              ";
             // offset {(currentPage - 1) * pageSize} rows
@@ -344,7 +344,7 @@ namespace LeadershipProfileAPI.Data
 
 
 
-        private static string ClauseConditions(ProfileSearchRequestBody body)
+        private static string ClauseConditions(ProfileSearchRequestBody body, bool onlyActive = false)
         {
             if (body == null) return "--where excluded, no body provided";
 
@@ -360,6 +360,9 @@ namespace LeadershipProfileAPI.Data
                 .Where(x => !string.IsNullOrWhiteSpace(x))
                 .DefaultIfEmpty(string.Empty)
                 .Aggregate((x, y) => $"{x} and {y}");
+
+            if (onlyActive)
+                whereCondition += " and s.StaffUSI in (select StaffUSI from edfi.StaffEducationOrganizationEmploymentAssociation where EndDate is null)";
 
             return !string.IsNullOrWhiteSpace(whereCondition)
                 ? $"where {whereCondition}"
