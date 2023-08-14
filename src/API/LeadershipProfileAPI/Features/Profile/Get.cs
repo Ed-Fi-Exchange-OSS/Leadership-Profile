@@ -105,6 +105,8 @@ namespace LeadershipProfileAPI.Features.Profile
 
                 response.PositionHistory = positionHistory;
 
+                response.StartDate = positionHistory.FirstOrDefault()?.StartDate;
+
                 var certificates = await _dbContext.ProfileCertification.Where(x => x.StaffUniqueId == request.Id)
                     .ProjectTo<Certificate>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
 
@@ -112,6 +114,7 @@ namespace LeadershipProfileAPI.Features.Profile
 
                 response.ProfessionalDevelopment = await _dbContext.StaffProfessionalDevelopments
                     .Where(o => o.StaffUniqueId == request.Id)
+                    .OrderByDescending(o => o.AttendanceDate)
                     .ProjectTo<ProfessionalDevelopment>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);
 
