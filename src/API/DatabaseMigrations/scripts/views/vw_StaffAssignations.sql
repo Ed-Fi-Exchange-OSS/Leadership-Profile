@@ -1,6 +1,7 @@
 CREATE OR ALTER VIEW [edfi].[vw_StaffAssignments] AS
 
 SELECT sta.StaffUSI as EmployeeIDAnnon
+    , sta.StaffUniqueId
 	, sta.FirstName + ' ' +  sta.LastSurname as FullNameAnnon 
 	, sex.CodeValue as Gender
 	, race.CodeValue as Race
