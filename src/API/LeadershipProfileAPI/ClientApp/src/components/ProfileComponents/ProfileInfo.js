@@ -34,7 +34,7 @@ const ProfileInfo = (props) => {
                                 <td className="profile-info-icon"><CalendarIcon /></td>
                                 <td className="profile-info-text">Last start date: {formatDate(data.startDate)}</td>        
                                 <td className="profile-info-icon"><MailIcon /></td>
-                                <td className="profile-info-text">{data.email}</td>
+                                <td className="profile-info-text"><a href={ "mailto:" + data.email}>{data.email}</a></td>
                             </tr>
                         </tbody>
                     </table>
