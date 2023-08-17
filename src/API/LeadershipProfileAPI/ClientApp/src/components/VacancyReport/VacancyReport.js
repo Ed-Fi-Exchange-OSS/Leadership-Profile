@@ -25,7 +25,7 @@ import {
   Card,
   CardBody,
 } from "reactstrap";
-import { Table } from "reactstrap";
+
 import { Link } from "react-router-dom";
 
 
@@ -33,6 +33,7 @@ import AditionalRiskFactors from "./AditionalRiskFactors/AditionalRiskFactors";
 import WhoHasLeft from "./WhoHasLeft/WhoHasLeft";
 
 import UseVacancyReport from "./UseVacancyReport";
+import StaffTable from "../StaffTable";
 
 // import CardList from './CardListComponents/CardList';
 // import UseLandingPage from './UseLandingPage';
@@ -130,12 +131,6 @@ const VacancyReport = () => {
     console.log("this are vacancies filtered by year:", year, result);
     return result;
   };
-
-  var role;
-
-  useEffect(() => {
-    // fetchData(role);
-  });
 
   return (
     <div className="container flex-container">
@@ -374,43 +369,9 @@ const VacancyReport = () => {
                 className="mx-3"
                 onClick={() => setSelectedVacancyYear(null)}
               />
-              <Table borderless>
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>School</th>
-                    <th>Level</th>
-                    <th>Vacancy Cause</th>
-                    <th>Departure Date</th>
-                    <th>Gender</th>
-                    <th>Race</th>
-                    {/* <th>Retirement reason</th> */}
-                  </tr>
-                </thead>
-                <tbody>
-                  {/* { data ? getFilteredDatabyYear(selectedVacancyYear).map( */}
-                  {data
-                    .filter((d) => d.schoolYear == getYear(selectedVacancyYear) && ([d.schoolLevel, '[ALL]'].includes(getSchoolLevel(selectedSchoolLevel))))
-                    .map((element, i) => (
-                      <tr key={"year-table-record-" + i}>
-                        <th scope="row">{i + 1}</th>
-                        <td>
-                          <Link to={`profile/${element.staffUniqueId}`} target="_blank" >
-                            {element.fullNameAnnon}
-                          </Link>
-                        </td>
-                        <td>{element.schoolNameAnnon}</td>
-                        <td>{element.schoolLevel}</td>
-                        <td>{element.vacancyCause}</td>
-                        <td>{element.schoolYear}</td>
-                        <td>{element.gender}</td>
-                        <td>{element.race}</td>
-                        <td></td>
-                      </tr>
-                    ))}
-                </tbody>
-              </Table>
+
+            <StaffTable data={data.filter((d) => d.schoolYear == getYear(selectedVacancyYear) && ([d.schoolLevel, '[ALL]'].includes(getSchoolLevel(selectedSchoolLevel))))} />
+
             </CardBody>
           </Card>
         </Row>
