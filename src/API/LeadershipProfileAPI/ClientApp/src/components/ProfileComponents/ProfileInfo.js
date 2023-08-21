@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Row, Col,  Button, Card, Modal, ModalHeader, ModalBody, ModalFooter, Label, Input, Form, FormGroup } from 'reactstrap';
-import { PersonIcon, GeoIcon, PhoneIcon, MailIcon, EducationIconNavy, RibbonIcon, CalendarIcon, IdIcon } from '../Icons';
+import { PersonIcon, GeoIcon, PhoneIcon, MailIcon, EducationIconNavy, RibbonIcon, CalendarIcon, IdIcon, ChartIcon } from '../Icons';
 import { formatDate } from '../../utils/date';
 
 const ProfileInfo = (props) => {
@@ -35,6 +35,10 @@ const ProfileInfo = (props) => {
                                 <td className="profile-info-text">Last start date: {formatDate(data.startDate)}</td>        
                                 <td className="profile-info-icon"><MailIcon /></td>
                                 <td className="profile-info-text"><a href={ "mailto:" + data.email}>{data.email}</a></td>
+                            </tr>
+                            <tr>
+                                <td className="profile-info-icon"><ChartIcon isDark={false} /></td>
+                                <td className="profile-info-text">Aspire</td>                                
                             </tr>
                         </tbody>
                     </table>

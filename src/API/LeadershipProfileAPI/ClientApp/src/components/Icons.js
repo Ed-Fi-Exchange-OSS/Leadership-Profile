@@ -45,8 +45,8 @@ const IdIcon = () =>
 const BriefcaseIcon = () =>
     <img alt="right arrow" src={process.env.PUBLIC_URL + "/icons/briefcase.svg"} />
 
-const ChartIcon = () => 
-    <img alt="right arrow" src={process.env.PUBLIC_URL + "/icons/chart.svg"} />
+const ChartIcon = (isDark = false) => 
+    <img alt="right arrow" src={process.env.PUBLIC_URL + (!!isDark ? "/icons/chart-dark.svg" : "/icons/chart.svg"  )} />
 
 const CertificateIcon = () =>
     <img alt="right arrow" src={process.env.PUBLIC_URL + "/icons/certificate.svg"} />

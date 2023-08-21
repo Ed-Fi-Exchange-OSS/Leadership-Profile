@@ -1,5 +1,5 @@
 import { Fragment, useState } from "react";
-import { Col, Row, Card, CardBody, Button } from "reactstrap";
+import { Col, Row, Card, CardBody, Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "reactstrap";
 import { Tooltip } from "reactstrap";
 import UseAditionalRiskFactors from "./UseAditionalRiskFactors";
 import StaffTable from "../../StaffTable";
@@ -47,13 +47,40 @@ const AditionalRiskFactors = ({ data, selectedRole }) => {
   const [hoveredEligible, setHoveredEligible] = useState(null);
   const [hoveredPerformance, setHoveredPerformance] = useState(null);
 
+  const schoolCategories = ['Elementary School', 'Middle School', 'High School'];
+  const [schoolCategoryOpen, setSchoolCategoryOpen] = useState(false);
+  const schoolCategoryToggle = () => setSchoolCategoryOpen((prevState) => !prevState);
+  const [selectedSchoolCategory, setSelectedSchoolCategory] = useState(null);
+
   return (
     <Fragment>
       <Row>
         <Col md="12" className="mb-2">
-          <h3 className="fw-bold">
-            What additional risk factors impact vacancies?
-          </h3>
+          <Row>
+            <Col md="8">
+              <h3 className="fw-bold">
+                What additional risk factors impact vacancies?
+              </h3>
+            </Col>
+            <Col>
+              <Dropdown
+                isOpen={schoolCategoryOpen}
+                toggle={schoolCategoryToggle}
+                className="ml-1 w-100"
+              >
+                <DropdownToggle caret color="primary" className="w-100">
+                  {selectedSchoolCategory ?? 'School Categories'}
+                </DropdownToggle>
+                <DropdownMenu>
+                  {schoolCategories.map((sc, index) => {
+                    console.log({sc, index});
+                    return <DropdownItem  onClick={(e) => setSelectedSchoolCategory(sc)}>{sc}</DropdownItem>;
+                  })}
+                  <DropdownItem  onClick={(e) => setSelectedSchoolCategory(null)}>ALL</DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </Col>
+          </Row>
         </Col>
         <Col md="6" className="mt-3">
           <h5 className="color left-title">
@@ -67,9 +94,17 @@ const AditionalRiskFactors = ({ data, selectedRole }) => {
           <Row className="my-3 retirement-max-height">
             <Col>
               {vacancyRateData
-                ? vacancyRateData.map((school, i) => (
-                    <Row key={"risk-factor-recor-" + i} onClick={(e) => {setSchoolFilter(school.name); e.preventDefault();}}>
-                      <Col md="8"><a href="#">{school.name}</a></Col>
+                ? vacancyRateData.filter(school => !selectedSchoolCategory || school.vacancy[0]?.schoolLevel === selectedSchoolCategory).map((school, i) => (
+                    <Row
+                      key={"risk-factor-recor-" + i}
+                      onClick={(e) => {
+                        setSchoolFilter(school.name);
+                        e.preventDefault();
+                      }}
+                    >
+                      <Col md="8">
+                        <a href="#">{school.name}</a>
+                      </Col>
                       <Col md="1">{school.vacancy.length}</Col>
                       <Col md="3">
                         <Row>
@@ -127,9 +162,17 @@ const AditionalRiskFactors = ({ data, selectedRole }) => {
           <Row className="my-3 retirement-max-height">
             <Col>
               {eligibleForRetirementData
-                ? eligibleForRetirementData.map((school, i) => (
-                    <Row key={"eligible-for-retirement-" + i}>
-                      <Col md="8">{school.schoolName}</Col>
+                ? eligibleForRetirementData.filter(school => !selectedSchoolCategory || school.eligibles[0]?.schoolLevel === selectedSchoolCategory).map((school, i) => (
+                    <Row
+                      key={"eligible-for-retirement-" + i}
+                      onClick={(e) => {
+                        setSchoolFilter(school.schoolName);
+                        e.preventDefault();
+                      }}
+                    >
+                      <Col md="8">
+                        <a href="#">{school.schoolName}</a>
+                      </Col>
                       <Col md="4">
                         <Row>
                           {school.eligibles.map((eligible, j) => (
@@ -196,9 +239,17 @@ const AditionalRiskFactors = ({ data, selectedRole }) => {
           <Row className="my-3 retirement-max-height">
             <Col>
               {currentPerformanceData
-                ? currentPerformanceData.map((performance, i) => (
-                    <Row key={"performance-record-" + i}>
-                      <Col md="8">{performance.name}</Col>
+                ? currentPerformanceData.filter(school => !selectedSchoolCategory || school.staff[0]?.schoolLevel === selectedSchoolCategory).map((performance, i) => (
+                    <Row
+                      key={"performance-record-" + i}
+                      onClick={(e) => {
+                        setSchoolFilter(performance.name);
+                        e.preventDefault();
+                      }}
+                    >
+                      <Col md="8">
+                        <a href="#">{performance.name}</a>
+                      </Col>
                       <Col md="4">
                         <Row>
                           {performance.staff.map((staff, j) => (
@@ -273,21 +324,21 @@ const AditionalRiskFactors = ({ data, selectedRole }) => {
       </Row>
 
       {schoolFilter != null ? (
-      <Row>
-        <Card className="w-100 mb-4">
-          <CardBody>
-            <Button
-              close
-              size="lg"
-              className="mx-3"
-              onClick={() => setSchoolFilter(null)}
-            />
-            <StaffTable
-              data={data.filter((d) => d.schoolNameAnnon === schoolFilter)}
-            />
-          </CardBody>
-        </Card>
-      </Row>
+        <Row>
+          <Card className="w-100 mb-4">
+            <CardBody>
+              <Button
+                close
+                size="lg"
+                className="mx-3"
+                onClick={() => setSchoolFilter(null)}
+              />
+              <StaffTable
+                data={data.filter((d) => d.schoolNameAnnon === schoolFilter)}
+              />
+            </CardBody>
+          </Card>
+        </Row>
       ) : (
         ""
       )}
