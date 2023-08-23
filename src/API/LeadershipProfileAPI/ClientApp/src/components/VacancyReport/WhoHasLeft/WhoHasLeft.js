@@ -1,4 +1,5 @@
-import { Col, Row } from "reactstrap";
+import React, { useState } from "react";
+import { Col, Row, Card, CardBody, Button } from "reactstrap";
 import {
   Chart as ChartJS,
   ArcElement,
@@ -11,6 +12,7 @@ import {
 } from "chart.js";
 import { Bar, Pie } from "react-chartjs-2";
 
+import StaffTable from "../../StaffTable";
 import UseWhoHasLeft from "./UseWhoHasLeft";
 
 ChartJS.register(
@@ -44,7 +46,7 @@ export const pieChartOptions = {
     },
     title: {
       display: false,
-      text: "Race/Ethnicity",
+      text: "Vacancy Causes",
     },
   },
   maintainAspectRatio: false,
@@ -98,7 +100,17 @@ const WhoHasLeft = ({data, selectedRole}) => {
     mainReason
   } = UseWhoHasLeft(data) ?? {};
 
+  const [causeFilter, setCauseFilter] = useState(null);
+
+  const pieChartOptionsWithOnClick = { 
+    ... pieChartOptions,
+    onClick: function (evt, elements) {
+      setCauseFilter(pieChartData.labels[elements[0].index]);
+    },  
+  };
+
   return (
+    <React.Fragment>
     <Row className="my-4">
       <Col md="6">
         <h5 className="left-title">
@@ -113,25 +125,25 @@ const WhoHasLeft = ({data, selectedRole}) => {
               <Col md="3">
                 <div className="orange cause-square"></div>
               </Col>
-              <Col md="9">{pieChartData && pieChartData.datasets && pieChartData.datasets.length ? pieChartData.datasets[0].data[0] : 0} Attrition</Col>
+              <Col md="9" style={{cursor: 'pointer'}} onClick={() => setCauseFilter('Attrition')}>{pieChartData && pieChartData.datasets && pieChartData.datasets.length ? pieChartData.datasets[0].data[0] : 0} Attrition</Col>
             </Row>
             <Row className="my-1">
               <Col md="3">
                 <div className="brown cause-square"></div>
               </Col>
-              <Col md="9">{pieChartData && pieChartData.datasets && pieChartData.datasets.length ? pieChartData.datasets[0].data[1] : 0} Retirement</Col>
+              <Col md="9" style={{cursor: 'pointer'}} onClick={() => setCauseFilter('Retirement')}>{pieChartData && pieChartData.datasets && pieChartData.datasets.length ? pieChartData.datasets[0].data[1] : 0} Retirement</Col>
             </Row>
             <Row className="my-1">
               <Col md="3">
                 <div className="pink cause-square"></div>
               </Col>
-              <Col md="9">{pieChartData && pieChartData.datasets && pieChartData.datasets.length ? pieChartData.datasets[0].data[2] : 0} Internal Transfer</Col>
+              <Col md="9" style={{cursor: 'pointer'}} onClick={() => setCauseFilter('Internal Transfer')}>{pieChartData && pieChartData.datasets && pieChartData.datasets.length ? pieChartData.datasets[0].data[2] : 0} Internal Transfer</Col>
             </Row>
             <Row className="my-1">
               <Col md="3">
                 <div className="green cause-square"></div>
               </Col>
-              <Col md="9">{pieChartData && pieChartData.datasets && pieChartData.datasets.length ? pieChartData.datasets[0].data[3] : 0} Internal Promotion</Col>
+              <Col md="9" style={{cursor: 'pointer'}} onClick={() => setCauseFilter('Internal Promotion')}>{pieChartData && pieChartData.datasets && pieChartData.datasets.length ? pieChartData.datasets[0].data[3] : 0} Internal Promotion</Col>
             </Row>
             {/* <Row className="my-1">
               <Col md="3">
@@ -143,7 +155,7 @@ const WhoHasLeft = ({data, selectedRole}) => {
           <Col md="7" className="p-2">
             <Row style={{ height: "285px" }}>
               {pieChartData && (
-                <Pie options={pieChartOptions} data={pieChartData} />
+                <Pie options={pieChartOptionsWithOnClick} data={pieChartData} />
                )}
             </Row>
           </Col>
@@ -166,6 +178,26 @@ const WhoHasLeft = ({data, selectedRole}) => {
       </Col>
       <Col></Col>
     </Row>
+    {causeFilter != null ? (
+      <Row>
+        <Card className="w-100 mb-4">
+          <CardBody>
+            <Button
+              close
+              size="lg"
+              className="mx-3"
+              onClick={() => setCauseFilter(null)}
+            />
+
+          <StaffTable data={data.filter((d) => d.vacancyCause === causeFilter)} />
+
+          </CardBody>
+        </Card>
+      </Row>
+    ) : (
+      ""
+    )}
+    </React.Fragment>
   );
 };
 
