@@ -41,17 +41,14 @@ function UseVacancyReport() {
       },
     },
     scales: {
-      nothing: '',
-      y: [
-        {
-          ticks: {
-            // precision: 0,
-            beginAtZero: true,
-            callback: function (value) { if (Number.isInteger(value)) { return value; } },
-            stepSize: 1
-          },
+      y: {
+        ticks: {
+          // precision: 0,
+          beginAtZero: true,
+          callback: function (value) { if (Number.isInteger(value)) { return value; } },
+          stepSize: 1
         },
-      ],
+      },
     }
   });
   const labels = ["2018", "2019", "2020", "2021", "2022", "2023"];
