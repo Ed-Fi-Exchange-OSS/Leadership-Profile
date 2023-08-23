@@ -49,7 +49,6 @@ class LeadersFilters extends Component {
 
   onSliderUpdateHandler = (data, property) => {
     // this.props.onFiltersValueChange(this.state);
-    console.log(data);
     //var newValue = [];
     //for(var i = parseInt(data[0]); i <= parseInt(data[1]); i++) {
     //  if (i != 0) newValue.push(i);

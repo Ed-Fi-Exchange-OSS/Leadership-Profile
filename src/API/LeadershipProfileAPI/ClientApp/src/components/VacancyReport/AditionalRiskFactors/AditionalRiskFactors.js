@@ -73,7 +73,6 @@ const AditionalRiskFactors = ({ data, selectedRole }) => {
                 </DropdownToggle>
                 <DropdownMenu>
                   {schoolCategories.map((sc, index) => {
-                    console.log({sc, index});
                     return <DropdownItem  onClick={(e) => setSelectedSchoolCategory(sc)}>{sc}</DropdownItem>;
                   })}
                   <DropdownItem  onClick={(e) => setSelectedSchoolCategory(null)}>ALL</DropdownItem>

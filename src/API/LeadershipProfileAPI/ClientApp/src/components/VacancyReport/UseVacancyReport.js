@@ -31,7 +31,6 @@ function UseVacancyReport() {
     maintainAspectRatio: true,
     onClick: function (evt, element) {
       if (element.length > 0 && element[0].index < 5) {
-        console.log(element, element[0].index);
         setSelectedVacancyYear(element[0].index);
       }
     },
@@ -148,7 +147,6 @@ function UseVacancyReport() {
           let newProjectedVacancy = Math.round([
             totalVacancies / years.length, // divide it by all years count
           ]);
-          console.log('Projectioons:', { schoolLevel, totalVacancies, years: years.length, newProjectedVacancy})
 
           const vacancyCountList = years
             .sort((a, b) => a - b)
@@ -186,7 +184,6 @@ function UseVacancyReport() {
         response.json().then((response) => {
           if (!unmounted && response !== null) {
             if (response.results !== undefined) {
-              console.log("thi is data: ", response.results);
               setData(response.results);
               setLineChartData(getDataObject(response.results, "rgb(255, 99, 132)", "rgba(255, 99, 132, 0.5)"));
               // setLineChartData(getDataObject(data));
