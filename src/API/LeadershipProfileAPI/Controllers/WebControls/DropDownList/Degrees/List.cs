@@ -23,6 +23,7 @@ namespace LeadershipProfileAPI.Controllers.WebControls.DropDownList.Degrees
         {
             public string Text { get; set; }
             public int Value { get; set; }
+            public int Order { get; set; }
         }
 
         public class QueryHandler : IRequestHandler<Query, Response>
@@ -41,12 +42,13 @@ namespace LeadershipProfileAPI.Controllers.WebControls.DropDownList.Degrees
                 var test = _dbContext.ListItemDegrees.ToList();
                 
                 var list = await _dbContext.ListItemDegrees
+                    .OrderBy(o => o.Order)
                     .ProjectTo<Degree>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);
 
                 return new Response
                 {
-                    Degrees = list.OrderBy(o => o.Text).ToList()
+                    Degrees = list.ToList()
                 };
             }
         }

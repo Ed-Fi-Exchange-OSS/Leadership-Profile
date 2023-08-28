@@ -52,7 +52,7 @@ function UseWhoHasLeft(data) {
       var pieChartCount = [];
       var results = [0, ""];
       causes.forEach(item => {
-        if (vacancyGroupedByCause[item].length > results[0]) {
+        if (vacancyGroupedByCause[item]?.length > results[0]) {
           results[0]= vacancyGroupedByCause[item].length;
           results[1] = item;
         }

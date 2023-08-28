@@ -63,7 +63,7 @@ namespace LeadershipProfileAPI.Features.Vacancy
             public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
             {
                 const int pageSize = 10;
-                var results = await _dbQueryData.GetVacancyProjectionResultsAsync(request.Role);
+                var results = await _dbQueryData.GetVacancyProjectionResultsAsync(request.Role, cancellationToken);
                 // var results = await _dbQueryData.GetLeaderSearchResultsAsync(request.Role);
 
                 // var list = results.AsQueryable()

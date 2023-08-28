@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import {
   Dropdown,
@@ -31,13 +31,20 @@ import UseIdentifyLeaders from "./UseIdentifyLeaders";
 
 const IdentifyLeaders = () => {
   const { data, fetchData } = UseIdentifyLeaders();
+  let [isLoaded, setIsLoaded] = useState(false);
+  
+  useEffect(() => {
+    setIsLoaded(true);
+  }, []);
 
   const onFiltersValueChangeHandler = (filters) => {
+    if (!isLoaded) return;
     fetchData(filters);
   };
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedPipeLine, setSelectedPipeLine] = useState("Principal");
   const toggle = () => setDropdownOpen((prevState) => !prevState);
+
   const handlePipelineSelection = (role) => {
     if (role != selectedPipeLine) {
       // fetchData(role);

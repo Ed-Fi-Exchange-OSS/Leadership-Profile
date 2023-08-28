@@ -1,15 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using LeadershipProfileAPI.Data;
 using LeadershipProfileAPI.Data.Models;
-using LeadershipProfileAPI.Data.Models.ProfileSearchRequest;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace LeadershipProfileAPI.Features.IdentifyLeaders
 {
@@ -87,14 +83,6 @@ namespace LeadershipProfileAPI.Features.IdentifyLeaders
                     request.DomainFiveScore
                 );
 
-                // var list = results.AsQueryable()
-                //     .ProjectTo<SearchResult>(_mapper.ConfigurationProvider)
-                //     .ToList();77
-
-                
-                var list = results.AsQueryable()
-                    .ToList();
-
                 // var totalCount = list.;
                 // var pageCount = (totalCount + pageSize - 1) / pageSize;
 
@@ -102,7 +90,7 @@ namespace LeadershipProfileAPI.Features.IdentifyLeaders
                 {
                     // TotalCount = totalCount,
                     // Page = request.Page,
-                    Results = list,
+                    Results = results,
                     // PageCount = pageCount,
                 };
             }

@@ -19,6 +19,7 @@ namespace LeadershipProfileAPI.Features.Search
             public int? Page { get; set; }
             public string SortField { get; set; }
             public string SortBy { get; set; }
+            public bool OnlyActive { get; set; }
             public ProfileSearchRequestBody SearchRequestBody { get; set; }
         }
 
@@ -66,7 +67,8 @@ namespace LeadershipProfileAPI.Features.Search
                     request.SortBy ?? "asc",
                     request.SortField ?? "id",
                     request.Page ?? 1,
-                    pageSize);
+                    pageSize,
+                    request.OnlyActive);
 
                 var list = results.AsQueryable()
                     .ProjectTo<SearchResult>(_mapper.ConfigurationProvider)

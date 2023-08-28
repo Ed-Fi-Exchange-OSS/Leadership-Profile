@@ -11,10 +11,12 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
+  UncontrolledTooltip,
 } from 'reactstrap';
 
 import { HeaderLogo } from './images'
 import AuthService from '../utils/auth-service';
+import IngestDateService from '../utils/ingest-date-service';
 import LogoutService from '../utils/logout-service';
 import config from '../config';
 
@@ -27,14 +29,33 @@ const Navigation = (props) => {
 
   const toggle = () => setIsOpen(!isOpen);
 
+  const { getLastIngestionDate } = IngestDateService();
+  const lastIngestionDate = getLastIngestionDate();
+ 
   return (
     <div>
       <Navbar expand="md">
           <NavbarBrand href="/"><HeaderLogo/> {SCHOOL_HEADER}</NavbarBrand>
           <NavbarToggler onClick={toggle} />
           <Collapse isOpen={isOpen} navbar>
-            {isAuthenticated() ? 
-            <Nav className="ml-auto">
+            <span  id="refreshPill" className="ml-auto badge badge-pill badge-success px-4">
+                { Intl.DateTimeFormat(undefined).format(lastIngestionDate.Date) }<br />
+                { lastIngestionDate.ItemsProccessed.toLocaleString(undefined, {maximumFractionDigits: 0}) } records
+            </span>
+            <UncontrolledTooltip target="refreshPill"> The data was refreshed as of</UncontrolledTooltip>
+          
+            <span id='refreshDatePill' className="badge badge-pill badge-success px-4 mx-2">
+              { Intl.DateTimeFormat(undefined).format(lastIngestionDate.Date) }
+            </span>
+            <UncontrolledTooltip target="refreshDatePill"> The data was refreshed as of </UncontrolledTooltip>
+
+            <span id="refreshCountPill" className="badge badge-pill badge-success px-4">
+              { lastIngestionDate.ItemsProccessed.toLocaleString(undefined, {maximumFractionDigits: 0}) }
+            </span>
+            <UncontrolledTooltip target="refreshCountPill"> Records refreshed </UncontrolledTooltip>
+
+            {isAuthenticated() ?
+            <Nav>
                 <UncontrolledDropdown nav inNavbar>
                   <DropdownToggle nav caret>
                       <span className="dot"></span>
@@ -46,7 +67,7 @@ const Navigation = (props) => {
                       </DropdownItem>
                   </DropdownMenu>
                   </UncontrolledDropdown>
-              </Nav>
+              </Nav> 
             : 
             <Nav className="ml-auto">
               <NavItem>

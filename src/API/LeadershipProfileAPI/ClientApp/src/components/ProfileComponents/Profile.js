@@ -13,6 +13,19 @@ const Profile = () => {
     const [activeComponent, setActiveComponent] = useState("general");
     const id = window.location.href.slice(window.location.href.lastIndexOf('/')+1);
     const { data, losMapping } = UseProfile(id);
+
+    const prositionHistory = data.positionHistory
+        ?.toSorted((a,b) => a.startDate.localeCompare(b.startDate))
+        .reduce((acc, cur) => {
+            const prev = acc[acc.length -1];
+            if(prev && prev.role === cur.role && prev.schoolName === cur.schoolName){
+                prev.endDate = cur.endDate
+            }else{
+                acc.push({ ...cur });
+            }
+            return acc;
+        }, []).reverse();
+
     var losMappingResult = null;
 
     if (data.performanceMeasures != undefined) {
@@ -34,7 +47,7 @@ const Profile = () => {
 
             {activeComponent === "general" && data !== {} ? (
                 <div>
-                    <PositionHistoryTable title='Position History' data={data.positionHistory} />
+                    <PositionHistoryTable title='Position History' data={prositionHistory} />
                     <CertificationsTable title='Certifications' data={data.certificates} />
                     <ProfessionalDevelopmentTable title='Professional Development and Learning Experiences' data={data.professionalDevelopment}/>
                 </div>

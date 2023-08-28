@@ -41,7 +41,7 @@ function App() {
                   {/* <PrivateRoute exact path="/:searchParams" isAuthenticated={authenticated} component={LandingPage} /> */}
                   <PrivateRoute exact path="/directory" isAuthenticated={authenticated} component={Directory} />
                   <PrivateRoute exact path="/landing" isAuthenticated={authenticated} component={LandingPage} />
-                  <PrivateRoute path="/profile/:id" isAuthenticated={authenticated} component={Profile} />
+                  <Route path="/profile/:id" isAuthenticated={authenticated} component={Profile} />
                 </FilterContextProvider>
                 <PrivateRoute path="/advanced/search">
                   <Redirect to="/directory?page=1&sortBy=asc&sortField=id" />

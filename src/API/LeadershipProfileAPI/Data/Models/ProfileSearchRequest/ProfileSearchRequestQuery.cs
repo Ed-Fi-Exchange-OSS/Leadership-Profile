@@ -5,5 +5,6 @@
         public int? Page { get; set; }
         public string SortField { get; set; }
         public string SortBy { get; set; }
+        public bool OnlyActive { get; set; } = true;
     }
 }

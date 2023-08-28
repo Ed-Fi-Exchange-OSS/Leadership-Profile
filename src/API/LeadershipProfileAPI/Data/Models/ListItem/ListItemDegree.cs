@@ -2,5 +2,6 @@
 {
     public class ListItemDegree : ListItemBase
     {
+        public int Order { get; set; }
     }
 }

@@ -9,37 +9,31 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { Bar, Line } from "react-chartjs-2";
+import { Line } from "react-chartjs-2";
 
 import {
   Dropdown,
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
-  CloseButton,
 } from "reactstrap";
 
 import { Button } from "reactstrap";
 import {
-  Container,
   Row,
   Col,
   Card,
-  CardHeader,
   CardBody,
-  CardTitle,
-  CardText,
 } from "reactstrap";
-import { Table } from "reactstrap";
+
 import { Link } from "react-router-dom";
 
-import { TableViewIcon, CardViewIcon } from "../Icons";
-import BreadcrumbList from "../Breadcrumb";
 
 import AditionalRiskFactors from "./AditionalRiskFactors/AditionalRiskFactors";
 import WhoHasLeft from "./WhoHasLeft/WhoHasLeft";
 
 import UseVacancyReport from "./UseVacancyReport";
+import StaffTable from "../StaffTable";
 
 // import CardList from './CardListComponents/CardList';
 // import UseLandingPage from './UseLandingPage';
@@ -121,17 +115,22 @@ const VacancyReport = () => {
     return labels[index];
   };
 
+  const getSchoolLevel = (index) => {
+    console.log('getSchoolLevel:', {index})
+    switch (index) {
+      case 1: return '[ALL]';
+      case 2: return 'Elementary School';
+      case 3: return 'Middle School';
+      case 4: return 'High School';
+      default: return null;
+    }
+  }
+
   const getFilteredDatabyYear = (year) => {
     var result = data.filter((d) => d.schoolYear == year);
     console.log("this are vacancies filtered by year:", year, result);
     return result;
   };
-
-  var role;
-
-  useEffect(() => {
-    // fetchData(role);
-  });
 
   return (
     <div className="container flex-container">
@@ -211,7 +210,7 @@ const VacancyReport = () => {
           <div
             className="col-md-4"
             style={{ cursor: "pointer" }}
-            onClick={() => setSelectedSchoolLevel(1)}
+            onClick={() => setSelectedSchoolLevel(1) }
           >
             <div
               className={
@@ -370,43 +369,9 @@ const VacancyReport = () => {
                 className="mx-3"
                 onClick={() => setSelectedVacancyYear(null)}
               />
-              <Table borderless>
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>School</th>
-                    <th>Level</th>
-                    <th>Vacancy Cause</th>
-                    <th>Departure Date</th>
-                    <th>Gender</th>
-                    <th>Race</th>
-                    {/* <th>Retirement reason</th> */}
-                  </tr>
-                </thead>
-                <tbody>
-                  {/* { data ? getFilteredDatabyYear(selectedVacancyYear).map( */}
-                  {data
-                    .filter((d) => d.schoolYear == getYear(selectedVacancyYear))
-                    .map((element, i) => (
-                      <tr key={"year-table-record-" + i}>
-                        <th scope="row">{i + 1}</th>
-                        <td>
-                          <Link to={`profile/${207221}`}>
-                            {element.fullNameAnnon}
-                          </Link>
-                        </td>
-                        <td>{element.schoolNameAnnon}</td>
-                        <td>{element.schoolLevel}</td>
-                        <td>{element.vacancyCause}</td>
-                        <td>{element.schoolYear}</td>
-                        <td>{element.gender}</td>
-                        <td>{element.race}</td>
-                        <td></td>
-                      </tr>
-                    ))}
-                </tbody>
-              </Table>
+
+            <StaffTable data={data.filter((d) => d.schoolYear == getYear(selectedVacancyYear) && ([d.schoolLevel, '[ALL]'].includes(getSchoolLevel(selectedSchoolLevel))))} />
+
             </CardBody>
           </Card>
         </Row>

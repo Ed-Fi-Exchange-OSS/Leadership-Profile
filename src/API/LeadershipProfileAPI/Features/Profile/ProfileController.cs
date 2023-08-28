@@ -12,7 +12,7 @@ namespace LeadershipProfileAPI.Features.Profile
 {
     [TypeFilter(typeof(ApiExceptionFilter))]
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [Authorize(Roles = "Admin")]
     public class ProfileController : ControllerBase
     {

@@ -31,7 +31,6 @@ function UseIdentifyLeaders() {
         response.json().then((response) => {
           if (!unmounted && response !== null) {
             if (response.results !== undefined) {
-              console.log(response.results);
               setData(response.results);
               // lineChartData1.data = response.results.projectionData1;
             }

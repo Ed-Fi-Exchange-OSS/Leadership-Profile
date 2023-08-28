@@ -8,6 +8,7 @@ namespace LeadershipProfileAPI.Data.Models
     [Keyless]
     public class StaffVacancy
     {
+        public string StaffUniqueId { get; set; }
         // [Key]
         public String FullNameAnnon { get; set; }
         public string SchoolNameAnnon { get; set; }

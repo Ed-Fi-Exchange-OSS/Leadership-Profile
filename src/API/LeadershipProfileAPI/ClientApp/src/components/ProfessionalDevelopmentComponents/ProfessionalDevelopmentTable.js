@@ -14,7 +14,7 @@ const ProfessionalDevelopmentTable = (props) => {
     const toggle = () => setIsOpen(!isOpen);
 
     function setTable(title) {
-        setIcon(<ChartIcon />);
+        setIcon(<ChartIcon isDark={false} />);
         setCategories(professionalDevelopmentCategories);
     }
 

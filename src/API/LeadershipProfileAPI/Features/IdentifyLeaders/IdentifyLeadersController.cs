@@ -12,7 +12,7 @@ namespace LeadershipProfileAPI.Features.IdentifyLeaders
 {
     [TypeFilter(typeof(ApiExceptionFilter))]
     [ApiController]
-    [Route("leaders-search")]
+    [Route("api/leaders-search")]
     // [Authorize(Roles = "Admin")]
     // [AllowAnonymous]
 

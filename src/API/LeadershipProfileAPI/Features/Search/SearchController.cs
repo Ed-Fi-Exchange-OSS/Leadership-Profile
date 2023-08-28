@@ -11,7 +11,7 @@ namespace LeadershipProfileAPI.Features.Search
 {
     [TypeFilter(typeof(ApiExceptionFilter))]
     [ApiController]
-    [Route("search")]
+    [Route("api/search")]
     [Authorize(Roles = "Admin")]
     public class SearchController : ControllerBase
     {
@@ -33,6 +33,7 @@ namespace LeadershipProfileAPI.Features.Search
                     Page = query.Page,
                     SortBy = query.SortBy,
                     SortField = query.SortField,
+                    OnlyActive = query.OnlyActive,
                     SearchRequestBody = body
                 },
                 cancellationToken);
