@@ -26,6 +26,8 @@ const Profile = () => {
             return acc;
         }, []).reverse();
 
+    data.startDate = prositionHistory && prositionHistory[0]?.startDate;
+
     var losMappingResult = null;
 
     if (data.performanceMeasures != undefined) {
