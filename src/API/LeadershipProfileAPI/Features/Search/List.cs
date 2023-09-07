@@ -74,7 +74,7 @@ namespace LeadershipProfileAPI.Features.Search
                     .ProjectTo<SearchResult>(_mapper.ConfigurationProvider)
                     .ToList();
 
-                var totalCount = await _dbQueryData.GetSearchResultsTotalsAsync(request.SearchRequestBody);
+                var totalCount = await _dbQueryData.GetSearchResultsTotalsAsync(request.SearchRequestBody, request.OnlyActive);
                 var pageCount = (totalCount + pageSize - 1) / pageSize;
 
                 return new Response

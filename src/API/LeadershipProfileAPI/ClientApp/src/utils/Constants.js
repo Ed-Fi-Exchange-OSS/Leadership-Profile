@@ -5,9 +5,12 @@ export const INITIAL_FILTERS_STATE = {
     degrees: [],
     schoolCategories: [],
     tenure: [],
-    category:'',
-    categoryLabel: '',
-    score: 0,
+    scores:[
+       /* {
+        category: '',
+        score: 0,
+    }  */
+    ],
     pills: []
 
     /*

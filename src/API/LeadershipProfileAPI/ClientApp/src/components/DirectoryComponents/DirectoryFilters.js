@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Form,
   FormGroup,
@@ -51,6 +51,8 @@ const CreateDirectoryFilters = (props) => {
     const { setNewPill, removePill, pillTypes, getTypeAction } = UsePills();
     const [filterState, sendFilter] = useFilterContext();
 
+    const [category, setCategory] = useState({label:'', name:''});
+
     function CheckSelectedItem(target, elements, setter, type) {
       setCheckValueForElement(elements, setter, target.value, target.checked);
       setCheckedFilterAsPill(type, target);
@@ -86,15 +88,13 @@ const CreateDirectoryFilters = (props) => {
         Institutions: {
           Values: filterState.institutions,
         },
-        Ratings: {
-          Category: filterState.category,
-          Score: filterState.score,
-        },
+        Ratings: filterState.scores,
         YearsOfPriorExperienceRanges: {
           Values: selectedTenureRanges,
         },
       };
 
+      console.log(filters);
       props.directoryFilteredSearchCallback(filters);
     }
 
@@ -183,6 +183,9 @@ const CreateDirectoryFilters = (props) => {
           pill.value,
           false
         );
+        if(pill.filter === pillTypes.Rating){
+          
+        }
       }
 
       sendFilter(getTypeAction(pill.filter, false), pill);
@@ -213,24 +216,19 @@ const CreateDirectoryFilters = (props) => {
     function onClickCategory(e) {
       // Clear filter/pill if default Category selected
       if (e.currentTarget.value === "") {
-        var ratingPill = filterState.pills.find(
-          (value) => value.filter === pillTypes.Rating
-        );
-        sendFilter(FilterActions.removeRating, ratingPill);
+        setCategory({label:'', category:''});
         return;
       }
-      sendFilter(FilterActions.setRatingCategory, {
-        text: e.currentTarget.innerText,
-        value: e.currentTarget.value,
-      });
+
+      setCategory({label: e.currentTarget.innerText, category: e.currentTarget.value});
     }
 
     function onClickScore(e) {
       let target = e.target;
       let pill = setNewPill(
         pillTypes.Rating,
-        `${filterState.categoryLabel} : ${target.innerText}`,
-        target.value
+        `${category.label} : ${target.innerText}`,
+        {category: category.category, score: target.value }
       );
       sendFilter(FilterActions.setRatingScore, pill);
     }
@@ -276,13 +274,13 @@ const CreateDirectoryFilters = (props) => {
     return (
       <div className="d-flex flex-column container-fluid" >
           <div className="row filters-form-container">
-            <div class="col-sm-12 col-md-6 col-lg-3">
+            <div className="col-sm-12 col-md-6 col-lg-3">
               <Searching
                 onSearchValueChange={NameSearch_OnChange}
                 value={nameSearch}
               />
             </div>
-            <div class="col-sm-12 col-md-6 col-lg-2">
+            <div className="col-sm-12 col-md-6 col-lg-2">
               <FormGroup>
                 <UncontrolledDropdown>
                   <DropdownToggle
@@ -323,7 +321,7 @@ const CreateDirectoryFilters = (props) => {
               </FormGroup>
             </div>
             
-            <div class="col-sm-6 col-md-5 col-lg-3">
+            <div className="col-sm-6 col-md-5 col-lg-3">
               <FormGroup>
                 <UncontrolledDropdown>
                   <DropdownToggle
@@ -363,7 +361,7 @@ const CreateDirectoryFilters = (props) => {
                 </UncontrolledDropdown>
               </FormGroup>
             </div>
-            <div class="col-sm-6 col-md-7 col-lg-4">
+            <div className="col-sm-6 col-md-7 col-lg-4">
               <FormGroup>
                 <UncontrolledDropdown>
                   <DropdownToggle
@@ -408,7 +406,7 @@ const CreateDirectoryFilters = (props) => {
                 </UncontrolledDropdown>
               </FormGroup>
             </div>
-            <div class="col-sm-6 col-md-5 col-lg-2">
+            <div className="col-sm-6 col-md-5 col-lg-2">
               <FormGroup>
                 <UncontrolledDropdown>
                   <DropdownToggle
@@ -448,7 +446,7 @@ const CreateDirectoryFilters = (props) => {
                 </UncontrolledDropdown>
               </FormGroup>
             </div>
-            <div class="col-sm-6 col-md-7 col-lg-3">
+            <div className="col-sm-6 col-md-7 col-lg-3">
               <FormGroup>
                 <UncontrolledDropdown>
                   <DropdownToggle
@@ -488,14 +486,14 @@ const CreateDirectoryFilters = (props) => {
                 </UncontrolledDropdown>
               </FormGroup>
             </div>
-            <div class="col-sm-6 col-md-7 col-lg-4">
+            <div className="col-sm-6 col-md-7 col-lg-4">
               <FormGroup>
                 <UncontrolledDropdown setActiveFromChild>
                   <DropdownToggle
                     className="form-group-filter-with-label btn-dropdown"
                     caret
                   >
-                    {filterState.categoryLabel || "Performance Domain"}
+                    {category.label || "Performance Domain"}
                   </DropdownToggle>
                   <DropdownMenu modifiers={modifiers} persist={false}>
                     <DropdownItem divider />
@@ -517,13 +515,13 @@ const CreateDirectoryFilters = (props) => {
                 </UncontrolledDropdown>
               </FormGroup>
             </div>
-            <div class="col-sm-6 col-md-5 col-lg-3">
+            <div className="col-sm-6 col-md-5 col-lg-3">
               <FormGroup>
                 <UncontrolledDropdown>
                   <DropdownToggle
                     className="form-group-filter-with-label btn-dropdown"
                     caret
-                    disabled={filterState.category == ""}
+                    disabled={category.label === ""}
                   >
                     Score
                   </DropdownToggle>

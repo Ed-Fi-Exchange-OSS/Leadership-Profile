@@ -315,15 +315,16 @@ namespace LeadershipProfileAPI.Data
             return _edfiDbContext.StaffSearches.FromSqlRaw(sql, name).ToListAsync();
         }
 
-        public async Task<int> GetSearchResultsTotalsAsync(ProfileSearchRequestBody body)
+        public async Task<int> GetSearchResultsTotalsAsync(ProfileSearchRequestBody body, bool onlyActive = false)
         {
             // Add the 'name' value as sql parameter to avoid SQL injection from raw text
             var name = new SqlParameter("name", body?.Name ?? string.Empty);
 
             // Implement the view in SQL, call it here
             var sql = $@"
-                 select StaffUSI from edfi.vw_StaffSearch
-                 {ClauseConditions(body)}
+                 select s.StaffUSI from edfi.vw_StaffSearch s
+                 {ClauseRatingsConditionalJoin(body)}
+                 {ClauseConditions(body, onlyActive )}
              ";
 
             return await _edfiDbContext.StaffSearches.FromSqlRaw(sql, name).CountAsync();
@@ -331,15 +332,23 @@ namespace LeadershipProfileAPI.Data
 
         private string ClauseRatingsConditionalJoin(ProfileSearchRequestBody body)
         {
-            if (body == null || body.Ratings == null || !body.Ratings.IsPopulated)
-                return string.Empty;
+            if(body?.Ratings?.Any(r => r.IsPopulated) != true) return string.Empty;
 
-            var joinOnStaff = "JOIN edfi.vw_StaffObjectiveRatings ratings ON ratings.StaffUSI = s.StaffUSI";
+            var count = body.Ratings.Where(r => r.IsPopulated).Count();
+            var scoreFilter = string.Join(" OR ", body.Ratings.Where(r => r.IsPopulated)
+                .Select(r => $"(ratings.Category = '{r.Category}' {(r.Score > 0 ? $" AND ratings.Rating >= {r.Score}" : string.Empty)})"));
 
-            var onCategory = $" AND ratings.Category = '{body.Ratings.Category}'";
-            var andScore = body.Ratings.Score > 0 ? $" AND ratings.Rating >= {body.Ratings.Score}" : string.Empty;
+            var subQuery = @$"(
+                select StaffUSI, Count(*) as FiltersPassed
+                    from edfi.vw_StaffObjectiveRatings ratings 
+                    where {scoreFilter}
+                    Group by StaffUSI
+                    Having Count(*) >= {count}
+            )";
 
-            return $"{joinOnStaff}{onCategory}{andScore}";
+            var joinOnStaff = $"JOIN {subQuery} ratings ON ratings.StaffUSI = s.StaffUSI";
+
+            return joinOnStaff;
         }
 
 
