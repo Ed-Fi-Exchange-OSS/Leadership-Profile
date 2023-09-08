@@ -276,7 +276,7 @@ class LeadersFilters extends Component {
                 <Row className="">
                   <Button
                     size="sm"
-                    color="primary"
+                    color={this.state.roles.includes(1) ? "primary" : "secondary"}
                     onClick={() => this.onCheckboxBtnClick('roles', 1)}
                     active={this.state.roles.includes(1)}
                     className="mx-1"
@@ -285,7 +285,7 @@ class LeadersFilters extends Component {
                   </Button>
                   <Button
                     size="sm"
-                    color="primary"
+                    color={this.state.roles.includes(2) ? "primary" : "secondary"}
                     onClick={() => this.onCheckboxBtnClick('roles', 2)}
                     active={this.state.roles.includes(2)}
                     className="mx-1"
@@ -294,7 +294,7 @@ class LeadersFilters extends Component {
                   </Button>
                   <Button
                     size="sm"
-                    color="primary"
+                    color={this.state.roles.includes(3) ? "primary" : "secondary"}
                     onClick={() => this.onCheckboxBtnClick('roles', 3)}
                     active={this.state.roles.includes(3)}
                     className="mx-1"
@@ -303,7 +303,7 @@ class LeadersFilters extends Component {
                   </Button>
                   <Button
                     size="sm"
-                    color="primary"
+                    color={this.state.roles.includes(4) ? "primary" : "secondary"}
                     onClick={() => this.onCheckboxBtnClick('roles', 4)}
                     active={this.state.roles.includes(4)}
                     className="mx-1 mt-1"
@@ -321,7 +321,7 @@ class LeadersFilters extends Component {
                 <Row className="">
                   <Button
                     size="sm"
-                    color="primary"
+                    color={this.state.schoolLevels.includes(1) ? "primary" : "secondary"}
                     onClick={() => this.onCheckboxBtnClick('schoolLevels', 1)}
                     active={this.state.schoolLevels.includes(1)}
                     className="mx-1"
@@ -330,7 +330,7 @@ class LeadersFilters extends Component {
                   </Button>
                   <Button
                     size="sm"
-                    color="primary"
+                    color={this.state.schoolLevels.includes(2) ? "primary" : "secondary"}
                     onClick={() => this.onCheckboxBtnClick('schoolLevels', 2)}
                     active={this.state.schoolLevels.includes(2)}
                     className="mx-1"
@@ -339,7 +339,7 @@ class LeadersFilters extends Component {
                   </Button>
                   <Button
                     size="sm"
-                    color="primary"
+                    color={this.state.schoolLevels.includes(3) ? "primary" : "secondary"}
                     onClick={() => this.onCheckboxBtnClick('schoolLevels', 3)}
                     active={this.state.schoolLevels.includes(3)}
                     className="mx-1"
@@ -357,7 +357,7 @@ class LeadersFilters extends Component {
                 <Row className="">
                   <Button
                     size="sm"
-                    color="primary"
+                    color={this.state.highestDegrees.includes(1) ? "primary" : "secondary"}
                     onClick={() => this.onCheckboxBtnClick('highestDegrees', 1)}
                     active={this.state.highestDegrees.includes(1)}
                     className="mx-1"
@@ -366,7 +366,7 @@ class LeadersFilters extends Component {
                   </Button>
                   <Button
                     size="sm"
-                    color="primary"
+                    color={this.state.highestDegrees.includes(2) ? "primary" : "secondary"}
                     onClick={() => this.onCheckboxBtnClick('highestDegrees', 2)}
                     active={this.state.highestDegrees.includes(2)}
                     className="mx-1"
@@ -375,7 +375,7 @@ class LeadersFilters extends Component {
                   </Button>
                   <Button
                     size="sm"
-                    color="primary"
+                    color={this.state.highestDegrees.includes(3) ? "primary" : "secondary"}
                     onClick={() => this.onCheckboxBtnClick('highestDegrees', 3)}
                     active={this.state.highestDegrees.includes(3)}
                     className="mx-1 mt-1"
@@ -393,7 +393,7 @@ class LeadersFilters extends Component {
                 <Row className="">
                   <Button
                     size="sm"
-                    color="primary"
+                    color={this.state.hasCertification.includes(1) ? "primary" : "secondary"}
                     onClick={() => this.onCheckboxBtnClick('hasCertification', 1)}
                     active={this.state.hasCertification.includes(1)}
                     className="mx-1"
@@ -402,7 +402,7 @@ class LeadersFilters extends Component {
                   </Button>
                   <Button
                     size="sm"
-                    color="primary"
+                    color={this.state.hasCertification.includes(2) ? "primary" : "secondary"}
                     onClick={() => this.onCheckboxBtnClick('hasCertification', 2)}
                     active={this.state.hasCertification.includes(2)}
                     className="mx-1"
