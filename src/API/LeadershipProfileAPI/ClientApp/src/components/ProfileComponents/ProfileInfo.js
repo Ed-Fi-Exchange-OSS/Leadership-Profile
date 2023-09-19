@@ -32,7 +32,7 @@ const ProfileInfo = (props) => {
                                 <td className="profile-info-icon"><EducationIconNavy /> </td>
                                 <td className="profile-info-text">{data.school}</td>
                                 <td className="profile-info-icon"><CalendarIcon /></td>
-                                <td className="profile-info-text">Last start date: {formatDate(data.startDate)}</td>        
+                                <td className="profile-info-text">Years in role: {data.yearsInLastRole}</td>        
                                 <td className="profile-info-icon"><MailIcon /></td>
                                 <td className="profile-info-text"><a href={ "mailto:" + data.email}>{data.email}</a></td>
                             </tr>
