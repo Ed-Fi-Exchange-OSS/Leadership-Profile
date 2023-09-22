@@ -14,7 +14,8 @@ const Profile = () => {
     const id = window.location.href.slice(window.location.href.lastIndexOf('/')+1);
     const { data, losMapping } = UseProfile(id);
 
-    const prositionHistory = data.positionHistory
+    const lastPositionEntry = data.positionHistory?.[0];
+    const reducedPositionHistory = data.positionHistory
         ?.toSorted((a,b) => a.startDate.localeCompare(b.startDate))
         .reduce((acc, cur) => {
             const prev = acc[acc.length -1];
@@ -26,12 +27,27 @@ const Profile = () => {
             return acc;
         }, []).reverse();
 
+    data.yearsInLastRole = yearsInLastRole();
+
     var losMappingResult = null;
 
     if (data.performanceMeasures != undefined) {
         losMappingResult = losMapping(data.performanceMeasures); 
     }
  
+    function yearsInLastRole() {
+        const year0 = (new Date(0)).getFullYear();
+        const lastPositionFirstDate = reducedPositionHistory && new Date(reducedPositionHistory?.[0]?.startDate);
+        const lastPositionEntryDate = lastPositionEntry && new Date(Date.parse(lastPositionEntry?.startDate));
+        const yearEndDate = lastPositionEntryDate && new Date(lastPositionEntryDate.getFullYear() + (lastPositionEntryDate.getMonth() >= 6 ? 1 : 0), 6, 1);
+        const lastUpdate = lastPositionEntry?.endDate ??
+            (yearEndDate < new Date()
+                ? yearEndDate
+                : new Date());
+        const yearsInLastRole = lastPositionFirstDate && (new Date(lastUpdate - lastPositionFirstDate).getFullYear() - year0);
+        return yearsInLastRole;
+    }
+
     return (
         <div className="d-flex flex-column container">
             <ProfileBreadcrumbMenu data={data} />
@@ -47,7 +63,7 @@ const Profile = () => {
 
             {activeComponent === "general" && data !== {} ? (
                 <div>
-                    <PositionHistoryTable title='Position History' data={prositionHistory} />
+                    <PositionHistoryTable title='Position History' data={reducedPositionHistory} />
                     <CertificationsTable title='Certifications' data={data.certificates} />
                     <ProfessionalDevelopmentTable title='Professional Development and Learning Experiences' data={data.professionalDevelopment}/>
                 </div>

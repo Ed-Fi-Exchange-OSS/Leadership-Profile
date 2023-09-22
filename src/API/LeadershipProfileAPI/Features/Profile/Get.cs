@@ -32,7 +32,6 @@ namespace LeadershipProfileAPI.Features.Profile
             public decimal YearsOfService { get; set; }
             public string Phone { get; set; } = "+12320103203";
             public string Email { get; set; } = "default@email.com";
-            public DateTime? StartDate { get; set; }
             public bool InterestedInNextRole { get; set; }
             public IEnumerable<PositionHistory> PositionHistory { get; set; }
             public IEnumerable<Certificate> Certificates { get; set; }
@@ -104,8 +103,6 @@ namespace LeadershipProfileAPI.Features.Profile
                     .ToListAsync(cancellationToken);
 
                 response.PositionHistory = positionHistory;
-
-                response.StartDate = positionHistory.FirstOrDefault()?.StartDate;
 
                 var certificates = await _dbContext.ProfileCertification.Where(x => x.StaffUniqueId == request.Id)
                     .ProjectTo<Certificate>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);

@@ -17,7 +17,6 @@ namespace LeadershipProfileAPI.Features.Profile
                 .ForMember(dst => dst.FullName, opt => opt.MapFrom(x => GetFullName(x.FirstName, x.MiddleName, x.LastSurname)))
                 .ForMember(dst => dst.District, opt => opt.MapFrom(x => x.Location))
                 .ForMember(dst => dst.Phone, opt => opt.MapFrom(x => x.Telephone))
-                .ForMember(dst => dst.StartDate, opt => opt.Ignore())
                 .ForMember(dst => dst.CurrentPosition, opt => opt.MapFrom(x => x.Position))
                 .ForMember(dst => dst.Evaluations, opt => opt.Ignore());
 

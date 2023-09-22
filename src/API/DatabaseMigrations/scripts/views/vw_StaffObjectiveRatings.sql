@@ -1,17 +1,11 @@
 CREATE OR ALTER VIEW [edfi].[vw_StaffObjectiveRatings] AS
-with evaluationRatings as (
-    select staff.StaffUSI,
-         eorr.EvaluationObjectiveTitle as Category
-         , eorr.Rating
-         , eorr.EvaluationDate
-         , Row_number() over (partition by eorr.PersonId, eorr.EvaluationObjectiveTitle order by eorr.EvaluationDate desc, eorr.CreateDate desc) as "Number"
-    from tpdm.EvaluationElementRatingResult eorr
-    join edfi.Staff as staff on staff.PersonId = eorr.PersonId
-)
+Select 
+	staff.StaffUSI
+    , eorr.EvaluationObjectiveTitle as Category
+    , Avg(eorr.Rating) as Rating
+    , Max(eorr.EvaluationDate) as EvaluationDate
+	From tpdm.EvaluationElementRatingResult eorr
+	Join edfi.Staff as staff on staff.PersonId = eorr.PersonId
+	Group by staff.StaffUSI, eorr.EvaluationObjectiveTitle
 
-select s.StaffUSI
-     , ratings.Category
-     , ratings.Rating
-
-from edfi.Staff as s
-join evaluationRatings as ratings on ratings.StaffUSI = s.StaffUSI and ratings.Number = 1
+GO

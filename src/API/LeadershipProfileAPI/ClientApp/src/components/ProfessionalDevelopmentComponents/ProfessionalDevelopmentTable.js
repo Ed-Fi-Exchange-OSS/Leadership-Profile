@@ -3,7 +3,7 @@ import { CardTitle, Collapse, Table } from 'reactstrap';
 import { ChartIcon, DownPointingIcon } from '../Icons';
 import { formatDate } from '../../utils/date';
 
-const professionalDevelopmentCategories = { 'professionalDevelopmentTitle': 'Course name', 'attendanceDate': 'Date', 'location': 'Location', 'alignmentToLeadership': 'Categories' };
+const professionalDevelopmentCategories = { 'professionalDevelopmentTitle': 'Course name', 'attendanceDate': 'Date', 'alignmentToLeadership': 'Category' };
 
 const ProfessionalDevelopmentTable = (props) => {
     const { title, data } = props;

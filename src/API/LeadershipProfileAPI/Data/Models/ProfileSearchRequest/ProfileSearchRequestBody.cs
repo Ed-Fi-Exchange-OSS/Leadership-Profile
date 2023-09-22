@@ -3,7 +3,7 @@
     public class ProfileSearchRequestBody
     {
         public ProfileSearchYearsOfPriorExperience YearsOfPriorExperienceRanges { get; set; }
-        public ProfileSearchRequestRatings Ratings { get; set; }
+        public ProfileSearchRequestRatings[] Ratings { get; set; }
         public ProfileSearchRequestAssignments Assignments { get; set; }
         public ProfileSearchRequestDegrees Degrees { get; set; }
         public ProfileSearchRequestSchoolCategories SchoolCategories { get; set; }

@@ -98,29 +98,18 @@ const Reducer = (state, action) => {
                 pills: state.pills.filter(value => value !== action.payload)
             }
         }
-        case setRatingCategory: {
-            return {
-                ...state,
-                categoryLabel: action.payload.text,
-                category: action.payload.value
-            }
-        }
         case setRatingScore: {
             let newFilterPill = action.payload;
             return {
                 ...state,
-                score: newFilterPill.value,
-                pills: state.pills.some(pill => pill.filter === newFilterPill.filter)
-                    ? state.pills.map(prevPill => (prevPill.filter === newFilterPill.filter) ? newFilterPill : prevPill)            
-                    : [...state.pills, newFilterPill]
+                scores: [...state.scores.filter(s => s.category !== newFilterPill.value.category), { category: newFilterPill.value.category, score: newFilterPill.value.score}],
+                pills: [...state.pills.filter(pill => pill.filter !== newFilterPill.filter || pill.value?.category !== newFilterPill.value.category), newFilterPill]
             }
         }
         case removeRating: {
             return {
                 ...state,
-                score: 0,
-                category: '',
-                categoryLabel: '',
+                scores: state.scores.filter(s => s.category !== action.payload.value.category),
                 pills: state.pills.filter(value => value !== action.payload)
             }
         }
