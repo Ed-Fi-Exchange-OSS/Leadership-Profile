@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: Apache-2.0
+// Licensed to the Ed-Fi Alliance under one or more agreements.
+// The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+// See the LICENSE and NOTICES files in the project root for more information.
+
 import React, { useState } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Label, Input, Form, FormGroup } from 'reactstrap';
 import UseDataCorrectionModal from './UseDataCorrectionModal';
@@ -7,7 +12,7 @@ const DataCorrectionModal = (props) => {
     const {sendFeedback, bind} = UseDataCorrectionModal();
 
     const [modal, setModal] = useState(isOpen);
-    const toggle = () => setModal(!modal); 
+    const toggle = () => setModal(!modal);
 
     const handleOnSubmit = (e) => {
         e.preventDefault();
@@ -57,7 +62,7 @@ const DataCorrectionModal = (props) => {
                     <Button color="secondary" onClick={toggle}>Cancel</Button>
                 </ModalFooter>
             </Modal>
-        </div>        
+        </div>
     );
 }
 

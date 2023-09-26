@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: Apache-2.0
+// Licensed to the Ed-Fi Alliance under one or more agreements.
+// The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+// See the LICENSE and NOTICES files in the project root for more information.
+
 import React, { useState } from 'react';
 
 import { Button } from 'reactstrap';
@@ -14,13 +19,13 @@ import ResultsDownload from '../../utils/ResultsDownload';
 const Directory = () => {
     const [activeComponent, setActiveComponent] = useState("table");
     const { setColumnSort, sort, data, exportData, paging, setPage, error, setFilters, exportResults, buttonRef } = UseDirectory();
-    
+
     const callbackFilteredSearch = (searchData) => {
         setFilters(searchData);
     }
-    
+
     return (
-        <div className="d-flex container-fluid flex-column"> 
+        <div className="d-flex container-fluid flex-column">
             <div className='directory-div'>
                 <div className="directory-subtitle-controls">
                     <div></div>
@@ -37,7 +42,7 @@ const Directory = () => {
                 <h2 className='directory-title'>Directory</h2>
                 <DirectoryFilters directoryFilteredSearchCallback = {callbackFilteredSearch}/>
             </div>
-            
+
             <ResultsDownload dataSet={exportData} buttonRef={buttonRef}></ResultsDownload>
             <div>
                 <a className="selected-filters-clear mx-3" onClick={() => exportResults()}>Export Results</a>

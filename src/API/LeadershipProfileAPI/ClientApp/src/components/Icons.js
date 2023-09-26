@@ -1,6 +1,11 @@
+// SPDX-License-Identifier: Apache-2.0
+// Licensed to the Ed-Fi Alliance under one or more agreements.
+// The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+// See the LICENSE and NOTICES files in the project root for more information.
+
 import React from 'react';
 
-const TableViewIcon = () => 
+const TableViewIcon = () =>
     <img alt="filtering icon" src={process.env.PUBLIC_URL + "/icons/list.svg"} />
 
 const CardViewIcon = () =>
@@ -45,13 +50,13 @@ const IdIcon = () =>
 const BriefcaseIcon = () =>
     <img alt="right arrow" src={process.env.PUBLIC_URL + "/icons/briefcase.svg"} />
 
-const ChartIcon = (isDark = false) => 
+const ChartIcon = (isDark = false) =>
     <img alt="right arrow" src={process.env.PUBLIC_URL + (!!isDark ? "/icons/chart-dark.svg" : "/icons/chart.svg"  )} />
 
 const CertificateIcon = () =>
     <img alt="right arrow" src={process.env.PUBLIC_URL + "/icons/certificate.svg"} />
 
-const RibbonIcon = () =>     
+const RibbonIcon = () =>
     <img alt="right arrow" src={process.env.PUBLIC_URL + "/icons/ribbon.svg"} />
 
 const RightPointingIcon = () =>

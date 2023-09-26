@@ -1,3 +1,8 @@
+# SPDX-License-Identifier: Apache-2.0
+# Licensed to the Ed-Fi Alliance under one or more agreements.
+# The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+# See the LICENSE and NOTICES files in the project root for more information.
+
 using module ..\ImportDataBasicFunctions\ImportDataBasicFunctions.psm1
 
 $ModuleVersion = '1.0.0'
@@ -42,7 +47,7 @@ function TransformSchool {
             InstitutionTelephones           = $institutionTelephones
             SchoolCategories                = (, [PSCustomObject]@{ SchoolCategoryDescriptor = "uri://ed-fi.org/SchoolCategoryDescriptor#" + [System.Security.SecurityElement]::Escape($_.SchoolCategory) })
             GradeLevels                     = $gradeLevels
-        }    
+        }
     }
 }
 
@@ -90,7 +95,7 @@ function TransformStaff() {
             YearsOfPriorProfessionalExperience = [int][System.Security.SecurityElement]::Escape($_.YearsOfProfessionalExperience)
             Email                              = [System.Security.SecurityElement]::Escape($_.Email)
             Address                            = $address
-        }    
+        }
     }
 }
 
@@ -99,7 +104,7 @@ function TransformStaffEducationOrganizationAssignmentAssociations($staffClassif
     $staffUniqueId = [System.Security.SecurityElement]::Escape($_.StaffUniqueId).Trim()
     $staffClassification = $staffClassificationMap[$staffUniqueId]
 
-    $staffClassificationDescriptor = if( ![String]::IsNullOrWhiteSpace($staffClassification)){ 
+    $staffClassificationDescriptor = if( ![String]::IsNullOrWhiteSpace($staffClassification)){
         "uri://ed-fi.org/StaffClassificationDescriptor#$staffClassification"
     } else { $null}
 
@@ -110,26 +115,26 @@ function TransformStaffEducationOrganizationAssignmentAssociations($staffClassif
         EndDate                         = if($_.EndDate){([System.Security.SecurityElement]::Escape($_.EndDate) | Get-Date -Format 'yyyy-MM-dd')} else { $null }
         PositionTitle                   = [System.Security.SecurityElement]::Escape($_.PositionTitle)
         StaffClassificationDescriptor   = $staffClassificationDescriptor # Missing in StaffOrgAssignSourceFle, found in StaffSourceFle
-    }    
+    }
   }
 }
 
-function Load-User() {  
+function Load-User() {
     Write-Host "Working file '"  $Config.UsersSourceFle "'"
     $dataJSON = (
-        Import-Csv $Config.UsersSourceFle -Header StaffUSI, DistrictId , FirstName, MiddleName, LastName, Email, 
-        SexDescriptor, StaffClassification, IsSupportStaff | Select-Object -Skip 1 
+        Import-Csv $Config.UsersSourceFle -Header StaffUSI, DistrictId , FirstName, MiddleName, LastName, Email,
+        SexDescriptor, StaffClassification, IsSupportStaff | Select-Object -Skip 1
     )
     return $dataJSON
 }
 
 Function Import-EdData($Config) {
-    $SchoolFileHeaders = 'SchoolId', 'DistrictId', 'NameOfInstitution', 'ShortnameOfInstitution', 
+    $SchoolFileHeaders = 'SchoolId', 'DistrictId', 'NameOfInstitution', 'ShortnameOfInstitution',
         'SchoolCategory', 'AddressStreet', 'AddressCity', 'AddressZipCode', 'PhoneNumber'
-    $StaffFileHeaders = 'StaffUSI', 'StaffUniqueId', 'FirstName', 'MiddleName', 'LastSurname', 'StaffClassification', 
-    'YearsOfProfessionalExperience', 'BirthDate', 'SexDescriptor', 'RaceDescriptor', 
-    'Email', 'StateAbbreviationDescriptor', 'City', 'PostalCode' 
-    $StaffOrgAssignFileHeaders = 'StaffUniqueId', 'SchoolId', 'PositionTitle', 'BeginDate', 'EndDate', 'SeparationReasonDescriptor'     
+    $StaffFileHeaders = 'StaffUSI', 'StaffUniqueId', 'FirstName', 'MiddleName', 'LastSurname', 'StaffClassification',
+    'YearsOfProfessionalExperience', 'BirthDate', 'SexDescriptor', 'RaceDescriptor',
+    'Email', 'StateAbbreviationDescriptor', 'City', 'PostalCode'
+    $StaffOrgAssignFileHeaders = 'StaffUniqueId', 'SchoolId', 'PositionTitle', 'BeginDate', 'EndDate', 'SeparationReasonDescriptor'
 
     Set-Content -Path $Config.ErrorsOutputFile -Value "$(Get-Date -Format 'yyyy-MM-ddTHH:mm:ss')"
 
@@ -137,7 +142,7 @@ Function Import-EdData($Config) {
 
     Write-Progress -Activity "Importing data from $($Config.SchoolSourceFile)" -PercentComplete -1
 
-    $res = NLoad $SchoolFileHeaders $Config.SchoolSourceFile | 
+    $res = NLoad $SchoolFileHeaders $Config.SchoolSourceFile |
         TransformSchool |
         NPost -Config $Config |
         WriteToFileIfImportError -FilePath $Config.ErrorsOutputFile |
@@ -149,9 +154,9 @@ Function Import-EdData($Config) {
 
     Add-Content -Path $Config.ErrorsOutputFile -Value "`r`n$($Config.StaffSourceFile)`r`n"
     $StaffClassificationMap = @{}
-    $res = NLoad $StaffFileHeaders $Config.StaffSourceFile | 
-        Tap -ScriptBlock { $StaffClassificationMap[[System.Security.SecurityElement]::Escape($args.StaffUniqueId)] = [System.Security.SecurityElement]::Escape($args.StaffClassification).Trim() } | 
-        TransformStaff | 
+    $res = NLoad $StaffFileHeaders $Config.StaffSourceFile |
+        Tap -ScriptBlock { $StaffClassificationMap[[System.Security.SecurityElement]::Escape($args.StaffUniqueId)] = [System.Security.SecurityElement]::Escape($args.StaffClassification).Trim() } |
+        TransformStaff |
         NPost -Config $Config |
         WriteToFileIfImportError -FilePath $Config.ErrorsOutputFile |
         CountResults -InitialValues $res  |

@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: Apache-2.0
+// Licensed to the Ed-Fi Alliance under one or more agreements.
+// The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+// See the LICENSE and NOTICES files in the project root for more information.
+
 import React from "react";
 import ReactExport from "react-export-excel";
 
@@ -8,11 +13,11 @@ const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
 export default class ResultsDownload extends React.Component {
-        
-    
+
+
     render() {
 
-        const downloadButton = 
+        const downloadButton =
             <Button  style={{display: "none"}} innerRef={this.props.buttonRef}>
                 Download
             </Button>;

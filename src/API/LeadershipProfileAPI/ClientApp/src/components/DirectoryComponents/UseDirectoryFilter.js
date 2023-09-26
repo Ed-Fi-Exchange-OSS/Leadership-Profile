@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: Apache-2.0
+// Licensed to the Ed-Fi Alliance under one or more agreements.
+// The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+// See the LICENSE and NOTICES files in the project root for more information.
+
 import React, {useState, useEffect} from "react";
 import config from '../../config';
 import { useFilterContext } from "../../context/filters/UseFilterContext";
@@ -65,7 +70,7 @@ function UseDirectoryFilters () {
 
         return result;
     };
-    
+
     async function getCategories(){
         fetchFilterData(`webcontrols/dropdownlist/measurementcategories`, (response) => {
             responseSetter(response.categories, setCategories, null, false);
@@ -111,7 +116,7 @@ function UseDirectoryFilters () {
         });
         setter(newElements);
     }
-    
+
     function unCheckAllFromElement(elements, setter){
         let newElements = [...elements];
         newElements.forEach((element) => {
@@ -120,7 +125,7 @@ function UseDirectoryFilters () {
         });
         setter(newElements);
     }
-    
+
     useEffect(() => {
         getPositions();
         getDegrees();

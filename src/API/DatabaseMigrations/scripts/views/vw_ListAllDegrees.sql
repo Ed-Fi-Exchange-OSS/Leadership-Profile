@@ -1,7 +1,14 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ * Licensed to the Ed-Fi Alliance under one or more agreements.
+ * The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+ * See the LICENSE and NOTICES files in the project root for more information.
+ */
+
 CREATE OR ALTER VIEW [edfi].[vw_ListAllDegrees] AS
 With SelectedDegrees ([Name], [Order]) as (
 	Select 'Associate''s Degree (two years or more)', 1
-	Union 
+	Union
 	Select 'Bachelor''s', 2
 	Union
 	Select 'Master''s', 3

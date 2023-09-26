@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: Apache-2.0
+// Licensed to the Ed-Fi Alliance under one or more agreements.
+// The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+// See the LICENSE and NOTICES files in the project root for more information.
+
 import React, { Component } from 'react';
 import {
   BrowserRouter as Router,
@@ -46,10 +51,10 @@ function App() {
                 <PrivateRoute path="/advanced/search">
                   <Redirect to="/directory?page=1&sortBy=asc&sortField=id" />
                 </PrivateRoute>
-                <Route exact path="/account/register" component={Registration} />         
-                <Route exact path="/vacancy-report" component={VacancyReport} />         
-                <Route exact path="/vacancy-report-detail" component={VacancyReportDetails} />         
-                <Route exact path="/identify-leaders" component={IdentifyLeaders} />         
+                <Route exact path="/account/register" component={Registration} />
+                <Route exact path="/vacancy-report" component={VacancyReport} />
+                <Route exact path="/vacancy-report-detail" component={VacancyReportDetails} />
+                <Route exact path="/identify-leaders" component={IdentifyLeaders} />
                 <Route exact path="/account/forgotpassword" component={ForgotPassword} />
                 <Route exact path="/account/resetpassword" component={ResetPassword} />
           </div>

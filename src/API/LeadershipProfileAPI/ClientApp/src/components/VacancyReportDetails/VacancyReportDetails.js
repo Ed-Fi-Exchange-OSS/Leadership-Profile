@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: Apache-2.0
+// Licensed to the Ed-Fi Alliance under one or more agreements.
+// The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+// See the LICENSE and NOTICES files in the project root for more information.
+
 import React, { useState } from "react";
 
 import {
@@ -90,7 +95,7 @@ const VacancyReportDetails = () => {
             vacancy projection?
           </p>
         </div>
-      
+
         <Card
           className="my-2"
           color="primary"
@@ -109,7 +114,7 @@ const VacancyReportDetails = () => {
       </div>
 
       <div className="row mt-4 projected-vacancy">
-        <div className="col-md-6">          
+        <div className="col-md-6">
           <div className="row mt-4">
             <div className="col-md-4 m-auto">
               <Link to={'/vacancy-report-detail'}>
@@ -167,7 +172,7 @@ const VacancyReportDetails = () => {
             </div>
           </div>
           <div className="row mt-5">
-            <h5>Cause of vacancy past 5 years</h5>          
+            <h5>Cause of vacancy past 5 years</h5>
             <Bar options={options} data={data} />
           </div>
         </div>
@@ -226,7 +231,7 @@ const VacancyReportDetails = () => {
             </div>
           </div>
           <div className="row mt-5">
-            <h5>Cause of vacancy past 5 years</h5>          
+            <h5>Cause of vacancy past 5 years</h5>
             <Bar options={options} data={data} />
           </div>
         </div>

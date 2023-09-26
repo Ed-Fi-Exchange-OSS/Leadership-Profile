@@ -1,3 +1,10 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ * Licensed to the Ed-Fi Alliance under one or more agreements.
+ * The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+ * See the LICENSE and NOTICES files in the project root for more information.
+ */
+
 CREATE OR ALTER VIEW edfi.vw_LeadershipProfileHeader AS
 with staff_school (StaffUSI, School, Position) AS
 (
@@ -9,7 +16,7 @@ with staff_school (StaffUSI, School, Position) AS
     GROUP BY seoaa.StaffUSI, eo.NameOfInstitution, d.ShortDescription
 ),
 staff_email (StaffUSI, Email) AS (
-    SELECT StaffUSI, Email FROM 
+    SELECT StaffUSI, Email FROM
     (SELECT StaffUSI, ElectronicMailAddress Email, ROW_NUMBER () OVER (PARTITION BY StaffUSI ORDER BY ElectronicMailTypeDescriptorId) RowNumber
     FROM edfi.StaffElectronicMail
     ) se WHERE se.RowNumber = 1
@@ -17,7 +24,7 @@ staff_email (StaffUSI, Email) AS (
 staff_telephone (StaffUSI, Telephone) AS (
     SELECT StaffUSI, TelephoneNumber FROM
     (
-        SELECT 
+        SELECT
         StaffUSI,
         TelephoneNumber,
         ROW_NUMBER() OVER (PARTITION BY StaffUSI ORDER BY TelephoneNumberTypeDescriptorId) RowNumber

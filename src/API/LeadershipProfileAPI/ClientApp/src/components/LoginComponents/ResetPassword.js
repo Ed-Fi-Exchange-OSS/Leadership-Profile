@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: Apache-2.0
+// Licensed to the Ed-Fi Alliance under one or more agreements.
+// The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+// See the LICENSE and NOTICES files in the project root for more information.
+
 import React from 'react';
 import { Form, FormGroup, Label, Input, Card, CardBody, CardTitle, Alert } from 'reactstrap';
 import UseResetPassword from './UseResetPassword';
@@ -9,7 +14,7 @@ const ResetPassword = () => {
         e.preventDefault();
         setResetPassword(e);
     };
-	
+
 	return (
         <Card className="login-card">
             <CardBody>
@@ -24,19 +29,19 @@ const ResetPassword = () => {
                         <Label for="confirmNewPassword" className="mr-sm-2">Confirm New Password</Label>
                         <Input type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirm Password" {...bind} />
                     </FormGroup>
-                    {error.hasError ? 
+                    {error.hasError ?
                     <Alert color="danger">
                         {error.message}
                     </Alert >
                     : <div></div>
                     }
-                    {success.isSuccess ? 
+                    {success.isSuccess ?
                     <Alert color="success">
                         {success.message}
                     </Alert>
                     : <div></div>
                     }
-                    {success.isSuccess ? 
+                    {success.isSuccess ?
                     <Alert color="success">
                         This page will redirect after 3 seconds.
                     </Alert>

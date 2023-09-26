@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: Apache-2.0
+// Licensed to the Ed-Fi Alliance under one or more agreements.
+// The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+// See the LICENSE and NOTICES files in the project root for more information.
+
 import { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
 
@@ -38,7 +43,7 @@ function UseLogin() {
             const apiUrl = new URL(API_URL + 'user/login');
 
             fetch(apiUrl, API_CONFIG(
-                'POST', 
+                'POST',
                 JSON.stringify(
                     {
                     'username': username,
@@ -49,15 +54,15 @@ function UseLogin() {
             .then(response => response.json())
             .then(
                 (result) => {
-                    if (!unmounted && result.result) 
+                    if (!unmounted && result.result)
                     {
                         setError(false);
-                        loginAuth(username); 
+                        loginAuth(username);
                         // history.push('/queue?count=10&page=1&sortBy=asc&sortField=id');
                         history.push('/landing');
                         history.go(0);
                     }
-                    else 
+                    else
                     {
                         setError(true);
                     }

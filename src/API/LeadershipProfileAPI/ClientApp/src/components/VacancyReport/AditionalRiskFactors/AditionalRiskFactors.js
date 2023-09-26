@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: Apache-2.0
+// Licensed to the Ed-Fi Alliance under one or more agreements.
+// The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+// See the LICENSE and NOTICES files in the project root for more information.
+
 import { Fragment, useState } from "react";
 import { Col, Row, Card, CardBody, Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "reactstrap";
 import { Tooltip } from "reactstrap";
@@ -7,7 +12,7 @@ import StaffTable from "../../StaffTable";
 
 const AditionalRiskFactors = ({ data, selectedRole }) => {
 
-  const { 
+  const {
     vacancyRateData,
     eligibleForRetirementData,
     eligibleForRetirementNowCount,
@@ -16,24 +21,24 @@ const AditionalRiskFactors = ({ data, selectedRole }) => {
     scoreCount
   } = UseAditionalRiskFactors(data) ?? {};
 
-  const [ schoolFilter, setSchoolFilter] = useState(null)  
+  const [ schoolFilter, setSchoolFilter] = useState(null)
 
   const getReasonColor = (reason) => {
     var color = "";
     switch (reason) {
-      case 'Attrition': 
+      case 'Attrition':
         color = 'orange';
         break;
-      case 'Retirement': 
+      case 'Retirement':
         color = 'brown';
         break;
-      case 'Internal Transfer': 
+      case 'Internal Transfer':
         color = 'pink';
         break;
-      case 'Internal Promotion': 
+      case 'Internal Promotion':
         color = 'green';
         break;
-      case 'Finished Year': 
+      case 'Finished Year':
         color = 'purple';
         break;
       default:

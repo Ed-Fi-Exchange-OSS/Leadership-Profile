@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: Apache-2.0
+// Licensed to the Ed-Fi Alliance under one or more agreements.
+// The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+// See the LICENSE and NOTICES files in the project root for more information.
+
 export const INITIAL_FILTERS_STATE = {
     nameSearch: '',
     institutions: [],
@@ -34,7 +39,7 @@ export const INITIAL_FILTERS_STATE = {
     -- Contains array of pill objects with PillType, name and value
     -- ex.
     pills: [{"POSITION", "Test", 1234}]
-    */ 
+    */
 }
 
 const PillType = {
@@ -48,7 +53,7 @@ const PillType = {
 
 export default PillType;
 
-export const SCORE_OPTIONS = 
+export const SCORE_OPTIONS =
     [
         {"text": "At Least 1", "value": 1, "selected": false},
         {"text": "At Least 2", "value": 2, "selected": false},

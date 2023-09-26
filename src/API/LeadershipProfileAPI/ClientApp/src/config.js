@@ -1,7 +1,12 @@
+// SPDX-License-Identifier: Apache-2.0
+// Licensed to the Ed-Fi Alliance under one or more agreements.
+// The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+// See the LICENSE and NOTICES files in the project root for more information.
+
 function config() {
     var getUrl = window.location;
     const API_URL = process.env.NODE_ENV === 'production' ? new URL(`${getUrl.protocol}//${getUrl.host}/api/`) : new URL('https://localhost:5001/api/');
-    const API_CONFIG = (method, body=null) => { 
+    const API_CONFIG = (method, body=null) => {
         return {
             method: method,
             mode: 'cors',

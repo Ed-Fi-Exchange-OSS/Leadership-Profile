@@ -1,13 +1,18 @@
+// SPDX-License-Identifier: Apache-2.0
+// Licensed to the Ed-Fi Alliance under one or more agreements.
+// The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+// See the LICENSE and NOTICES files in the project root for more information.
+
 import { useState, useEffect } from "react";
 
-function UseWhoHasLeft(data) {    
+function UseWhoHasLeft(data) {
     const [ whoHasLeftData, setWhoHasLeftData] = useState(null);
     const [ pieChartData, setPieChartData] = useState(null);
     const [ raceChartData, setRaceChartData] = useState(null);
     const [ genderChartData, setGenderChartData] = useState(null);
     const [ mainNumber, setMainNumber] = useState(0);
     const [ mainReason, setMainReason] = useState("");
-    
+
     // var races = [
     //   "Other",
     //   "Black of Afr. American",
@@ -20,7 +25,7 @@ function UseWhoHasLeft(data) {
       "Retirement",
       "Internal Transfer",
       "Internal Promotion",
-      // "Finished year"      
+      // "Finished year"
     ];
     var races = [
       "2orMore",
@@ -30,9 +35,9 @@ function UseWhoHasLeft(data) {
       "Hispanic",
     ];
     const genders = ["M", "F"];
-   
+
     useEffect(() => {
-  
+
       const groupByCause = (a) =>
             a.reduce((byGroup, vacancy) => {
               const { vacancyCause } = vacancy;
@@ -47,7 +52,7 @@ function UseWhoHasLeft(data) {
               byProp[vacancyProp].push(vacancy);
               return byProp;
             }, {});
-  
+
       const vacancyGroupedByCause = groupByCause(data);
       var pieChartCount = [];
       var results = [0, ""];
@@ -100,7 +105,7 @@ function UseWhoHasLeft(data) {
             data: raceChartCount,
             borderColor: "rgb(255, 99, 132)",
             backgroundColor: "rgba(255, 99, 132, 0.5)",
-          },          
+          },
         ],
       });
 
