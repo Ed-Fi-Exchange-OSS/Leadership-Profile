@@ -1,22 +1,11 @@
 ﻿# Leadership-Profile
 
-{Detailed description TBD}
-
-
-## Legal Information
-
-Copyright (c) 2020 Ed-Fi Alliance, LLC and contributors.
-
-Licensed under the [Apache License, Version 2.0](LICENSE) (the "License").
-
-Unless required by applicable law or agreed to in writing, software distributed
-under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-CONDITIONS OF ANY KIND, either express or implied. See the License for the
-specific language governing permissions and limitations under the License.
-
-See [NOTICES](NOTICES.md) for additional copyright and license notifications.
+This web portal built around Ed-Fi technology stack enables districts to bring
+their Leadership Development Framework measures into the hands of district
+leadership and staff.
 
 ## Setting up the development environment
+
 * You will either have to Clone or Fork the repo.
 * You will need to be added to the org and team to clone and work on the repo.
 * For Fork, you won't need to be added to the org. If you wish to bring the changes back, you can create PR. The commits must be signed.
@@ -41,7 +30,8 @@ the application.
 * Run `Invoke-Psake DownloadDbTestData` in powershell from the project root folder.
 * Unzip and restore the backup in `testdata/EdFi_Ods_Populated_Template_TPDM_10.zip` to your local SQL Server instance.
 * Run the database migrations by running this powershell command from the project root folder:
-```
+
+```shell
 Invoke-Psake UpdateLocalDatabase
 ```
 
@@ -100,6 +90,10 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
+You may need to run the following command in order to run hhtps:
+```shell
+set NODE_OPTIONS=--openssl-legacy-provider
+```
 
 ### `npm test`
 
@@ -151,3 +145,17 @@ on the `Startup` class instead of the `SmtpSender` class:
   // Replace SmtpSender with your own implementation
   services.AddTransient<IEmailSender, SmtpSender>();
 ```
+
+## Legal Information
+
+Copyright (c) 2023 Ed-Fi Alliance, LLC and contributors.
+
+Licensed under the [Apache License, Version 2.0](LICENSE) (the "License").
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+See [NOTICES](NOTICES.md) for additional copyright and license notifications.

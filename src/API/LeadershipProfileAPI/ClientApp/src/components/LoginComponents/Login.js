@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: Apache-2.0
+// Licensed to the Ed-Fi Alliance under one or more agreements.
+// The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+// See the LICENSE and NOTICES files in the project root for more information.
+
 import React from 'react';
 import { Form, FormGroup, Label, Input, Card, CardBody, CardTitle, Alert } from 'reactstrap';
 import UseLogin from './UseLogin';
@@ -29,12 +34,12 @@ const Login = () => {
                             <Label for="password" className="mr-sm-2">Password</Label>
                             <Input type="password" name="password" id="password"  placeholder="Password" {...bind} />
                         </FormGroup>
-                        {error ? 
+                        {error ?
                         <Alert color="danger">
                             Incorrect username or password.
                         </Alert>
                         : <div></div>}
-                        <Input type="submit" value="Submit" className="login-submit" />                    
+                        <Input type="submit" value="Submit" className="login-submit" />
                         <a href="#"className="d-flex mt-4" onClick={e => handleOnClick(e)}>Forgot Password?</a>
                     </Form>
                 </CardBody>

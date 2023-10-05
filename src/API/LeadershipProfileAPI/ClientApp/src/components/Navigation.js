@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: Apache-2.0
+// Licensed to the Ed-Fi Alliance under one or more agreements.
+// The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+// See the LICENSE and NOTICES files in the project root for more information.
+
 import React, { useState } from 'react';
 import {
   Collapse,
@@ -31,7 +36,7 @@ const Navigation = (props) => {
 
   const { getLastIngestionDate } = IngestDateService();
   const lastIngestionDate = getLastIngestionDate();
- 
+
   return (
     <div>
       <Navbar expand="md">
@@ -43,7 +48,7 @@ const Navigation = (props) => {
                 { lastIngestionDate.ItemsProccessed.toLocaleString(undefined, {maximumFractionDigits: 0}) } records
             </span>
             <UncontrolledTooltip target="refreshPill"> The data was refreshed as of</UncontrolledTooltip>
-          
+
             <span id='refreshDatePill' className="badge badge-pill badge-success px-4 mx-2">
               { Intl.DateTimeFormat(undefined).format(lastIngestionDate.Date) }
             </span>
@@ -67,8 +72,8 @@ const Navigation = (props) => {
                       </DropdownItem>
                   </DropdownMenu>
                   </UncontrolledDropdown>
-              </Nav> 
-            : 
+              </Nav>
+            :
             <Nav className="ml-auto">
               <NavItem>
                 <NavLink href="/account/register/">Register</NavLink>

@@ -1,4 +1,9 @@
-﻿using System.Collections.Generic;
+﻿// SPDX-License-Identifier: Apache-2.0
+// Licensed to the Ed-Fi Alliance under one or more agreements.
+// The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+// See the LICENSE and NOTICES files in the project root for more information.
+
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -71,7 +76,7 @@ namespace LeadershipProfileAPI.Data
 
         //     // Implement the view in SQL, call it here
         //     var sql = $@"
-        //         select 
+        //         select
         //              DISTINCT(s.StaffUSI)
         //             ,StaffUniqueId
         //             ,FirstName
@@ -93,7 +98,7 @@ namespace LeadershipProfileAPI.Data
         //         // fetch next {pageSize} rows only
 
         //         //If you passed pageSize 0 then won't apply pagination
-        //     if (currentPage != 0) { 
+        //     if (currentPage != 0) {
         //         sql += $@"
         //         offset {(currentPage - 1) * pageSize} rows
         //         fetch next {pageSize} rows only
@@ -283,7 +288,7 @@ namespace LeadershipProfileAPI.Data
 
             // Implement the view in SQL, call it here
             var sql = $@"
-                select 
+                select
                      DISTINCT(s.StaffUSI)
                     ,StaffUniqueId
                     ,FirstName
@@ -340,7 +345,7 @@ namespace LeadershipProfileAPI.Data
 
             var subQuery = @$"(
                 select StaffUSI, Count(*) as FiltersPassed
-                    from edfi.vw_StaffObjectiveRatings ratings 
+                    from edfi.vw_StaffObjectiveRatings ratings
                     where {scoreFilter}
                     Group by StaffUSI
                     Having Count(*) >= {count}

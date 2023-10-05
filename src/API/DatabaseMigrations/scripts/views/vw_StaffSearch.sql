@@ -1,3 +1,10 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ * Licensed to the Ed-Fi Alliance under one or more agreements.
+ * The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+ * See the LICENSE and NOTICES files in the project root for more information.
+ */
+
 CREATE OR ALTER VIEW [edfi].[vw_StaffSearch] AS
 with assignments as (
     select seoaa.StaffUSI
@@ -14,7 +21,7 @@ with assignments as (
      join edfi.Descriptor as ksad on ksad.DescriptorId = seoaa.StaffClassificationDescriptorId
 )
 , staff_email (StaffUSI, Email) AS (
-    SELECT StaffUSI, Email FROM 
+    SELECT StaffUSI, Email FROM
     (SELECT StaffUSI, ElectronicMailAddress Email, ROW_NUMBER () OVER (PARTITION BY StaffUSI ORDER BY ElectronicMailTypeDescriptorId) RowNumber
     FROM edfi.StaffElectronicMail
     ) se WHERE se.RowNumber = 1
@@ -22,7 +29,7 @@ with assignments as (
 staff_telephone (StaffUSI, Telephone) AS (
     SELECT StaffUSI, TelephoneNumber FROM
     (
-        SELECT 
+        SELECT
         StaffUSI,
         TelephoneNumber,
         ROW_NUMBER() OVER (PARTITION BY StaffUSI ORDER BY TelephoneNumberTypeDescriptorId) RowNumber
@@ -37,7 +44,7 @@ select s.StaffUSI
      , s.LastSurname
      , CONCAT(s.FirstName, ' ', s.LastSurname) as FullName
 
-     , s.YearsOfPriorProfessionalExperience as YearsOfService 
+     , s.YearsOfPriorProfessionalExperience as YearsOfService
 
      , a.Position     as Assignment
      , a.PositionId   as StaffClassificationDescriptorId

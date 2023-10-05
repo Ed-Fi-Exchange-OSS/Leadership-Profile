@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: Apache-2.0
+// Licensed to the Ed-Fi Alliance under one or more agreements.
+// The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+// See the LICENSE and NOTICES files in the project root for more information.
+
 import FilterActions from "./FilterActions";
 import {INITIAL_FILTERS_STATE} from "../../utils/Constants";
 
@@ -6,7 +11,7 @@ const Reducer = (state, action) => {
         setDegree, removeDegree, setTenure, removeTenure, setRatingCategory, setRatingScore, removeRating, removePill, clearFilters} = FilterActions;
 
     switch(action.type){
-        case setNameFilter: { 
+        case setNameFilter: {
             return {
                 ...state,
                 nameSearch: action.payload
@@ -115,7 +120,7 @@ const Reducer = (state, action) => {
         }
         case clearFilters: {
             return {...INITIAL_FILTERS_STATE }
-        }     
+        }
         default:
             return state;
     }

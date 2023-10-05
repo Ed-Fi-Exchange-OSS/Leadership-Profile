@@ -1,4 +1,9 @@
-﻿using System;
+﻿// SPDX-License-Identifier: Apache-2.0
+// Licensed to the Ed-Fi Alliance under one or more agreements.
+// The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+// See the LICENSE and NOTICES files in the project root for more information.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -59,7 +64,7 @@ namespace LeadershipProfileAPI.Extensions
         }
 
         /// <summary>
-        /// Adds an "in" filter to the query. Values are mapped using <paramref  name="mapper"/>. 
+        /// Adds an "in" filter to the query. Values are mapped using <paramref  name="mapper"/>.
         /// If <paramref name="values"/> array is null or empty, it does nothing.
         /// </summary>
         /// <param name="query">Query to add the filter to</param>

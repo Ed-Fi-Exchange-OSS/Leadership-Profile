@@ -1,20 +1,25 @@
+// SPDX-License-Identifier: Apache-2.0
+// Licensed to the Ed-Fi Alliance under one or more agreements.
+// The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+// See the LICENSE and NOTICES files in the project root for more information.
+
 import { useState, useEffect } from "react";
 
-function UseAditionalRiskFactors(data) {    
+function UseAditionalRiskFactors(data) {
     const [ vacancyRateData, setVacancyRateData] = useState(null);
     const [ eligibleForRetirementData, setEligibleForRetirementData] = useState(null);
     const [ eligibleForRetirementNowCount, setEligibleForRetirementNowCount] = useState(null);
     const [ eligibleForRetirementSoonCount, setEligibleForRetirementSoonCount] = useState(null);
     const [ currentPerformanceData, setCurrentPerformanceData] = useState(null);
     const [ scoreCount, setScoreCount ] = useState(null);
-    
-    
+
+
     const causes = [
       "Attrition",
       "Retirement",
       "Internal Transfer",
       "Internal Promotion",
-      // "Finished year"      
+      // "Finished year"
     ];
     var races = [
       "2orMore",
@@ -24,9 +29,9 @@ function UseAditionalRiskFactors(data) {
       "H",
     ];
     const genders = ["M", "F"];
-   
+
     useEffect(() => {
-  
+
       const groupByProp = (a, prop) =>
             a.reduce((byProp, vacancy) => {
               const vacancyProp = vacancy[prop];
@@ -52,7 +57,7 @@ function UseAditionalRiskFactors(data) {
       setEligibleForRetirementSoonCount(data.filter(s => [1, 2].includes(Number(s.retElig))).length);
 
       /**
-       * 
+       *
        */
       const vacancyGroupedBySchool = groupByProp(data, "schoolNameAnnon");
       var schoolsArray = [];

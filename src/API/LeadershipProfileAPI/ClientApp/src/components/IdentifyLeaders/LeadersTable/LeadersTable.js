@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: Apache-2.0
+// Licensed to the Ed-Fi Alliance under one or more agreements.
+// The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+// See the LICENSE and NOTICES files in the project root for more information.
+
 import React, { useState } from "react";
 import { useEffect, useRef } from "react";
 
@@ -55,7 +60,7 @@ const LeadersTable = ({ data }) => {
     filename: 'Users table',
     sheet: 'Users'
 })
- 
+
   return (
     <div className="container flex-container">
       <table ref={tableRef} className="table">
@@ -124,7 +129,7 @@ const LeadersTable = ({ data }) => {
             <td></td>
             <td></td>
             {/* <a href="#" onClick={exportAsExcel} > Download </a> */}
-          </tr>            
+          </tr>
         </tbody>
       </table>
       <a href="#" onClick={onDownload} > Download </a>

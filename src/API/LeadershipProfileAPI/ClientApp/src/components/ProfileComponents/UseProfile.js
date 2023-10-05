@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: Apache-2.0
+// Licensed to the Ed-Fi Alliance under one or more agreements.
+// The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+// See the LICENSE and NOTICES files in the project root for more information.
+
 import { useState, useEffect } from 'react';
 import config from '../../config';
 
@@ -19,13 +24,13 @@ function UseProfile(id) {
             catArr.forEach((cat, indexCat) => {
                 if(cat == apiRecords[recordIndex].category){
                     return catfound = true;
-                }                
+                }
             });
             if(catfound == false){
                 if(catArr[apiRecords[recordIndex].category] == undefined){
                     catArr[apiRecords[recordIndex].category] = [];
                 }
-                
+
                 var subCatCat = false;
                 catArr[apiRecords[recordIndex].category].forEach((e) => {
                     if(e == apiRecords[recordIndex].subCategory)
@@ -39,7 +44,7 @@ function UseProfile(id) {
             subCatArr.forEach((subcat, indexSubCat) => {
                 if(subcat == apiRecords[recordIndex].subCategory){
                     return subCatfound = true;
-                }                
+                }
             });
             if(subCatfound == false)
             {
@@ -79,9 +84,9 @@ function UseProfile(id) {
             {
                 "categoryTitle" : ce,
                 "subCatCriteria" : catArr[ce].map((se) => {
-                    
+
                     return subCatArr[se];
-                })        
+                })
             })
         });
         return losUIjson;

@@ -1,3 +1,8 @@
+# SPDX-License-Identifier: Apache-2.0
+# Licensed to the Ed-Fi Alliance under one or more agreements.
+# The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+# See the LICENSE and NOTICES files in the project root for more information.
+
 
 # Configuration: Set appopriate values
 $Config = @{
@@ -5,7 +10,7 @@ $Config = @{
 	OAuthUrl="/oauth/token"
 	BaseApiUrl='https://api.ed-fi.org/v5.3/api'
 	EdFiUrl="/data/v3"
-	EndPoint="/my-bps/staffLicenses"	
+	EndPoint="/my-bps/staffLicenses"
 	Key="your_key_here"
 	Secret="your_secret_here"
     NamesPace="uri://mybps.org"
@@ -16,7 +21,7 @@ $Config = @{
 # Configuration: Set appopriate values
 $totalCount = -1
 
-Function PostToEdfi($dataJSON) 
+Function PostToEdfi($dataJSON)
 {
     # extract the requiered parameters from the config file.
     $BaseApiUrl= $Config.BaseApiUrl
@@ -41,21 +46,21 @@ Function PostToEdfi($dataJSON)
     }
 
     $uri = "$BaseApiUrl" + "$EdFiUrl$EndPoint"
-    
+
     Write-Host "OAuthUrl    *** $OAuthUrl"
     Write-Host "url  ***********$uri"
-	
+
 	$i=0
-	
+
 	foreach ($rowJSOn in $dataJSON)
-	{  
+	{
 		$i++
 		$staffLicense= ConvertTo-Json $rowJSOn
 		try {
 			$result = Invoke-RestMethod -Uri $uri -Method Post -Headers $Headers -Body $staffLicense
-			
+
 			if($i % 500 -eq 0) {
-				Write-Host " Processing $i of $totalCount total Staff Licenses ... "   
+				Write-Host " Processing $i of $totalCount total Staff Licenses ... "
 			}
 		}
 		catch {
@@ -66,11 +71,11 @@ Function PostToEdfi($dataJSON)
 	}
 
     Write-Host "*** DONE ***"
-    
+
 }
 
 Function Create-Json()
-{  
+{
       Write-Host "Working file '"  $Config.CSVWorkingFile "'"
       $NamesPace=$Config.NamesPace
       $dataJSON = (
@@ -81,31 +86,31 @@ Function Create-Json()
                      $LicenseStage =NormalizeStage $_.Stage
                      $LicenseStatus =NormalizeStatus $_.LicenseStatus
                      $LicenseDescription =NormalizeLicenseDescription $_.Description
-                     
-                           [PSCustomObject]@{                           
+
+                           [PSCustomObject]@{
                             StaffReference= @{staffUniqueId=[System.Security.SecurityElement]::Escape($_.StaffId)}
-                            LicenseApplicableGradeLevels =[System.Security.SecurityElement]::Escape($GradeLevel)                          
-                            LicenseNumber=[System.Security.SecurityElement]::Escape($_.LicenseNo)    
-                            LicenseIssueDate = [System.Security.SecurityElement]::Escape($_.IssueDate)           
+                            LicenseApplicableGradeLevels =[System.Security.SecurityElement]::Escape($GradeLevel)
+                            LicenseNumber=[System.Security.SecurityElement]::Escape($_.LicenseNo)
+                            LicenseIssueDate = [System.Security.SecurityElement]::Escape($_.IssueDate)
                             LicenseStateIdentifier = [System.Security.SecurityElement]::Escape('MA')
                             LicenseExpirationDate = [System.Security.SecurityElement]::Escape($_.ExpireDate)
                             LicenseEffectiveDate= [System.Security.SecurityElement]::Escape($_.IssueDate)
-							LicenseTitle= [System.Security.SecurityElement]::Escape($_.Description) 
+							LicenseTitle= [System.Security.SecurityElement]::Escape($_.Description)
                             LicenseDescription=[System.Security.SecurityElement]::Escape($LicenseDescription)
                             Accomp=[System.Security.SecurityElement]::Escape($_.Accomp)
                             LicenseStageDescriptor= "$NamesPace/LicenseStageDescriptor#" + [System.Security.SecurityElement]::Escape($LicenseStage)
                             LicenseStatusDescriptor="$NamesPace/LicenseStatusDescriptor#" + [System.Security.SecurityElement]::Escape($LicenseStatus)
                             LicensingOrganization= [System.Security.SecurityElement]::Escape("org")
-                          
+
                         }
 
                     })
         $totalCount = ($dataJSON.length)
 		Write-Host "**** THERE ARE " ($dataJSON.length)
-        PostToEdfi  $dataJSON		
-		
+        PostToEdfi  $dataJSON
+
  }
- ##Normalize Sheltered English Immersion - Teacher    
+ ##Normalize Sheltered English Immersion - Teacher
  Function NormalizeLicenseDescription($LicenseDescription)
 {
     if($LicenseDescription -Contains "Sheltered Eng Immersion - Tch"){
@@ -136,7 +141,7 @@ Function NormalizeStage($Stage)
      if($Stage -Contains "Emergency - Extension"){
         $Stage ="Emergency"
     }
-    
+
     return $Stage
 }
 
@@ -151,13 +156,13 @@ Function NormalizeStatus($Status)
     if(($Status -Contains "Inactive/Invalid: RETELL/SEI Restricted") ){
         $Status ="Inactive/Invalid: RETELL/SEI R"
     }
-    
+
     return $Status
 }
 
 Function RenameLogOnError($logPath)
 {
-	if($error){		
+	if($error){
 		Write-Host "*** An ERROR occured. Renaming Log file... ***"
 		$date = Get-Date -Format "MM-dd-yyyy-H-m-s"
 		$errorLogPath = Join-Path -Path $Config.logRootPath -ChildPath "ERROR_StaffLicenses_Log_$date.log"
@@ -176,10 +181,10 @@ Function Clean20DayOldLogs()
 }
 
 Function CopyErrorLogToDestination($errorLogPath){
-	if($error){	
+	if($error){
 		$destination = "D:\\BPS Pub\\ftproot\\PeopleSoftFiles\\Logs\\"
 		Copy-Item $errorLogPath -Destination $destination
-		
+
 		#Clean files older than 5 days in the destination.
 		$limit = (Get-Date).AddDays(-5)
 		Get-ChildItem -Path $path -Recurse -Force -Include ERROR_StaffLicenses_Log_*.log | Where-Object { !$_.PSIsContainer -and $_.CreationTime -lt $limit } | Remove-Item -Force
@@ -187,9 +192,9 @@ Function CopyErrorLogToDestination($errorLogPath){
 }
 
 Function Init()
-{   
+{
 	$error.clear()
-	
+
     # Enable Logging
     New-Item -ItemType Directory -Force -Path $Config.logRootPath
     $date = Get-Date -Format "MM-dd-yyyy-H-m-s"
@@ -203,10 +208,10 @@ Function Init()
     Create-Json
 
     Stop-Transcript
-	
+
 	$errorLogPath = RenameLogOnError $logPath
 	CopyErrorLogToDestination $errorLogPath
-	
+
 	Clean20DayOldLogs
 }
 # Execute\Init the task

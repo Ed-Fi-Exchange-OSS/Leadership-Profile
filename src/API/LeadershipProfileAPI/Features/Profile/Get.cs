@@ -1,4 +1,9 @@
-﻿using AutoMapper;
+﻿// SPDX-License-Identifier: Apache-2.0
+// Licensed to the Ed-Fi Alliance under one or more agreements.
+// The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+// See the LICENSE and NOTICES files in the project root for more information.
+
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using LeadershipProfileAPI.Data;
 using MediatR;
@@ -130,7 +135,7 @@ namespace LeadershipProfileAPI.Features.Profile
 
                 var objectivesByYear = staffObjectives
                     .GroupBy(o => o.SchoolYear)
-                    .ToDictionary(g => g.Key, g => g.Select(o => 
+                    .ToDictionary(g => g.Key, g => g.Select(o =>
                         new PerformanceRating { Category = o.ObjectiveTitle, Score = o.Rating }));
 
                 sections.Add(new PerformanceEvaluation { Title = "Overall", RatingsByYear = objectivesByYear });
@@ -147,7 +152,7 @@ namespace LeadershipProfileAPI.Features.Profile
                         Title = o.Key,
                         RatingsByYear = o
                             .GroupBy(g => g.SchoolYear)
-                            .ToDictionary(g => g.Key, 
+                            .ToDictionary(g => g.Key,
                                 g => g
                                     .OrderBy(g => g.ElementTitle)
                                     .Select(e => new PerformanceRating {Category = e.ElementTitle, Score = e.Rating})
