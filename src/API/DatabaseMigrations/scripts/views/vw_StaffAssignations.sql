@@ -25,7 +25,7 @@ SELECT sta.StaffUSI as EmployeeIDAnnon
 	--, seoaa.EndDate
 	--, seoaa.*
   
-	, '1' as RetElig
+	,  as RetElig
 	, '1' as TRSYrs
 	, '1' as TotYrsExp
 

@@ -6,6 +6,7 @@ function UseVacancyReport() {
   const { API_URL, API_CONFIG } = config();
 
   const [data, setData] = useState();
+  const [retirementData, setRetirementData] = useState();
   const [selectedVacancyYear, setSelectedVacancyYear] = useState(null);
   const [selectedRole, setSelectedRole] = useState("Principal");
   const [vacancyProjection, setVacancyProjection] = useState([]);
@@ -203,6 +204,23 @@ function UseVacancyReport() {
     fetchData(selectedRole);
   }, []);
 
+  useEffect(() => {
+    // const apiUrl = new URL(API_URL + `vacancy/eligibility-for-retirement`);
+
+    // fetch(
+    //   apiUrl,
+    //   API_CONFIG(
+    //     "POST",
+    //     JSON.stringify({
+    //       role: 'AP',
+    //     })
+    //   )
+    // )
+    //   .then((response) => { 
+    //     setRetirementData(response.results)
+    //   })     
+  }, []);
+
   return {
     data,
     fetchData,
@@ -221,6 +239,8 @@ function UseVacancyReport() {
     lineChartOptions,
     selectedSchoolLevel,
     setSelectedSchoolLevel,    
+    retirementData,
+    setRetirementData
   };
 }
 

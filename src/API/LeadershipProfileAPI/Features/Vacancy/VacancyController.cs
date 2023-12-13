@@ -8,7 +8,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-
+                                                                                                                                                                                                           
 namespace LeadershipProfileAPI.Features.Vacancy
 {
     [TypeFilter(typeof(ApiExceptionFilter))]
@@ -35,6 +35,29 @@ namespace LeadershipProfileAPI.Features.Vacancy
 
             var result = await _mediator.Send(
                 new VacancyProjection.Query
+                {
+                    Role = body.Role
+                },
+                cancellationToken);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+            }
+            catch(Exception e) {
+                return Ok(e.Message);
+            }
+        }
+        
+        [HttpPost("eligibility-for-retirement")]
+        public async Task<ActionResult> GetElegibityForRetirementSearchResult([FromBody] VacancyProjectionModel body, CancellationToken cancellationToken)
+        {
+            try {
+
+            var result = await _mediator.Send(
+                new Retirement.Query
                 {
                     Role = body.Role
                 },
