@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: Apache-2.0
+// Licensed to the Ed-Fi Alliance under one or more agreements.
+// The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+// See the LICENSE and NOTICES files in the project root for more information.
+
 import React, { useState } from 'react';
 import { Row, Col,  Button, Card, Modal, ModalHeader, ModalBody, ModalFooter, Label, Input, Form, FormGroup } from 'reactstrap';
 import { PersonIcon, GeoIcon, PhoneIcon, MailIcon, EducationIconNavy, RibbonIcon, CalendarIcon, IdIcon, ChartIcon } from '../Icons';
@@ -32,17 +37,17 @@ const ProfileInfo = (props) => {
                                 <td className="profile-info-icon"><EducationIconNavy /> </td>
                                 <td className="profile-info-text">{data.school}</td>
                                 <td className="profile-info-icon"><CalendarIcon /></td>
-                                <td className="profile-info-text">Years in role: {data.yearsInLastRole}</td>        
+                                <td className="profile-info-text">Years in role: {data.yearsInLastRole}</td>
                                 <td className="profile-info-icon"><MailIcon /></td>
                                 <td className="profile-info-text"><a href={ "mailto:" + data.email}>{data.email}</a></td>
                             </tr>
                             <tr>
                                 <td className="profile-info-icon"><ChartIcon isDark={false} /></td>
-                                <td className="profile-info-text">Aspire</td>                                
+                                <td className="profile-info-text">Aspire</td>
                             </tr>
                         </tbody>
                     </table>
-                    
+
                 </Col>
             </Row>
         </Card>

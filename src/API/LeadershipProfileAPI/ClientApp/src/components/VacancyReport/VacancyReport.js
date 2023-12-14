@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: Apache-2.0
+// Licensed to the Ed-Fi Alliance under one or more agreements.
+// The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+// See the LICENSE and NOTICES files in the project root for more information.
+
 import React, { useEffect, useState } from "react";
 
 import {
@@ -358,10 +363,10 @@ const VacancyReport = () => {
         <Row>
           <Card className="w-100 mb-4">
             {/* <CardHeader>
-              <Row className="justify-content-between">                
+              <Row className="justify-content-between">
                 <h4 className="mx-2 my-1">Vacancy from {getYear(selectedVacancyYear)} </h4>
                 <Button close size="lg" className="mx-3"
-                  onClick={() => setSelectedVacancyYear(null)} />  
+                  onClick={() => setSelectedVacancyYear(null)} />
               </Row>
             </CardHeader> */}
             <CardBody>

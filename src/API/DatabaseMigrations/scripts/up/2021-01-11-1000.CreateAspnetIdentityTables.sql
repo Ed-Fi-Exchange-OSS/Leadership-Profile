@@ -1,3 +1,10 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ * Licensed to the Ed-Fi Alliance under one or more agreements.
+ * The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+ * See the LICENSE and NOTICES files in the project root for more information.
+ */
+
 /****** Object:  Table [dbo].[AspNetRoleClaims]     ******/
 SET ANSI_NULLS ON
 GO
@@ -10,7 +17,7 @@ CREATE TABLE [dbo].[AspNetRoleClaims](
 	[ClaimType] [nvarchar](max) NULL,
 	[ClaimValue] [nvarchar](max) NULL,
 	[RoleId] [nvarchar](450) NOT NULL,
- CONSTRAINT [PK_AspNetRoleClaims] PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK_AspNetRoleClaims] PRIMARY KEY CLUSTERED
 (
 	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
@@ -29,7 +36,7 @@ CREATE TABLE [dbo].[AspNetRoles](
 	[ConcurrencyStamp] [nvarchar](max) NULL,
 	[Name] [nvarchar](256) NULL,
 	[NormalizedName] [nvarchar](256) NULL,
- CONSTRAINT [PK_AspNetRoles] PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK_AspNetRoles] PRIMARY KEY CLUSTERED
 (
 	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
@@ -48,7 +55,7 @@ CREATE TABLE [dbo].[AspNetUserClaims](
 	[ClaimType] [nvarchar](max) NULL,
 	[ClaimValue] [nvarchar](max) NULL,
 	[UserId] [nvarchar](450) NOT NULL,
- CONSTRAINT [PK_AspNetUserClaims] PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK_AspNetUserClaims] PRIMARY KEY CLUSTERED
 (
 	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
@@ -67,7 +74,7 @@ CREATE TABLE [dbo].[AspNetUserLogins](
 	[ProviderKey] [nvarchar](450) NOT NULL,
 	[ProviderDisplayName] [nvarchar](max) NULL,
 	[UserId] [nvarchar](450) NOT NULL,
- CONSTRAINT [PK_AspNetUserLogins] PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK_AspNetUserLogins] PRIMARY KEY CLUSTERED
 (
 	[LoginProvider] ASC,
 	[ProviderKey] ASC
@@ -85,7 +92,7 @@ BEGIN
 CREATE TABLE [dbo].[AspNetUserRoles](
 	[UserId] [nvarchar](450) NOT NULL,
 	[RoleId] [nvarchar](450) NOT NULL,
- CONSTRAINT [PK_AspNetUserRoles] PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK_AspNetUserRoles] PRIMARY KEY CLUSTERED
 (
 	[UserId] ASC,
 	[RoleId] ASC
@@ -116,7 +123,7 @@ CREATE TABLE [dbo].[AspNetUsers](
 	[SecurityStamp] [nvarchar](max) NULL,
 	[TwoFactorEnabled] [bit] NOT NULL,
 	[UserName] [nvarchar](256) NULL,
- CONSTRAINT [PK_AspNetUsers] PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK_AspNetUsers] PRIMARY KEY CLUSTERED
 (
 	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
@@ -135,7 +142,7 @@ CREATE TABLE [dbo].[AspNetUserTokens](
 	[LoginProvider] [nvarchar](450) NOT NULL,
 	[Name] [nvarchar](450) NOT NULL,
 	[Value] [nvarchar](max) NULL,
- CONSTRAINT [PK_AspNetUserTokens] PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK_AspNetUserTokens] PRIMARY KEY CLUSTERED
 (
 	[UserId] ASC,
 	[LoginProvider] ASC,

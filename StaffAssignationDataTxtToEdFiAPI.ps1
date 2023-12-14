@@ -1,3 +1,8 @@
+# SPDX-License-Identifier: Apache-2.0
+# Licensed to the Ed-Fi Alliance under one or more agreements.
+# The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+# See the LICENSE and NOTICES files in the project root for more information.
+
 $ISD = "Garland ISD"
 $lastDataInfoFile = "lastDataInfo.json"
 
@@ -43,21 +48,21 @@ Function PostToEdfi($dataJSON, $endPoint) {
     }
 
     $uri = "$BaseApiUrl" + "$EdFiUrl$EndPoint"
-    
+
     Write-Host "OAuthUrl    *** $OAuthUrl"
     Write-Host "url  ***********$uri"
-	
+
     $i = 0
-	
-    foreach ($rowJSOn in $dataJSON) {  
+
+    foreach ($rowJSOn in $dataJSON) {
         $i++
         $staffRecord = ConvertTo-Json $rowJSOn
         try {
             $result = Invoke-RestMethod -Uri $uri -Method Post -Headers $Headers -Body $staffRecord
             Write-Host "*** RESULT:  $result ***"
-			
+
             if ($i % 500 -eq 0) {
-                Write-Host " Processing $i of $totalCount total Staff Assignments... "   
+                Write-Host " Processing $i of $totalCount total Staff Assignments... "
             }
         }
         catch {
@@ -68,10 +73,10 @@ Function PostToEdfi($dataJSON, $endPoint) {
     }
 
     Write-Host "*** DONE ***"
-    
+
 }
 
-Function Create-Json() {  
+Function Create-Json() {
     Write-Host "Working file '"  $Config.CSVWorkingFile "'"
     #   $NamesPace = $Config.NamesPace
     $dataJSON = (
@@ -79,7 +84,7 @@ Function Create-Json() {
         PositionTitle, EmployeeID, FirstName, LastName, StartDate, EndDate,
         ReasonEndDate, Age, TotYrsExp, Gender, Race, TRSYrs, RetElig | Select-Object -Skip 1 |
         ForEach-Object {
-                     
+
             [PSCustomObject]@{
                 SchoolYear    = [System.Security.SecurityElement]::Escape($_.SchoolYear)
                 SchoolLevel   = [System.Security.SecurityElement]::Escape($_.SchoolLevel)
@@ -101,7 +106,7 @@ Function Create-Json() {
                 RetElig       = [System.Security.SecurityElement]::Escape($_.RetElig)
                 # LicenseStageDescriptor= "$NamesPace/LicenseStageDescriptor#" + [System.Security.SecurityElement]::Escape($LicenseStage)
                 # LicenseStatusDescriptor="$NamesPace/LicenseStatusDescriptor#" + [System.Security.SecurityElement]::Escape($LicenseStatus)
-                          
+
             }
 
         })
@@ -112,13 +117,13 @@ Function Create-Json() {
     ProcessStaff $dataJSON
     ProcessSchools $dataJSON
     ProcessAssignments $dataJSON
-		
+
 }
 
 ##Process Staff
 Function ProcessStaff($jsonData) {
     Write-Host "**** PROCESSING STAFF ***"
-    
+
     $staffRecords = ($jsonData | ForEach-Object {
             [PSCustomObject]@{
                 StaffUniqueId = [System.Security.SecurityElement]::Escape($_.StaffUniqueId)
@@ -126,19 +131,19 @@ Function ProcessStaff($jsonData) {
                 LastSurname   = [System.Security.SecurityElement]::Escape($_.LastSurname)
             }
         })
-    
+
     Write-Host "**** Posting STAFF *** $staffRecords"
-    
+
     $endPoint = "/ed-fi/staffs"
-    
+
     PostToEdfi $staffRecords $endPoint
-    
+
 }
 
 ##Process EducationOrganization
 Function ProcessSchools($jsonData) {
     Write-Host "**** PROCESSING STAFF ***"
-    
+
     $schoolRecords = ($jsonData | ForEach-Object {
             [PSCustomObject]@{
                 EducationOrganizationId = [System.Security.SecurityElement]::Escape($_.SchoolNumber)
@@ -146,19 +151,19 @@ Function ProcessSchools($jsonData) {
                 Discriminator           = "edfi.School"
             }
         })
-    
+
     Write-Host "**** Posting STAFF *** $schoolRecords"
-    
+
     $endPoint = "/ed-fi/schools"
-    
+
     PostToEdfi $schoolRecords $endPoint
-    
-}    
+
+}
 
 ##Process EducationOrganizationAssignments
 Function ProcessSchools($jsonData) {
     Write-Host "**** PROCESSING STAFF ***"
-    
+
     $schoolRecords = ($jsonData | ForEach-Object {
             [PSCustomObject]@{
                 EducationOrganizationId = [System.Security.SecurityElement]::Escape($_.SchoolNumber)
@@ -166,17 +171,17 @@ Function ProcessSchools($jsonData) {
                 Discriminator           = "edfi.School"
             }
         })
-    
+
     Write-Host "**** Posting STAFF *** $schoolRecords"
-    
+
     $endPoint = "/ed-fi/schools"
-    
+
     PostToEdfi $schoolRecords $endPoint
-    
+
 }
 
 Function RenameLogOnError($logPath) {
-    if ($error) {		
+    if ($error) {
         Write-Host "*** An ERROR occured. Renaming Log file... ***"
         $date = Get-Date -Format "MM-dd-yyyy-H-m-s"
         $errorLogPath = Join-Path -Path $Config.logRootPath -ChildPath "ERROR_StaffLicenses_Log_$date.log"
@@ -194,11 +199,11 @@ Function Clean20DayOldLogs() {
 }
 
 Function CopyErrorLogToDestination($errorLogPath) {
-    if ($error) {	
+    if ($error) {
         $destination = "C:\\Users\\Juan\\Workspace\\DDN\\Leadership-Profile\\Logs"
         # $destination = "D:\\BPS Pub\\ftproot\\PeopleSoftFiles\\Logs\\"
         Copy-Item $errorLogPath -Destination $destination
-		
+
         #Clean files older than 5 days in the destination.
         $limit = (Get-Date).AddDays(-5)
         Get-ChildItem -Path $path -Recurse -Force -Include ERROR_StaffLicenses_Log_*.log | Where-Object { !$_.PSIsContainer -and $_.CreationTime -lt $limit } | Remove-Item -Force
@@ -229,7 +234,7 @@ Function UpdateLastDataInfoFile() {
 
 Function Init() {
     $error.clear()
-	
+
     # Enable Logging
     New-Item -ItemType Directory -Force -Path $Config.logRootPath
     $date = Get-Date -Format "MM-dd-yyyy-H-m-s"
@@ -246,10 +251,10 @@ Function Init() {
     UpdateLastDataInfoFile $ISD $totalCount $lastDataInfoFile
 
     Stop-Transcript
-	
+
     $errorLogPath = RenameLogOnError $logPath
     CopyErrorLogToDestination $errorLogPath
-	
+
     Clean20DayOldLogs
 }
 

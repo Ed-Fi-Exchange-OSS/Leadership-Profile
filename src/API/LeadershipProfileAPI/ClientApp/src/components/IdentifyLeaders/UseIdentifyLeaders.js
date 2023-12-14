@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: Apache-2.0
+// Licensed to the Ed-Fi Alliance under one or more agreements.
+// The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+// See the LICENSE and NOTICES files in the project root for more information.
+
 import { useState, useEffect } from "react";
 
 import config from "../../config";
@@ -13,7 +18,7 @@ function UseIdentifyLeaders() {
       let unmounted = false;
       // const apiUrl = new URL(API_URL + `vacancy/identifyLeaders`);
       const apiUrl = new URL(API_URL + `leaders-search`);
-      
+
       fetch(apiUrl, API_CONFIG("POST", JSON.stringify({
         // role: "principal",
         ...filters
@@ -21,9 +26,9 @@ function UseIdentifyLeaders() {
       .then((response) => {
         if (!response.ok) {
           if (response.status === 401) {
-            
+
           } else {
-            
+
           }
           return;
         }
@@ -43,7 +48,7 @@ function UseIdentifyLeaders() {
     }
 
     useEffect(() => {
-        
+
       fetchData({roles: [1, 2]})
 
     }, []);

@@ -1,3 +1,8 @@
+# SPDX-License-Identifier: Apache-2.0
+# Licensed to the Ed-Fi Alliance under one or more agreements.
+# The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+# See the LICENSE and NOTICES files in the project root for more information.
+
 include "./psake-build-helpers.ps1"
 
 properties {
@@ -85,7 +90,7 @@ task RecreateTestDatabase -description "Starts a docker container with the test 
 task UpdateTestDatabase -description "Runs the migration scripts on the test database" {
     $roundhouseConnString="Server=localhost,$testDatabasePort;Database=$dbName;User Id=sa;Password=$testDatabasePassword;"
 	Update-Database $roundhouseConnString 'TEST'
-} 
+}
 
 task RunTestDatabase -description "Runs the docker container that has the test database" {
 	exec { docker start $testDatabaseContainerName }

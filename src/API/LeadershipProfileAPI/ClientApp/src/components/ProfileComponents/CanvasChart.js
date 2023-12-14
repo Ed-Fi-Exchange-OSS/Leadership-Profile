@@ -1,10 +1,15 @@
+// SPDX-License-Identifier: Apache-2.0
+// Licensed to the Ed-Fi Alliance under one or more agreements.
+// The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+// See the LICENSE and NOTICES files in the project root for more information.
+
 import React, { useState, useEffect, useRef } from "react";
 import Chartjs from "chart.js";
 
 const CanvasChart = (props) => {
   return(<div></div>);
 
-  var periods = []; 
+  var periods = [];
   var datasets = [
     {
       data: [],
@@ -28,17 +33,17 @@ const CanvasChart = (props) => {
 
   props.data.scoresByPeriod.forEach((e,i) => {
     periods.push(e.period);
-    
+
     datasets[0].label = "Staff Score";
     datasets[0].data.push(e.staffScore);
     datasets[0].backgroundColor.push("rgba(11, 110, 0, 0.2)");
     datasets[0].borderColor.push("rgba(11, 110, 0, 1)");
-    
+
     datasets[1].label = "District Avg";
     datasets[1].data.push(e.districtAvg);
     datasets[1].backgroundColor.push("rgba(255, 166, 0, 0.2)");
     datasets[1].borderColor.push("rgba(255, 166, 0, 1)");
-    
+
     datasets[2].label = "District Max";
     datasets[2].data.push(e.districtMax);
     datasets[2].backgroundColor.push("rgba(0, 136, 255, 0.2)");

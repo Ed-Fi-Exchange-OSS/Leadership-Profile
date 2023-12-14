@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: Apache-2.0
+// Licensed to the Ed-Fi Alliance under one or more agreements.
+// The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+// See the LICENSE and NOTICES files in the project root for more information.
+
 import React, { useState } from "react";
 import { Col, Row, Card, CardBody, Button } from "reactstrap";
 import {
@@ -92,7 +97,7 @@ export const genderOptions = {
 
 const WhoHasLeft = ({data, selectedRole}) => {
 
-  const { 
+  const {
     pieChartData,
     raceChartData,
     genderChartData,
@@ -102,11 +107,11 @@ const WhoHasLeft = ({data, selectedRole}) => {
 
   const [causeFilter, setCauseFilter] = useState(null);
 
-  const pieChartOptionsWithOnClick = { 
+  const pieChartOptionsWithOnClick = {
     ... pieChartOptions,
     onClick: function (evt, elements) {
       setCauseFilter(pieChartData.labels[elements[0].index]);
-    },  
+    },
   };
 
   return (
@@ -151,7 +156,7 @@ const WhoHasLeft = ({data, selectedRole}) => {
               </Col>
               <Col md="9">Finished year</Col>
             </Row> */}
-          </Col>          
+          </Col>
           <Col md="7" className="p-2">
             <Row style={{ height: "285px" }}>
               {pieChartData && (

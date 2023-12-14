@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: Apache-2.0
+// Licensed to the Ed-Fi Alliance under one or more agreements.
+// The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+// See the LICENSE and NOTICES files in the project root for more information.
+
 import React, {useState} from 'react';
 import { useFilterContext } from '../../../context/filters/UseFilterContext';
 import PillType from "../../../utils/Constants";
@@ -25,7 +30,7 @@ const UsePills = () => {
         if(typeof(filterToRemove) === 'string' && typeof(name) === 'undefined'){
             pillToRemove = filterState.pills.find(e => e.filter === filterToRemove)
         }
-        
+
         if(typeof(filterToRemove) === 'string' && name && value){
             pillToRemove = filterState.pills.find(e => e.filter === filterToRemove && e.label === name && e.value === value)
         }
@@ -42,7 +47,7 @@ const UsePills = () => {
                 return isAdd ? FilterActions.setIntitution : FilterActions.removeInstitution;
             }
             case pillTypes.Degree:{
-                return isAdd ? FilterActions.setDegree : FilterActions.removeDegree;            
+                return isAdd ? FilterActions.setDegree : FilterActions.removeDegree;
             }
             case pillTypes.SchoolCategory:{
                 return isAdd ? FilterActions.setSchoolCategory : FilterActions.removeSchoolCategory;

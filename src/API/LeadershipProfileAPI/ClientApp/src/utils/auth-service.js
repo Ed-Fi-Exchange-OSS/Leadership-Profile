@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: Apache-2.0
+// Licensed to the Ed-Fi Alliance under one or more agreements.
+// The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+// See the LICENSE and NOTICES files in the project root for more information.
+
 import SecureStorage from 'secure-web-storage';
 import CryptoJS from 'crypto-js';
 
@@ -9,20 +14,20 @@ function AuthService() {
         },
         encrypt: function encrypt(data) {
             data = CryptoJS.AES.encrypt(data, SECRET_KEY);
-    
+
             data = data.toString();
-    
+
             return data;
         },
         decrypt: function decrypt(data) {
             data = CryptoJS.AES.decrypt(data, SECRET_KEY);
-    
+
             data = data.toString(CryptoJS.enc.Utf8);
-    
+
             return data;
         }
     });
-    
+
     function loginAuth(username) {
         secureStorage.setItem('authInfo', {
             'isAuthenticated': true,

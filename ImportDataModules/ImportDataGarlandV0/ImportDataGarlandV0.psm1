@@ -1,3 +1,8 @@
+# SPDX-License-Identifier: Apache-2.0
+# Licensed to the Ed-Fi Alliance under one or more agreements.
+# The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+# See the LICENSE and NOTICES files in the project root for more information.
+
 using module ..\ImportDataBasicFunctions\ImportDataBasicFunctions.psm1
 
 $ModuleVersion = '1.0.0'
@@ -392,7 +397,7 @@ function TransformEvaluationElementRating {
                 PerformanceEvaluationTitle          = $PerformanceEvaluationTitle
                 PerformanceEvaluationTypeDescriptor = $PerformanceEvaluationTypeDescriptor
                 SchoolYear                          = $SchoolYear
-                TermDescriptor                      = $TermDescriptor                
+                TermDescriptor                      = $TermDescriptor
             }
             EvaluationObjectiveRatingReference     = [PSCustomObject]@{
                 EducationOrganizationId             = $LocalEducationAgencyId
@@ -405,7 +410,7 @@ function TransformEvaluationElementRating {
                 PersonId                            = [System.Security.SecurityElement]::Escape($_.StaffUniqueId).Trim()
                 SchoolYear                          = $SchoolYear
                 SourceSystemDescriptor              = $SourceSystemDescriptor
-                TermDescriptor                      = $TermDescriptor                
+                TermDescriptor                      = $TermDescriptor
             }
             EvaluationElementRatingLevelDescriptor = "uri://tpdm.ed-fi.org/EvaluationElementRatingLevelDescriptor#$ratingResultTitle"
             Results                                = (,[PSCustomObject]@{
@@ -495,12 +500,12 @@ Function Import-EdDataTPESS($Config, $PreviousResults) {
         TransformTPESS |
         Where-Object { -not $staffUniqueIdWithError.ContainsKey( (GetPersonId $_)) } |
         NPost -Config $Config |
-        Tap -ScriptBlock { if($args[0] -is [ImportError]){ $staffUniqueIdWithError[(GetPersonId $args[0].Record)] = $true } }| 
+        Tap -ScriptBlock { if($args[0] -is [ImportError]){ $staffUniqueIdWithError[(GetPersonId $args[0].Record)] = $true } }|
         WriteToFileIfImportError -FilePath $Config.V0Files.Errors |
         CountResults -InitialValues $PreviousResults |
         ShowProggress -Activity "Importing data from $($Config.V0Files.TPESS)" |
         Select-Object -Last 1
-        
+
     return $res
 }
 

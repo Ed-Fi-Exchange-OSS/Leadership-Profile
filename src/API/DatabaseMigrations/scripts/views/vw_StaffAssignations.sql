@@ -1,8 +1,15 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ * Licensed to the Ed-Fi Alliance under one or more agreements.
+ * The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+ * See the LICENSE and NOTICES files in the project root for more information.
+ */
+
 CREATE OR ALTER VIEW [edfi].[vw_StaffAssignments] AS
 
 SELECT sta.StaffUSI as EmployeeIDAnnon
     , sta.StaffUniqueId
-	, sta.FirstName + ' ' +  sta.LastSurname as FullNameAnnon 
+	, sta.FirstName + ' ' +  sta.LastSurname as FullNameAnnon
 	, sex.CodeValue as Gender
 	, race.CodeValue as Race
 	, empeo.EducationOrganizationId
@@ -21,8 +28,7 @@ SELECT sta.StaffUSI as EmployeeIDAnnon
 		YEAR(seoea.HireDate)+1,
 		YEAR(seoea.HireDate)) as float) as SchoolYear
 	, schd.CodeValue as SchoolLevel
-  
-	, 1 as RetElig
+	, '1' as RetElig
 	, '1' as TRSYrs
 	, '1' as TotYrsExp
 

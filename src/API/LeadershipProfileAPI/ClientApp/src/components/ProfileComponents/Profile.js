@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: Apache-2.0
+// Licensed to the Ed-Fi Alliance under one or more agreements.
+// The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+// See the LICENSE and NOTICES files in the project root for more information.
+
 import React, { useState, useRef } from 'react';
 import { Nav, NavItem, NavLink} from 'reactstrap';
 
@@ -32,9 +37,9 @@ const Profile = () => {
     var losMappingResult = null;
 
     if (data.performanceMeasures != undefined) {
-        losMappingResult = losMapping(data.performanceMeasures); 
+        losMappingResult = losMapping(data.performanceMeasures);
     }
- 
+
     function yearsInLastRole() {
         const year0 = (new Date(0)).getFullYear();
         const lastPositionFirstDate = reducedPositionHistory && new Date(reducedPositionHistory?.[0]?.startDate);
@@ -78,7 +83,7 @@ const Profile = () => {
                                  )
                              })
                          }
-                         
+
                     </div>
                 ) : '' }
         </div >

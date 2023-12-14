@@ -1,7 +1,14 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ * Licensed to the Ed-Fi Alliance under one or more agreements.
+ * The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
+ * See the LICENSE and NOTICES files in the project root for more information.
+ */
+
 CREATE OR ALTER VIEW edfi.vw_LeadershipProfileEvaluationObjective AS
-Select * 
+Select *
 	, CAST(Row_number() OVER (
-      PARTITION BY eorr.StaffUniqueId, eorr.ObjectiveTitle, eorr.SchoolYear 
+      PARTITION BY eorr.StaffUniqueId, eorr.ObjectiveTitle, eorr.SchoolYear
       ORDER BY eorr.SchoolYear DESC, eorr.EvaluationDate DESC, eorr.CreateDate DESC
     ) AS INT) AS EvalNumber
 	From (
@@ -17,7 +24,7 @@ Select *
     JOIN edfi.Staff AS staff ON staff.PersonId = eorr.PersonId
     group by     staff.StaffUSI
       , staff.StaffUniqueId
-      , eorr.EvaluationObjectiveTitle 
-      , CAST(eorr.SchoolYear AS INT) 
+      , eorr.EvaluationObjectiveTitle
+      , CAST(eorr.SchoolYear AS INT)
   ) as eorr
 ;
