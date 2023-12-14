@@ -12,7 +12,6 @@ SELECT sta.StaffUSI as EmployeeIDAnnon
 	, seoea.EndDate
 	, srd.CodeValue as ReasonEndDate
 	, YEAR(GETDATE()) - YEAR(sta.BirthDate) as Age
-	--, seoaa.EducationOrganizationId
 	, aseo.NameOfInstitution as AssignedSchool
 	, scd.CodeValue as Job
 	, scd.CodeValue as PositionTitle
@@ -22,10 +21,8 @@ SELECT sta.StaffUSI as EmployeeIDAnnon
 		YEAR(seoea.HireDate)+1,
 		YEAR(seoea.HireDate)) as float) as SchoolYear
 	, schd.CodeValue as SchoolLevel
-	--, seoaa.EndDate
-	--, seoaa.*
   
-	,  as RetElig
+	, 1 as RetElig
 	, '1' as TRSYrs
 	, '1' as TotYrsExp
 

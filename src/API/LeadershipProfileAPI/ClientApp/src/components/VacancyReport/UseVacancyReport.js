@@ -46,11 +46,15 @@ function UseVacancyReport() {
         ticks: {
           // precision: 0,
           beginAtZero: true,
-          callback: function (value) { if (Number.isInteger(value)) { return value; } },
-          stepSize: 1
+          callback: function (value) {
+            if (Number.isInteger(value)) {
+              return value;
+            }
+          },
+          stepSize: 1,
         },
       },
-    }
+    },
   });
   const labels = ["2018", "2019", "2020", "2021", "2022", "2023"];
   const [lineChartData, setLineChartData] = useState({
@@ -76,7 +80,8 @@ function UseVacancyReport() {
       },
     ],
   });
-  const [projectedElementaryVacancy, setProjectedElementaryVacancy] = useState(0);
+  const [projectedElementaryVacancy, setProjectedElementaryVacancy] =
+    useState(0);
   const [middleLineChartData, setMiddleLineChartData] = useState({
     labels,
     datasets: [
@@ -101,12 +106,11 @@ function UseVacancyReport() {
     ],
   });
   const [projectedHighVacancy, setProjectedHighVacancy] = useState(0);
-  
 
   let defaultOrFilteredConfig = API_CONFIG("GET");
 
   function fetchData(role) {
-    setData(null)
+    setData(null);
     let unmounted = false;
     // const apiUrl = new URL(API_URL + `vacancy/vacancyProjection`);
     const apiUrl = new URL(API_URL + `vacancy/vacancy-projection`);
@@ -128,7 +132,12 @@ function UseVacancyReport() {
           return;
         }
 
-        const getDataObject = (projectionData, borderColor, backgroundColor, schoolLevel = "All") => {
+        const getDataObject = (
+          projectionData,
+          borderColor,
+          backgroundColor,
+          schoolLevel = "All"
+        ) => {
           const years = [2022, 2021, 2020, 2019, 2018];
 
           let totalVacancies = 0;
@@ -183,14 +192,47 @@ function UseVacancyReport() {
           if (!unmounted && response !== null) {
             if (response.results !== undefined) {
               setData(response.results);
-              setLineChartData(getDataObject(response.results, "rgb(255, 99, 132)", "rgba(255, 99, 132, 0.5)"));
+              setLineChartData(
+                getDataObject(
+                  response.results,
+                  "rgb(255, 99, 132)",
+                  "rgba(255, 99, 132, 0.5)"
+                )
+              );
               // setLineChartData(getDataObject(data));
-              let elementarySchoolData = response.results.filter(v => v.schoolLevel == 'Elementary School');
-              setElementaryLineChartData(getDataObject(elementarySchoolData, "rgb(212, 125, 70)", "rgba(212, 125, 70, 0.5)", "Elementary School"));
-              let middleSchoolData = response.results.filter(v => v.schoolLevel == 'Middle School');
-              setMiddleLineChartData(getDataObject(middleSchoolData, "rgb(91, 101, 145)", "rgba(91, 101, 145, 0.5)", "Middle School"));
-              let highSchoolData = response.results.filter(v => v.schoolLevel == 'High School');
-              setHighLineChartData(getDataObject(highSchoolData, "rgb(91, 101, 145)", "rgba(91, 101, 145, 0.5)", "High School"));
+              let elementarySchoolData = response.results.filter(
+                (v) => v.schoolLevel == "Elementary School"
+              );
+              setElementaryLineChartData(
+                getDataObject(
+                  elementarySchoolData,
+                  "rgb(212, 125, 70)",
+                  "rgba(212, 125, 70, 0.5)",
+                  "Elementary School"
+                )
+              );
+              let middleSchoolData = response.results.filter(
+                (v) => v.schoolLevel == "Middle School"
+              );
+              setMiddleLineChartData(
+                getDataObject(
+                  middleSchoolData,
+                  "rgb(91, 101, 145)",
+                  "rgba(91, 101, 145, 0.5)",
+                  "Middle School"
+                )
+              );
+              let highSchoolData = response.results.filter(
+                (v) => v.schoolLevel == "High School"
+              );
+              setHighLineChartData(
+                getDataObject(
+                  highSchoolData,
+                  "rgb(91, 101, 145)",
+                  "rgba(91, 101, 145, 0.5)",
+                  "High School"
+                )
+              );
             }
           }
         });
@@ -202,23 +244,6 @@ function UseVacancyReport() {
 
   useEffect(() => {
     fetchData(selectedRole);
-  }, []);
-
-  useEffect(() => {
-    // const apiUrl = new URL(API_URL + `vacancy/eligibility-for-retirement`);
-
-    // fetch(
-    //   apiUrl,
-    //   API_CONFIG(
-    //     "POST",
-    //     JSON.stringify({
-    //       role: 'AP',
-    //     })
-    //   )
-    // )
-    //   .then((response) => { 
-    //     setRetirementData(response.results)
-    //   })     
   }, []);
 
   return {
@@ -238,9 +263,9 @@ function UseVacancyReport() {
     projectedHighVacancy,
     lineChartOptions,
     selectedSchoolLevel,
-    setSelectedSchoolLevel,    
+    setSelectedSchoolLevel,
     retirementData,
-    setRetirementData
+    setRetirementData,
   };
 }
 
