@@ -107,6 +107,8 @@ const VacancyReport = () => {
     lineChartOptions,
     selectedSchoolLevel,
     setSelectedSchoolLevel,
+    retirementData,
+    setRetirementData
   } = UseVacancyReport();
 
   const handleRoleSelection = (role) => {
@@ -387,7 +389,7 @@ const VacancyReport = () => {
         <Col md="12">
           {data && (
             <AditionalRiskFactors
-              data={data}
+              data={retirementData}
               selectedRole={selectedRole}
             ></AditionalRiskFactors>
           )}

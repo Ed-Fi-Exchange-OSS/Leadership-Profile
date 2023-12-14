@@ -127,6 +127,7 @@ const AditionalRiskFactors = ({ data, selectedRole }) => {
                                 style={{
                                   marginLeft: "3px",
                                   marginRight: "3px",
+                                  marginTop: "3px",
                                   width: "20px",
                                   height: "20px",
                                   border: "solid 1px",

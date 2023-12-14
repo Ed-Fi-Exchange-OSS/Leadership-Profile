@@ -14,17 +14,16 @@ namespace LeadershipProfileAPI.Data.Models
     public class StaffVacancy
     {
         public string StaffUniqueId { get; set; }
-        // [Key]
         public String FullNameAnnon { get; set; }
+        public int Age { get; set; }
         public string SchoolNameAnnon { get; set; }
         public string SchoolLevel { get; set; }
-        // public DateTime? EndDate { get; set; }
         public string Gender { get; set; }
         public string Race { get; set; }
         public string VacancyCause { get; set; }
         public Double SchoolYear { get; set; }
         public string PositionTitle { get; set; }
-        public string RetElig { get; set; }
+        public bool RetElig { get; set; }
         public Double OverallScore { get; set; }
     }
 }

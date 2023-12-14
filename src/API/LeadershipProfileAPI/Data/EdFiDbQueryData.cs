@@ -243,7 +243,6 @@ namespace LeadershipProfileAPI.Data
             return string.Empty;
         }
 
-
         /// <summary>
         /// Method sends raw SQL to the database and returns a queryable, paginated, collection of Staff records
         /// matching the criteria and sorted by a field and direction
@@ -264,6 +263,13 @@ namespace LeadershipProfileAPI.Data
                 query = query.Where(v => v.PositionTitle.Equals(queryRole));
             }
             query = query.OrderBy(v => v.SchoolYear);
+
+            return query.ToListAsync(cancellationToken);
+        }
+
+        public Task<List<StaffVacancy>> GetRetirementResultsAsync(string Role, CancellationToken cancellationToken)
+        {
+            var query = _edfiDbContext.StaffVacancies.Where(v => true);
 
             return query.ToListAsync(cancellationToken);
         }

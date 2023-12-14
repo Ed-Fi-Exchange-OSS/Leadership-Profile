@@ -17,8 +17,8 @@
 
 .navbar-brand {
   color: rgb(33, 37, 41);
-  height: 32px;
-  width: 289px;
+  /* height: 32px; */
+  /* width: 289px; */
   margin-left: 121px;
   font-weight: bold;
   font-size: 22px;
@@ -838,4 +838,14 @@ html {
   html {
     font-size: 1.6rem;
   }
+}
+
+
+.badge-blue {
+  color: #fff;
+  background-color: #a6c1ff;
+}
+.badge-softblue {
+  color: #fff;
+  background-color: #dfe6ff;
 }

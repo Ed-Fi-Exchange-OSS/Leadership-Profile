@@ -1,9 +1,13 @@
+<<<<<<< HEAD
+import React, { useState } from "react";
+=======
 // SPDX-License-Identifier: Apache-2.0
 // Licensed to the Ed-Fi Alliance under one or more agreements.
 // The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
 // See the LICENSE and NOTICES files in the project root for more information.
 
 import React, { useState } from 'react';
+>>>>>>> main
 import {
   Collapse,
   Navbar,
@@ -17,20 +21,20 @@ import {
   DropdownMenu,
   DropdownItem,
   UncontrolledTooltip,
-} from 'reactstrap';
+} from "reactstrap";
 
-import { HeaderLogo } from './images'
-import AuthService from '../utils/auth-service';
-import IngestDateService from '../utils/ingest-date-service';
-import LogoutService from '../utils/logout-service';
-import config from '../config';
+import { HeaderLogo } from "./images";
+import AuthService from "../utils/auth-service";
+import IngestDateService from "../utils/ingest-date-service";
+import LogoutService from "../utils/logout-service";
+import config from "../config";
 
 const Navigation = (props) => {
   const { isAuthenticated, getAuthInfo } = AuthService();
   const { logout } = LogoutService();
   const authInfo = getAuthInfo();
   const [isOpen, setIsOpen] = useState(false);
-  const {SCHOOL_HEADER} = config();
+  const { SCHOOL_HEADER } = config();
 
   const toggle = () => setIsOpen(!isOpen);
 
@@ -40,52 +44,55 @@ const Navigation = (props) => {
   return (
     <div>
       <Navbar expand="md">
-          <NavbarBrand href="/"><HeaderLogo/> {SCHOOL_HEADER}</NavbarBrand>
-          <NavbarToggler onClick={toggle} />
-          <Collapse isOpen={isOpen} navbar>
-            <span  id="refreshPill" className="ml-auto badge badge-pill badge-success px-4">
-                { Intl.DateTimeFormat(undefined).format(lastIngestionDate.Date) }<br />
-                { lastIngestionDate.ItemsProccessed.toLocaleString(undefined, {maximumFractionDigits: 0}) } records
-            </span>
-            <UncontrolledTooltip target="refreshPill"> The data was refreshed as of</UncontrolledTooltip>
+        <NavbarBrand href="/">
+          <HeaderLogo /> {SCHOOL_HEADER}
+        </NavbarBrand>
+        <NavbarToggler onClick={toggle} />
+        <Collapse isOpen={isOpen} navbar>          
+          <span
+            id="refreshPill"
+            className="ml-auto badge badge-pill badge-blue px-4"
+          >
+            {lastIngestionDate.ItemsProccessed.toLocaleString(undefined, {
+              maximumFractionDigits: 0,
+            })}{" "}
+            records
+            <br />
+            <div className="pt-1">
+              on {Intl.DateTimeFormat(undefined).format(lastIngestionDate.Date)}
+            </div>
+          </span>
+          <UncontrolledTooltip target="refreshPill">
+            {" "}
+            Last data refresh date
+          </UncontrolledTooltip>
 
-            <span id='refreshDatePill' className="badge badge-pill badge-success px-4 mx-2">
-              { Intl.DateTimeFormat(undefined).format(lastIngestionDate.Date) }
-            </span>
-            <UncontrolledTooltip target="refreshDatePill"> The data was refreshed as of </UncontrolledTooltip>
-
-            <span id="refreshCountPill" className="badge badge-pill badge-success px-4">
-              { lastIngestionDate.ItemsProccessed.toLocaleString(undefined, {maximumFractionDigits: 0}) }
-            </span>
-            <UncontrolledTooltip target="refreshCountPill"> Records refreshed </UncontrolledTooltip>
-
-            {isAuthenticated() ?
+          {isAuthenticated() ? (
             <Nav>
-                <UncontrolledDropdown nav inNavbar>
-                  <DropdownToggle nav caret>
-                      <span className="dot"></span>
-                      {authInfo}
-                  </DropdownToggle>
-                  <DropdownMenu right>
-                      <DropdownItem onClick={() => logout()}>
-                        Logout
-                      </DropdownItem>
-                  </DropdownMenu>
-                  </UncontrolledDropdown>
-              </Nav>
-            :
-            <Nav className="ml-auto">
+              <UncontrolledDropdown nav inNavbar>
+                <DropdownToggle nav caret>
+                  <span className="dot"></span>
+                  {authInfo}
+                </DropdownToggle>
+                <DropdownMenu right>
+                  <DropdownItem onClick={() => logout()}>Logout</DropdownItem>
+                </DropdownMenu>
+              </UncontrolledDropdown>
+            </Nav>
+          ) : (
+            <Nav className="">
               <NavItem>
                 <NavLink href="/account/register/">Register</NavLink>
               </NavItem>
               <NavItem>
                 <NavLink href="/account/login/">Login</NavLink>
               </NavItem>
-            </Nav>}
-          </Collapse>
+            </Nav>
+          )}
+        </Collapse>
       </Navbar>
     </div>
   );
-}
+};
 
 export default Navigation;

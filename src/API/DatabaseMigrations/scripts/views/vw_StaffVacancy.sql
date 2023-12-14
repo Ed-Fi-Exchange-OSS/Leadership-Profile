@@ -34,7 +34,12 @@ SELECT
 	, sa.ReasonEndDate AS VacancyCause
 	, sa.SchoolYear
 	, sa.PositionTitle
-	, Cast(sa.RetElig as varchar(10)) as RetElig
+	, CAST(
+             CASE
+                  WHEN Age >= 50
+                     THEN 1
+                  ELSE 0
+             END AS bit) as RetElig 
 	, Cast(sa.TRSYrs as varchar(10)) as TRSYrs
 	, Cast(sa.TotYrsExp as varchar(10)) as TotYrsExp
 	, COALESCE((pd.Domain1 + pd.Domain2 + pd.Domain3 + pd.Domain4 + pd.Domain5) / 5.0, 0.0E) AS OverallScore
