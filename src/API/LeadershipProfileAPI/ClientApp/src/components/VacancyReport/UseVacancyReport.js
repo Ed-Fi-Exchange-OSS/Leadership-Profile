@@ -111,10 +111,6 @@ function UseVacancyReport() {
     ],
   });
   const [projectedHighVacancy, setProjectedHighVacancy] = useState(0);
-<<<<<<< HEAD
-=======
-
->>>>>>> main
 
   let defaultOrFilteredConfig = API_CONFIG("GET");
 

@@ -5,44 +5,7 @@
 
 import { useState, useEffect } from "react";
 
-<<<<<<< HEAD
 import config from "../../../config";
-=======
-function UseAditionalRiskFactors(data) {
-    const [ vacancyRateData, setVacancyRateData] = useState(null);
-    const [ eligibleForRetirementData, setEligibleForRetirementData] = useState(null);
-    const [ eligibleForRetirementNowCount, setEligibleForRetirementNowCount] = useState(null);
-    const [ eligibleForRetirementSoonCount, setEligibleForRetirementSoonCount] = useState(null);
-    const [ currentPerformanceData, setCurrentPerformanceData] = useState(null);
-    const [ scoreCount, setScoreCount ] = useState(null);
-
-
-    const causes = [
-      "Attrition",
-      "Retirement",
-      "Internal Transfer",
-      "Internal Promotion",
-      // "Finished year"
-    ];
-    var races = [
-      "2orMore",
-      "A",
-      "AA",
-      "W",
-      "H",
-    ];
-    const genders = ["M", "F"];
-
-    useEffect(() => {
-
-      const groupByProp = (a, prop) =>
-            a.reduce((byProp, vacancy) => {
-              const vacancyProp = vacancy[prop];
-              byProp[vacancyProp] = byProp[vacancyProp] ?? [];
-              byProp[vacancyProp].push(vacancy);
-              return byProp;
-            }, []);
->>>>>>> main
 
 function UseAditionalRiskFactors() {
   const { API_URL, API_CONFIG } = config();
@@ -67,7 +30,6 @@ function UseAditionalRiskFactors() {
   var races = ["2orMore", "A", "AA", "W", "H"];
   const genders = ["M", "F"];
 
-<<<<<<< HEAD
   useEffect(() => {
     const apiUrl = new URL(API_URL + `vacancy/eligibility-for-retirement`);
 
@@ -124,19 +86,6 @@ function UseAditionalRiskFactors() {
               vacancy: vacancyGroupedBySchool[key],
             });
           }
-=======
-      /**
-       *
-       */
-      const vacancyGroupedBySchool = groupByProp(data, "schoolNameAnnon");
-      var schoolsArray = [];
-      for (const key in vacancyGroupedBySchool) {
-        if (vacancyGroupedBySchool.hasOwnProperty(key)) {
-          schoolsArray.push({
-            name: key,
-            vacancy: vacancyGroupedBySchool[key]
-          });
->>>>>>> main
         }
         schoolsArray = schoolsArray.sort((a, b) => {
           if (a.name > b.name) {

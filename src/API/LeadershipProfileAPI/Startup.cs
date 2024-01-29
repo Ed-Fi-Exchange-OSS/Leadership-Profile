@@ -3,6 +3,7 @@
 // The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
 // See the LICENSE and NOTICES files in the project root for more information.
 
+
 using AutoMapper;
 using IdentityServer4;
 using IdentityServer4.AccessTokenValidation;
@@ -27,6 +28,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace LeadershipProfileAPI
@@ -66,8 +68,16 @@ namespace LeadershipProfileAPI
                 .SetHandlerLifetime(TimeSpan.FromMinutes(handlerLifeTimeInMinutes))
                 .AddHttpMessageHandler<AuthenticationDelegatingHandler>();
 
-            services.AddMediatR(typeof(Startup).Assembly);
+            // services.AddMediatR(Assembly.GetExecutingAssembly());
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+            // services.AddMediatR(typeof(Startup).Assembly);
+            // services.AddMediatR(cfg => {
+            //     cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
+            // });
             services.AddAutoMapper(typeof(Startup).Assembly);
+            // services.AddAutoMapper(cfg => cfg.Internal().MethodMappingEnabled = false, typeof(MappingProfile).Assembly);
+            // services.AddAutoMapper();
+
 
             services.AddTransient<IEmailSender, SmtpSender>();
             services.AddScoped<EdFiDbQueryData>();
@@ -191,7 +201,7 @@ namespace LeadershipProfileAPI
 
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMapper autoMapper)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             // app.UsePathBase(new PathString("/api"));
 
