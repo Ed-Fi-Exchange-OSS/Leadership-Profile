@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using LeadershipProfile.Application.Common.Behaviours;
+using LeadershipProfile.Application.Common.Interfaces;
 
 namespace Microsoft.Extensions.DependencyInjection;
 

@@ -2,11 +2,16 @@
 
 public class VacancyForecast
 {
-    public DateTime Date { get; init; }
-
-    public int TemperatureC { get; init; }
-
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-
-    public string? Summary { get; init; }
+    public string? StaffUniqueId { get; set; }
+    public String? FullNameAnnon { get; set; }
+    public int? Age { get; set; }
+    public string? SchoolNameAnnon { get; set; }
+    public string? SchoolLevel { get; set; }
+    public string? Gender { get; set; }
+    public string? Race { get; set; }
+    public string? VacancyCause { get; set; }
+    public Double? SchoolYear { get; set; }
+    public string? PositionTitle { get; set; }
+    public bool RetElig { get; set; }
+    public Double? OverallScore { get; set; }
 }

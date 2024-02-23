@@ -6,23 +6,79 @@
     "version": "1.0.0"
   },
   "paths": {
-    "/api/TodoItems": {
+    "/api/IdentifyLeaders": {
+      "post": {
+        "tags": [
+          "IdentifyLeaders"
+        ],
+        "operationId": "GetLeadersWithPagination",
+        "requestBody": {
+          "x-name": "query",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetLeadersWithPaginationQuery"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LeaderBriefDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Profiles/{id}": {
       "get": {
         "tags": [
-          "TodoItems"
+          "Profiles"
         ],
-        "operationId": "GetTodoItemsWithPagination",
+        "operationId": "GetApiProfiles",
         "parameters": [
           {
-            "name": "ListId",
-            "in": "query",
+            "name": "id",
+            "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string"
             },
             "x-position": 1
-          },
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Search": {
+      "post": {
+        "tags": [
+          "Search"
+        ],
+        "operationId": "GetSearchResults",
+        "parameters": [
           {
             "name": "PageNumber",
             "in": "query",
@@ -31,17 +87,36 @@
               "type": "integer",
               "format": "int32"
             },
-            "x-position": 2
+            "x-position": 1
           },
           {
-            "name": "PageSize",
+            "name": "SortField",
             "in": "query",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
+            "name": "SortBy",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
             },
             "x-position": 3
+          },
+          {
+            "name": "OnlyActive",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "boolean"
+            },
+            "x-position": 4
           }
         ],
         "responses": {
@@ -50,249 +125,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedListOfTodoItemBriefDto"
+                  "$ref": "#/components/schemas/PaginatedListOfSearchResultDto"
                 }
               }
             }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "TodoItems"
-        ],
-        "operationId": "CreateTodoItem",
-        "requestBody": {
-          "x-name": "command",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateTodoItemCommand"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "integer",
-                  "format": "int32"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/TodoItems/{id}": {
-      "put": {
-        "tags": [
-          "TodoItems"
-        ],
-        "operationId": "UpdateTodoItem",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          }
-        ],
-        "requestBody": {
-          "x-name": "command",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateTodoItemCommand"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 2
-        },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "TodoItems"
-        ],
-        "operationId": "DeleteTodoItem",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/TodoItems/UpdateDetail/{id}": {
-      "put": {
-        "tags": [
-          "TodoItems"
-        ],
-        "operationId": "UpdateTodoItemDetail",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          }
-        ],
-        "requestBody": {
-          "x-name": "command",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateTodoItemDetailCommand"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 2
-        },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/TodoLists": {
-      "get": {
-        "tags": [
-          "TodoLists"
-        ],
-        "operationId": "GetTodoLists",
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TodosVm"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "TodoLists"
-        ],
-        "operationId": "CreateTodoList",
-        "requestBody": {
-          "x-name": "command",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateTodoListCommand"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "integer",
-                  "format": "int32"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/TodoLists/{id}": {
-      "put": {
-        "tags": [
-          "TodoLists"
-        ],
-        "operationId": "UpdateTodoList",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          }
-        ],
-        "requestBody": {
-          "x-name": "command",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateTodoListCommand"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 2
-        },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "TodoLists"
-        ],
-        "operationId": "DeleteTodoList",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
           }
         }
       }
@@ -320,12 +156,12 @@
         }
       }
     },
-    "/api/WeatherForecasts": {
+    "/api/WebControls/Assignments": {
       "get": {
         "tags": [
-          "WeatherForecasts"
+          "WebControls"
         ],
-        "operationId": "GetWeatherForecasts",
+        "operationId": "GetApiWebControlsAssignments",
         "responses": {
           "200": {
             "description": "",
@@ -334,7 +170,122 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/WeatherForecast"
+                    "$ref": "#/components/schemas/ListItemAssignment"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/WebControls/Categories": {
+      "get": {
+        "tags": [
+          "WebControls"
+        ],
+        "operationId": "GetApiWebControlsCategories",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ListItemCategory"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/WebControls/Degrees": {
+      "get": {
+        "tags": [
+          "WebControls"
+        ],
+        "operationId": "GetApiWebControlsDegrees",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ListItemDegree"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/WebControls/SchoolCategories": {
+      "get": {
+        "tags": [
+          "WebControls"
+        ],
+        "operationId": "GetApiWebControlsSchoolCategories",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ListItemSchoolCategory"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/WebControls/Institutions": {
+      "get": {
+        "tags": [
+          "WebControls"
+        ],
+        "operationId": "GetApiWebControlsInstitutions",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ListItemInstitution"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/WebControls/MeasurementCategories": {
+      "get": {
+        "tags": [
+          "WebControls"
+        ],
+        "operationId": "GetApiWebControlsMeasurementCategories",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ListItemCategory"
                   }
                 }
               }
@@ -346,14 +297,358 @@
   },
   "components": {
     "schemas": {
-      "PaginatedListOfTodoItemBriefDto": {
+      "LeaderBriefDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "staffUniqueId": {
+            "type": "string",
+            "nullable": true
+          },
+          "fullNameAnnon": {
+            "type": "string",
+            "nullable": true
+          },
+          "schoolNameAnnon": {
+            "type": "string",
+            "nullable": true
+          },
+          "schoolYear": {
+            "type": "number",
+            "format": "double"
+          },
+          "schoolLevel": {
+            "type": "string",
+            "nullable": true
+          },
+          "job": {
+            "type": "string",
+            "nullable": true
+          },
+          "positionTitle": {
+            "type": "string",
+            "nullable": true
+          },
+          "employeeIDAnnon": {
+            "type": "string",
+            "nullable": true
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "vacancyCause": {
+            "type": "string",
+            "nullable": true
+          },
+          "totYrsExp": {
+            "type": "string",
+            "nullable": true
+          },
+          "gender": {
+            "type": "string",
+            "nullable": true
+          },
+          "race": {
+            "type": "string",
+            "nullable": true
+          },
+          "trsYrs": {
+            "type": "string",
+            "nullable": true
+          },
+          "retElig": {
+            "type": "string",
+            "nullable": true
+          },
+          "overallScore": {
+            "type": "number",
+            "format": "double"
+          },
+          "domain1": {
+            "type": "number",
+            "format": "double"
+          },
+          "domain2": {
+            "type": "number",
+            "format": "double"
+          },
+          "domain3": {
+            "type": "number",
+            "format": "double"
+          },
+          "domain4": {
+            "type": "number",
+            "format": "double"
+          },
+          "domain5": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "GetLeadersWithPaginationQuery": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "listId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "schoolLevels": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "highestDegrees": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "hasCertification": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "yearsOfExperience": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "overallScore": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "domainOneScore": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "domainTwoScore": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "domainThreeScore": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "domainFourScore": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "domainFiveScore": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        }
+      },
+      "Response": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "staffUniqueId": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "middleName": {
+            "type": "string"
+          },
+          "lastSurname": {
+            "type": "string"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "currentPosition": {
+            "type": "string"
+          },
+          "district": {
+            "type": "string"
+          },
+          "school": {
+            "type": "string"
+          },
+          "yearsOfService": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "interestedInNextRole": {
+            "type": "boolean"
+          },
+          "positionHistory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PositionHistory"
+            }
+          },
+          "certificates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Certificate"
+            }
+          },
+          "professionalDevelopment": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProfessionalDevelopment"
+            }
+          },
+          "evaluations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PerformanceEvaluation"
+            }
+          }
+        }
+      },
+      "PositionHistory": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "role": {
+            "type": "string"
+          },
+          "schoolName": {
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "Certificate": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "validFromDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "validToDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "ProfessionalDevelopment": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "attendanceDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "professionalDevelopmentTitle": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "alignmentToLeadership": {
+            "type": "string"
+          }
+        }
+      },
+      "PerformanceEvaluation": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "ratingsByYear": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/PerformanceRating"
+              }
+            }
+          }
+        }
+      },
+      "PerformanceRating": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "type": "string"
+          },
+          "score": {
+            "type": "number",
+            "format": "decimal"
+          }
+        }
+      },
+      "PaginatedListOfSearchResultDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
           "items": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/TodoItemBriefDto"
+              "$ref": "#/components/schemas/SearchResultDto"
             }
           },
           "pageNumber": {
@@ -376,199 +671,39 @@
           }
         }
       },
-      "TodoItemBriefDto": {
+      "SearchResultDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "listId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "title": {
+          "staffUniqueId": {
             "type": "string",
             "nullable": true
           },
-          "done": {
-            "type": "boolean"
-          }
-        }
-      },
-      "CreateTodoItemCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "listId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "title": {
-            "type": "string",
-            "nullable": true
-          }
-        }
-      },
-      "UpdateTodoItemCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "title": {
+          "firstName": {
             "type": "string",
             "nullable": true
           },
-          "done": {
-            "type": "boolean"
-          }
-        }
-      },
-      "UpdateTodoItemDetailCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "listId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "priority": {
-            "$ref": "#/components/schemas/PriorityLevel"
-          },
-          "note": {
-            "type": "string",
-            "nullable": true
-          }
-        }
-      },
-      "PriorityLevel": {
-        "type": "integer",
-        "description": "",
-        "x-enumNames": [
-          "None",
-          "Low",
-          "Medium",
-          "High"
-        ],
-        "enum": [
-          0,
-          1,
-          2,
-          3
-        ]
-      },
-      "TodosVm": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "priorityLevels": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/LookupDto"
-            }
-          },
-          "lists": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TodoListDto"
-            }
-          }
-        }
-      },
-      "LookupDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "title": {
-            "type": "string",
-            "nullable": true
-          }
-        }
-      },
-      "TodoListDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "title": {
+          "lastSurname": {
             "type": "string",
             "nullable": true
           },
-          "colour": {
+          "fullName": {
             "type": "string",
             "nullable": true
           },
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TodoItemDto"
-            }
-          }
-        }
-      },
-      "TodoItemDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
+          "yearsOfService": {
+            "type": "number",
+            "format": "decimal"
           },
-          "listId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "title": {
+          "assignment": {
             "type": "string",
             "nullable": true
           },
-          "done": {
-            "type": "boolean"
-          },
-          "priority": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "note": {
+          "degree": {
             "type": "string",
             "nullable": true
-          }
-        }
-      },
-      "CreateTodoListCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "title": {
-            "type": "string",
-            "nullable": true
-          }
-        }
-      },
-      "UpdateTodoListCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
           },
-          "title": {
+          "institution": {
             "type": "string",
             "nullable": true
           }
@@ -578,45 +713,135 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "date": {
+          "staffUniqueId": {
             "type": "string",
-            "format": "date-time"
+            "nullable": true
           },
-          "temperatureC": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "temperatureF": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "summary": {
+          "fullNameAnnon": {
             "type": "string",
+            "nullable": true
+          },
+          "age": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "schoolNameAnnon": {
+            "type": "string",
+            "nullable": true
+          },
+          "schoolLevel": {
+            "type": "string",
+            "nullable": true
+          },
+          "gender": {
+            "type": "string",
+            "nullable": true
+          },
+          "race": {
+            "type": "string",
+            "nullable": true
+          },
+          "vacancyCause": {
+            "type": "string",
+            "nullable": true
+          },
+          "schoolYear": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "positionTitle": {
+            "type": "string",
+            "nullable": true
+          },
+          "retElig": {
+            "type": "boolean"
+          },
+          "overallScore": {
+            "type": "number",
+            "format": "double",
             "nullable": true
           }
         }
       },
-      "WeatherForecast": {
+      "ListItemAssignment": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ListItemBase"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false
+          }
+        ]
+      },
+      "ListItemBase": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "date": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "temperatureC": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "temperatureF": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "summary": {
+          "text": {
             "type": "string",
             "nullable": true
+          },
+          "value": {
+            "type": "integer",
+            "format": "int32"
           }
         }
+      },
+      "ListItemCategory": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "type": "string",
+            "nullable": true
+          },
+          "sortOrder": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "ListItemDegree": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ListItemBase"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "order": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          }
+        ]
+      },
+      "ListItemSchoolCategory": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ListItemBase"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false
+          }
+        ]
+      },
+      "ListItemInstitution": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ListItemBase"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false
+          }
+        ]
       }
     }
   }

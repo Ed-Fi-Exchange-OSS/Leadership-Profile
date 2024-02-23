@@ -8,6 +8,7 @@ public class VacancyForecasts : EndpointGroupBase
     {
         app.MapGroup(this)
             .RequireAuthorization()
+            // .MapGet(GetVacancyForecasts)
             .MapGet(GetVacancyForecasts);
     }
 

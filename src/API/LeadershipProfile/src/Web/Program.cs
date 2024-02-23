@@ -1,5 +1,3 @@
-using LeadershipProfile.Infrastructure.Data;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -14,7 +12,7 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    await app.InitialiseDatabaseAsync();
+    // await app.InitialiseDatabaseAsync();
 }
 else
 {
@@ -25,6 +23,7 @@ else
 app.UseHealthChecks("/health");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+// app.UseIdentityServer();
 
 app.UseSwaggerUi3(settings =>
 {

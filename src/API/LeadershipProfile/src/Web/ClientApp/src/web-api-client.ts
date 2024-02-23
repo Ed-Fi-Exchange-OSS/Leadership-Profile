@@ -10,7 +10,7 @@
 
 import followIfLoginRedirect from './components/api-authorization/followIfLoginRedirect';
 
-export class TodoItemsClient {
+export class IdentifyLeadersClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -20,74 +20,145 @@ export class TodoItemsClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    getTodoItemsWithPagination(listId: number, pageNumber: number, pageSize: number): Promise<PaginatedListOfTodoItemBriefDto> {
-        let url_ = this.baseUrl + "/api/TodoItems?";
-        if (listId === undefined || listId === null)
-            throw new Error("The parameter 'listId' must be defined and cannot be null.");
-        else
-            url_ += "ListId=" + encodeURIComponent("" + listId) + "&";
+    getLeadersWithPagination(query: GetLeadersWithPaginationQuery): Promise<LeaderBriefDto[]> {
+        let url_ = this.baseUrl + "/api/IdentifyLeaders";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(query);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetLeadersWithPagination(_response);
+        });
+    }
+
+    protected processGetLeadersWithPagination(response: Response): Promise<LeaderBriefDto[]> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(LeaderBriefDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<LeaderBriefDto[]>(null as any);
+    }
+}
+
+export class ProfilesClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    getApiProfiles(id: string): Promise<Response> {
+        let url_ = this.baseUrl + "/api/Profiles/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetApiProfiles(_response);
+        });
+    }
+
+    protected processGetApiProfiles(response: Response): Promise<Response> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Response.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Response>(null as any);
+    }
+}
+
+export class SearchClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    getSearchResults(pageNumber: number, sortField: string | null, sortBy: string | null, onlyActive: boolean): Promise<PaginatedListOfSearchResultDto> {
+        let url_ = this.baseUrl + "/api/Search?";
         if (pageNumber === undefined || pageNumber === null)
             throw new Error("The parameter 'pageNumber' must be defined and cannot be null.");
         else
             url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
-        if (pageSize === undefined || pageSize === null)
-            throw new Error("The parameter 'pageSize' must be defined and cannot be null.");
+        if (sortField === undefined)
+            throw new Error("The parameter 'sortField' must be defined.");
+        else if(sortField !== null)
+            url_ += "SortField=" + encodeURIComponent("" + sortField) + "&";
+        if (sortBy === undefined)
+            throw new Error("The parameter 'sortBy' must be defined.");
+        else if(sortBy !== null)
+            url_ += "SortBy=" + encodeURIComponent("" + sortBy) + "&";
+        if (onlyActive === undefined || onlyActive === null)
+            throw new Error("The parameter 'onlyActive' must be defined and cannot be null.");
         else
-            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+            url_ += "OnlyActive=" + encodeURIComponent("" + onlyActive) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetTodoItemsWithPagination(_response);
-        });
-    }
-
-    protected processGetTodoItemsWithPagination(response: Response): Promise<PaginatedListOfTodoItemBriefDto> {
-        followIfLoginRedirect(response);
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = PaginatedListOfTodoItemBriefDto.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<PaginatedListOfTodoItemBriefDto>(null as any);
-    }
-
-    createTodoItem(command: CreateTodoItemCommand): Promise<number> {
-        let url_ = this.baseUrl + "/api/TodoItems";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(command);
-
-        let options_: RequestInit = {
-            body: content_,
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateTodoItem(_response);
+            return this.processGetSearchResults(_response);
         });
     }
 
-    protected processCreateTodoItem(response: Response): Promise<number> {
+    protected processGetSearchResults(response: Response): Promise<PaginatedListOfSearchResultDto> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -95,8 +166,7 @@ export class TodoItemsClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+            result200 = PaginatedListOfSearchResultDto.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -104,275 +174,7 @@ export class TodoItemsClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<number>(null as any);
-    }
-
-    updateTodoItem(id: number, command: UpdateTodoItemCommand): Promise<void> {
-        let url_ = this.baseUrl + "/api/TodoItems/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(command);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processUpdateTodoItem(_response);
-        });
-    }
-
-    protected processUpdateTodoItem(response: Response): Promise<void> {
-        followIfLoginRedirect(response);
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    deleteTodoItem(id: number): Promise<void> {
-        let url_ = this.baseUrl + "/api/TodoItems/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "DELETE",
-            headers: {
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processDeleteTodoItem(_response);
-        });
-    }
-
-    protected processDeleteTodoItem(response: Response): Promise<void> {
-        followIfLoginRedirect(response);
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    updateTodoItemDetail(id: number, command: UpdateTodoItemDetailCommand): Promise<void> {
-        let url_ = this.baseUrl + "/api/TodoItems/UpdateDetail/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(command);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processUpdateTodoItemDetail(_response);
-        });
-    }
-
-    protected processUpdateTodoItemDetail(response: Response): Promise<void> {
-        followIfLoginRedirect(response);
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-}
-
-export class TodoListsClient {
-    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-        this.http = http ? http : window as any;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
-    }
-
-    getTodoLists(): Promise<TodosVm> {
-        let url_ = this.baseUrl + "/api/TodoLists";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetTodoLists(_response);
-        });
-    }
-
-    protected processGetTodoLists(response: Response): Promise<TodosVm> {
-        followIfLoginRedirect(response);
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = TodosVm.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<TodosVm>(null as any);
-    }
-
-    createTodoList(command: CreateTodoListCommand): Promise<number> {
-        let url_ = this.baseUrl + "/api/TodoLists";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(command);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCreateTodoList(_response);
-        });
-    }
-
-    protected processCreateTodoList(response: Response): Promise<number> {
-        followIfLoginRedirect(response);
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<number>(null as any);
-    }
-
-    updateTodoList(id: number, command: UpdateTodoListCommand): Promise<void> {
-        let url_ = this.baseUrl + "/api/TodoLists/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(command);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processUpdateTodoList(_response);
-        });
-    }
-
-    protected processUpdateTodoList(response: Response): Promise<void> {
-        followIfLoginRedirect(response);
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    deleteTodoList(id: number): Promise<void> {
-        let url_ = this.baseUrl + "/api/TodoLists/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "DELETE",
-            headers: {
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processDeleteTodoList(_response);
-        });
-    }
-
-    protected processDeleteTodoList(response: Response): Promise<void> {
-        followIfLoginRedirect(response);
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<PaginatedListOfSearchResultDto>(null as any);
     }
 }
 
@@ -429,7 +231,7 @@ export class VacancyForecastsClient {
     }
 }
 
-export class WeatherForecastsClient {
+export class WebControlsClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -439,8 +241,8 @@ export class WeatherForecastsClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    getWeatherForecasts(): Promise<WeatherForecast[]> {
-        let url_ = this.baseUrl + "/api/WeatherForecasts";
+    getApiWebControlsAssignments(): Promise<ListItemAssignment[]> {
+        let url_ = this.baseUrl + "/api/WebControls/Assignments";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -451,11 +253,11 @@ export class WeatherForecastsClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetWeatherForecasts(_response);
+            return this.processGetApiWebControlsAssignments(_response);
         });
     }
 
-    protected processGetWeatherForecasts(response: Response): Promise<WeatherForecast[]> {
+    protected processGetApiWebControlsAssignments(response: Response): Promise<ListItemAssignment[]> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -466,7 +268,7 @@ export class WeatherForecastsClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(WeatherForecast.fromJS(item));
+                    result200!.push(ListItemAssignment.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -478,19 +280,885 @@ export class WeatherForecastsClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<WeatherForecast[]>(null as any);
+        return Promise.resolve<ListItemAssignment[]>(null as any);
+    }
+
+    getApiWebControlsCategories(): Promise<ListItemCategory[]> {
+        let url_ = this.baseUrl + "/api/WebControls/Categories";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetApiWebControlsCategories(_response);
+        });
+    }
+
+    protected processGetApiWebControlsCategories(response: Response): Promise<ListItemCategory[]> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ListItemCategory.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ListItemCategory[]>(null as any);
+    }
+
+    getApiWebControlsDegrees(): Promise<ListItemDegree[]> {
+        let url_ = this.baseUrl + "/api/WebControls/Degrees";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetApiWebControlsDegrees(_response);
+        });
+    }
+
+    protected processGetApiWebControlsDegrees(response: Response): Promise<ListItemDegree[]> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ListItemDegree.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ListItemDegree[]>(null as any);
+    }
+
+    getApiWebControlsSchoolCategories(): Promise<ListItemSchoolCategory[]> {
+        let url_ = this.baseUrl + "/api/WebControls/SchoolCategories";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetApiWebControlsSchoolCategories(_response);
+        });
+    }
+
+    protected processGetApiWebControlsSchoolCategories(response: Response): Promise<ListItemSchoolCategory[]> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ListItemSchoolCategory.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ListItemSchoolCategory[]>(null as any);
+    }
+
+    getApiWebControlsInstitutions(): Promise<ListItemInstitution[]> {
+        let url_ = this.baseUrl + "/api/WebControls/Institutions";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetApiWebControlsInstitutions(_response);
+        });
+    }
+
+    protected processGetApiWebControlsInstitutions(response: Response): Promise<ListItemInstitution[]> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ListItemInstitution.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ListItemInstitution[]>(null as any);
+    }
+
+    getApiWebControlsMeasurementCategories(): Promise<ListItemCategory[]> {
+        let url_ = this.baseUrl + "/api/WebControls/MeasurementCategories";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetApiWebControlsMeasurementCategories(_response);
+        });
+    }
+
+    protected processGetApiWebControlsMeasurementCategories(response: Response): Promise<ListItemCategory[]> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ListItemCategory.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ListItemCategory[]>(null as any);
     }
 }
 
-export class PaginatedListOfTodoItemBriefDto implements IPaginatedListOfTodoItemBriefDto {
-    items?: TodoItemBriefDto[];
+export class LeaderBriefDto implements ILeaderBriefDto {
+    staffUniqueId?: string | undefined;
+    fullNameAnnon?: string | undefined;
+    schoolNameAnnon?: string | undefined;
+    schoolYear?: number;
+    schoolLevel?: string | undefined;
+    job?: string | undefined;
+    positionTitle?: string | undefined;
+    employeeIDAnnon?: string | undefined;
+    startDate?: Date;
+    vacancyCause?: string | undefined;
+    totYrsExp?: string | undefined;
+    gender?: string | undefined;
+    race?: string | undefined;
+    trsYrs?: string | undefined;
+    retElig?: string | undefined;
+    overallScore?: number;
+    domain1?: number;
+    domain2?: number;
+    domain3?: number;
+    domain4?: number;
+    domain5?: number;
+
+    constructor(data?: ILeaderBriefDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.staffUniqueId = _data["staffUniqueId"];
+            this.fullNameAnnon = _data["fullNameAnnon"];
+            this.schoolNameAnnon = _data["schoolNameAnnon"];
+            this.schoolYear = _data["schoolYear"];
+            this.schoolLevel = _data["schoolLevel"];
+            this.job = _data["job"];
+            this.positionTitle = _data["positionTitle"];
+            this.employeeIDAnnon = _data["employeeIDAnnon"];
+            this.startDate = _data["startDate"] ? new Date(_data["startDate"].toString()) : <any>undefined;
+            this.vacancyCause = _data["vacancyCause"];
+            this.totYrsExp = _data["totYrsExp"];
+            this.gender = _data["gender"];
+            this.race = _data["race"];
+            this.trsYrs = _data["trsYrs"];
+            this.retElig = _data["retElig"];
+            this.overallScore = _data["overallScore"];
+            this.domain1 = _data["domain1"];
+            this.domain2 = _data["domain2"];
+            this.domain3 = _data["domain3"];
+            this.domain4 = _data["domain4"];
+            this.domain5 = _data["domain5"];
+        }
+    }
+
+    static fromJS(data: any): LeaderBriefDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new LeaderBriefDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["staffUniqueId"] = this.staffUniqueId;
+        data["fullNameAnnon"] = this.fullNameAnnon;
+        data["schoolNameAnnon"] = this.schoolNameAnnon;
+        data["schoolYear"] = this.schoolYear;
+        data["schoolLevel"] = this.schoolLevel;
+        data["job"] = this.job;
+        data["positionTitle"] = this.positionTitle;
+        data["employeeIDAnnon"] = this.employeeIDAnnon;
+        data["startDate"] = this.startDate ? this.startDate.toISOString() : <any>undefined;
+        data["vacancyCause"] = this.vacancyCause;
+        data["totYrsExp"] = this.totYrsExp;
+        data["gender"] = this.gender;
+        data["race"] = this.race;
+        data["trsYrs"] = this.trsYrs;
+        data["retElig"] = this.retElig;
+        data["overallScore"] = this.overallScore;
+        data["domain1"] = this.domain1;
+        data["domain2"] = this.domain2;
+        data["domain3"] = this.domain3;
+        data["domain4"] = this.domain4;
+        data["domain5"] = this.domain5;
+        return data;
+    }
+}
+
+export interface ILeaderBriefDto {
+    staffUniqueId?: string | undefined;
+    fullNameAnnon?: string | undefined;
+    schoolNameAnnon?: string | undefined;
+    schoolYear?: number;
+    schoolLevel?: string | undefined;
+    job?: string | undefined;
+    positionTitle?: string | undefined;
+    employeeIDAnnon?: string | undefined;
+    startDate?: Date;
+    vacancyCause?: string | undefined;
+    totYrsExp?: string | undefined;
+    gender?: string | undefined;
+    race?: string | undefined;
+    trsYrs?: string | undefined;
+    retElig?: string | undefined;
+    overallScore?: number;
+    domain1?: number;
+    domain2?: number;
+    domain3?: number;
+    domain4?: number;
+    domain5?: number;
+}
+
+export class GetLeadersWithPaginationQuery implements IGetLeadersWithPaginationQuery {
+    listId?: number;
+    pageNumber?: number;
+    pageSize?: number;
+    roles?: number[];
+    schoolLevels?: number[];
+    highestDegrees?: number[];
+    hasCertification?: number[];
+    yearsOfExperience?: number[];
+    overallScore?: number[];
+    domainOneScore?: number[];
+    domainTwoScore?: number[];
+    domainThreeScore?: number[];
+    domainFourScore?: number[];
+    domainFiveScore?: number[];
+
+    constructor(data?: IGetLeadersWithPaginationQuery) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.listId = _data["listId"];
+            this.pageNumber = _data["pageNumber"];
+            this.pageSize = _data["pageSize"];
+            if (Array.isArray(_data["roles"])) {
+                this.roles = [] as any;
+                for (let item of _data["roles"])
+                    this.roles!.push(item);
+            }
+            if (Array.isArray(_data["schoolLevels"])) {
+                this.schoolLevels = [] as any;
+                for (let item of _data["schoolLevels"])
+                    this.schoolLevels!.push(item);
+            }
+            if (Array.isArray(_data["highestDegrees"])) {
+                this.highestDegrees = [] as any;
+                for (let item of _data["highestDegrees"])
+                    this.highestDegrees!.push(item);
+            }
+            if (Array.isArray(_data["hasCertification"])) {
+                this.hasCertification = [] as any;
+                for (let item of _data["hasCertification"])
+                    this.hasCertification!.push(item);
+            }
+            if (Array.isArray(_data["yearsOfExperience"])) {
+                this.yearsOfExperience = [] as any;
+                for (let item of _data["yearsOfExperience"])
+                    this.yearsOfExperience!.push(item);
+            }
+            if (Array.isArray(_data["overallScore"])) {
+                this.overallScore = [] as any;
+                for (let item of _data["overallScore"])
+                    this.overallScore!.push(item);
+            }
+            if (Array.isArray(_data["domainOneScore"])) {
+                this.domainOneScore = [] as any;
+                for (let item of _data["domainOneScore"])
+                    this.domainOneScore!.push(item);
+            }
+            if (Array.isArray(_data["domainTwoScore"])) {
+                this.domainTwoScore = [] as any;
+                for (let item of _data["domainTwoScore"])
+                    this.domainTwoScore!.push(item);
+            }
+            if (Array.isArray(_data["domainThreeScore"])) {
+                this.domainThreeScore = [] as any;
+                for (let item of _data["domainThreeScore"])
+                    this.domainThreeScore!.push(item);
+            }
+            if (Array.isArray(_data["domainFourScore"])) {
+                this.domainFourScore = [] as any;
+                for (let item of _data["domainFourScore"])
+                    this.domainFourScore!.push(item);
+            }
+            if (Array.isArray(_data["domainFiveScore"])) {
+                this.domainFiveScore = [] as any;
+                for (let item of _data["domainFiveScore"])
+                    this.domainFiveScore!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): GetLeadersWithPaginationQuery {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetLeadersWithPaginationQuery();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["listId"] = this.listId;
+        data["pageNumber"] = this.pageNumber;
+        data["pageSize"] = this.pageSize;
+        if (Array.isArray(this.roles)) {
+            data["roles"] = [];
+            for (let item of this.roles)
+                data["roles"].push(item);
+        }
+        if (Array.isArray(this.schoolLevels)) {
+            data["schoolLevels"] = [];
+            for (let item of this.schoolLevels)
+                data["schoolLevels"].push(item);
+        }
+        if (Array.isArray(this.highestDegrees)) {
+            data["highestDegrees"] = [];
+            for (let item of this.highestDegrees)
+                data["highestDegrees"].push(item);
+        }
+        if (Array.isArray(this.hasCertification)) {
+            data["hasCertification"] = [];
+            for (let item of this.hasCertification)
+                data["hasCertification"].push(item);
+        }
+        if (Array.isArray(this.yearsOfExperience)) {
+            data["yearsOfExperience"] = [];
+            for (let item of this.yearsOfExperience)
+                data["yearsOfExperience"].push(item);
+        }
+        if (Array.isArray(this.overallScore)) {
+            data["overallScore"] = [];
+            for (let item of this.overallScore)
+                data["overallScore"].push(item);
+        }
+        if (Array.isArray(this.domainOneScore)) {
+            data["domainOneScore"] = [];
+            for (let item of this.domainOneScore)
+                data["domainOneScore"].push(item);
+        }
+        if (Array.isArray(this.domainTwoScore)) {
+            data["domainTwoScore"] = [];
+            for (let item of this.domainTwoScore)
+                data["domainTwoScore"].push(item);
+        }
+        if (Array.isArray(this.domainThreeScore)) {
+            data["domainThreeScore"] = [];
+            for (let item of this.domainThreeScore)
+                data["domainThreeScore"].push(item);
+        }
+        if (Array.isArray(this.domainFourScore)) {
+            data["domainFourScore"] = [];
+            for (let item of this.domainFourScore)
+                data["domainFourScore"].push(item);
+        }
+        if (Array.isArray(this.domainFiveScore)) {
+            data["domainFiveScore"] = [];
+            for (let item of this.domainFiveScore)
+                data["domainFiveScore"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IGetLeadersWithPaginationQuery {
+    listId?: number;
+    pageNumber?: number;
+    pageSize?: number;
+    roles?: number[];
+    schoolLevels?: number[];
+    highestDegrees?: number[];
+    hasCertification?: number[];
+    yearsOfExperience?: number[];
+    overallScore?: number[];
+    domainOneScore?: number[];
+    domainTwoScore?: number[];
+    domainThreeScore?: number[];
+    domainFourScore?: number[];
+    domainFiveScore?: number[];
+}
+
+export class Response implements IResponse {
+    staffUniqueId?: string;
+    firstName?: string;
+    middleName?: string;
+    lastSurname?: string;
+    fullName?: string;
+    currentPosition?: string;
+    district?: string;
+    school?: string;
+    yearsOfService?: number;
+    phone?: string;
+    email?: string;
+    interestedInNextRole?: boolean;
+    positionHistory?: PositionHistory[];
+    certificates?: Certificate[];
+    professionalDevelopment?: ProfessionalDevelopment[];
+    evaluations?: PerformanceEvaluation[];
+
+    constructor(data?: IResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.staffUniqueId = _data["staffUniqueId"];
+            this.firstName = _data["firstName"];
+            this.middleName = _data["middleName"];
+            this.lastSurname = _data["lastSurname"];
+            this.fullName = _data["fullName"];
+            this.currentPosition = _data["currentPosition"];
+            this.district = _data["district"];
+            this.school = _data["school"];
+            this.yearsOfService = _data["yearsOfService"];
+            this.phone = _data["phone"];
+            this.email = _data["email"];
+            this.interestedInNextRole = _data["interestedInNextRole"];
+            if (Array.isArray(_data["positionHistory"])) {
+                this.positionHistory = [] as any;
+                for (let item of _data["positionHistory"])
+                    this.positionHistory!.push(PositionHistory.fromJS(item));
+            }
+            if (Array.isArray(_data["certificates"])) {
+                this.certificates = [] as any;
+                for (let item of _data["certificates"])
+                    this.certificates!.push(Certificate.fromJS(item));
+            }
+            if (Array.isArray(_data["professionalDevelopment"])) {
+                this.professionalDevelopment = [] as any;
+                for (let item of _data["professionalDevelopment"])
+                    this.professionalDevelopment!.push(ProfessionalDevelopment.fromJS(item));
+            }
+            if (Array.isArray(_data["evaluations"])) {
+                this.evaluations = [] as any;
+                for (let item of _data["evaluations"])
+                    this.evaluations!.push(PerformanceEvaluation.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): Response {
+        data = typeof data === 'object' ? data : {};
+        let result = new Response();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["staffUniqueId"] = this.staffUniqueId;
+        data["firstName"] = this.firstName;
+        data["middleName"] = this.middleName;
+        data["lastSurname"] = this.lastSurname;
+        data["fullName"] = this.fullName;
+        data["currentPosition"] = this.currentPosition;
+        data["district"] = this.district;
+        data["school"] = this.school;
+        data["yearsOfService"] = this.yearsOfService;
+        data["phone"] = this.phone;
+        data["email"] = this.email;
+        data["interestedInNextRole"] = this.interestedInNextRole;
+        if (Array.isArray(this.positionHistory)) {
+            data["positionHistory"] = [];
+            for (let item of this.positionHistory)
+                data["positionHistory"].push(item.toJSON());
+        }
+        if (Array.isArray(this.certificates)) {
+            data["certificates"] = [];
+            for (let item of this.certificates)
+                data["certificates"].push(item.toJSON());
+        }
+        if (Array.isArray(this.professionalDevelopment)) {
+            data["professionalDevelopment"] = [];
+            for (let item of this.professionalDevelopment)
+                data["professionalDevelopment"].push(item.toJSON());
+        }
+        if (Array.isArray(this.evaluations)) {
+            data["evaluations"] = [];
+            for (let item of this.evaluations)
+                data["evaluations"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IResponse {
+    staffUniqueId?: string;
+    firstName?: string;
+    middleName?: string;
+    lastSurname?: string;
+    fullName?: string;
+    currentPosition?: string;
+    district?: string;
+    school?: string;
+    yearsOfService?: number;
+    phone?: string;
+    email?: string;
+    interestedInNextRole?: boolean;
+    positionHistory?: PositionHistory[];
+    certificates?: Certificate[];
+    professionalDevelopment?: ProfessionalDevelopment[];
+    evaluations?: PerformanceEvaluation[];
+}
+
+export class PositionHistory implements IPositionHistory {
+    role?: string;
+    schoolName?: string;
+    startDate?: Date;
+    endDate?: Date | undefined;
+
+    constructor(data?: IPositionHistory) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.role = _data["role"];
+            this.schoolName = _data["schoolName"];
+            this.startDate = _data["startDate"] ? new Date(_data["startDate"].toString()) : <any>undefined;
+            this.endDate = _data["endDate"] ? new Date(_data["endDate"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): PositionHistory {
+        data = typeof data === 'object' ? data : {};
+        let result = new PositionHistory();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["role"] = this.role;
+        data["schoolName"] = this.schoolName;
+        data["startDate"] = this.startDate ? this.startDate.toISOString() : <any>undefined;
+        data["endDate"] = this.endDate ? this.endDate.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IPositionHistory {
+    role?: string;
+    schoolName?: string;
+    startDate?: Date;
+    endDate?: Date | undefined;
+}
+
+export class Certificate implements ICertificate {
+    description?: string;
+    type?: string;
+    validFromDate?: Date;
+    validToDate?: Date | undefined;
+
+    constructor(data?: ICertificate) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.description = _data["description"];
+            this.type = _data["type"];
+            this.validFromDate = _data["validFromDate"] ? new Date(_data["validFromDate"].toString()) : <any>undefined;
+            this.validToDate = _data["validToDate"] ? new Date(_data["validToDate"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): Certificate {
+        data = typeof data === 'object' ? data : {};
+        let result = new Certificate();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["description"] = this.description;
+        data["type"] = this.type;
+        data["validFromDate"] = this.validFromDate ? this.validFromDate.toISOString() : <any>undefined;
+        data["validToDate"] = this.validToDate ? this.validToDate.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface ICertificate {
+    description?: string;
+    type?: string;
+    validFromDate?: Date;
+    validToDate?: Date | undefined;
+}
+
+export class ProfessionalDevelopment implements IProfessionalDevelopment {
+    attendanceDate?: Date;
+    professionalDevelopmentTitle?: string;
+    location?: string;
+    alignmentToLeadership?: string;
+
+    constructor(data?: IProfessionalDevelopment) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.attendanceDate = _data["attendanceDate"] ? new Date(_data["attendanceDate"].toString()) : <any>undefined;
+            this.professionalDevelopmentTitle = _data["professionalDevelopmentTitle"];
+            this.location = _data["location"];
+            this.alignmentToLeadership = _data["alignmentToLeadership"];
+        }
+    }
+
+    static fromJS(data: any): ProfessionalDevelopment {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProfessionalDevelopment();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["attendanceDate"] = this.attendanceDate ? this.attendanceDate.toISOString() : <any>undefined;
+        data["professionalDevelopmentTitle"] = this.professionalDevelopmentTitle;
+        data["location"] = this.location;
+        data["alignmentToLeadership"] = this.alignmentToLeadership;
+        return data;
+    }
+}
+
+export interface IProfessionalDevelopment {
+    attendanceDate?: Date;
+    professionalDevelopmentTitle?: string;
+    location?: string;
+    alignmentToLeadership?: string;
+}
+
+export class PerformanceEvaluation implements IPerformanceEvaluation {
+    title?: string;
+    ratingsByYear?: { [key: string]: PerformanceRating[]; };
+
+    constructor(data?: IPerformanceEvaluation) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.title = _data["title"];
+            if (_data["ratingsByYear"]) {
+                this.ratingsByYear = {} as any;
+                for (let key in _data["ratingsByYear"]) {
+                    if (_data["ratingsByYear"].hasOwnProperty(key))
+                        (<any>this.ratingsByYear)![key] = _data["ratingsByYear"][key] ? _data["ratingsByYear"][key].map((i: any) => PerformanceRating.fromJS(i)) : [];
+                }
+            }
+        }
+    }
+
+    static fromJS(data: any): PerformanceEvaluation {
+        data = typeof data === 'object' ? data : {};
+        let result = new PerformanceEvaluation();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["title"] = this.title;
+        if (this.ratingsByYear) {
+            data["ratingsByYear"] = {};
+            for (let key in this.ratingsByYear) {
+                if (this.ratingsByYear.hasOwnProperty(key))
+                    (<any>data["ratingsByYear"])[key] = (<any>this.ratingsByYear)[key];
+            }
+        }
+        return data;
+    }
+}
+
+export interface IPerformanceEvaluation {
+    title?: string;
+    ratingsByYear?: { [key: string]: PerformanceRating[]; };
+}
+
+export class PerformanceRating implements IPerformanceRating {
+    category?: string;
+    score?: number;
+
+    constructor(data?: IPerformanceRating) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.category = _data["category"];
+            this.score = _data["score"];
+        }
+    }
+
+    static fromJS(data: any): PerformanceRating {
+        data = typeof data === 'object' ? data : {};
+        let result = new PerformanceRating();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["category"] = this.category;
+        data["score"] = this.score;
+        return data;
+    }
+}
+
+export interface IPerformanceRating {
+    category?: string;
+    score?: number;
+}
+
+export class PaginatedListOfSearchResultDto implements IPaginatedListOfSearchResultDto {
+    items?: SearchResultDto[];
     pageNumber?: number;
     totalPages?: number;
     totalCount?: number;
     hasPreviousPage?: boolean;
     hasNextPage?: boolean;
 
-    constructor(data?: IPaginatedListOfTodoItemBriefDto) {
+    constructor(data?: IPaginatedListOfSearchResultDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -504,7 +1172,7 @@ export class PaginatedListOfTodoItemBriefDto implements IPaginatedListOfTodoItem
             if (Array.isArray(_data["items"])) {
                 this.items = [] as any;
                 for (let item of _data["items"])
-                    this.items!.push(TodoItemBriefDto.fromJS(item));
+                    this.items!.push(SearchResultDto.fromJS(item));
             }
             this.pageNumber = _data["pageNumber"];
             this.totalPages = _data["totalPages"];
@@ -514,9 +1182,9 @@ export class PaginatedListOfTodoItemBriefDto implements IPaginatedListOfTodoItem
         }
     }
 
-    static fromJS(data: any): PaginatedListOfTodoItemBriefDto {
+    static fromJS(data: any): PaginatedListOfSearchResultDto {
         data = typeof data === 'object' ? data : {};
-        let result = new PaginatedListOfTodoItemBriefDto();
+        let result = new PaginatedListOfSearchResultDto();
         result.init(data);
         return result;
     }
@@ -537,8 +1205,8 @@ export class PaginatedListOfTodoItemBriefDto implements IPaginatedListOfTodoItem
     }
 }
 
-export interface IPaginatedListOfTodoItemBriefDto {
-    items?: TodoItemBriefDto[];
+export interface IPaginatedListOfSearchResultDto {
+    items?: SearchResultDto[];
     pageNumber?: number;
     totalPages?: number;
     totalCount?: number;
@@ -546,13 +1214,17 @@ export interface IPaginatedListOfTodoItemBriefDto {
     hasNextPage?: boolean;
 }
 
-export class TodoItemBriefDto implements ITodoItemBriefDto {
-    id?: number;
-    listId?: number;
-    title?: string | undefined;
-    done?: boolean;
+export class SearchResultDto implements ISearchResultDto {
+    staffUniqueId?: string | undefined;
+    firstName?: string | undefined;
+    lastSurname?: string | undefined;
+    fullName?: string | undefined;
+    yearsOfService?: number;
+    assignment?: string | undefined;
+    degree?: string | undefined;
+    institution?: string | undefined;
 
-    constructor(data?: ITodoItemBriefDto) {
+    constructor(data?: ISearchResultDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -563,465 +1235,62 @@ export class TodoItemBriefDto implements ITodoItemBriefDto {
 
     init(_data?: any) {
         if (_data) {
-            this.id = _data["id"];
-            this.listId = _data["listId"];
-            this.title = _data["title"];
-            this.done = _data["done"];
+            this.staffUniqueId = _data["staffUniqueId"];
+            this.firstName = _data["firstName"];
+            this.lastSurname = _data["lastSurname"];
+            this.fullName = _data["fullName"];
+            this.yearsOfService = _data["yearsOfService"];
+            this.assignment = _data["assignment"];
+            this.degree = _data["degree"];
+            this.institution = _data["institution"];
         }
     }
 
-    static fromJS(data: any): TodoItemBriefDto {
+    static fromJS(data: any): SearchResultDto {
         data = typeof data === 'object' ? data : {};
-        let result = new TodoItemBriefDto();
+        let result = new SearchResultDto();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["listId"] = this.listId;
-        data["title"] = this.title;
-        data["done"] = this.done;
+        data["staffUniqueId"] = this.staffUniqueId;
+        data["firstName"] = this.firstName;
+        data["lastSurname"] = this.lastSurname;
+        data["fullName"] = this.fullName;
+        data["yearsOfService"] = this.yearsOfService;
+        data["assignment"] = this.assignment;
+        data["degree"] = this.degree;
+        data["institution"] = this.institution;
         return data;
     }
 }
 
-export interface ITodoItemBriefDto {
-    id?: number;
-    listId?: number;
-    title?: string | undefined;
-    done?: boolean;
-}
-
-export class CreateTodoItemCommand implements ICreateTodoItemCommand {
-    listId?: number;
-    title?: string | undefined;
-
-    constructor(data?: ICreateTodoItemCommand) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.listId = _data["listId"];
-            this.title = _data["title"];
-        }
-    }
-
-    static fromJS(data: any): CreateTodoItemCommand {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateTodoItemCommand();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["listId"] = this.listId;
-        data["title"] = this.title;
-        return data;
-    }
-}
-
-export interface ICreateTodoItemCommand {
-    listId?: number;
-    title?: string | undefined;
-}
-
-export class UpdateTodoItemCommand implements IUpdateTodoItemCommand {
-    id?: number;
-    title?: string | undefined;
-    done?: boolean;
-
-    constructor(data?: IUpdateTodoItemCommand) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.title = _data["title"];
-            this.done = _data["done"];
-        }
-    }
-
-    static fromJS(data: any): UpdateTodoItemCommand {
-        data = typeof data === 'object' ? data : {};
-        let result = new UpdateTodoItemCommand();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["title"] = this.title;
-        data["done"] = this.done;
-        return data;
-    }
-}
-
-export interface IUpdateTodoItemCommand {
-    id?: number;
-    title?: string | undefined;
-    done?: boolean;
-}
-
-export class UpdateTodoItemDetailCommand implements IUpdateTodoItemDetailCommand {
-    id?: number;
-    listId?: number;
-    priority?: PriorityLevel;
-    note?: string | undefined;
-
-    constructor(data?: IUpdateTodoItemDetailCommand) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.listId = _data["listId"];
-            this.priority = _data["priority"];
-            this.note = _data["note"];
-        }
-    }
-
-    static fromJS(data: any): UpdateTodoItemDetailCommand {
-        data = typeof data === 'object' ? data : {};
-        let result = new UpdateTodoItemDetailCommand();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["listId"] = this.listId;
-        data["priority"] = this.priority;
-        data["note"] = this.note;
-        return data;
-    }
-}
-
-export interface IUpdateTodoItemDetailCommand {
-    id?: number;
-    listId?: number;
-    priority?: PriorityLevel;
-    note?: string | undefined;
-}
-
-export enum PriorityLevel {
-    None = 0,
-    Low = 1,
-    Medium = 2,
-    High = 3,
-}
-
-export class TodosVm implements ITodosVm {
-    priorityLevels?: LookupDto[];
-    lists?: TodoListDto[];
-
-    constructor(data?: ITodosVm) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            if (Array.isArray(_data["priorityLevels"])) {
-                this.priorityLevels = [] as any;
-                for (let item of _data["priorityLevels"])
-                    this.priorityLevels!.push(LookupDto.fromJS(item));
-            }
-            if (Array.isArray(_data["lists"])) {
-                this.lists = [] as any;
-                for (let item of _data["lists"])
-                    this.lists!.push(TodoListDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): TodosVm {
-        data = typeof data === 'object' ? data : {};
-        let result = new TodosVm();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.priorityLevels)) {
-            data["priorityLevels"] = [];
-            for (let item of this.priorityLevels)
-                data["priorityLevels"].push(item.toJSON());
-        }
-        if (Array.isArray(this.lists)) {
-            data["lists"] = [];
-            for (let item of this.lists)
-                data["lists"].push(item.toJSON());
-        }
-        return data;
-    }
-}
-
-export interface ITodosVm {
-    priorityLevels?: LookupDto[];
-    lists?: TodoListDto[];
-}
-
-export class LookupDto implements ILookupDto {
-    id?: number;
-    title?: string | undefined;
-
-    constructor(data?: ILookupDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.title = _data["title"];
-        }
-    }
-
-    static fromJS(data: any): LookupDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new LookupDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["title"] = this.title;
-        return data;
-    }
-}
-
-export interface ILookupDto {
-    id?: number;
-    title?: string | undefined;
-}
-
-export class TodoListDto implements ITodoListDto {
-    id?: number;
-    title?: string | undefined;
-    colour?: string | undefined;
-    items?: TodoItemDto[];
-
-    constructor(data?: ITodoListDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.title = _data["title"];
-            this.colour = _data["colour"];
-            if (Array.isArray(_data["items"])) {
-                this.items = [] as any;
-                for (let item of _data["items"])
-                    this.items!.push(TodoItemDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): TodoListDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new TodoListDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["title"] = this.title;
-        data["colour"] = this.colour;
-        if (Array.isArray(this.items)) {
-            data["items"] = [];
-            for (let item of this.items)
-                data["items"].push(item.toJSON());
-        }
-        return data;
-    }
-}
-
-export interface ITodoListDto {
-    id?: number;
-    title?: string | undefined;
-    colour?: string | undefined;
-    items?: TodoItemDto[];
-}
-
-export class TodoItemDto implements ITodoItemDto {
-    id?: number;
-    listId?: number;
-    title?: string | undefined;
-    done?: boolean;
-    priority?: number;
-    note?: string | undefined;
-
-    constructor(data?: ITodoItemDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.listId = _data["listId"];
-            this.title = _data["title"];
-            this.done = _data["done"];
-            this.priority = _data["priority"];
-            this.note = _data["note"];
-        }
-    }
-
-    static fromJS(data: any): TodoItemDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new TodoItemDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["listId"] = this.listId;
-        data["title"] = this.title;
-        data["done"] = this.done;
-        data["priority"] = this.priority;
-        data["note"] = this.note;
-        return data;
-    }
-}
-
-export interface ITodoItemDto {
-    id?: number;
-    listId?: number;
-    title?: string | undefined;
-    done?: boolean;
-    priority?: number;
-    note?: string | undefined;
-}
-
-export class CreateTodoListCommand implements ICreateTodoListCommand {
-    title?: string | undefined;
-
-    constructor(data?: ICreateTodoListCommand) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.title = _data["title"];
-        }
-    }
-
-    static fromJS(data: any): CreateTodoListCommand {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateTodoListCommand();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["title"] = this.title;
-        return data;
-    }
-}
-
-export interface ICreateTodoListCommand {
-    title?: string | undefined;
-}
-
-export class UpdateTodoListCommand implements IUpdateTodoListCommand {
-    id?: number;
-    title?: string | undefined;
-
-    constructor(data?: IUpdateTodoListCommand) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.title = _data["title"];
-        }
-    }
-
-    static fromJS(data: any): UpdateTodoListCommand {
-        data = typeof data === 'object' ? data : {};
-        let result = new UpdateTodoListCommand();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["title"] = this.title;
-        return data;
-    }
-}
-
-export interface IUpdateTodoListCommand {
-    id?: number;
-    title?: string | undefined;
+export interface ISearchResultDto {
+    staffUniqueId?: string | undefined;
+    firstName?: string | undefined;
+    lastSurname?: string | undefined;
+    fullName?: string | undefined;
+    yearsOfService?: number;
+    assignment?: string | undefined;
+    degree?: string | undefined;
+    institution?: string | undefined;
 }
 
 export class VacancyForecast implements IVacancyForecast {
-    date?: Date;
-    temperatureC?: number;
-    temperatureF?: number;
-    summary?: string | undefined;
+    staffUniqueId?: string | undefined;
+    fullNameAnnon?: string | undefined;
+    age?: number | undefined;
+    schoolNameAnnon?: string | undefined;
+    schoolLevel?: string | undefined;
+    gender?: string | undefined;
+    race?: string | undefined;
+    vacancyCause?: string | undefined;
+    schoolYear?: number | undefined;
+    positionTitle?: string | undefined;
+    retElig?: boolean;
+    overallScore?: number | undefined;
 
     constructor(data?: IVacancyForecast) {
         if (data) {
@@ -1034,10 +1303,18 @@ export class VacancyForecast implements IVacancyForecast {
 
     init(_data?: any) {
         if (_data) {
-            this.date = _data["date"] ? new Date(_data["date"].toString()) : <any>undefined;
-            this.temperatureC = _data["temperatureC"];
-            this.temperatureF = _data["temperatureF"];
-            this.summary = _data["summary"];
+            this.staffUniqueId = _data["staffUniqueId"];
+            this.fullNameAnnon = _data["fullNameAnnon"];
+            this.age = _data["age"];
+            this.schoolNameAnnon = _data["schoolNameAnnon"];
+            this.schoolLevel = _data["schoolLevel"];
+            this.gender = _data["gender"];
+            this.race = _data["race"];
+            this.vacancyCause = _data["vacancyCause"];
+            this.schoolYear = _data["schoolYear"];
+            this.positionTitle = _data["positionTitle"];
+            this.retElig = _data["retElig"];
+            this.overallScore = _data["overallScore"];
         }
     }
 
@@ -1050,28 +1327,42 @@ export class VacancyForecast implements IVacancyForecast {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["date"] = this.date ? this.date.toISOString() : <any>undefined;
-        data["temperatureC"] = this.temperatureC;
-        data["temperatureF"] = this.temperatureF;
-        data["summary"] = this.summary;
+        data["staffUniqueId"] = this.staffUniqueId;
+        data["fullNameAnnon"] = this.fullNameAnnon;
+        data["age"] = this.age;
+        data["schoolNameAnnon"] = this.schoolNameAnnon;
+        data["schoolLevel"] = this.schoolLevel;
+        data["gender"] = this.gender;
+        data["race"] = this.race;
+        data["vacancyCause"] = this.vacancyCause;
+        data["schoolYear"] = this.schoolYear;
+        data["positionTitle"] = this.positionTitle;
+        data["retElig"] = this.retElig;
+        data["overallScore"] = this.overallScore;
         return data;
     }
 }
 
 export interface IVacancyForecast {
-    date?: Date;
-    temperatureC?: number;
-    temperatureF?: number;
-    summary?: string | undefined;
+    staffUniqueId?: string | undefined;
+    fullNameAnnon?: string | undefined;
+    age?: number | undefined;
+    schoolNameAnnon?: string | undefined;
+    schoolLevel?: string | undefined;
+    gender?: string | undefined;
+    race?: string | undefined;
+    vacancyCause?: string | undefined;
+    schoolYear?: number | undefined;
+    positionTitle?: string | undefined;
+    retElig?: boolean;
+    overallScore?: number | undefined;
 }
 
-export class WeatherForecast implements IWeatherForecast {
-    date?: Date;
-    temperatureC?: number;
-    temperatureF?: number;
-    summary?: string | undefined;
+export class ListItemBase implements IListItemBase {
+    text?: string | undefined;
+    value?: number;
 
-    constructor(data?: IWeatherForecast) {
+    constructor(data?: IListItemBase) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1082,35 +1373,183 @@ export class WeatherForecast implements IWeatherForecast {
 
     init(_data?: any) {
         if (_data) {
-            this.date = _data["date"] ? new Date(_data["date"].toString()) : <any>undefined;
-            this.temperatureC = _data["temperatureC"];
-            this.temperatureF = _data["temperatureF"];
-            this.summary = _data["summary"];
+            this.text = _data["text"];
+            this.value = _data["value"];
         }
     }
 
-    static fromJS(data: any): WeatherForecast {
+    static fromJS(data: any): ListItemBase {
         data = typeof data === 'object' ? data : {};
-        let result = new WeatherForecast();
+        let result = new ListItemBase();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["date"] = this.date ? this.date.toISOString() : <any>undefined;
-        data["temperatureC"] = this.temperatureC;
-        data["temperatureF"] = this.temperatureF;
-        data["summary"] = this.summary;
+        data["text"] = this.text;
+        data["value"] = this.value;
         return data;
     }
 }
 
-export interface IWeatherForecast {
-    date?: Date;
-    temperatureC?: number;
-    temperatureF?: number;
-    summary?: string | undefined;
+export interface IListItemBase {
+    text?: string | undefined;
+    value?: number;
+}
+
+export class ListItemAssignment extends ListItemBase implements IListItemAssignment {
+
+    constructor(data?: IListItemAssignment) {
+        super(data);
+    }
+
+    override init(_data?: any) {
+        super.init(_data);
+    }
+
+    static override fromJS(data: any): ListItemAssignment {
+        data = typeof data === 'object' ? data : {};
+        let result = new ListItemAssignment();
+        result.init(data);
+        return result;
+    }
+
+    override toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IListItemAssignment extends IListItemBase {
+}
+
+export class ListItemCategory implements IListItemCategory {
+    category?: string | undefined;
+    sortOrder?: number;
+
+    constructor(data?: IListItemCategory) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.category = _data["category"];
+            this.sortOrder = _data["sortOrder"];
+        }
+    }
+
+    static fromJS(data: any): ListItemCategory {
+        data = typeof data === 'object' ? data : {};
+        let result = new ListItemCategory();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["category"] = this.category;
+        data["sortOrder"] = this.sortOrder;
+        return data;
+    }
+}
+
+export interface IListItemCategory {
+    category?: string | undefined;
+    sortOrder?: number;
+}
+
+export class ListItemDegree extends ListItemBase implements IListItemDegree {
+    order?: number;
+
+    constructor(data?: IListItemDegree) {
+        super(data);
+    }
+
+    override init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.order = _data["order"];
+        }
+    }
+
+    static override fromJS(data: any): ListItemDegree {
+        data = typeof data === 'object' ? data : {};
+        let result = new ListItemDegree();
+        result.init(data);
+        return result;
+    }
+
+    override toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["order"] = this.order;
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IListItemDegree extends IListItemBase {
+    order?: number;
+}
+
+export class ListItemSchoolCategory extends ListItemBase implements IListItemSchoolCategory {
+
+    constructor(data?: IListItemSchoolCategory) {
+        super(data);
+    }
+
+    override init(_data?: any) {
+        super.init(_data);
+    }
+
+    static override fromJS(data: any): ListItemSchoolCategory {
+        data = typeof data === 'object' ? data : {};
+        let result = new ListItemSchoolCategory();
+        result.init(data);
+        return result;
+    }
+
+    override toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IListItemSchoolCategory extends IListItemBase {
+}
+
+export class ListItemInstitution extends ListItemBase implements IListItemInstitution {
+
+    constructor(data?: IListItemInstitution) {
+        super(data);
+    }
+
+    override init(_data?: any) {
+        super.init(_data);
+    }
+
+    static override fromJS(data: any): ListItemInstitution {
+        data = typeof data === 'object' ? data : {};
+        let result = new ListItemInstitution();
+        result.init(data);
+        return result;
+    }
+
+    override toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IListItemInstitution extends IListItemBase {
 }
 
 export class SwaggerException extends Error {

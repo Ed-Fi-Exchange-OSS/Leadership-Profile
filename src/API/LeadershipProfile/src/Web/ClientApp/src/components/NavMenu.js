@@ -1,50 +1,98 @@
-import React, { Component } from 'react';
-import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
-import { Link } from 'react-router-dom';
-import './NavMenu.css';
+// import React, { Component } from 'react';
+// import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
+// import { Link } from 'react-router-dom';
+// import './NavMenu.css';
 
-export class NavMenu extends Component {
-  static displayName = NavMenu.name;
+import React, { useState } from 'react';
+import {
+  Collapse,
+  Navbar,
+  NavbarToggler,
+  NavbarBrand,
+  Nav,
+  NavItem,
+  NavLink,
+  UncontrolledDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+  UncontrolledTooltip,
+  Component
+} from "reactstrap";
 
-  constructor (props) {
-    super(props);
+import { HeaderLogo } from "./images";
+import AuthService from "../utils/auth-service";
+import IngestDateService from "../utils/ingest-date-service";
+import LogoutService from "../utils/logout-service";
+import config from "../config";
 
-    this.toggleNavbar = this.toggleNavbar.bind(this);
-    this.state = {
-      collapsed: true
-    };
-  }
+const NavMenu = (props) => {
+  const { isAuthenticated, getAuthInfo } = AuthService();
+  const { logout } = LogoutService();
+  const authInfo = getAuthInfo();
+  const [isOpen, setIsOpen] = useState(false);
+  const { SCHOOL_HEADER } = config();
 
-  toggleNavbar () {
-    this.setState({
-      collapsed: !this.state.collapsed
-    });
-  }
+  const toggle = () => setIsOpen(!isOpen);
 
-  render() {
-    return (
-      <header>
-        <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" container light>
-          <NavbarBrand tag={Link} to="/">LeadershipProfile.Web</NavbarBrand>
-          <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
-          <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!this.state.collapsed} navbar>
-            <ul className="navbar-nav flex-grow">
+  const { getLastIngestionDate } = IngestDateService();
+  const lastIngestionDate = getLastIngestionDate();
+
+  return (
+    <div>
+      <Navbar expand="md">
+        <NavbarBrand href="/">
+          <HeaderLogo /> {SCHOOL_HEADER}
+        </NavbarBrand>
+        <NavbarToggler onClick={toggle} />
+        <Collapse isOpen={isOpen} navbar className='d-flex justify-content-end'>    
+        <div className='mr-4'>
+          
+          <span
+            id="refreshPill"
+            className="ml-auto badge badge-pill badge-blue px-4"
+          >
+            {lastIngestionDate.ItemsProccessed.toLocaleString(undefined, {
+              maximumFractionDigits: 0,
+            })}{" "}
+            records
+            <br />
+            <div className="pt-1">
+              on {Intl.DateTimeFormat(undefined).format(lastIngestionDate.Date)}
+            </div>
+          </span>
+          <UncontrolledTooltip target="refreshPill">
+            {" "}
+            Last data refresh date
+          </UncontrolledTooltip>
+
+          {isAuthenticated() ? (
+            <Nav>
+              <UncontrolledDropdown nav inNavbar>
+                <DropdownToggle nav caret>
+                  <span className="dot"></span>
+                  {authInfo}
+                </DropdownToggle>
+                <DropdownMenu right>
+                  <DropdownItem onClick={() => logout()}>Logout</DropdownItem>
+                </DropdownMenu>
+              </UncontrolledDropdown>
+            </Nav>
+          ) : (
+            <Nav className="mr-4 ml-auto">
               <NavItem>
-                <NavLink tag={Link} className="text-dark" to="/">Home</NavLink>
+                <NavLink href="/account/register/">Register</NavLink>
               </NavItem>
               <NavItem>
-                <NavLink tag={Link} className="text-dark" to="/counter">Counter</NavLink>
+                <NavLink href="/account/login/">Login</NavLink>
               </NavItem>
-              <NavItem>
-                <NavLink tag={Link} className="text-dark" to="/fetch-data">Fetch data</NavLink>
-              </NavItem>
-              <NavItem>
-                <a className="nav-link text-dark" href="/Identity/Account/Manage">Account</a>
-              </NavItem>
-            </ul>
-          </Collapse>
-        </Navbar>
-      </header>
-    );
-  }
-}
+            </Nav>
+          )}
+          </div>
+        </Collapse>
+      </Navbar>
+    </div>
+  );
+};
+
+export default NavMenu;
