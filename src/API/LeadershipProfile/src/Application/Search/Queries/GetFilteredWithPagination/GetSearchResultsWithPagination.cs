@@ -14,7 +14,7 @@
 // public record GetSearchResultsWithPaginationQuery : IRequest<PaginatedList<SearchResultDto>>
 // {
 //             public int PageNumber { get; set; } = 1;
-//             public required string SortField { get; set; } = "";
+//             public required string SortField { gt; set; } = "";
 //             public required string SortBy { get; set; } = "";
 //             public bool OnlyActive { get; set; } = true;
 //             // public required ProfileSearchRequestBody SearchRequestBody { get; set; }

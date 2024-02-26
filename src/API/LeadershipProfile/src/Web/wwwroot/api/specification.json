@@ -73,14 +73,14 @@
       }
     },
     "/api/Search": {
-      "post": {
+      "get": {
         "tags": [
           "Search"
         ],
         "operationId": "GetSearchResults",
         "parameters": [
           {
-            "name": "PageNumber",
+            "name": "Page",
             "in": "query",
             "required": true,
             "schema": {

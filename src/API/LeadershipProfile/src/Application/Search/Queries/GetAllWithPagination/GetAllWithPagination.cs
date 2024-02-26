@@ -8,12 +8,11 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 
 
-
-namespace LeadershipProfile.Application.Search.Queries;
+namespace LeadershipProfile.Application.Search.Queries.GetAllWithPagination;
 
 public record GetAllWithPaginationQuery : IRequest<PaginatedList<SearchResultDto>>
 {
-            public int PageNumber { get; set; } = 1;
+            public int Page { get; set; } = 1;
             public required string SortField { get; set; } = "";
             public required string SortBy { get; set; } = "";
             public bool OnlyActive { get; set; } = true;
@@ -45,12 +44,12 @@ public class GetAllWithPaginationQueryHandler : IRequestHandler<GetAllWithPagina
         var results = GetSearchResultsAsync(
             request.SortBy ?? "asc",
             request.SortField ?? "id",
-            request.PageNumber,
+            request.Page,
             pageSize,
             request.OnlyActive);
 
         return await results.ProjectTo<SearchResultDto>(_mapper.ConfigurationProvider)
-            .PaginatedListAsync(request.PageNumber, pageSize);
+            .PaginatedListAsync(request.Page, pageSize);
 
     }
 

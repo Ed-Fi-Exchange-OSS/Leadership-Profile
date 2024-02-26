@@ -126,12 +126,12 @@ export class SearchClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    getSearchResults(pageNumber: number, sortField: string | null, sortBy: string | null, onlyActive: boolean): Promise<PaginatedListOfSearchResultDto> {
+    getSearchResults(page: number, sortField: string | null, sortBy: string | null, onlyActive: boolean): Promise<PaginatedListOfSearchResultDto> {
         let url_ = this.baseUrl + "/api/Search?";
-        if (pageNumber === undefined || pageNumber === null)
-            throw new Error("The parameter 'pageNumber' must be defined and cannot be null.");
+        if (page === undefined || page === null)
+            throw new Error("The parameter 'page' must be defined and cannot be null.");
         else
-            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+            url_ += "Page=" + encodeURIComponent("" + page) + "&";
         if (sortField === undefined)
             throw new Error("The parameter 'sortField' must be defined.");
         else if(sortField !== null)
@@ -147,7 +147,7 @@ export class SearchClient {
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
-            method: "POST",
+            method: "GET",
             headers: {
                 "Accept": "application/json"
             }
