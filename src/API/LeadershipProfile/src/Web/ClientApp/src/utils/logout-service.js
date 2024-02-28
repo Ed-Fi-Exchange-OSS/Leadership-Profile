@@ -8,13 +8,13 @@ import { useNavigate } from 'react-router-dom';
 import config from '../config';
 
 function LogoutService() {
-    const history = useNavigate();
+    const navigate = useNavigate();
     const { logoutAuth, getAuthInfo } = AuthService();
     const authInfo = getAuthInfo();
     const { API_URL } = config();
 
     function logout() {
-        const apiUrl = new URL(API_URL + 'user/logout');
+        const apiUrl = new URL(API_URL + '/logout');
         fetch(apiUrl, {
             method: 'POST',
             mode: 'cors',
@@ -28,8 +28,7 @@ function LogoutService() {
             'logoutId': authInfo,
         })}).then(() => {
           logoutAuth();
-          history.push('/account/login');
-          history.go(0);
+          navigate('/');
         }).catch(error => console.error(error));
       }
 

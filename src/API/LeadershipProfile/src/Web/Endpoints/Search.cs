@@ -6,8 +6,6 @@ using LeadershipProfile.Domain.Entities.ProfileSearchRequest;
 using NSwag.Annotations;
 namespace LeadershipProfile.Web.Endpoints;
 
-// [ApiExplorerSettings(IgnoreApi = true)]
-[OpenApiIgnore]
 public class Search : EndpointGroupBase
 {
     public override void Map(WebApplication app)
@@ -22,7 +20,6 @@ public class Search : EndpointGroupBase
     {
         return await sender.Send(query);
     }
-    [OpenApiIgnore]
     public async Task<Response<SearchResultDto>> GetFilteredSearchResults(ISender sender,
              GetFilteredWithPaginationQuery query)
     {

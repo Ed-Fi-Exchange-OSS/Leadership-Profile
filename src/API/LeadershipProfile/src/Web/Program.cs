@@ -1,3 +1,7 @@
+using LeadershipProfile.Infrastructure.Data;
+using LeadershipProfile.Infrastructure.Identity;
+using Microsoft.AspNetCore.Identity;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -24,6 +28,15 @@ app.UseHealthChecks("/health");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 // app.UseIdentityServer();
+app.MapIdentityApi<ApplicationUser>();
+
+app.MapPost("/logout", async (SignInManager<ApplicationUser> signInManager) =>
+            {
+
+                await signInManager.SignOutAsync();
+                return Results.Ok();
+
+            }).RequireAuthorization();
 
 app.UseSwaggerUi3(settings =>
 {

@@ -11,7 +11,7 @@ import config from '../../config';
 import { convertCompilerOptionsFromJson } from 'typescript';
 
 function UseLogin() {
-    const history = useNavigate();
+    const navigate = useNavigate();
     const { loginAuth } = AuthService();
     const { API_URL, API_CONFIG } = config();
 
@@ -32,7 +32,7 @@ function UseLogin() {
 
     function goToForgotPassword() {
         let path = '/account/ForgotPassword';
-        history(path);
+        navigate(path);
         // history.go(0);
     }
 
@@ -40,38 +40,42 @@ function UseLogin() {
         if (password !== '' && username !== '') {
 
             let unmounted = false;
-            const apiUrl = new URL(API_URL + 'user/login');
+            // const apiUrl = new URL(API_URL + '/Identity/Account/Login?ReturnUrl=/Directory');
+            var uri = "https://localhost:44447";
+            // alert(uri);
+            const apiUrl = new URL(uri + '/login?useCookies=true');
 
             fetch(apiUrl, API_CONFIG(
                 'POST',
                 JSON.stringify(
                     {
-                    'username': username,
+                    'email': username,
                     'password': password,
                     }
                 )
             ))
-            .then(response => response.json())
+            // .then(response => response.json())
             .then(
                 (result) => {
-                    if (!unmounted && result.result)
+                    if (!unmounted)
                     {
                         setError(false);
                         loginAuth(username);
+                        
                         // history.push('/queue?count=10&page=1&sortBy=asc&sortField=id');
-                        history.push('/landing');
-                        history.go(0);
+                        navigate('/landing');
+                        // history.go(0);
                     }
                     else
                     {
                         setError(true);
                     }
-                },
-                (error) => {
-                    console.error(error.message);
-                    setError(true);
                 }
-            );
+            )
+            .catch((error) => {
+                console.error(error.message);
+                setError(true);
+            });
 
             return () => {
                 unmounted = true;

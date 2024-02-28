@@ -18,7 +18,7 @@ const Profile = () => {
     const [activeComponent, setActiveComponent] = useState("general");
     const id = window.location.href.slice(window.location.href.lastIndexOf('/')+1);
     const { data, losMapping } = UseProfile(id);
-
+    
     const lastPositionEntry = data.positionHistory?.[0];
     const reducedPositionHistory = data.positionHistory
         ?.toSorted((a,b) => a.startDate.localeCompare(b.startDate))
@@ -64,6 +64,9 @@ const Profile = () => {
                 <NavItem className={activeComponent === "leader" ? "current-profile-page nav-option" : "nav-option"}>
                     <NavLink onClick={() => setActiveComponent("leader")}>Performance</NavLink>
                 </NavItem>
+                <NavItem className={activeComponent === "rating" ? "current-profile-page nav-option" : "nav-option"}>
+                    <NavLink onClick={() => setActiveComponent("rating")}>GISD rating</NavLink>
+                </NavItem>
             </Nav>
 
             {activeComponent === "general" && data !== {} ? (
@@ -79,6 +82,19 @@ const Profile = () => {
                                  return(
                                     <div>
                                         <EvaluationChart title={evaluation.title} data={data.evaluations} key={evaluation.title}/>
+                                    </div>
+                                 )
+                             })
+                         }
+
+                    </div>
+                ) : activeComponent === "rating" && data !== {} ? (
+                    <div>
+                         {
+                             data.rating.map(evaluation =>{
+                                 return(
+                                    <div>
+                                        <EvaluationChart title={evaluation.title} data={data.ratings} key={evaluation.title}/>
                                     </div>
                                  )
                              })

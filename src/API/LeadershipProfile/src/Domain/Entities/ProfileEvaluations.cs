@@ -12,7 +12,9 @@ namespace LeadershipProfile.Domain.Entities;
         public int SchoolYear { get; set; }
         public int EvalNumber { get; set; }
         public string? ObjectiveTitle { get; set; }
+        public string? EvaluationTitle { get; set; }
         public decimal Rating { get; set; }
+
     }
 
     public class ProfileEvaluationElement

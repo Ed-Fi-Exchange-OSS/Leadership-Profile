@@ -18,4 +18,5 @@ namespace LeadershipProfile.Domain.Entities;
         public string? Email { get; set; }
         public string? Position { get; set; }
         public string? Telephone { get; set; }
+        public bool? InterestedInNextRole { get; set; }
     }

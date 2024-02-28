@@ -55,7 +55,7 @@ public class GetFilteredWithPaginationQueryHandler : IRequestHandler<GetFiltered
         // return await results.ProjectTo<SearchResultDto>(_mapper.ConfigurationProvider)
         //     .PaginatedListAsync(request.Page, pageSize);
 
-            var list = results.AsQueryable()
+            var list = results
                     .ProjectTo<SearchResultDto>(_mapper.ConfigurationProvider)
                     .ToList();
 
