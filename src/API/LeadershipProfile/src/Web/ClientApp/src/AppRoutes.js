@@ -4,6 +4,7 @@ import { Home } from "./components/Home";
 import VacancyReport from './components/VacancyReport/VacancyReport';
 import IdentifyLeaders from './components/IdentifyLeaders/IdentifyLeaders';
 import Directory from './components/DirectoryComponents/Directory';
+import LandingPage from './components/LandingPageComponents/LandingPage';
 import Profile from "./components/ProfileComponents/Profile";
 import Registration from './components/LoginComponents/Registration';
 import Login from "./components/LoginComponents/Login";
@@ -15,6 +16,10 @@ const AppRoutes = [
   {
     index: true,
     element: <Login />
+  },
+  {
+    path: '/landing',
+    element: <LandingPage />
   },
   {
     path: '/account/login',

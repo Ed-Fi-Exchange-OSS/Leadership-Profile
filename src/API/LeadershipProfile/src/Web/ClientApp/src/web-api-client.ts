@@ -10,6 +10,474 @@
 
 import followIfLoginRedirect from './components/api-authorization/followIfLoginRedirect';
 
+export class Client {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    postRegister(registration: RegisterRequest | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/register";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(registration);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPostRegister(_response);
+        });
+    }
+
+    protected processPostRegister(response: Response): Promise<void> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = HttpValidationProblemDetails.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    postLogin(useCookies: boolean | null | undefined, useSessionCookies: boolean | null | undefined, login: LoginRequest | undefined): Promise<AccessTokenResponse> {
+        let url_ = this.baseUrl + "/login?";
+        if (useCookies !== undefined && useCookies !== null)
+            url_ += "useCookies=" + encodeURIComponent("" + useCookies) + "&";
+        if (useSessionCookies !== undefined && useSessionCookies !== null)
+            url_ += "useSessionCookies=" + encodeURIComponent("" + useSessionCookies) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(login);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPostLogin(_response);
+        });
+    }
+
+    protected processPostLogin(response: Response): Promise<AccessTokenResponse> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AccessTokenResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<AccessTokenResponse>(null as any);
+    }
+
+    postRefresh(refreshRequest: RefreshRequest | undefined): Promise<AccessTokenResponse> {
+        let url_ = this.baseUrl + "/refresh";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(refreshRequest);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPostRefresh(_response);
+        });
+    }
+
+    protected processPostRefresh(response: Response): Promise<AccessTokenResponse> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AccessTokenResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<AccessTokenResponse>(null as any);
+    }
+
+    getConfirmEmail(userId: string | null | undefined, code: string | null | undefined, changedEmail: string | null | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/confirmEmail?";
+        if (userId !== undefined && userId !== null)
+            url_ += "userId=" + encodeURIComponent("" + userId) + "&";
+        if (code !== undefined && code !== null)
+            url_ += "code=" + encodeURIComponent("" + code) + "&";
+        if (changedEmail !== undefined && changedEmail !== null)
+            url_ += "changedEmail=" + encodeURIComponent("" + changedEmail) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetConfirmEmail(_response);
+        });
+    }
+
+    protected processGetConfirmEmail(response: Response): Promise<void> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    postResendConfirmationEmail(resendRequest: ResendConfirmationEmailRequest | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/resendConfirmationEmail";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(resendRequest);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPostResendConfirmationEmail(_response);
+        });
+    }
+
+    protected processPostResendConfirmationEmail(response: Response): Promise<void> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    postForgotPassword(resetRequest: ForgotPasswordRequest | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/forgotPassword";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(resetRequest);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPostForgotPassword(_response);
+        });
+    }
+
+    protected processPostForgotPassword(response: Response): Promise<void> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = HttpValidationProblemDetails.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    postResetPassword(resetRequest: ResetPasswordRequest | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/resetPassword";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(resetRequest);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPostResetPassword(_response);
+        });
+    }
+
+    protected processPostResetPassword(response: Response): Promise<void> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = HttpValidationProblemDetails.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    postManage2fa(tfaRequest: TwoFactorRequest | undefined): Promise<TwoFactorResponse> {
+        let url_ = this.baseUrl + "/manage/2fa";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(tfaRequest);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPostManage2fa(_response);
+        });
+    }
+
+    protected processPostManage2fa(response: Response): Promise<TwoFactorResponse> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = TwoFactorResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = HttpValidationProblemDetails.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<TwoFactorResponse>(null as any);
+    }
+
+    getManageInfo(): Promise<InfoResponse> {
+        let url_ = this.baseUrl + "/manage/info";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetManageInfo(_response);
+        });
+    }
+
+    protected processGetManageInfo(response: Response): Promise<InfoResponse> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = InfoResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = HttpValidationProblemDetails.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<InfoResponse>(null as any);
+    }
+
+    postManageInfo(infoRequest: InfoRequest | undefined): Promise<InfoResponse> {
+        let url_ = this.baseUrl + "/manage/info";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(infoRequest);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPostManageInfo(_response);
+        });
+    }
+
+    protected processPostManageInfo(response: Response): Promise<InfoResponse> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = InfoResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = HttpValidationProblemDetails.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<InfoResponse>(null as any);
+    }
+
+    postLogout(): Promise<void> {
+        let url_ = this.baseUrl + "/logout";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPostLogout(_response);
+        });
+    }
+
+    protected processPostLogout(response: Response): Promise<void> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+}
+
 export class IdentifyLeadersClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
@@ -126,12 +594,12 @@ export class SearchClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    getSearchResults(pageNumber: number, sortField: string | null, sortBy: string | null, onlyActive: boolean): Promise<PaginatedListOfSearchResultDto> {
+    getSearchResults(page: number, sortField: string | null, sortBy: string | null, onlyActive: boolean): Promise<PaginatedListOfSearchResultDto> {
         let url_ = this.baseUrl + "/api/Search?";
-        if (pageNumber === undefined || pageNumber === null)
-            throw new Error("The parameter 'pageNumber' must be defined and cannot be null.");
+        if (page === undefined || page === null)
+            throw new Error("The parameter 'page' must be defined and cannot be null.");
         else
-            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+            url_ += "Page=" + encodeURIComponent("" + page) + "&";
         if (sortField === undefined)
             throw new Error("The parameter 'sortField' must be defined.");
         else if(sortField !== null)
@@ -147,7 +615,7 @@ export class SearchClient {
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
-            method: "POST",
+            method: "GET",
             headers: {
                 "Accept": "application/json"
             }
@@ -175,6 +643,45 @@ export class SearchClient {
             });
         }
         return Promise.resolve<PaginatedListOfSearchResultDto>(null as any);
+    }
+
+    getFilteredSearchResults(query: GetFilteredWithPaginationQuery): Promise<ResponseOfSearchResultDto> {
+        let url_ = this.baseUrl + "/api/Search";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(query);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetFilteredSearchResults(_response);
+        });
+    }
+
+    protected processGetFilteredSearchResults(response: Response): Promise<ResponseOfSearchResultDto> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResponseOfSearchResultDto.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ResponseOfSearchResultDto>(null as any);
     }
 }
 
@@ -494,6 +1001,611 @@ export class WebControlsClient {
     }
 }
 
+export class ProblemDetails implements IProblemDetails {
+    type?: string | undefined;
+    title?: string | undefined;
+    status?: number | undefined;
+    detail?: string | undefined;
+    instance?: string | undefined;
+
+    [key: string]: any;
+
+    constructor(data?: IProblemDetails) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.type = _data["type"];
+            this.title = _data["title"];
+            this.status = _data["status"];
+            this.detail = _data["detail"];
+            this.instance = _data["instance"];
+        }
+    }
+
+    static fromJS(data: any): ProblemDetails {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProblemDetails();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["type"] = this.type;
+        data["title"] = this.title;
+        data["status"] = this.status;
+        data["detail"] = this.detail;
+        data["instance"] = this.instance;
+        return data;
+    }
+}
+
+export interface IProblemDetails {
+    type?: string | undefined;
+    title?: string | undefined;
+    status?: number | undefined;
+    detail?: string | undefined;
+    instance?: string | undefined;
+
+    [key: string]: any;
+}
+
+export class HttpValidationProblemDetails extends ProblemDetails implements IHttpValidationProblemDetails {
+    errors?: { [key: string]: string[]; };
+
+    [key: string]: any;
+
+    constructor(data?: IHttpValidationProblemDetails) {
+        super(data);
+    }
+
+    override init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            if (_data["errors"]) {
+                this.errors = {} as any;
+                for (let key in _data["errors"]) {
+                    if (_data["errors"].hasOwnProperty(key))
+                        (<any>this.errors)![key] = _data["errors"][key] !== undefined ? _data["errors"][key] : [];
+                }
+            }
+        }
+    }
+
+    static override fromJS(data: any): HttpValidationProblemDetails {
+        data = typeof data === 'object' ? data : {};
+        let result = new HttpValidationProblemDetails();
+        result.init(data);
+        return result;
+    }
+
+    override toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        if (this.errors) {
+            data["errors"] = {};
+            for (let key in this.errors) {
+                if (this.errors.hasOwnProperty(key))
+                    (<any>data["errors"])[key] = (<any>this.errors)[key];
+            }
+        }
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IHttpValidationProblemDetails extends IProblemDetails {
+    errors?: { [key: string]: string[]; };
+
+    [key: string]: any;
+}
+
+export class RegisterRequest implements IRegisterRequest {
+    email?: string;
+    password?: string;
+
+    constructor(data?: IRegisterRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.email = _data["email"];
+            this.password = _data["password"];
+        }
+    }
+
+    static fromJS(data: any): RegisterRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new RegisterRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["email"] = this.email;
+        data["password"] = this.password;
+        return data;
+    }
+}
+
+export interface IRegisterRequest {
+    email?: string;
+    password?: string;
+}
+
+export class AccessTokenResponse implements IAccessTokenResponse {
+    tokenType?: string;
+    accessToken?: string;
+    expiresIn?: number;
+    refreshToken?: string;
+
+    constructor(data?: IAccessTokenResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.tokenType = _data["tokenType"];
+            this.accessToken = _data["accessToken"];
+            this.expiresIn = _data["expiresIn"];
+            this.refreshToken = _data["refreshToken"];
+        }
+    }
+
+    static fromJS(data: any): AccessTokenResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new AccessTokenResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["tokenType"] = this.tokenType;
+        data["accessToken"] = this.accessToken;
+        data["expiresIn"] = this.expiresIn;
+        data["refreshToken"] = this.refreshToken;
+        return data;
+    }
+}
+
+export interface IAccessTokenResponse {
+    tokenType?: string;
+    accessToken?: string;
+    expiresIn?: number;
+    refreshToken?: string;
+}
+
+export class LoginRequest implements ILoginRequest {
+    email?: string;
+    password?: string;
+    twoFactorCode?: string | undefined;
+    twoFactorRecoveryCode?: string | undefined;
+
+    constructor(data?: ILoginRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.email = _data["email"];
+            this.password = _data["password"];
+            this.twoFactorCode = _data["twoFactorCode"];
+            this.twoFactorRecoveryCode = _data["twoFactorRecoveryCode"];
+        }
+    }
+
+    static fromJS(data: any): LoginRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new LoginRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["email"] = this.email;
+        data["password"] = this.password;
+        data["twoFactorCode"] = this.twoFactorCode;
+        data["twoFactorRecoveryCode"] = this.twoFactorRecoveryCode;
+        return data;
+    }
+}
+
+export interface ILoginRequest {
+    email?: string;
+    password?: string;
+    twoFactorCode?: string | undefined;
+    twoFactorRecoveryCode?: string | undefined;
+}
+
+export class RefreshRequest implements IRefreshRequest {
+    refreshToken?: string;
+
+    constructor(data?: IRefreshRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.refreshToken = _data["refreshToken"];
+        }
+    }
+
+    static fromJS(data: any): RefreshRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new RefreshRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["refreshToken"] = this.refreshToken;
+        return data;
+    }
+}
+
+export interface IRefreshRequest {
+    refreshToken?: string;
+}
+
+export class ResendConfirmationEmailRequest implements IResendConfirmationEmailRequest {
+    email?: string;
+
+    constructor(data?: IResendConfirmationEmailRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.email = _data["email"];
+        }
+    }
+
+    static fromJS(data: any): ResendConfirmationEmailRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new ResendConfirmationEmailRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["email"] = this.email;
+        return data;
+    }
+}
+
+export interface IResendConfirmationEmailRequest {
+    email?: string;
+}
+
+export class ForgotPasswordRequest implements IForgotPasswordRequest {
+    email?: string;
+
+    constructor(data?: IForgotPasswordRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.email = _data["email"];
+        }
+    }
+
+    static fromJS(data: any): ForgotPasswordRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new ForgotPasswordRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["email"] = this.email;
+        return data;
+    }
+}
+
+export interface IForgotPasswordRequest {
+    email?: string;
+}
+
+export class ResetPasswordRequest implements IResetPasswordRequest {
+    email?: string;
+    resetCode?: string;
+    newPassword?: string;
+
+    constructor(data?: IResetPasswordRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.email = _data["email"];
+            this.resetCode = _data["resetCode"];
+            this.newPassword = _data["newPassword"];
+        }
+    }
+
+    static fromJS(data: any): ResetPasswordRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new ResetPasswordRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["email"] = this.email;
+        data["resetCode"] = this.resetCode;
+        data["newPassword"] = this.newPassword;
+        return data;
+    }
+}
+
+export interface IResetPasswordRequest {
+    email?: string;
+    resetCode?: string;
+    newPassword?: string;
+}
+
+export class TwoFactorResponse implements ITwoFactorResponse {
+    sharedKey?: string;
+    recoveryCodesLeft?: number;
+    recoveryCodes?: string[] | undefined;
+    isTwoFactorEnabled?: boolean;
+    isMachineRemembered?: boolean;
+
+    constructor(data?: ITwoFactorResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.sharedKey = _data["sharedKey"];
+            this.recoveryCodesLeft = _data["recoveryCodesLeft"];
+            if (Array.isArray(_data["recoveryCodes"])) {
+                this.recoveryCodes = [] as any;
+                for (let item of _data["recoveryCodes"])
+                    this.recoveryCodes!.push(item);
+            }
+            this.isTwoFactorEnabled = _data["isTwoFactorEnabled"];
+            this.isMachineRemembered = _data["isMachineRemembered"];
+        }
+    }
+
+    static fromJS(data: any): TwoFactorResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new TwoFactorResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["sharedKey"] = this.sharedKey;
+        data["recoveryCodesLeft"] = this.recoveryCodesLeft;
+        if (Array.isArray(this.recoveryCodes)) {
+            data["recoveryCodes"] = [];
+            for (let item of this.recoveryCodes)
+                data["recoveryCodes"].push(item);
+        }
+        data["isTwoFactorEnabled"] = this.isTwoFactorEnabled;
+        data["isMachineRemembered"] = this.isMachineRemembered;
+        return data;
+    }
+}
+
+export interface ITwoFactorResponse {
+    sharedKey?: string;
+    recoveryCodesLeft?: number;
+    recoveryCodes?: string[] | undefined;
+    isTwoFactorEnabled?: boolean;
+    isMachineRemembered?: boolean;
+}
+
+export class TwoFactorRequest implements ITwoFactorRequest {
+    enable?: boolean | undefined;
+    twoFactorCode?: string | undefined;
+    resetSharedKey?: boolean;
+    resetRecoveryCodes?: boolean;
+    forgetMachine?: boolean;
+
+    constructor(data?: ITwoFactorRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.enable = _data["enable"];
+            this.twoFactorCode = _data["twoFactorCode"];
+            this.resetSharedKey = _data["resetSharedKey"];
+            this.resetRecoveryCodes = _data["resetRecoveryCodes"];
+            this.forgetMachine = _data["forgetMachine"];
+        }
+    }
+
+    static fromJS(data: any): TwoFactorRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new TwoFactorRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["enable"] = this.enable;
+        data["twoFactorCode"] = this.twoFactorCode;
+        data["resetSharedKey"] = this.resetSharedKey;
+        data["resetRecoveryCodes"] = this.resetRecoveryCodes;
+        data["forgetMachine"] = this.forgetMachine;
+        return data;
+    }
+}
+
+export interface ITwoFactorRequest {
+    enable?: boolean | undefined;
+    twoFactorCode?: string | undefined;
+    resetSharedKey?: boolean;
+    resetRecoveryCodes?: boolean;
+    forgetMachine?: boolean;
+}
+
+export class InfoResponse implements IInfoResponse {
+    email?: string;
+    isEmailConfirmed?: boolean;
+
+    constructor(data?: IInfoResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.email = _data["email"];
+            this.isEmailConfirmed = _data["isEmailConfirmed"];
+        }
+    }
+
+    static fromJS(data: any): InfoResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new InfoResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["email"] = this.email;
+        data["isEmailConfirmed"] = this.isEmailConfirmed;
+        return data;
+    }
+}
+
+export interface IInfoResponse {
+    email?: string;
+    isEmailConfirmed?: boolean;
+}
+
+export class InfoRequest implements IInfoRequest {
+    newEmail?: string | undefined;
+    newPassword?: string | undefined;
+    oldPassword?: string | undefined;
+
+    constructor(data?: IInfoRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.newEmail = _data["newEmail"];
+            this.newPassword = _data["newPassword"];
+            this.oldPassword = _data["oldPassword"];
+        }
+    }
+
+    static fromJS(data: any): InfoRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new InfoRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["newEmail"] = this.newEmail;
+        data["newPassword"] = this.newPassword;
+        data["oldPassword"] = this.oldPassword;
+        return data;
+    }
+}
+
+export interface IInfoRequest {
+    newEmail?: string | undefined;
+    newPassword?: string | undefined;
+    oldPassword?: string | undefined;
+}
+
 export class LeaderBriefDto implements ILeaderBriefDto {
     staffUniqueId?: string | undefined;
     fullNameAnnon?: string | undefined;
@@ -803,6 +1915,7 @@ export class Response implements IResponse {
     certificates?: Certificate[];
     professionalDevelopment?: ProfessionalDevelopment[];
     evaluations?: PerformanceEvaluation[];
+    ratings?: PerformanceEvaluation[];
 
     constructor(data?: IResponse) {
         if (data) {
@@ -846,6 +1959,11 @@ export class Response implements IResponse {
                 this.evaluations = [] as any;
                 for (let item of _data["evaluations"])
                     this.evaluations!.push(PerformanceEvaluation.fromJS(item));
+            }
+            if (Array.isArray(_data["ratings"])) {
+                this.ratings = [] as any;
+                for (let item of _data["ratings"])
+                    this.ratings!.push(PerformanceEvaluation.fromJS(item));
             }
         }
     }
@@ -891,6 +2009,11 @@ export class Response implements IResponse {
             for (let item of this.evaluations)
                 data["evaluations"].push(item.toJSON());
         }
+        if (Array.isArray(this.ratings)) {
+            data["ratings"] = [];
+            for (let item of this.ratings)
+                data["ratings"].push(item.toJSON());
+        }
         return data;
     }
 }
@@ -912,6 +2035,7 @@ export interface IResponse {
     certificates?: Certificate[];
     professionalDevelopment?: ProfessionalDevelopment[];
     evaluations?: PerformanceEvaluation[];
+    ratings?: PerformanceEvaluation[];
 }
 
 export class PositionHistory implements IPositionHistory {
@@ -1276,6 +2400,486 @@ export interface ISearchResultDto {
     assignment?: string | undefined;
     degree?: string | undefined;
     institution?: string | undefined;
+}
+
+export class ResponseOfSearchResultDto implements IResponseOfSearchResultDto {
+    totalCount?: number;
+    pageCount?: number;
+    results?: SearchResultDto[] | undefined;
+    page?: number | undefined;
+
+    constructor(data?: IResponseOfSearchResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.totalCount = _data["totalCount"];
+            this.pageCount = _data["pageCount"];
+            if (Array.isArray(_data["results"])) {
+                this.results = [] as any;
+                for (let item of _data["results"])
+                    this.results!.push(SearchResultDto.fromJS(item));
+            }
+            this.page = _data["page"];
+        }
+    }
+
+    static fromJS(data: any): ResponseOfSearchResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ResponseOfSearchResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        data["pageCount"] = this.pageCount;
+        if (Array.isArray(this.results)) {
+            data["results"] = [];
+            for (let item of this.results)
+                data["results"].push(item.toJSON());
+        }
+        data["page"] = this.page;
+        return data;
+    }
+}
+
+export interface IResponseOfSearchResultDto {
+    totalCount?: number;
+    pageCount?: number;
+    results?: SearchResultDto[] | undefined;
+    page?: number | undefined;
+}
+
+export class GetFilteredWithPaginationQuery implements IGetFilteredWithPaginationQuery {
+    page?: number;
+    sortField?: string;
+    sortBy?: string;
+    onlyActive?: boolean;
+    searchRequestBody?: ProfileSearchRequestBody;
+
+    constructor(data?: IGetFilteredWithPaginationQuery) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.page = _data["page"];
+            this.sortField = _data["sortField"];
+            this.sortBy = _data["sortBy"];
+            this.onlyActive = _data["onlyActive"];
+            this.searchRequestBody = _data["searchRequestBody"] ? ProfileSearchRequestBody.fromJS(_data["searchRequestBody"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): GetFilteredWithPaginationQuery {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetFilteredWithPaginationQuery();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["page"] = this.page;
+        data["sortField"] = this.sortField;
+        data["sortBy"] = this.sortBy;
+        data["onlyActive"] = this.onlyActive;
+        data["searchRequestBody"] = this.searchRequestBody ? this.searchRequestBody.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IGetFilteredWithPaginationQuery {
+    page?: number;
+    sortField?: string;
+    sortBy?: string;
+    onlyActive?: boolean;
+    searchRequestBody?: ProfileSearchRequestBody;
+}
+
+export class ProfileSearchRequestBody implements IProfileSearchRequestBody {
+    yearsOfPriorExperienceRanges?: ProfileSearchYearsOfPriorExperience;
+    ratings?: ProfileSearchRequestRatings[] | undefined;
+    assignments?: ProfileSearchRequestAssignments;
+    degrees?: ProfileSearchRequestDegrees;
+    schoolCategories?: ProfileSearchRequestSchoolCategories;
+    institutions?: ProfileSearchRequestInstitution;
+    name?: string | undefined;
+
+    constructor(data?: IProfileSearchRequestBody) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.yearsOfPriorExperienceRanges = _data["yearsOfPriorExperienceRanges"] ? ProfileSearchYearsOfPriorExperience.fromJS(_data["yearsOfPriorExperienceRanges"]) : <any>undefined;
+            if (Array.isArray(_data["ratings"])) {
+                this.ratings = [] as any;
+                for (let item of _data["ratings"])
+                    this.ratings!.push(ProfileSearchRequestRatings.fromJS(item));
+            }
+            this.assignments = _data["assignments"] ? ProfileSearchRequestAssignments.fromJS(_data["assignments"]) : <any>undefined;
+            this.degrees = _data["degrees"] ? ProfileSearchRequestDegrees.fromJS(_data["degrees"]) : <any>undefined;
+            this.schoolCategories = _data["schoolCategories"] ? ProfileSearchRequestSchoolCategories.fromJS(_data["schoolCategories"]) : <any>undefined;
+            this.institutions = _data["institutions"] ? ProfileSearchRequestInstitution.fromJS(_data["institutions"]) : <any>undefined;
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): ProfileSearchRequestBody {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProfileSearchRequestBody();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["yearsOfPriorExperienceRanges"] = this.yearsOfPriorExperienceRanges ? this.yearsOfPriorExperienceRanges.toJSON() : <any>undefined;
+        if (Array.isArray(this.ratings)) {
+            data["ratings"] = [];
+            for (let item of this.ratings)
+                data["ratings"].push(item.toJSON());
+        }
+        data["assignments"] = this.assignments ? this.assignments.toJSON() : <any>undefined;
+        data["degrees"] = this.degrees ? this.degrees.toJSON() : <any>undefined;
+        data["schoolCategories"] = this.schoolCategories ? this.schoolCategories.toJSON() : <any>undefined;
+        data["institutions"] = this.institutions ? this.institutions.toJSON() : <any>undefined;
+        data["name"] = this.name;
+        return data;
+    }
+}
+
+export interface IProfileSearchRequestBody {
+    yearsOfPriorExperienceRanges?: ProfileSearchYearsOfPriorExperience;
+    ratings?: ProfileSearchRequestRatings[] | undefined;
+    assignments?: ProfileSearchRequestAssignments;
+    degrees?: ProfileSearchRequestDegrees;
+    schoolCategories?: ProfileSearchRequestSchoolCategories;
+    institutions?: ProfileSearchRequestInstitution;
+    name?: string | undefined;
+}
+
+export class ProfileSearchYearsOfPriorExperience implements IProfileSearchYearsOfPriorExperience {
+    values?: Range[] | undefined;
+
+    constructor(data?: IProfileSearchYearsOfPriorExperience) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["values"])) {
+                this.values = [] as any;
+                for (let item of _data["values"])
+                    this.values!.push(Range.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ProfileSearchYearsOfPriorExperience {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProfileSearchYearsOfPriorExperience();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.values)) {
+            data["values"] = [];
+            for (let item of this.values)
+                data["values"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IProfileSearchYearsOfPriorExperience {
+    values?: Range[] | undefined;
+}
+
+export class Range implements IRange {
+    min?: number;
+    max?: number;
+
+    constructor(data?: IRange) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.min = _data["min"];
+            this.max = _data["max"];
+        }
+    }
+
+    static fromJS(data: any): Range {
+        data = typeof data === 'object' ? data : {};
+        let result = new Range();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["min"] = this.min;
+        data["max"] = this.max;
+        return data;
+    }
+}
+
+export interface IRange {
+    min?: number;
+    max?: number;
+}
+
+export class ProfileSearchRequestRatings implements IProfileSearchRequestRatings {
+    category?: string | undefined;
+    score?: number;
+    isPopulated?: boolean;
+
+    constructor(data?: IProfileSearchRequestRatings) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.category = _data["category"];
+            this.score = _data["score"];
+            this.isPopulated = _data["isPopulated"];
+        }
+    }
+
+    static fromJS(data: any): ProfileSearchRequestRatings {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProfileSearchRequestRatings();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["category"] = this.category;
+        data["score"] = this.score;
+        data["isPopulated"] = this.isPopulated;
+        return data;
+    }
+}
+
+export interface IProfileSearchRequestRatings {
+    category?: string | undefined;
+    score?: number;
+    isPopulated?: boolean;
+}
+
+export class ProfileSearchRequestAssignments implements IProfileSearchRequestAssignments {
+    values?: number[] | undefined;
+
+    constructor(data?: IProfileSearchRequestAssignments) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["values"])) {
+                this.values = [] as any;
+                for (let item of _data["values"])
+                    this.values!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): ProfileSearchRequestAssignments {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProfileSearchRequestAssignments();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.values)) {
+            data["values"] = [];
+            for (let item of this.values)
+                data["values"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IProfileSearchRequestAssignments {
+    values?: number[] | undefined;
+}
+
+export class ProfileSearchRequestDegrees implements IProfileSearchRequestDegrees {
+    values?: number[] | undefined;
+
+    constructor(data?: IProfileSearchRequestDegrees) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["values"])) {
+                this.values = [] as any;
+                for (let item of _data["values"])
+                    this.values!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): ProfileSearchRequestDegrees {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProfileSearchRequestDegrees();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.values)) {
+            data["values"] = [];
+            for (let item of this.values)
+                data["values"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IProfileSearchRequestDegrees {
+    values?: number[] | undefined;
+}
+
+export class ProfileSearchRequestSchoolCategories implements IProfileSearchRequestSchoolCategories {
+    values?: number[] | undefined;
+
+    constructor(data?: IProfileSearchRequestSchoolCategories) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["values"])) {
+                this.values = [] as any;
+                for (let item of _data["values"])
+                    this.values!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): ProfileSearchRequestSchoolCategories {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProfileSearchRequestSchoolCategories();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.values)) {
+            data["values"] = [];
+            for (let item of this.values)
+                data["values"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IProfileSearchRequestSchoolCategories {
+    values?: number[] | undefined;
+}
+
+export class ProfileSearchRequestInstitution implements IProfileSearchRequestInstitution {
+    values?: number[] | undefined;
+
+    constructor(data?: IProfileSearchRequestInstitution) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["values"])) {
+                this.values = [] as any;
+                for (let item of _data["values"])
+                    this.values!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): ProfileSearchRequestInstitution {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProfileSearchRequestInstitution();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.values)) {
+            data["values"] = [];
+            for (let item of this.values)
+                data["values"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IProfileSearchRequestInstitution {
+    values?: number[] | undefined;
 }
 
 export class VacancyForecast implements IVacancyForecast {

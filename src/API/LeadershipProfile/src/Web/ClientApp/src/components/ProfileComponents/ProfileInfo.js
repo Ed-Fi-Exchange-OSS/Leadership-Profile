@@ -41,10 +41,14 @@ const ProfileInfo = (props) => {
                                 <td className="profile-info-icon"><MailIcon /></td>
                                 <td className="profile-info-text"><a href={ "mailto:" + data.email}>{data.email}</a></td>
                             </tr>
-                            <tr>
-                                <td className="profile-info-icon"><ChartIcon isDark={false} /></td>
-                                <td className="profile-info-text">Aspire</td>
-                            </tr>
+                            {
+                                data.interestedInNextRole ?                                 
+                                <tr>
+                                    <td className="profile-info-icon"><ChartIcon isDark={false} /></td>
+                                    <td className="profile-info-text">Aspire</td>
+                                </tr>   
+                                : <div></div>
+                            }
                         </tbody>
                     </table>
 
