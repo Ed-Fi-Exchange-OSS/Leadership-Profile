@@ -8,7 +8,7 @@ import {INITIAL_FILTERS_STATE} from "../../utils/Constants";
 
 const Reducer = (state, action) => {
     const {setNameFilter, setPosition, removePosition, setIntitution, removeInstitution, setSchoolCategory, removeSchoolCategory,
-        setDegree, removeDegree, setTenure, removeTenure, setRatingCategory, setRatingScore, removeRating, removePill, clearFilters} = FilterActions;
+        setDegree, removeDegree, setTenure, removeTenure, setRatingCategory, setAspires, setRatingScore, removeRating, removePill, clearFilters} = FilterActions;
 
     switch(action.type){
         case setNameFilter: {
@@ -88,7 +88,7 @@ const Reducer = (state, action) => {
                 schoolCategories: [...state.schoolCategories, filterPill.value],
                 pills: [...state.pills, filterPill]
             }
-        }
+        }   
         case removeSchoolCategory: {
             let filterPill = action.payload;
             return {
@@ -109,6 +109,14 @@ const Reducer = (state, action) => {
                 ...state,
                 scores: [...state.scores.filter(s => s.category !== newFilterPill.value.category), { category: newFilterPill.value.category, score: newFilterPill.value.score}],
                 pills: [...state.pills.filter(pill => pill.filter !== newFilterPill.filter || pill.value?.category !== newFilterPill.value.category), newFilterPill]
+            }
+        }
+        case setAspires: {
+            let filterPill = action.payload;
+            return {
+                ...state,
+                apires: [...state.aspires.filter(a => a.value != filterPill.value)],
+                pills: [...state.pills, filterPill]
             }
         }
         case removeRating: {

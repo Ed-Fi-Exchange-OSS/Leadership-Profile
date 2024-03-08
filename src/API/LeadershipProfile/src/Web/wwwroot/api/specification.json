@@ -662,10 +662,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ListItemCategory"
-                  }
+                  "$ref": "#/components/schemas/Response2"
                 }
               }
             }
@@ -1316,6 +1313,9 @@
           "institution": {
             "type": "string",
             "nullable": true
+          },
+          "interestedInNextRole": {
+            "type": "boolean"
           }
         }
       },
@@ -1591,6 +1591,10 @@
           "sortOrder": {
             "type": "integer",
             "format": "int32"
+          },
+          "evaluationTitle": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
@@ -1632,6 +1636,37 @@
             "additionalProperties": false
           }
         ]
+      },
+      "Response2": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "categories": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/Category"
+            }
+          }
+        }
+      },
+      "Category": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "value": {
+            "type": "string",
+            "nullable": true
+          },
+          "text": {
+            "type": "string",
+            "nullable": true
+          },
+          "evaluationTitle": {
+            "type": "string",
+            "nullable": true
+          }
+        }
       }
     }
   }

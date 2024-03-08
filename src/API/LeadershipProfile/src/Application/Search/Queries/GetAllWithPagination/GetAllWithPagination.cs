@@ -82,6 +82,7 @@ public class GetAllWithPaginationQueryHandler : IRequestHandler<GetAllWithPagina
                     ,Degree
                     ,Email
                     ,Telephone
+                    ,a.InterestedInNextRole
                 from edfi.vw_StaffSearch s
                 order by {fieldMapping[sortField]} {sortBy}
              ";

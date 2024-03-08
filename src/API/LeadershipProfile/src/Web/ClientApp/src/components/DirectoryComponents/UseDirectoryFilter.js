@@ -24,6 +24,7 @@ function UseDirectoryFilters () {
     const [filteredInstitutions, setFilteredInstitutions] = useState(institutions);
     const [filterInstitutionValue, setFilterInstitutionValue] = useState();
     const [categories, setCategories] = useState([]);
+    const [otherCategories, setOtherCategories] = useState([]);
 
     async function getPositions(){
         fetchFilterData(`WebControls/Assignments`, (response) => {
@@ -73,7 +74,10 @@ function UseDirectoryFilters () {
 
     async function getCategories(){
         fetchFilterData(`WebControls/MeasurementCategories`, (response) => {
-            responseSetter(response, setCategories, null, false);
+            var cats = response.categories.filter(c => c.evaluationTitle != "Texas Principal Evaluation & Support Systems");            
+            var otherCats = response.categories.filter(c => c.evaluationTitle == "Texas Principal Evaluation & Support Systems");
+            responseSetter(cats, setCategories, null, false);
+            responseSetter(otherCats, setOtherCategories, null, false);
         });
     }
 
@@ -140,11 +144,11 @@ function UseDirectoryFilters () {
     }, [institutions])
 
     return {positions, nameSearch, degrees, schoolCategories, yearsOptionRange, year, yearRange,
-        institutions, filteredInstitutions, filterInstitutionValue, categories, tenureRanges,
+        institutions, filteredInstitutions, filterInstitutionValue, categories, otherCategories, tenureRanges,
          setPositions, setNameSearch, setDegrees, setSchoolCategories, setYearsOptionRange, setYear, setYearRange,
          setInstitutions, setFilteredInstitutions, setFilterInstitutionValue,
         setCheckValueForElement, unCheckAllFromElement, setTenureRanges,
-         setCategories};
+        setCategories,  setOtherCategories};
 }
 
 export default UseDirectoryFilters;

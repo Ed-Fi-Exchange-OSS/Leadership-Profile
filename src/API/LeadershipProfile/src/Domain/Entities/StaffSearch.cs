@@ -13,4 +13,6 @@ public class StaffSearch
     public string? Institution { get; set; }
     public string? Email { get; set; }
     public string? Telephone { get; set; }
+    public bool? InterestedInNextRole { get; set; } = false;
+
 }

@@ -28,7 +28,7 @@ const CreateTableList = (props) => {
                             {/* Position */}
                             POSITION
                         </th>
-                        <th width="30%">
+                        <th width="25%">
                             {/* School  */}
                             SCHOOL
                         </th>
@@ -36,9 +36,13 @@ const CreateTableList = (props) => {
                             {/* Years */}
                             YEARS
                         </th>
-                        <th width="20%">
+                        <th width="15%">
                             {/* Degree */}
                             DEGREE
+                        </th>
+                        <th width="10%">
+                            {/* Degree */}
+                            ASPIRES
                         </th>
                     </tr>
                 </thead>
@@ -48,9 +52,10 @@ const CreateTableList = (props) => {
                             <td></td>
                             <td width="20%"><Link to={`/profile/${profile.staffUniqueId}`}>{profile.lastSurname}, {profile.firstName}</Link></td>
                             <td width="20%">{profile.assignment}</td>
-                            <td width="20%">{profile.institution}</td>
-                            <td width="20%">{profile.yearsOfService}</td>
-                            <td width="20%">{profile.degree}</td>
+                            <td width="25%">{profile.institution}</td>
+                            <td width="10%">{profile.yearsOfService}</td>
+                            <td width="15%">{profile.degree}</td>
+                            <td width="10%">{profile.interestedInNextRole ? "Yes" : "No"}</td>
                         </tr>)) : ''}
                         <tr className="bottom-row">
                             <td colSpan="5">

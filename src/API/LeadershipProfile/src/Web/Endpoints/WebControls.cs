@@ -46,7 +46,7 @@ public class WebControls : EndpointGroupBase
     {
         return await sender.Send(query);
     }
-    public async Task<IEnumerable<ListItemCategory>> GetMeasurementCategories(ISender sender, [AsParameters] GetMeasurementCategoriesQuery query)
+    public async Task<Response> GetMeasurementCategories(ISender sender, [AsParameters] GetMeasurementCategoriesQuery query)
     {
         return await sender.Send(query);
     }

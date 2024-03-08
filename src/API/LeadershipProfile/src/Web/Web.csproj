@@ -6,6 +6,7 @@
     <SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
     <RootNamespace>LeadershipProfile.Web</RootNamespace>
     <AssemblyName>LeadershipProfile.Web</AssemblyName>
+    <TargetFramework>net80</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>

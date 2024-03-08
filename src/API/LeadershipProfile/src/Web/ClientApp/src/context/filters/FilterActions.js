@@ -18,6 +18,7 @@ const FilterActions = {
     removePill: "REMOVE_PILL",
     setRatingCategory: "SET_RATING_CATEGORY",
     setRatingScore: "SET_RATING_SCORE",
+    setRatingScore: "SET_ASPIRES",
     removeRating: "REMOVE_RATING",
     setTenure:"SET_TENURE",
     removeTenure: "REMOVE_TENURE",

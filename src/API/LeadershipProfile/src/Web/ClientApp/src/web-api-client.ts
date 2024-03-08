@@ -958,7 +958,7 @@ export class WebControlsClient {
         return Promise.resolve<ListItemInstitution[]>(null as any);
     }
 
-    getApiWebControlsMeasurementCategories(): Promise<ListItemCategory[]> {
+    getApiWebControlsMeasurementCategories(): Promise<Response2> {
         let url_ = this.baseUrl + "/api/WebControls/MeasurementCategories";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -974,7 +974,7 @@ export class WebControlsClient {
         });
     }
 
-    protected processGetApiWebControlsMeasurementCategories(response: Response): Promise<ListItemCategory[]> {
+    protected processGetApiWebControlsMeasurementCategories(response: Response): Promise<Response2> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -982,14 +982,7 @@ export class WebControlsClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(ListItemCategory.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
+            result200 = Response2.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -997,7 +990,7 @@ export class WebControlsClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ListItemCategory[]>(null as any);
+        return Promise.resolve<Response2>(null as any);
     }
 }
 
@@ -2347,6 +2340,7 @@ export class SearchResultDto implements ISearchResultDto {
     assignment?: string | undefined;
     degree?: string | undefined;
     institution?: string | undefined;
+    interestedInNextRole?: boolean;
 
     constructor(data?: ISearchResultDto) {
         if (data) {
@@ -2367,6 +2361,7 @@ export class SearchResultDto implements ISearchResultDto {
             this.assignment = _data["assignment"];
             this.degree = _data["degree"];
             this.institution = _data["institution"];
+            this.interestedInNextRole = _data["interestedInNextRole"];
         }
     }
 
@@ -2387,6 +2382,7 @@ export class SearchResultDto implements ISearchResultDto {
         data["assignment"] = this.assignment;
         data["degree"] = this.degree;
         data["institution"] = this.institution;
+        data["interestedInNextRole"] = this.interestedInNextRole;
         return data;
     }
 }
@@ -2400,6 +2396,7 @@ export interface ISearchResultDto {
     assignment?: string | undefined;
     degree?: string | undefined;
     institution?: string | undefined;
+    interestedInNextRole?: boolean;
 }
 
 export class ResponseOfSearchResultDto implements IResponseOfSearchResultDto {
@@ -3032,6 +3029,7 @@ export interface IListItemAssignment extends IListItemBase {
 export class ListItemCategory implements IListItemCategory {
     category?: string | undefined;
     sortOrder?: number;
+    evaluationTitle?: string | undefined;
 
     constructor(data?: IListItemCategory) {
         if (data) {
@@ -3046,6 +3044,7 @@ export class ListItemCategory implements IListItemCategory {
         if (_data) {
             this.category = _data["category"];
             this.sortOrder = _data["sortOrder"];
+            this.evaluationTitle = _data["evaluationTitle"];
         }
     }
 
@@ -3060,6 +3059,7 @@ export class ListItemCategory implements IListItemCategory {
         data = typeof data === 'object' ? data : {};
         data["category"] = this.category;
         data["sortOrder"] = this.sortOrder;
+        data["evaluationTitle"] = this.evaluationTitle;
         return data;
     }
 }
@@ -3067,6 +3067,7 @@ export class ListItemCategory implements IListItemCategory {
 export interface IListItemCategory {
     category?: string | undefined;
     sortOrder?: number;
+    evaluationTitle?: string | undefined;
 }
 
 export class ListItemDegree extends ListItemBase implements IListItemDegree {
@@ -3154,6 +3155,94 @@ export class ListItemInstitution extends ListItemBase implements IListItemInstit
 }
 
 export interface IListItemInstitution extends IListItemBase {
+}
+
+export class Response2 implements IResponse2 {
+    categories?: Category[] | undefined;
+
+    constructor(data?: IResponse2) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["categories"])) {
+                this.categories = [] as any;
+                for (let item of _data["categories"])
+                    this.categories!.push(Category.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): Response2 {
+        data = typeof data === 'object' ? data : {};
+        let result = new Response2();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.categories)) {
+            data["categories"] = [];
+            for (let item of this.categories)
+                data["categories"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IResponse2 {
+    categories?: Category[] | undefined;
+}
+
+export class Category implements ICategory {
+    value?: string | undefined;
+    text?: string | undefined;
+    evaluationTitle?: string | undefined;
+
+    constructor(data?: ICategory) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.value = _data["value"];
+            this.text = _data["text"];
+            this.evaluationTitle = _data["evaluationTitle"];
+        }
+    }
+
+    static fromJS(data: any): Category {
+        data = typeof data === 'object' ? data : {};
+        let result = new Category();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["value"] = this.value;
+        data["text"] = this.text;
+        data["evaluationTitle"] = this.evaluationTitle;
+        return data;
+    }
+}
+
+export interface ICategory {
+    value?: string | undefined;
+    text?: string | undefined;
+    evaluationTitle?: string | undefined;
 }
 
 export class SwaggerException extends Error {

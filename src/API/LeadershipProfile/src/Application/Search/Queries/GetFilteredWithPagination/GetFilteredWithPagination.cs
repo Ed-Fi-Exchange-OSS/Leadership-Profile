@@ -105,7 +105,9 @@ public class GetFilteredWithPaginationQueryHandler : IRequestHandler<GetFiltered
                     ,Degree
                     ,Email
                     ,Telephone
+					,a.InterestedInNextRole
                 from edfi.vw_StaffSearch s
+                LEFT JOIN dbo.GISDAspirations a ON s.StaffUniqueId = a.ID
                 {ClauseRatingsConditionalJoin(body)}
                 {ClauseConditions(body)}
                 order by case when {fieldMapping[sortField]} is null then 1 else 0 end, {fieldMapping[sortField]} {sortBy}

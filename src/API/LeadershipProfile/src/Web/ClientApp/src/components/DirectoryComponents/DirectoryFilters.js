@@ -51,12 +51,14 @@ const CreateDirectoryFilters = (props) => {
       setCheckValueForElement,
       unCheckAllFromElement,
       categories,
+      otherCategories,
     } = UseDirectoryFilters();
 
     const { setNewPill, removePill, pillTypes, getTypeAction } = UsePills();
     const [filterState, sendFilter] = useFilterContext();
 
     const [category, setCategory] = useState({label:'', name:''});
+    const [aspires, setAspires] = useState();
 
     function CheckSelectedItem(target, elements, setter, type) {
       setCheckValueForElement(elements, setter, target.value, target.checked);
@@ -81,7 +83,7 @@ const CreateDirectoryFilters = (props) => {
 
       let filters = {
         Assignments: {
-          Values: filterState.positions,
+          Values: filterState.Assignments,
         },
         Degrees: {
           Values: filterState.degrees,
@@ -97,6 +99,7 @@ const CreateDirectoryFilters = (props) => {
         YearsOfPriorExperienceRanges: {
           Values: selectedTenureRanges,
         },
+        Aspires: filterState.aspires,
       };
 
       console.log(filters);
@@ -226,6 +229,22 @@ const CreateDirectoryFilters = (props) => {
       }
 
       setCategory({label: e.currentTarget.innerText, category: e.currentTarget.value});
+    }
+    
+    function onClickAspires(e) {
+      // Clear filter/pill if default Category selected
+      if (e.currentTarget.value) {
+        setAspires(e.currentTarget.value);
+        return;
+      }
+
+      setAspires(e.currentTarget.value);
+      let pill = setNewPill(
+        pillTypes.Aspires,
+        `Aspires : ${e.currentTarget.innerText}`,
+        e.currentTarget.value
+      );
+      sendFilter(FilterActions.setAspires, pill);
     }
 
     function onClickScore(e) {
@@ -520,9 +539,25 @@ const CreateDirectoryFilters = (props) => {
                     {category.label || "Performance Domain"}
                   </DropdownToggle>
                   <DropdownMenu modifiers={modifiers} persist={false}>
-                    <DropdownItem divider />
+                  <DropdownItem header>T-PESS</DropdownItem>
                     {Object.keys(categories).length !== 0
                       ? categories.map((catElement, index) => {
+                          return (
+                            <DropdownItem
+                              key={"cat-" + index}
+                              onClick={onClickCategory}
+                              value={catElement.value}
+                              active={catElement.selected}
+                            >
+                              {catElement.text}
+                            </DropdownItem>
+                          );
+                        })
+                      : ""}
+                      <DropdownItem divider />
+                      <DropdownItem header>GISD Rating</DropdownItem>
+                      {Object.keys(categories).length !== 0
+                      ? otherCategories.map((catElement, index) => {
                           return (
                             <DropdownItem
                               key={"cat-" + index}
@@ -571,6 +606,36 @@ const CreateDirectoryFilters = (props) => {
                           );
                         })
                       : ""}
+                  </DropdownMenu>
+                </UncontrolledDropdown>
+              </FormGroup>
+            </div>
+            <div className="col-sm-6 col-md-5 col-lg-3">
+              <FormGroup>
+                <UncontrolledDropdown>
+                  <DropdownToggle
+                    className="form-group-filter-with-label btn-dropdown"
+                    caret
+                  >
+                    Aspires Next Role
+                  </DropdownToggle>
+                  <DropdownMenu modifiers={modifiers} right>                     
+                      <DropdownItem
+                        key={"score-1"}
+                        onClick={onClickAspires}
+                        value={1}
+                        active={false}
+                      >
+                        Yes
+                      </DropdownItem>
+                      <DropdownItem
+                        key={"score-2"}
+                        onClick={onClickAspires}
+                        value={0}
+                        active={false}
+                      >
+                        No
+                      </DropdownItem>
                   </DropdownMenu>
                 </UncontrolledDropdown>
               </FormGroup>
