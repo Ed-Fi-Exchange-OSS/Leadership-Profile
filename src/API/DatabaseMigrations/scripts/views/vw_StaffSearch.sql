@@ -56,12 +56,15 @@ select s.StaffUSI
 
      , se.Email as Email
      , st.Telephone as Telephone
+	 , CASE
+                        WHEN gisda.InterestedInNextRole = 1
+                            THEN CAST(1 AS BIT)
+                            ELSE CAST(0 AS BIT)
+                     END as InterestedInNextRole
 from edfi.Staff as s
          join assignments as a on a.StaffUSI = s.StaffUSI and a.Number = 1
          left join edfi.Descriptor as degreeDescriptor ON degreeDescriptor.DescriptorId = s.HighestCompletedLevelOfEducationDescriptorId
          LEFT JOIN staff_email se ON se.StaffUSI = s.StaffUSI
          LEFT JOIN staff_telephone st ON st.StaffUSI = s.StaffUSI
+		 LEFT JOIN dbo.GISDAspirations gisda ON s.StaffUniqueId = gisda.ID
 GO
-
-
---546 results

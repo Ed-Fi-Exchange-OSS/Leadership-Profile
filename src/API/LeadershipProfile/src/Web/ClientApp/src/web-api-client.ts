@@ -2514,6 +2514,7 @@ export class ProfileSearchRequestBody implements IProfileSearchRequestBody {
     degrees?: ProfileSearchRequestDegrees;
     schoolCategories?: ProfileSearchRequestSchoolCategories;
     institutions?: ProfileSearchRequestInstitution;
+    aspires?: ProfileSearchRequestAspires;
     name?: string | undefined;
 
     constructor(data?: IProfileSearchRequestBody) {
@@ -2537,6 +2538,7 @@ export class ProfileSearchRequestBody implements IProfileSearchRequestBody {
             this.degrees = _data["degrees"] ? ProfileSearchRequestDegrees.fromJS(_data["degrees"]) : <any>undefined;
             this.schoolCategories = _data["schoolCategories"] ? ProfileSearchRequestSchoolCategories.fromJS(_data["schoolCategories"]) : <any>undefined;
             this.institutions = _data["institutions"] ? ProfileSearchRequestInstitution.fromJS(_data["institutions"]) : <any>undefined;
+            this.aspires = _data["aspires"] ? ProfileSearchRequestAspires.fromJS(_data["aspires"]) : <any>undefined;
             this.name = _data["name"];
         }
     }
@@ -2560,6 +2562,7 @@ export class ProfileSearchRequestBody implements IProfileSearchRequestBody {
         data["degrees"] = this.degrees ? this.degrees.toJSON() : <any>undefined;
         data["schoolCategories"] = this.schoolCategories ? this.schoolCategories.toJSON() : <any>undefined;
         data["institutions"] = this.institutions ? this.institutions.toJSON() : <any>undefined;
+        data["aspires"] = this.aspires ? this.aspires.toJSON() : <any>undefined;
         data["name"] = this.name;
         return data;
     }
@@ -2572,6 +2575,7 @@ export interface IProfileSearchRequestBody {
     degrees?: ProfileSearchRequestDegrees;
     schoolCategories?: ProfileSearchRequestSchoolCategories;
     institutions?: ProfileSearchRequestInstitution;
+    aspires?: ProfileSearchRequestAspires;
     name?: string | undefined;
 }
 
@@ -2876,6 +2880,50 @@ export class ProfileSearchRequestInstitution implements IProfileSearchRequestIns
 }
 
 export interface IProfileSearchRequestInstitution {
+    values?: number[] | undefined;
+}
+
+export class ProfileSearchRequestAspires implements IProfileSearchRequestAspires {
+    values?: number[] | undefined;
+
+    constructor(data?: IProfileSearchRequestAspires) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["values"])) {
+                this.values = [] as any;
+                for (let item of _data["values"])
+                    this.values!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): ProfileSearchRequestAspires {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProfileSearchRequestAspires();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.values)) {
+            data["values"] = [];
+            for (let item of this.values)
+                data["values"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IProfileSearchRequestAspires {
     values?: number[] | undefined;
 }
 

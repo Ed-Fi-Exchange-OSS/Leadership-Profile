@@ -65,7 +65,7 @@ const Profile = () => {
                     <NavLink onClick={() => setActiveComponent("leader")}>Performance</NavLink>
                 </NavItem>
                 <NavItem className={activeComponent === "rating" ? "current-profile-page nav-option" : "nav-option"}>
-                    <NavLink onClick={() => setActiveComponent("rating")}>GISD rating</NavLink>
+                    <NavLink onClick={() => setActiveComponent("rating")}>Readiness</NavLink>
                 </NavItem>
             </Nav>
 

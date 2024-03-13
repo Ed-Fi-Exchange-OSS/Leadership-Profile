@@ -27,6 +27,8 @@ const CreateTableList = (props) => {
                         <th width="20%">
                             {/* Position */}
                             POSITION
+                            <Sorting onSortChange={newStatus => setColumnSort('position', newStatus)}
+                                status={sort.category === 'position' ? sort.value : null} />
                         </th>
                         <th width="25%">
                             {/* School  */}

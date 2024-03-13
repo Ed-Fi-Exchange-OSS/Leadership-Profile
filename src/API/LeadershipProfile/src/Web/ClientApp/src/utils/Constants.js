@@ -16,7 +16,7 @@ export const INITIAL_FILTERS_STATE = {
         score: 0,
     }  */
     ],
-    Aspires: [],
+    aspires: [],
     pills: []
 
     /*

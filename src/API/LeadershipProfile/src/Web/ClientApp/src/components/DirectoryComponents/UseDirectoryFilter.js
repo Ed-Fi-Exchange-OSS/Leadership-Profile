@@ -25,6 +25,7 @@ function UseDirectoryFilters () {
     const [filterInstitutionValue, setFilterInstitutionValue] = useState();
     const [categories, setCategories] = useState([]);
     const [otherCategories, setOtherCategories] = useState([]);
+    const [aspires, setAspires] = useState([{order: 1, text: 'Yes', value: 1, checked: false},{order: 2, text: 'No', value: 0, checked: false}]);
 
     async function getPositions(){
         fetchFilterData(`WebControls/Assignments`, (response) => {
@@ -74,8 +75,8 @@ function UseDirectoryFilters () {
 
     async function getCategories(){
         fetchFilterData(`WebControls/MeasurementCategories`, (response) => {
-            var cats = response.categories.filter(c => c.evaluationTitle != "Texas Principal Evaluation & Support Systems");            
-            var otherCats = response.categories.filter(c => c.evaluationTitle == "Texas Principal Evaluation & Support Systems");
+            var cats = response.categories.filter(c => c.evaluationTitle == "Texas Principal Evaluation & Support Systems");            
+            var otherCats = response.categories.filter(c => c.evaluationTitle != "Texas Principal Evaluation & Support Systems");
             responseSetter(cats, setCategories, null, false);
             responseSetter(otherCats, setOtherCategories, null, false);
         });
@@ -145,10 +146,11 @@ function UseDirectoryFilters () {
 
     return {positions, nameSearch, degrees, schoolCategories, yearsOptionRange, year, yearRange,
         institutions, filteredInstitutions, filterInstitutionValue, categories, otherCategories, tenureRanges,
+        aspires,
          setPositions, setNameSearch, setDegrees, setSchoolCategories, setYearsOptionRange, setYear, setYearRange,
          setInstitutions, setFilteredInstitutions, setFilterInstitutionValue,
         setCheckValueForElement, unCheckAllFromElement, setTenureRanges,
-        setCategories,  setOtherCategories};
+        setCategories,  setOtherCategories, setAspires};
 }
 
 export default UseDirectoryFilters;

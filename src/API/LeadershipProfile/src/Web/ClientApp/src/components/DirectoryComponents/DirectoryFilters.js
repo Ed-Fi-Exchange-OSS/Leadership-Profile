@@ -52,13 +52,15 @@ const CreateDirectoryFilters = (props) => {
       unCheckAllFromElement,
       categories,
       otherCategories,
+      aspires,
+      setAspires
     } = UseDirectoryFilters();
 
     const { setNewPill, removePill, pillTypes, getTypeAction } = UsePills();
     const [filterState, sendFilter] = useFilterContext();
 
     const [category, setCategory] = useState({label:'', name:''});
-    const [aspires, setAspires] = useState();
+    // const [aspires, setAspires] = useState();
 
     function CheckSelectedItem(target, elements, setter, type) {
       setCheckValueForElement(elements, setter, target.value, target.checked);
@@ -83,7 +85,7 @@ const CreateDirectoryFilters = (props) => {
 
       let filters = {
         Assignments: {
-          Values: filterState.Assignments,
+          Values: filterState.positions,
         },
         Degrees: {
           Values: filterState.degrees,
@@ -99,7 +101,9 @@ const CreateDirectoryFilters = (props) => {
         YearsOfPriorExperienceRanges: {
           Values: selectedTenureRanges,
         },
-        Aspires: filterState.aspires,
+        Aspires: {
+          Values: filterState.aspires,
+        },
       };
 
       console.log(filters);
@@ -195,6 +199,14 @@ const CreateDirectoryFilters = (props) => {
 
         }
       }
+      if (pill.filter === pillTypes.Aspires) {
+        setCheckValueForElement(
+          aspires,
+          setAspires,
+          pill.value,
+          false
+        );
+      }
 
       sendFilter(getTypeAction(pill.filter, false), pill);
       OnChangeSubmit();
@@ -232,19 +244,26 @@ const CreateDirectoryFilters = (props) => {
     }
     
     function onClickAspires(e) {
-      // Clear filter/pill if default Category selected
-      if (e.currentTarget.value) {
-        setAspires(e.currentTarget.value);
-        return;
-      }
+      // // Clear filter/pill if default Category selected
+      // if (e.currentTarget.value) {
+      //   setAspires(e.currentTarget.value);
+      //   return;
+      // }
 
-      setAspires(e.currentTarget.value);
-      let pill = setNewPill(
-        pillTypes.Aspires,
-        `Aspires : ${e.currentTarget.innerText}`,
-        e.currentTarget.value
+      // setAspires(e.currentTarget.value);
+      // let pill = setNewPill(
+      //   pillTypes.Aspires,
+      //   `Aspires : ${e.currentTarget.innerText}`,
+      //   e.currentTarget.value
+      // );
+      // sendFilter(FilterActions.setAspires, pill);
+
+      CheckSelectedItem(
+        e.currentTarget,
+        aspires,
+        setAspires,
+        pillTypes.Aspires
       );
-      sendFilter(FilterActions.setAspires, pill);
     }
 
     function onClickScore(e) {
@@ -555,8 +574,8 @@ const CreateDirectoryFilters = (props) => {
                         })
                       : ""}
                       <DropdownItem divider />
-                      <DropdownItem header>GISD Rating</DropdownItem>
-                      {Object.keys(categories).length !== 0
+                      <DropdownItem header>Readiness</DropdownItem>
+                      {Object.keys(otherCategories).length !== 0
                       ? otherCategories.map((catElement, index) => {
                           return (
                             <DropdownItem
@@ -620,26 +639,31 @@ const CreateDirectoryFilters = (props) => {
                     Aspires Next Role
                   </DropdownToggle>
                   <DropdownMenu modifiers={modifiers} right>                     
-                      <DropdownItem
-                        key={"score-1"}
-                        onClick={onClickAspires}
-                        value={1}
-                        active={false}
-                      >
-                        Yes
-                      </DropdownItem>
-                      <DropdownItem
-                        key={"score-2"}
-                        onClick={onClickAspires}
-                        value={0}
-                        active={false}
-                      >
-                        No
-                      </DropdownItem>
+                  {Object.keys(aspires).length !== 0
+                      ? aspires.map((aspiresElement, index) => {
+                          return aspiresElement.checked ? (
+                            ""
+                          ) : (
+                            <div key={index} className="filter-select-item">
+                              <Label>
+                                <input
+                                  type="checkbox"
+                                  value={aspiresElement.value}
+                                  name={aspiresElement.text}
+                                  checked={aspiresElement.checked}
+                                  onChange={onClickAspires}
+                                />
+                                {aspiresElement.text}
+                              </Label>
+                            </div>
+                          );
+                        })
+                      : ""}
                   </DropdownMenu>
                 </UncontrolledDropdown>
               </FormGroup>
             </div>
+            
           </div>
         <PillsFilters
           handleRemove={removePillAndFilter}

@@ -1393,6 +1393,9 @@
           "institutions": {
             "$ref": "#/components/schemas/ProfileSearchRequestInstitution"
           },
+          "aspires": {
+            "$ref": "#/components/schemas/ProfileSearchRequestAspires"
+          },
           "name": {
             "type": "string",
             "nullable": true
@@ -1486,6 +1489,20 @@
         }
       },
       "ProfileSearchRequestInstitution": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "values": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        }
+      },
+      "ProfileSearchRequestAspires": {
         "type": "object",
         "additionalProperties": false,
         "properties": {

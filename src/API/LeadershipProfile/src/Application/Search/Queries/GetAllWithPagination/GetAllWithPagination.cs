@@ -83,7 +83,7 @@ public class GetAllWithPaginationQueryHandler : IRequestHandler<GetAllWithPagina
                     ,Email
                     ,Telephone
                     ,a.InterestedInNextRole
-                from edfi.vw_StaffSearch s
+                from edfi.vw_StaffSearch
                 order by {fieldMapping[sortField]} {sortBy}
              ";
             // offset {(currentPage - 1) * pageSize} rows
