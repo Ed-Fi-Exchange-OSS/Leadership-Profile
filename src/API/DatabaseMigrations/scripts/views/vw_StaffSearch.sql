@@ -57,7 +57,7 @@ select s.StaffUSI
      , se.Email as Email
      , st.Telephone as Telephone
 	 , CASE
-                        WHEN gisda.InterestedInNextRole = 1
+                        WHEN gisda.AspiresNextRole = 'YES'
                             THEN CAST(1 AS BIT)
                             ELSE CAST(0 AS BIT)
                      END as InterestedInNextRole
@@ -66,5 +66,6 @@ from edfi.Staff as s
          left join edfi.Descriptor as degreeDescriptor ON degreeDescriptor.DescriptorId = s.HighestCompletedLevelOfEducationDescriptorId
          LEFT JOIN staff_email se ON se.StaffUSI = s.StaffUSI
          LEFT JOIN staff_telephone st ON st.StaffUSI = s.StaffUSI
-		 LEFT JOIN dbo.GISDAspirations gisda ON s.StaffUniqueId = gisda.ID
+		 LEFT JOIN GISD_Staff giss ON giss.FirstName = s.FirstName and giss.LastSurname = s.LastSurname
+		 LEFT JOIN dbo.GISDAspirations gisda ON gisda.ID = giss.UniqueId
 GO

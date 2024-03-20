@@ -13,7 +13,8 @@ public class WebControls : EndpointGroupBase
 {
     public override void Map(WebApplication app)
     {
-        var group = app.MapGroup(this).RequireAuthorization();
+        var group = app.MapGroup(this)
+            .RequireAuthorization();
         group.MapGet("Assignments", GetAssignments);
         group.MapGet("Categories", GetCategories);
         group.MapGet("Degrees", GetDegrees);

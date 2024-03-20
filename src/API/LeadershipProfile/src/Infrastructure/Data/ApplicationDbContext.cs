@@ -10,7 +10,11 @@ namespace LeadershipProfile.Infrastructure.Data;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplicationDbContext
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) {        
+     }
+
+    // public IConfiguration Configuration { get; }
+
 
     public DbSet<TodoList> TodoLists => Set<TodoList>();
 
@@ -37,10 +41,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder
-            .UseSqlServer(
-                @"server=WHOISIT\SQLEXPRESS;database=EdFi_Ods_4820340;User=sa;Password=1234;TrustServerCertificate=True",
-                providerOptions => { providerOptions.EnableRetryOnFailure(); });
+        // var connectionString = Configuration.GetConnectionString("EdFi");
+        // optionsBuilder
+        //     .UseSqlServer(connectionString,
+        //         providerOptions => { providerOptions.EnableRetryOnFailure(); });
     }
     protected override void OnModelCreating(ModelBuilder builder)
     {

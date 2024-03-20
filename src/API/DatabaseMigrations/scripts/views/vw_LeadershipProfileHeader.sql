@@ -34,17 +34,24 @@ staff_telephone (StaffUSI, Telephone) AS (
 SELECT
 s.StaffUSI,
 s.StaffUniqueId,
-FirstName,
-MiddleName,
-LastSurname,
+s.FirstName,
+s.MiddleName,
+s.LastSurname,
 sa.City Location,
 ss.School,
 s.YearsOfPriorProfessionalExperience YearsOfService,
 se.Email,
 ss.Position,
 st.Telephone
+, CASE
+                        WHEN gisda.AspiresNextRole = 'YES'
+                            THEN CAST(1 AS BIT)
+                            ELSE CAST(0 AS BIT)
+                     END as InterestedInNextRole
 FROM edfi.Staff s
 LEFT JOIN edfi.StaffAddress sa ON sa.StaffUSI = s.StaffUSI
 LEFT JOIN staff_school ss ON ss.StaffUSI = s.StaffUSI
 LEFT JOIN staff_email se ON se.StaffUSI = s.StaffUSI
 LEFT JOIN staff_telephone st ON st.StaffUSI = s.StaffUSI
+LEFT JOIN GISD_Staff giss ON giss.FirstName = s.FirstName and giss.LastSurname = s.LastSurname
+LEFT JOIN dbo.GISDAspirations gisda ON gisda.ID = giss.UniqueId

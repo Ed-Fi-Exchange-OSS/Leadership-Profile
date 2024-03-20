@@ -81,7 +81,7 @@ const Profile = () => {
                              data.evaluations.map(evaluation =>{
                                  return(
                                     <div>
-                                        <EvaluationChart title={evaluation.title} data={data.evaluations} key={evaluation.title}/>
+                                        <EvaluationChart title={evaluation.title} data={data.evaluations} key={'0-' + evaluation.title}/>
                                     </div>
                                  )
                              })
@@ -94,7 +94,7 @@ const Profile = () => {
                              data.rating.map(evaluation =>{
                                  return(
                                     <div>
-                                        <EvaluationChart title={evaluation.title} data={data.ratings} key={evaluation.title}/>
+                                        <EvaluationChart title={evaluation.title} data={data.ratings} key={'1-' + evaluation.title}/>
                                     </div>
                                  )
                              })
