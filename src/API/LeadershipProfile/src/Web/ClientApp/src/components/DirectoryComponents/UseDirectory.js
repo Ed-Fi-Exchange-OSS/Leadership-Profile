@@ -89,21 +89,24 @@ function UseDirectory() {
   }, [url]);
 
   useEffect(() => {
-      console.log("Searching...");
+    console.log("Searching...");
     let defaultOrFilteredConfig =
       filters !== undefined
-        ? API_CONFIG("POST", JSON.stringify({
-          page: searchableUrl.current.searchParams.get("page"), 
-          sortField: searchableUrl.current.searchParams.get("sortField"), 
-          sortBy: searchableUrl.current.searchParams.get("sortBy"),
-          searchRequestBody: filters
-        }))
+        ? API_CONFIG(
+            "POST",
+            JSON.stringify({
+              page: searchableUrl.current.searchParams.get("page"),
+              sortField: searchableUrl.current.searchParams.get("sortField"),
+              sortBy: searchableUrl.current.searchParams.get("sortBy"),
+              searchRequestBody: filters,
+            })
+          )
         : API_CONFIG("GET");
     if (!searchableUrl.current.search) return;
     let unmounted = false;
     const apiUrl = new URL(API_URL + `search${location.search}`);
     if (paging.page !== 0)
-      fetch(apiUrl+"&OnlyActive=true", defaultOrFilteredConfig)
+      fetch(apiUrl + "&OnlyActive=true", defaultOrFilteredConfig)
         .then((response) => {
           if (!response.ok) {
             if (response.status === 401) {
@@ -154,10 +157,18 @@ function UseDirectory() {
   }
 
   function exportResults() {
-    console.log("exporting results...");
+    console.log("Searching...");
     let defaultOrFilteredConfig =
       filters !== undefined
-        ? API_CONFIG("POST", JSON.stringify(filters))
+        ? API_CONFIG(
+            "POST",
+            JSON.stringify({
+              page: searchableUrl.current.searchParams.get("page"),
+              sortField: searchableUrl.current.searchParams.get("sortField"),
+              sortBy: searchableUrl.current.searchParams.get("sortBy"),
+              searchRequestBody: filters,
+            })
+          )
         : API_CONFIG("GET");
     if (!searchableUrl.current.search) return;
     let unmounted = false;

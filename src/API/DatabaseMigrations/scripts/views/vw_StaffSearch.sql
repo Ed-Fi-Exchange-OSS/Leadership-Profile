@@ -37,7 +37,7 @@ staff_telephone (StaffUSI, Telephone) AS (
     ) st WHERE st.RowNumber = 1
 )
 
-select s.StaffUSI
+select DISTINCT s.StaffUSI
      , s.StaffUniqueId
      , s.FirstName
      , s.MiddleName

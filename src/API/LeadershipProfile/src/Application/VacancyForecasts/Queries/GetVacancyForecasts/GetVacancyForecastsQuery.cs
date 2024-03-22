@@ -42,7 +42,7 @@ public class GetVacancyForecastsQueryHandler : IRequestHandler<GetVacancyForecas
                     RetElig = x.RetElig,
                     OverallScore = x.OverallScore
             })
-            .Take(20)
+            // .Take(20)
             .ToListAsync();
     }
 }

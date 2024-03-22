@@ -14,6 +14,8 @@ const CreateTableList = (props) => {
     const { sort, data, setColumnSort, paging, setPage } = props;
 
     function RenderTable(data) {
+        console.log("Data: ");
+        console.log(data);
         return (
             <Table striped className="directory-table">
                 <thead>
@@ -50,7 +52,7 @@ const CreateTableList = (props) => {
                 </thead>
                 <tbody>
                     {data !== [] ? data.map(profile => (
-                        <tr key={profile.staffUniqueId}>
+                        <tr key={profile.staffUniqueId+Math.random()}>
                             <td></td>
                             <td width="20%"><Link to={`/profile/${profile.staffUniqueId}`}>{profile.lastSurname}, {profile.firstName}</Link></td>
                             <td width="20%">{profile.assignment}</td>
