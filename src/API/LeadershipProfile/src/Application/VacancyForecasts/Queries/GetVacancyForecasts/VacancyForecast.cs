@@ -10,7 +10,7 @@ public class VacancyForecast
     public string? Gender { get; set; }
     public string? Race { get; set; }
     public string? VacancyCause { get; set; }
-    public Double? SchoolYear { get; set; }
+    public int? SchoolYear { get; set; }
     public string? PositionTitle { get; set; }
     public bool RetElig { get; set; }
     public Double? OverallScore { get; set; }

@@ -30,7 +30,7 @@ const StaffTable = ({data, selectedSchool}) => {
       <tr key={"year-table-record-" + i}>
         <th scope="row">{i + 1}</th>
         <td>
-          <Link to={`profile/${element.staffUniqueId}`} target="_blank" >
+          <Link to={`/profile/${element.staffUniqueId}`} target="_blank" >
             {element.fullNameAnnon}
           </Link>
         </td>

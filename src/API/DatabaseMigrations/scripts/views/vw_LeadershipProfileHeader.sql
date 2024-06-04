@@ -54,4 +54,6 @@ LEFT JOIN staff_school ss ON ss.StaffUSI = s.StaffUSI
 LEFT JOIN staff_email se ON se.StaffUSI = s.StaffUSI
 LEFT JOIN staff_telephone st ON st.StaffUSI = s.StaffUSI
 LEFT JOIN GISD_Staff giss ON giss.FirstName = s.FirstName and giss.LastSurname = s.LastSurname
-LEFT JOIN dbo.GISDAspirations gisda ON gisda.ID = giss.UniqueId
+LEFT JOIN dbo.GISD_Aspirations gisda ON gisda.ID = giss.UniqueId
+
+GO

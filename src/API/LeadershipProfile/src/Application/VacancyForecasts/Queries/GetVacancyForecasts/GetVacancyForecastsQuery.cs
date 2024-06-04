@@ -4,7 +4,7 @@ namespace LeadershipProfile.Application.VacancyForecasts.Queries.GetVacancyForec
 
 public record GetVacancyForecastsQuery : IRequest<IEnumerable<VacancyForecast>> 
 {
-    public int RoleId { get; set; }
+    public string? Role { get; set; }
 }
 
 public class GetVacancyForecastsQueryHandler : IRequestHandler<GetVacancyForecastsQuery, IEnumerable<VacancyForecast>>
@@ -22,8 +22,13 @@ public class GetVacancyForecastsQueryHandler : IRequestHandler<GetVacancyForecas
     public async Task<IEnumerable<VacancyForecast>> Handle(GetVacancyForecastsQuery request, CancellationToken cancellationToken)
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
     {
+        var nameMapping = new Dictionary<string, string>
+            {
+                {"Principal","Principal" },
+                {"AP", "Assistant Principal"}
+            };
         return await _context.StaffVacancies
-            // .Where(x => x.ListId == request.ListId)
+            .Where(x => x.PositionTitle == nameMapping[request.Role ?? ""])
             // .OrderBy(x => x.Title)
             // .ProjectTo<TodoItemBriefDto>(_mapper.ConfigurationProvider)
             // .PaginatedListAsync(request.PageNumber, request.PageSize);

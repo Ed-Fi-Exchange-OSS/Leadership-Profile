@@ -19,7 +19,7 @@ const AditionalRiskFactors = ({ data, selectedRole }) => {
     eligibleForRetirementSoonCount,
     currentPerformanceData,
     scoreCount
-  } = UseAditionalRiskFactors(data) ?? {};
+  } = UseAditionalRiskFactors(data, selectedRole) ?? {};
 
   const [ schoolFilter, setSchoolFilter] = useState(null)
 
@@ -102,7 +102,7 @@ const AditionalRiskFactors = ({ data, selectedRole }) => {
                     <Row
                       key={"risk-factor-recor-" + i}
                       onClick={(e) => {
-                        setSchoolFilter(school.name);
+                      //   setSchoolFilter(school.name);
                         e.preventDefault();
                       }}
                     >
@@ -174,12 +174,12 @@ const AditionalRiskFactors = ({ data, selectedRole }) => {
                     <Row
                       key={"eligible-for-retirement-" + i}
                       onClick={(e) => {
-                        setSchoolFilter(school.schoolName);
+                        // setSchoolFilter(school.schoolName);
                         e.preventDefault();
                       }}
                     >
                       <Col md="8">
-                        <a href="#">{school.schoolName}</a>
+                        <a href="">{school.schoolName}</a>
                       </Col>
                       <Col md="4">
                         <Row>
@@ -253,12 +253,12 @@ const AditionalRiskFactors = ({ data, selectedRole }) => {
                     <Row
                       key={"performance-record-" + i}
                       onClick={(e) => {
-                        setSchoolFilter(performance.name);
+                        // setSchoolFilter(performance.name);
                         e.preventDefault();
                       }}
                     >
                       <Col md="8">
-                        <a href="#">{performance.name}</a>
+                        <a href="">{performance.name}</a>
                       </Col>
                       <Col md="4">
                         <Row>

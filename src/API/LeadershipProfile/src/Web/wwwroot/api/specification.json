@@ -513,11 +513,23 @@
       }
     },
     "/api/VacancyForecasts": {
-      "get": {
+      "post": {
         "tags": [
           "VacancyForecasts"
         ],
         "operationId": "GetVacancyForecasts",
+        "requestBody": {
+          "x-name": "query",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetVacancyForecastsQuery"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
         "responses": {
           "200": {
             "description": "",
@@ -1161,10 +1173,12 @@
         "additionalProperties": false,
         "properties": {
           "role": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "schoolName": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "startDate": {
             "type": "string",
@@ -1554,8 +1568,8 @@
             "nullable": true
           },
           "schoolYear": {
-            "type": "number",
-            "format": "double",
+            "type": "integer",
+            "format": "int32",
             "nullable": true
           },
           "positionTitle": {
@@ -1568,6 +1582,16 @@
           "overallScore": {
             "type": "number",
             "format": "double",
+            "nullable": true
+          }
+        }
+      },
+      "GetVacancyForecastsQuery": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "role": {
+            "type": "string",
             "nullable": true
           }
         }

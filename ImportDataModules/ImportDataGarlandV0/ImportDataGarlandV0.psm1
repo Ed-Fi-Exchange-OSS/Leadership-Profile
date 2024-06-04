@@ -8,6 +8,9 @@ using module ..\ImportDataBasicFunctions\ImportDataBasicFunctions.psm1
 $ModuleVersion = '1.0.0'
 $Description = 'Module with V0 of Garlands functions to import data using the ED-FI API'
 $FunctionsToExport = 'Import-EdData'
+#====================================
+# $dateFormat = 'dd-MM-yyyy'
+$dateFormat = 'yyyy-MM-dd'
 
 # ===========================================================================
 # P-TESS Configuration
@@ -86,6 +89,10 @@ function TransformSchool {
             'MS'    { 'Middle School' }
             'HS'    { 'High School' }
             'CO'    { 'Other Combination' }
+            'CAMPUS_EL'    { 'Elementary School' }
+            'CAMPUS_MS'    { 'Middle School' }
+            'CAMPUS_HS'    { 'High School' }
+            'CAMPUS_CO'    { 'Other Combination' }
             Default { $_ }
         }
         [Array]$gradeLevels = GetGradeLevels $schoolCategory
@@ -114,6 +121,8 @@ function TransformStaff() {
         $sexDescriptor = switch ([System.Security.SecurityElement]::Escape($_.SexDescriptor)) {
             'Female' { 'uri://ed-fi.org/SexDescriptor#Female' }
             'Male' { 'uri://ed-fi.org/SexDescriptor#Male' }
+            'F' { 'uri://ed-fi.org/SexDescriptor#Female' }
+            'M' { 'uri://ed-fi.org/SexDescriptor#Male' }
         }
         #$fullName = [System.Security.SecurityElement]::Escape($_.FullName).Trim() -split ", " -split " "
 
@@ -154,7 +163,7 @@ function TransformStaff() {
             LastSurname                                = [System.Security.SecurityElement]::Escape($_.LastSurname)
             FirstName                                  = [System.Security.SecurityElement]::Escape($_.FirstName)
             MiddleName                                 = if(![string]::IsNullOrWhiteSpace($_.MiddleName)){[System.Security.SecurityElement]::Escape($_.MiddleName)}else{$null}
-            #BirthDate                                  = ([System.Security.SecurityElement]::Escape($_.BirthDate) | Get-Date -Format 'yyyy-MM-dd')
+            BirthDate                                  = ([System.Security.SecurityElement]::Escape($_.BirthDate) | Get-Date -Format $dateFormat)
             SexDescriptor                              = $sexDescriptor
             Races                                      = $races
             HispanicLatinoEthnicity                    = $hispanicLatinoEthnicity
@@ -176,7 +185,7 @@ function TransformStaffEducationOrganizationEmploymentAssociations {
         if ($_.SchoolId -eq '') { return }
         $staffUniqueId = [System.Security.SecurityElement]::Escape($_.StaffUniqueId).Trim()
 
-        $separationReasonDescriptorCodeValue = if ( $_.EndDate -ne 'CURRENT' -and ($_.EndDate | Get-Date -Format 'MM-dd') -eq '06-30') { 'Finished Year' } else { $null }
+        $separationReasonDescriptorCodeValue = if ( $_.EndDate -ne 'CURRENT' -and ($_.EndDate ?? 'CURRRENT' | Get-Date -Format 'MM-dd') -eq '06-30') { 'Finished Year' } else { $null }
 
         $separationDescriptor = if ($_.EndDate -ne 'CURRENT') {
             'uri://ed-fi.org/SeparationDescriptor#' + $(switch ($_.SeparationReason) {
@@ -204,8 +213,8 @@ function TransformStaffEducationOrganizationEmploymentAssociations {
             EducationOrganizationReference = [PSCustomObject]@{ EducationOrganizationId = [int64]($_.SchoolId) }
             StaffReference                 = [PSCustomObject]@{ StaffUniqueId = $staffUniqueId }
             EmploymentStatusDescriptor     = 'uri://ed-fi.org/EmploymentStatusDescriptor#Contractual'
-            HireDate                       = ([System.Security.SecurityElement]::Escape($_.BeginDate) | Get-Date -Format 'yyyy-MM-dd')
-            EndDate                        = if ($_.EndDate -ne 'CURRENT') { ([System.Security.SecurityElement]::Escape($_.EndDate) | Get-Date -Format 'yyyy-MM-dd') } else { $null }
+            HireDate                       = ([System.Security.SecurityElement]::Escape($_.BeginDate) | Get-Date -Format $dateFormat)
+            EndDate                        = if ($_.EndDate -ne 'CURRENT') { ([System.Security.SecurityElement]::Escape($_.EndDate) | Get-Date -Format $dateFormat) } else { $null }
             SeparationDescriptor           = $separationDescriptor
             SeparationReasonDescriptor     = $separationReasonDescriptor
         }
@@ -232,8 +241,8 @@ function TransformStaffEducationOrganizationAssignmentAssociations($staffClassif
         return [EdFiStaffOrgAssociations]@{
             EducationOrganizationReference = [PSCustomObject]@{ EducationOrganizationId = [int64]($_.SchoolId) }
             StaffReference                 = [PSCustomObject]@{ StaffUniqueId = $staffUniqueId }
-            BeginDate                      = ([System.Security.SecurityElement]::Escape($_.BeginDate) | Get-Date -Format 'yyyy-MM-dd')
-            EndDate                        = if ($_.EndDate -ne 'CURRENT') { ([System.Security.SecurityElement]::Escape($_.EndDate) | Get-Date -Format 'yyyy-MM-dd') } else { $null }
+            BeginDate                      = ([System.Security.SecurityElement]::Escape($_.BeginDate) | Get-Date -Format $dateFormat)
+            EndDate                        = if ($_.EndDate -ne 'CURRENT') { ([System.Security.SecurityElement]::Escape($_.EndDate) | Get-Date -Format $dateFormat) } else { $null }
 #             PositionTitle                  = [System.Security.SecurityElement]::Escape($_.PositionTitle)
             PositionTitle                  = [System.Security.SecurityElement]::Escape($_.StaffClassification)
             StaffClassificationDescriptor  = $staffClassificationDescriptor
@@ -262,7 +271,6 @@ function Transform([scriptblock]$OnError) {
     if($assign) { Write-Output $assign }
   }
 }
-
 function GetPerformanceEvaluationReference() {
     return
 }
@@ -447,10 +455,27 @@ Function GetPersonId($Obj){
 }
 
 Function Import-EdDataStaff($Config, $PreviousResults) {
-    $Headers = 'StaffUniqueId', 'LastSurname', 'FirstName', 'MiddleName', 'SchoolId', 'SchoolCategory', 'NameOfInstitution', 'StaffClassification', 'BeginDate',
-    'EndDate', 'SeparationReason', 'School Year', 'Age', 'YearsOfProfessionalExperience', 'SexDescriptor', 'RaceDescriptor', 'HighestCompletedLevelOfEducationDescriptor', 'Email'
+    $Headers =
+        'SchoolYear',
+        'StaffUniqueId',
+        'LastSurname',
+        'FirstName',
+        'MiddleName',
+        'SchoolCategory',
+        'SchoolId',
+        'NameOfInstitution',
+        'StaffClassification',
+        'BeginDate',
+        'EndDate',
+        'SeparationReason',
+        'Age',
+        'YearsOfProfessionalExperience',
+        'SexDescriptor',
+        'RaceDescriptor',
+        'HighestCompletedLevelOfEducationDescriptor',
+        'Email'
 
-    Add-Content -Path $Config.ErrorsOutputFile -Value "`r`n$($Config.V0Files.Employees)`r`n"
+    Add-Content -Path $Config.V0Files.Errors -Value "`r`n$($Config.V0Files.Employees)`r`n"
 
     Write-Progress -Activity "Importing data from $($Config.V0Files.Employees)" -PercentComplete -1
 
@@ -493,7 +518,7 @@ Function Import-EdDataTPESS($Config, $PreviousResults) {
         'Average'
 
     Write-Progress -Activity "Importing data from $($Config.V0Files.TPESS)" -PercentComplete -1
-    Add-Content -Path $Config.ErrorsOutputFile -Value "`r`n$($Config.V0Files.TPESS)`r`n"
+    Add-Content -Path $Config.V0Files.Errors -Value "`r`n$($Config.V0Files.TPESS)`r`n"
 
     $staffUniqueIdWithError = @{}
     $res = NLoad $Headers $Config.V0Files.TPESS |
@@ -513,14 +538,14 @@ Function Import-EdDataProfDev($Config, $PreviousResults) {
     $Headers = 'StaffUniqueId', 'Full Name', 'Email', 'Location', 'Job', 'Position', 'Title', 'CourseStartDate', 'CourseEndDate'
 
     Write-Progress -Activity "Importing data from $($Config.V0Files.ProfDev)" -PercentComplete -1
-    Add-Content -Path $Config.ErrorsOutputFile -Value "`r`n$($Config.V0Files.ProfDev)`r`n"
+    Add-Content -Path $Config.V0Files.Errors -Value "`r`n$($Config.V0Files.ProfDev)`r`n"
 }
 
 Function Import-EdData($Config) {
-    Set-Content -Path $Config.ErrorsOutputFile -Value "$(Get-Date -Format 'yyyy-MM-ddTHH:mm:ss')"
-    # $res = Import-EdDataStaff $Config
-    # $res = Import-EdDataTPESS $Config $res
-    $res = Import-EdDataProfDev $Config $res
+    Set-Content -Path $Config.V0Files.Errors -Value "$(Get-Date -Format 'yyyy-MM-ddTHH:mm:ss')"
+    $res = Import-EdDataStaff $Config
+    #$res = Import-EdDataTPESS $Config $res
+    #$res = Import-EdDataProfDev $Config $res
     return $res
 }
 

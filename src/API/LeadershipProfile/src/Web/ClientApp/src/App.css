@@ -857,3 +857,8 @@ html {
   padding-right: 2rem;
   padding-bottom: 2rem;
 }
+
+
+.text-decoration-none {
+  text-decoration: none !important;
+}

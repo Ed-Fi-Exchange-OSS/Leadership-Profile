@@ -695,13 +695,17 @@ export class VacancyForecastsClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    getVacancyForecasts(): Promise<VacancyForecast[]> {
+    getVacancyForecasts(query: GetVacancyForecastsQuery): Promise<VacancyForecast[]> {
         let url_ = this.baseUrl + "/api/VacancyForecasts";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(query);
+
         let options_: RequestInit = {
-            method: "GET",
+            body: content_,
+            method: "POST",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
@@ -2032,8 +2036,8 @@ export interface IResponse {
 }
 
 export class PositionHistory implements IPositionHistory {
-    role?: string;
-    schoolName?: string;
+    role?: string | undefined;
+    schoolName?: string | undefined;
     startDate?: Date;
     endDate?: Date | undefined;
 
@@ -2073,8 +2077,8 @@ export class PositionHistory implements IPositionHistory {
 }
 
 export interface IPositionHistory {
-    role?: string;
-    schoolName?: string;
+    role?: string | undefined;
+    schoolName?: string | undefined;
     startDate?: Date;
     endDate?: Date | undefined;
 }
@@ -3005,6 +3009,42 @@ export interface IVacancyForecast {
     positionTitle?: string | undefined;
     retElig?: boolean;
     overallScore?: number | undefined;
+}
+
+export class GetVacancyForecastsQuery implements IGetVacancyForecastsQuery {
+    role?: string | undefined;
+
+    constructor(data?: IGetVacancyForecastsQuery) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.role = _data["role"];
+        }
+    }
+
+    static fromJS(data: any): GetVacancyForecastsQuery {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetVacancyForecastsQuery();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["role"] = this.role;
+        return data;
+    }
+}
+
+export interface IGetVacancyForecastsQuery {
+    role?: string | undefined;
 }
 
 export class ListItemBase implements IListItemBase {

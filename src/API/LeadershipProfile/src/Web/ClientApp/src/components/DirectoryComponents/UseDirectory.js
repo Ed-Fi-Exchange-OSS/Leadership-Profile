@@ -90,59 +90,61 @@ function UseDirectory() {
 
   useEffect(() => {
     console.log("Searching...");
-    let defaultOrFilteredConfig =
-      filters !== undefined
-        ? API_CONFIG(
-            "POST",
-            JSON.stringify({
-              page: searchableUrl.current.searchParams.get("page"),
-              sortField: searchableUrl.current.searchParams.get("sortField"),
-              sortBy: searchableUrl.current.searchParams.get("sortBy"),
-              searchRequestBody: filters,
-            })
-          )
-        : API_CONFIG("GET");
-    if (!searchableUrl.current.search) return;
-    let unmounted = false;
-    const apiUrl = new URL(API_URL + `search${location.search}`);
-    if (paging.page !== 0)
-      fetch(apiUrl + "&OnlyActive=true", defaultOrFilteredConfig)
-        .then((response) => {
-          if (!response.ok) {
-            if (response.status === 401) {
-              logout();
-            } else {
-              setError(true);
-            }
-            return;
-          }
-
-          setError(false);
-
-          response.json().then((response) => {
-            if (!unmounted && response !== null) {
-              if (response.results !== undefined) {
-                setData(response.results);
+    if (filters !== undefined) {
+      let defaultOrFilteredConfig =
+        filters !== undefined
+          ? API_CONFIG(
+              "POST",
+              JSON.stringify({
+                page: searchableUrl.current.searchParams.get("page"),
+                sortField: searchableUrl.current.searchParams.get("sortField"),
+                sortBy: searchableUrl.current.searchParams.get("sortBy"),
+                searchRequestBody: filters,
+              })
+            )
+          : API_CONFIG("GET");
+      if (!searchableUrl.current.search) return;
+      let unmounted = false;
+      const apiUrl = new URL(API_URL + `search${location.search}`);
+      if (paging.page !== 0)
+        fetch(apiUrl + "&OnlyActive=true", defaultOrFilteredConfig)
+          .then((response) => {
+            if (!response.ok) {
+              if (response.status === 401) {
+                logout();
+              } else {
+                setError(true);
               }
-              setPaging({
-                ...paging,
-                totalSize: response.totalCount,
-                maxPages: Math.ceil(response.totalCount / 10),
-                page:
-                  Math.ceil(response.totalCount / 10) >= paging.page
-                    ? paging.page
-                    : 1,
-              });
+              return;
             }
+
+            setError(false);
+
+            response.json().then((response) => {
+              if (!unmounted && response !== null) {
+                if (response.results !== undefined) {
+                  setData(response.results);
+                }
+                setPaging({
+                  ...paging,
+                  totalSize: response.totalCount,
+                  maxPages: Math.ceil(response.totalCount / 10),
+                  page:
+                    Math.ceil(response.totalCount / 10) >= paging.page
+                      ? paging.page
+                      : 1,
+                });
+              }
+            });
+          })
+          .catch((error) => {
+            setError(true);
+            console.error(error.message);
           });
-        })
-        .catch((error) => {
-          setError(true);
-          console.error(error.message);
-        });
-    return () => {
-      unmounted = true;
-    };
+      return () => {
+        unmounted = true;
+      };
+    }
   }, [filters, url]);
 
   function setPage(newPage) {
@@ -194,6 +196,7 @@ function UseDirectory() {
           if (!unmounted && response !== null) {
             if (response.results !== undefined) {
               setExportData(response.results);
+              console.log("Button", buttonRef);
               buttonRef.current.click();
             }
           }

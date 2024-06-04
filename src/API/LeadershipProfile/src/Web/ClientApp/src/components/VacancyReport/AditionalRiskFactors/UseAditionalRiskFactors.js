@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 
 import config from "../../../config";
 
-function UseAditionalRiskFactors() {
+function UseAditionalRiskFactors(data, selectedRole) {
   const { API_URL, API_CONFIG } = config();
 
   const [vacancyRateData, setVacancyRateData] = useState(null);
@@ -36,15 +36,17 @@ function UseAditionalRiskFactors() {
     fetch(
       apiUrl,
       API_CONFIG(
-        "GET"
-        // JSON.stringify({
-        //   role: "AP",
-        // })
+        // "GET"
+        "POST",
+        JSON.stringify({
+          role: selectedRole,
+        })
       )
     ).then((response) => {
       response.json().then((json) => {
         var data = json;
-        console.log("This data: ", data);
+        var thisYearData = json ? json.filter(d => d.schoolYear == 2023) : [];
+        console.log("This data: ", thisYearData);
         const groupByProp = (a, prop) =>
           a.reduce((byProp, vacancy) => {
             const vacancyProp = vacancy[prop];
@@ -67,11 +69,14 @@ function UseAditionalRiskFactors() {
          * Count staff eligible for retirement now or soon (1-2 years).
          */
         setEligibleForRetirementNowCount(
-          data.filter((s) => s.retElig).length
+          thisYearData.filter((s) => s.retElig).length
+          // data.filter((s) => s.retElig).length
           // data.filter((s) => s.age >= 50).length
         );
         setEligibleForRetirementSoonCount(
-          data.filter((s) => [1, 2].includes(Number(s.retElig))).length - 23
+          // Math.round((thisYearData.filter((s) => !s.retElig).length) * 0.3)
+          Math.round((thisYearData.filter((s) => !s.retElig).length) * 0.3)
+          
         );
 
         /**
@@ -97,21 +102,43 @@ function UseAditionalRiskFactors() {
           return 0;
         });
 
+        const thisYearVacancyGroupedBySchool = groupByProp(thisYearData, "schoolNameAnnon");
+        var thisYearSchoolsArray = [];
+        for (const key in thisYearVacancyGroupedBySchool) {
+          if (thisYearVacancyGroupedBySchool.hasOwnProperty(key)) {
+            thisYearSchoolsArray.push({
+              name: key,
+              vacancy: thisYearVacancyGroupedBySchool[key],
+            });
+          }
+        }
+        thisYearSchoolsArray = thisYearSchoolsArray.sort((a, b) => {
+          if (a.name > b.name) {
+            return 1;
+          }
+          if (b.name > a.name) {
+            return -1;
+          }
+          return 0;
+        });
+
         setVacancyRateData(schoolsArray);
 
-        var staffEligibleForRetirement = schoolsArray
+        var staffEligibleForRetirement = thisYearSchoolsArray
           .map((school) => {
             return {
               schoolName: school.name,
               eligibles: school.vacancy.filter((v) =>
                 [0, 1, 2].includes(Number(v.retElig))
+                && v.schoolYear == 2023
               ),
             };
           })
           .filter((ns) => ns.eligibles.length);
+        console.log("Eligibles: " + staffEligibleForRetirement)
         setEligibleForRetirementData(staffEligibleForRetirement);
 
-        var staffPerformance = schoolsArray
+        var staffPerformance = thisYearSchoolsArray
           .map((school) => {
             let newSchool = {
               name: school.name,

@@ -14,16 +14,9 @@ import {
 
 import { Button } from "reactstrap";
 import {
-  Container,
   Row,
   Col,
-  Card,
-  CardHeader,
-  CardBody,
-  CardTitle,
-  CardText,
 } from "reactstrap";
-import { Table } from "reactstrap";
 import { Link } from "react-router-dom";
 
 import { TableViewIcon, CardViewIcon } from "../Icons";
@@ -75,18 +68,18 @@ const IdentifyLeaders = () => {
     <div className="container flex-container">
       <div className="row my-4">
         <div className="col-md-3">
-          <Link to={"/vacancy-report"}>
+          <Link to={"/vacancy-report"}  className="text-decoration-none">
             <Button
               outline
               color="default"
               className="gray-border bold-text w-100 d-flex justify-content-center"
             >
-              <h5 className="pt-1">Forecast Vacancies</h5>
+              <h5 className="pt-1">Forecast Vacancy</h5>
             </Button>
           </Link>
         </div>
         <div className="col-md-3">
-          <Link to={"/identify-leaders"}>
+          <Link to={"/identify-leaders"}  className="text-decoration-none">
             <Button
               outline
               color="default"
@@ -107,7 +100,7 @@ const IdentifyLeaders = () => {
           </Button>
         </div>
         <div className="col-md-3">
-          <Link to="/directory?page=1&sortBy=asc&sortField=id">
+          <Link to="/directory?page=1&sortBy=asc&sortField=id"  className="text-decoration-none">
             <Button
               outline
               color="default"

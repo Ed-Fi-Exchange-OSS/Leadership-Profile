@@ -121,7 +121,7 @@ const LeadersTable = ({ data }) => {
             <td></td>
             <td></td>
             <td>
-              <a href="#"> View All </a>
+              <a href=""> View All </a>
             </td>
             <td></td>
             <td></td>

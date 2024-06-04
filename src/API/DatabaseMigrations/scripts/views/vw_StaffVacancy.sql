@@ -32,14 +32,18 @@ SELECT
 	, sa.Gender
 	, sa.Race
 	, sa.ReasonEndDate AS VacancyCause
-	, sa.SchoolYear
+	, CASE
+            WHEN MONTH(sa.EndDate) >= 7
+               THEN YEAR(sa.EndDate)+1
+               ELSE YEAR(sa.EndDate)
+       END as SchoolYear
 	, sa.PositionTitle
 	, CAST(
              CASE
                   WHEN Age >= 50
                      THEN 1
                   ELSE 0
-             END AS bit) as RetElig 
+             END AS bit) as RetElig
 	, Cast(sa.TRSYrs as varchar(10)) as TRSYrs
 	, Cast(sa.TotYrsExp as varchar(10)) as TotYrsExp
 	, COALESCE((pd.Domain1 + pd.Domain2 + pd.Domain3 + pd.Domain4 + pd.Domain5) / 5.0, 0.0E) AS OverallScore
@@ -49,6 +53,9 @@ SELECT
 	left join PerformanceData as pd on sa.EmployeeIDAnnon = pd.StaffUSI
 	WHERE
 		(sa.SchoolYear IS NOT NULL)
-		AND (sa.EndDate < DATEFROMPARTS(sa.SchoolYear, 12, 31))
-		AND (sa.SchoolYear <> 2024)
-		--AND ReasonEnd
+		--AND (sa.EndDate < DATEFROMPARTS(sa.SchoolYear, 12, 31))
+		AND sa.EndDate IS NOT NULL
+		--AND (sa.SchoolYear <= 2024)
+		AND (sa.ReasonEndDate != 'Finished Year')
+
+GO

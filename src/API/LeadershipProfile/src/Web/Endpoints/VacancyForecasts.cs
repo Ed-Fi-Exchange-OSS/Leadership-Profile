@@ -9,11 +9,16 @@ public class VacancyForecasts : EndpointGroupBase
         app.MapGroup(this)
             .RequireAuthorization()
             // .MapGet(GetVacancyForecasts)
-            .MapGet(GetVacancyForecasts);
+            .MapPost(GetVacancyForecasts);
+            // .MapPost(GetVacancyCausesBySchool, "GetVacancyCausesBySchool");
     }
 
-    public async Task<IEnumerable<VacancyForecast>> GetVacancyForecasts(ISender sender)
+    public async Task<IEnumerable<VacancyForecast>> GetVacancyForecasts(ISender sender, GetVacancyForecastsQuery query)
     {
-        return await sender.Send(new GetVacancyForecastsQuery());
+        return await sender.Send(query);
     }
+    // public async Task<IEnumerable<VacancyForecast>> GetVacancyCausesBySchool(ISender sender, GetVacancyCausesBySchoolQuery query)
+    // {
+    //     return await sender.Send(query);
+    // }
 }
