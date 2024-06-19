@@ -117,7 +117,6 @@ public class GetFilteredWithPaginationQueryHandler : IRequestHandler<GetFiltered
         return _context.StaffSearches.FromSqlRaw(sql, name);
     }
 
-
     private string ClauseRatingsConditionalJoin(ProfileSearchRequestBody? body)
     {
         if (body?.Ratings?.Any(r => r.IsPopulated) != true) return string.Empty;
@@ -239,7 +238,7 @@ public class GetFilteredWithPaginationQueryHandler : IRequestHandler<GetFiltered
             rangesCounter++;
         }
 
-        return whereTenure;
+        return $"({whereTenure})";
     }
 
     public async Task<int> GetSearchResultsTotalsAsync(ProfileSearchRequestBody body)
@@ -249,7 +248,8 @@ public class GetFilteredWithPaginationQueryHandler : IRequestHandler<GetFiltered
 
         // Implement the view in SQL, call it here
         var sql = $@"
-                 select StaffUSI from edfi.vw_StaffSearch
+                 select s.StaffUSI from edfi.vw_StaffSearch s
+                 {ClauseRatingsConditionalJoin(body)}
                  {ClauseConditions(body)}
              ";
 

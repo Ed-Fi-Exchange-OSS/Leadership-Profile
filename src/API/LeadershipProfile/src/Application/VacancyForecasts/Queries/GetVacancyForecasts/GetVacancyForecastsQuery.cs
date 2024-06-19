@@ -35,16 +35,15 @@ public class GetVacancyForecastsQueryHandler : IRequestHandler<GetVacancyForecas
             // .PaginatedListAsync(1, 20);
             .Select(x => new VacancyForecast {
                     StaffUniqueId = x.StaffUniqueId,
-                    FullNameAnnon  = x.FullNameAnnon, 
+                    FullName = x.FullName, 
                     Age = x.Age,
-                    SchoolNameAnnon = x.SchoolNameAnnon,
+                    NameOfInstitution = x.NameOfInstitution,
                     SchoolLevel = x.SchoolLevel,
                     Gender = x.Gender,
                     Race = x.Race,
                     VacancyCause = x.VacancyCause,
                     SchoolYear = x.SchoolYear,
                     PositionTitle = x.PositionTitle,
-                    RetElig = x.RetElig,
                     OverallScore = x.OverallScore
             })
             // .Take(20)

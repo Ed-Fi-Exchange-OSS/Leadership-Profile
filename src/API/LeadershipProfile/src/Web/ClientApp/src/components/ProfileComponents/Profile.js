@@ -50,7 +50,7 @@ const Profile = () => {
                 ? yearEndDate
                 : new Date());
         const yearsInLastRole = lastPositionFirstDate && (new Date(lastUpdate - lastPositionFirstDate).getFullYear() - year0);
-        return yearsInLastRole;
+        return yearsInLastRole ?? 'N/A';
     }
 
     return (

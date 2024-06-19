@@ -22,7 +22,7 @@ const PaginationDetails = (props) => {
   return (
     <span>
       Showing {page == 1 ? 1 : (page - 1) * 10 + 1}-
-      {(page - 1) * 10 + count} of {totalSize} Users
+      {(page - 1) * 10 + count} of {totalSize} Profiles
     </span>
   );
 };

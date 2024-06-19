@@ -2,16 +2,15 @@
 
 public class VacancyForecast
 {
-    public string? StaffUniqueId { get; set; }
-    public String? FullNameAnnon { get; set; }
+    public required string StaffUniqueId { get; set; }
+    public required String FullName { get; set; }
     public int? Age { get; set; }
-    public string? SchoolNameAnnon { get; set; }
-    public string? SchoolLevel { get; set; }
-    public string? Gender { get; set; }
-    public string? Race { get; set; }
-    public string? VacancyCause { get; set; }
-    public int? SchoolYear { get; set; }
-    public string? PositionTitle { get; set; }
-    public bool RetElig { get; set; }
-    public Double? OverallScore { get; set; }
+    public required string NameOfInstitution { get; set; }
+    public required string SchoolLevel { get; set; }
+    public required string Gender { get; set; }
+    public required string Race { get; set; }
+    public required string VacancyCause { get; set; }
+    public int SchoolYear { get; set; }
+    public required string PositionTitle { get; set; }
+    public Double OverallScore { get; set; }
 }

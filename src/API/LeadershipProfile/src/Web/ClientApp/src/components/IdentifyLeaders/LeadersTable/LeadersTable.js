@@ -3,63 +3,20 @@
 // The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
 // See the LICENSE and NOTICES files in the project root for more information.
 
-import React, { useState } from "react";
-import { useEffect, useRef } from "react";
-
-import * as FileSaver from "file-saver";
-import * as XLSX from "xlsx";
-
-
-import {
-  Dropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-  Table,
-} from "reactstrap";
-
-import { Button } from "reactstrap";
-import {
-  Container,
-  Row,
-  Col,
-  Card,
-  CardHeader,
-  CardBody,
-  CardTitle,
-  CardText,
-} from "reactstrap";
+import React from "react";
+import { useRef } from "react";
 import { Link } from "react-router-dom";
 
-import config from "../../../config";
+import { useDownloadExcel } from "react-export-table-to-excel";
 
-import UseLeadersTable from "./UseLeadersTable";
-
-import { useDownloadExcel } from 'react-export-table-to-excel';
-
-const LeadersTable = ({ data }) => {
-
-  const exportAsExcel = () => {
-    const fileType =
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
-  const fileExtension = ".xlsx";
-
-  const exportToCSV = (apiData, fileName) => {
-    const ws = XLSX.utils.json_to_sheet(apiData);
-    const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
-    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-    const data = new Blob([excelBuffer], { type: fileType });
-    FileSaver.saveAs(data, fileName + fileExtension);
-    };
-  };
-
+const LeadersTable = ({ data, onViewAll }) => {
   const tableRef = useRef(null);
 
   const { onDownload } = useDownloadExcel({
     currentTableRef: tableRef.current,
-    filename: 'Users table',
-    sheet: 'Users'
-})
+    filename: "Leaders",
+    sheet: "Leaders",
+  });
 
   return (
     <div className="container flex-container">
@@ -85,54 +42,41 @@ const LeadersTable = ({ data }) => {
         <tbody>
           {data
             ? data.map((staff, i) => (
-                <tr key={'leader-record-' + i}>
+                <tr key={"leader-record-" + i}>
                   <th scope="row">{i + 1}</th>
                   <td>{staff.schoolLevel}</td>
-                  <td>{staff.schoolNameAnnon}</td>
-                  <td>{staff.positionTitle}</td>
+                  <td>{staff.nameOfInstitution}</td>
+                  <td>{staff.job}</td>
                   <td>
-                    {/* <Link to={`profile/${207221}`} target="_blank"> */}
-                    {/* <Link to={`profile/${207221}`}>{staff.fullNameAnnon}</Link> */}
-                    <Link to={`profile/${staff.staffUniqueId}`} target="_blank">{staff.fullNameAnnon}</Link>
+                    <Link
+                      to={`/profile/${staff.staffUniqueId}`}
+                      target="_blank"
+                    >
+                      {staff.fullName}
+                    </Link>
                   </td>
-                  <td>{staff.totYrsExp}</td>
-                  {/* <td>{(staff.domain1 + staff.domain2 + staff.domain3 + staff.domain4 + staff.domain5)/5}</td> */}
+                  <td>{parseInt(staff.totalYearsOfExperience)}</td>
                   <td>{(staff.overallScore ?? 0).toFixed(2)}</td>
-                  <td>{staff.domain1}</td>
-                  <td>{staff.domain2}</td>
-                  <td>{staff.domain3}</td>
-                  <td>{staff.domain4}</td>
-                  <td>{staff.domain5}</td>
+                  <td>{Math.round(staff.domain1)}</td>
+                  <td>{Math.round(staff.domain2)}</td>
+                  <td>{Math.round(staff.domain3)}</td>
+                  <td>{Math.round(staff.domain4)}</td>
+                  <td>{Math.round(staff.domain5)}</td>
                   <td>{staff.gender}</td>
                   <td>{staff.race}</td>
-                  {/* {staff.domainsScore ? staff.domainsScore.map(score => (
-
-            <td>{score}</td>
-          )) : ""} */}
                 </tr>
               ))
             : ""}
-
-          <tr>
-            <th scope="row"></th>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>
-              <a href=""> View All </a>
-            </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            {/* <a href="#" onClick={exportAsExcel} > Download </a> */}
-          </tr>
         </tbody>
       </table>
-      <a href="#" onClick={onDownload} > Download </a>
+      <div className="d-flex justify-content-around">
+        {/* <a href="#" onClick={onDownload}>
+          {" "}
+          Download{" "}
+        </a> */}
+        <button className="btn btn-outline-primary" onClick={onViewAll}>View All</button>
+        <button className="btn btn-outline-primary" onClick={onDownload}>Download</button>
+      </div>
     </div>
   );
 };

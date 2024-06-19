@@ -25,7 +25,7 @@ function UseWhoHasLeft(data) {
       "Retirement",
       "Internal Transfer",
       "Internal Promotion",
-      // "Finished year"
+      "Other"
     ];
     var races = [
       "2orMore",
@@ -75,13 +75,15 @@ function UseWhoHasLeft(data) {
               "rgba(212, 125,70, 0.25)",
               "rgba(123, 109, 104, 0.25)",
               "rgba(237, 228, 218, 0.5)",
-              "rgba(208, 222, 187, 0.5)"
+              "rgba(208, 222, 187, 0.5)",
+              "rgba(255, 255, 255, 1)"
             ],
             borderColor: [
               "rgba(212, 125,70, 1)",
               "rgba(123, 109, 104, 1)",
               "rgba(237, 228, 218, 1)",
-              "rgba(208, 222, 187, 1)"
+              "rgba(208, 222, 187, 1)",
+              "rgba(123, 109, 104, 0.25)"
             ],
             borderWidth: 1,
           },

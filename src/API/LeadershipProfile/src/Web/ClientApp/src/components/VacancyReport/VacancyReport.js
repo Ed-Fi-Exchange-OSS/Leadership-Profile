@@ -160,7 +160,7 @@ const VacancyReport = () => {
   return (
     <div className="container flex-container">
       <div className="row my-4">
-        <div className="col-md-3">
+        <div className="col-md-4">
           <Link to={"/vacancy-report"} className="text-decoration-none">
             <Button
               outline
@@ -171,7 +171,7 @@ const VacancyReport = () => {
             </Button>
           </Link>
         </div>
-        <div className="col-md-3">
+        <div className="col-md-4">
           <Link to={"/identify-leaders"}  className="text-decoration-none">
             <Button
               outline
@@ -182,7 +182,7 @@ const VacancyReport = () => {
             </Button>
           </Link>
         </div>
-
+{/* 
         <div className="col-md-3">
           <Button
             outline
@@ -191,8 +191,8 @@ const VacancyReport = () => {
           >
             <h5 className="pt-1">Develop Leaders</h5>
           </Button>
-        </div>
-        <div className="col-md-3">
+        </div> */}
+        <div className="col-md-4">
           <Link to="/directory?page=1&sortBy=asc&sortField=id"  className="text-decoration-none">
             <Button
               outline

@@ -706,19 +706,24 @@ h5{
 }
 
 .color-circle-5 {
-  background-color: #fbff27;
+  /* background-color: #fbff27; */
+  background-color: #a3be7a;
   font-weight: bold;
 }
 .color-circle-4 {
-  background-color: #2d57ff;
+  /* background-color: #2d57ff; */
+  background-color: #56608a;
 }
 .color-circle-3 {
-  background-color: rgb(255, 119, 65);
+  /* background-color: rgb(255, 119, 65); */
+  background-color: gray;
 }
 .color-circle-2 {
-  background-color: #30ff86;
+  /* background-color: #30ff86; */
+  background-color: #cee32c;
 }
 .color-circle-1 {
+  /* background-color: #c3703c; */
   background-color: #c3703c;
 }
 
@@ -788,6 +793,10 @@ h5{
 
 .yellow {
   background-color: #ffc830;
+}
+
+.gray {
+  background-color: gray;
 }
 
 

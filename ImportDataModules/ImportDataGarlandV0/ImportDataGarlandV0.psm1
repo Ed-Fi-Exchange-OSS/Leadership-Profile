@@ -468,7 +468,7 @@ Function Import-EdDataStaff($Config, $PreviousResults) {
         'BeginDate',
         'EndDate',
         'SeparationReason',
-        'Age',
+        'BirthDate',
         'YearsOfProfessionalExperience',
         'SexDescriptor',
         'RaceDescriptor',

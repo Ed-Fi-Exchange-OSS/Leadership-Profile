@@ -488,7 +488,7 @@ export class IdentifyLeadersClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    getLeadersWithPagination(query: GetLeadersWithPaginationQuery): Promise<LeaderBriefDto[]> {
+    getLeadersWithPagination(query: GetLeadersWithPaginationQuery): Promise<ResponseDto> {
         let url_ = this.baseUrl + "/api/IdentifyLeaders";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -508,7 +508,7 @@ export class IdentifyLeadersClient {
         });
     }
 
-    protected processGetLeadersWithPagination(response: Response): Promise<LeaderBriefDto[]> {
+    protected processGetLeadersWithPagination(response: Response): Promise<ResponseDto> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -516,14 +516,7 @@ export class IdentifyLeadersClient {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(LeaderBriefDto.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
+            result200 = ResponseDto.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -531,7 +524,7 @@ export class IdentifyLeadersClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<LeaderBriefDto[]>(null as any);
+        return Promise.resolve<ResponseDto>(null as any);
     }
 }
 
@@ -739,6 +732,52 @@ export class VacancyForecastsClient {
             });
         }
         return Promise.resolve<VacancyForecast[]>(null as any);
+    }
+
+    getActiveStaff(query: GetActiveStaffQuery): Promise<ActiveStaff[]> {
+        let url_ = this.baseUrl + "/api/VacancyForecasts/ActiveStaff";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(query);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetActiveStaff(_response);
+        });
+    }
+
+    protected processGetActiveStaff(response: Response): Promise<ActiveStaff[]> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ActiveStaff.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ActiveStaff[]>(null as any);
     }
 }
 
@@ -1603,22 +1642,80 @@ export interface IInfoRequest {
     oldPassword?: string | undefined;
 }
 
+export class ResponseDto implements IResponseDto {
+    staff?: LeaderBriefDto[];
+    staffCount?: number | undefined;
+    chartsData?: ChartDataDto[];
+
+    constructor(data?: IResponseDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["staff"])) {
+                this.staff = [] as any;
+                for (let item of _data["staff"])
+                    this.staff!.push(LeaderBriefDto.fromJS(item));
+            }
+            this.staffCount = _data["staffCount"];
+            if (Array.isArray(_data["chartsData"])) {
+                this.chartsData = [] as any;
+                for (let item of _data["chartsData"])
+                    this.chartsData!.push(ChartDataDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ResponseDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ResponseDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.staff)) {
+            data["staff"] = [];
+            for (let item of this.staff)
+                data["staff"].push(item.toJSON());
+        }
+        data["staffCount"] = this.staffCount;
+        if (Array.isArray(this.chartsData)) {
+            data["chartsData"] = [];
+            for (let item of this.chartsData)
+                data["chartsData"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IResponseDto {
+    staff?: LeaderBriefDto[];
+    staffCount?: number | undefined;
+    chartsData?: ChartDataDto[];
+}
+
 export class LeaderBriefDto implements ILeaderBriefDto {
     staffUniqueId?: string | undefined;
-    fullNameAnnon?: string | undefined;
-    schoolNameAnnon?: string | undefined;
+    fullName?: string | undefined;
+    nameOfInstitution?: string | undefined;
     schoolYear?: number;
     schoolLevel?: string | undefined;
     job?: string | undefined;
     positionTitle?: string | undefined;
-    employeeIDAnnon?: string | undefined;
+    employeeID?: string | undefined;
     startDate?: Date;
     vacancyCause?: string | undefined;
-    totYrsExp?: string | undefined;
+    totalYearsOfExperience?: string | undefined;
     gender?: string | undefined;
     race?: string | undefined;
-    trsYrs?: string | undefined;
-    retElig?: string | undefined;
     overallScore?: number;
     domain1?: number;
     domain2?: number;
@@ -1638,20 +1735,18 @@ export class LeaderBriefDto implements ILeaderBriefDto {
     init(_data?: any) {
         if (_data) {
             this.staffUniqueId = _data["staffUniqueId"];
-            this.fullNameAnnon = _data["fullNameAnnon"];
-            this.schoolNameAnnon = _data["schoolNameAnnon"];
+            this.fullName = _data["fullName"];
+            this.nameOfInstitution = _data["nameOfInstitution"];
             this.schoolYear = _data["schoolYear"];
             this.schoolLevel = _data["schoolLevel"];
             this.job = _data["job"];
             this.positionTitle = _data["positionTitle"];
-            this.employeeIDAnnon = _data["employeeIDAnnon"];
+            this.employeeID = _data["employeeID"];
             this.startDate = _data["startDate"] ? new Date(_data["startDate"].toString()) : <any>undefined;
             this.vacancyCause = _data["vacancyCause"];
-            this.totYrsExp = _data["totYrsExp"];
+            this.totalYearsOfExperience = _data["totalYearsOfExperience"];
             this.gender = _data["gender"];
             this.race = _data["race"];
-            this.trsYrs = _data["trsYrs"];
-            this.retElig = _data["retElig"];
             this.overallScore = _data["overallScore"];
             this.domain1 = _data["domain1"];
             this.domain2 = _data["domain2"];
@@ -1671,20 +1766,18 @@ export class LeaderBriefDto implements ILeaderBriefDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["staffUniqueId"] = this.staffUniqueId;
-        data["fullNameAnnon"] = this.fullNameAnnon;
-        data["schoolNameAnnon"] = this.schoolNameAnnon;
+        data["fullName"] = this.fullName;
+        data["nameOfInstitution"] = this.nameOfInstitution;
         data["schoolYear"] = this.schoolYear;
         data["schoolLevel"] = this.schoolLevel;
         data["job"] = this.job;
         data["positionTitle"] = this.positionTitle;
-        data["employeeIDAnnon"] = this.employeeIDAnnon;
+        data["employeeID"] = this.employeeID;
         data["startDate"] = this.startDate ? this.startDate.toISOString() : <any>undefined;
         data["vacancyCause"] = this.vacancyCause;
-        data["totYrsExp"] = this.totYrsExp;
+        data["totalYearsOfExperience"] = this.totalYearsOfExperience;
         data["gender"] = this.gender;
         data["race"] = this.race;
-        data["trsYrs"] = this.trsYrs;
-        data["retElig"] = this.retElig;
         data["overallScore"] = this.overallScore;
         data["domain1"] = this.domain1;
         data["domain2"] = this.domain2;
@@ -1697,26 +1790,132 @@ export class LeaderBriefDto implements ILeaderBriefDto {
 
 export interface ILeaderBriefDto {
     staffUniqueId?: string | undefined;
-    fullNameAnnon?: string | undefined;
-    schoolNameAnnon?: string | undefined;
+    fullName?: string | undefined;
+    nameOfInstitution?: string | undefined;
     schoolYear?: number;
     schoolLevel?: string | undefined;
     job?: string | undefined;
     positionTitle?: string | undefined;
-    employeeIDAnnon?: string | undefined;
+    employeeID?: string | undefined;
     startDate?: Date;
     vacancyCause?: string | undefined;
-    totYrsExp?: string | undefined;
+    totalYearsOfExperience?: string | undefined;
     gender?: string | undefined;
     race?: string | undefined;
-    trsYrs?: string | undefined;
-    retElig?: string | undefined;
     overallScore?: number;
     domain1?: number;
     domain2?: number;
     domain3?: number;
     domain4?: number;
     domain5?: number;
+}
+
+export class ChartDataDto implements IChartDataDto {
+    labels?: string[];
+    datasets?: ChartDataset[];
+
+    constructor(data?: IChartDataDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["labels"])) {
+                this.labels = [] as any;
+                for (let item of _data["labels"])
+                    this.labels!.push(item);
+            }
+            if (Array.isArray(_data["datasets"])) {
+                this.datasets = [] as any;
+                for (let item of _data["datasets"])
+                    this.datasets!.push(ChartDataset.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ChartDataDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ChartDataDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.labels)) {
+            data["labels"] = [];
+            for (let item of this.labels)
+                data["labels"].push(item);
+        }
+        if (Array.isArray(this.datasets)) {
+            data["datasets"] = [];
+            for (let item of this.datasets)
+                data["datasets"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IChartDataDto {
+    labels?: string[];
+    datasets?: ChartDataset[];
+}
+
+export class ChartDataset implements IChartDataset {
+    label?: string | undefined;
+    backgroundColor?: string | undefined;
+    data?: number[];
+
+    constructor(data?: IChartDataset) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.label = _data["label"];
+            this.backgroundColor = _data["backgroundColor"];
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): ChartDataset {
+        data = typeof data === 'object' ? data : {};
+        let result = new ChartDataset();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["label"] = this.label;
+        data["backgroundColor"] = this.backgroundColor;
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IChartDataset {
+    label?: string | undefined;
+    backgroundColor?: string | undefined;
+    data?: number[];
 }
 
 export class GetLeadersWithPaginationQuery implements IGetLeadersWithPaginationQuery {
@@ -2932,18 +3131,17 @@ export interface IProfileSearchRequestAspires {
 }
 
 export class VacancyForecast implements IVacancyForecast {
-    staffUniqueId?: string | undefined;
-    fullNameAnnon?: string | undefined;
+    staffUniqueId?: string;
+    fullName?: string;
     age?: number | undefined;
-    schoolNameAnnon?: string | undefined;
-    schoolLevel?: string | undefined;
-    gender?: string | undefined;
-    race?: string | undefined;
-    vacancyCause?: string | undefined;
-    schoolYear?: number | undefined;
-    positionTitle?: string | undefined;
-    retElig?: boolean;
-    overallScore?: number | undefined;
+    nameOfInstitution?: string;
+    schoolLevel?: string;
+    gender?: string;
+    race?: string;
+    vacancyCause?: string;
+    schoolYear?: number;
+    positionTitle?: string;
+    overallScore?: number;
 
     constructor(data?: IVacancyForecast) {
         if (data) {
@@ -2957,16 +3155,15 @@ export class VacancyForecast implements IVacancyForecast {
     init(_data?: any) {
         if (_data) {
             this.staffUniqueId = _data["staffUniqueId"];
-            this.fullNameAnnon = _data["fullNameAnnon"];
+            this.fullName = _data["fullName"];
             this.age = _data["age"];
-            this.schoolNameAnnon = _data["schoolNameAnnon"];
+            this.nameOfInstitution = _data["nameOfInstitution"];
             this.schoolLevel = _data["schoolLevel"];
             this.gender = _data["gender"];
             this.race = _data["race"];
             this.vacancyCause = _data["vacancyCause"];
             this.schoolYear = _data["schoolYear"];
             this.positionTitle = _data["positionTitle"];
-            this.retElig = _data["retElig"];
             this.overallScore = _data["overallScore"];
         }
     }
@@ -2981,34 +3178,32 @@ export class VacancyForecast implements IVacancyForecast {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["staffUniqueId"] = this.staffUniqueId;
-        data["fullNameAnnon"] = this.fullNameAnnon;
+        data["fullName"] = this.fullName;
         data["age"] = this.age;
-        data["schoolNameAnnon"] = this.schoolNameAnnon;
+        data["nameOfInstitution"] = this.nameOfInstitution;
         data["schoolLevel"] = this.schoolLevel;
         data["gender"] = this.gender;
         data["race"] = this.race;
         data["vacancyCause"] = this.vacancyCause;
         data["schoolYear"] = this.schoolYear;
         data["positionTitle"] = this.positionTitle;
-        data["retElig"] = this.retElig;
         data["overallScore"] = this.overallScore;
         return data;
     }
 }
 
 export interface IVacancyForecast {
-    staffUniqueId?: string | undefined;
-    fullNameAnnon?: string | undefined;
+    staffUniqueId?: string;
+    fullName?: string;
     age?: number | undefined;
-    schoolNameAnnon?: string | undefined;
-    schoolLevel?: string | undefined;
-    gender?: string | undefined;
-    race?: string | undefined;
-    vacancyCause?: string | undefined;
-    schoolYear?: number | undefined;
-    positionTitle?: string | undefined;
-    retElig?: boolean;
-    overallScore?: number | undefined;
+    nameOfInstitution?: string;
+    schoolLevel?: string;
+    gender?: string;
+    race?: string;
+    vacancyCause?: string;
+    schoolYear?: number;
+    positionTitle?: string;
+    overallScore?: number;
 }
 
 export class GetVacancyForecastsQuery implements IGetVacancyForecastsQuery {
@@ -3044,6 +3239,134 @@ export class GetVacancyForecastsQuery implements IGetVacancyForecastsQuery {
 }
 
 export interface IGetVacancyForecastsQuery {
+    role?: string | undefined;
+}
+
+export class ActiveStaff implements IActiveStaff {
+    staffUniqueId?: string | undefined;
+    fullName?: string | undefined;
+    age?: number | undefined;
+    nameOfInstitution?: string | undefined;
+    gender?: string | undefined;
+    race?: string | undefined;
+    vacancyCause?: string | undefined;
+    schoolYear?: number | undefined;
+    positionTitle?: string | undefined;
+    overallScore?: number | undefined;
+    rating?: number | undefined;
+    schoolCategory?: string | undefined;
+    yearsOfService?: number | undefined;
+    retirementEligibility?: boolean | undefined;
+    yearsToRetirement?: number | undefined;
+
+    constructor(data?: IActiveStaff) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.staffUniqueId = _data["staffUniqueId"];
+            this.fullName = _data["fullName"];
+            this.age = _data["age"];
+            this.nameOfInstitution = _data["nameOfInstitution"];
+            this.gender = _data["gender"];
+            this.race = _data["race"];
+            this.vacancyCause = _data["vacancyCause"];
+            this.schoolYear = _data["schoolYear"];
+            this.positionTitle = _data["positionTitle"];
+            this.overallScore = _data["overallScore"];
+            this.rating = _data["rating"];
+            this.schoolCategory = _data["schoolCategory"];
+            this.yearsOfService = _data["yearsOfService"];
+            this.retirementEligibility = _data["retirementEligibility"];
+            this.yearsToRetirement = _data["yearsToRetirement"];
+        }
+    }
+
+    static fromJS(data: any): ActiveStaff {
+        data = typeof data === 'object' ? data : {};
+        let result = new ActiveStaff();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["staffUniqueId"] = this.staffUniqueId;
+        data["fullName"] = this.fullName;
+        data["age"] = this.age;
+        data["nameOfInstitution"] = this.nameOfInstitution;
+        data["gender"] = this.gender;
+        data["race"] = this.race;
+        data["vacancyCause"] = this.vacancyCause;
+        data["schoolYear"] = this.schoolYear;
+        data["positionTitle"] = this.positionTitle;
+        data["overallScore"] = this.overallScore;
+        data["rating"] = this.rating;
+        data["schoolCategory"] = this.schoolCategory;
+        data["yearsOfService"] = this.yearsOfService;
+        data["retirementEligibility"] = this.retirementEligibility;
+        data["yearsToRetirement"] = this.yearsToRetirement;
+        return data;
+    }
+}
+
+export interface IActiveStaff {
+    staffUniqueId?: string | undefined;
+    fullName?: string | undefined;
+    age?: number | undefined;
+    nameOfInstitution?: string | undefined;
+    gender?: string | undefined;
+    race?: string | undefined;
+    vacancyCause?: string | undefined;
+    schoolYear?: number | undefined;
+    positionTitle?: string | undefined;
+    overallScore?: number | undefined;
+    rating?: number | undefined;
+    schoolCategory?: string | undefined;
+    yearsOfService?: number | undefined;
+    retirementEligibility?: boolean | undefined;
+    yearsToRetirement?: number | undefined;
+}
+
+export class GetActiveStaffQuery implements IGetActiveStaffQuery {
+    role?: string | undefined;
+
+    constructor(data?: IGetActiveStaffQuery) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.role = _data["role"];
+        }
+    }
+
+    static fromJS(data: any): GetActiveStaffQuery {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetActiveStaffQuery();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["role"] = this.role;
+        return data;
+    }
+}
+
+export interface IGetActiveStaffQuery {
     role?: string | undefined;
 }
 

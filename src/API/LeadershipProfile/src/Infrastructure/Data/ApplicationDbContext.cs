@@ -29,6 +29,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
     public DbSet<ListItemSchoolCategory> ListItemSchoolCategories => Set<ListItemSchoolCategory>();
     public DbSet<ListItemInstitution> ListItemItemInstitutions => Set<ListItemInstitution>();
     public DbSet<StaffSearch> StaffSearches { get; set; }
+    public DbSet<ActiveStaff> ActiveStaff { get; set; }
     public DbSet<ProfileHeader> ProfileHeader { get; set; }
     public DbSet<ProfilePositionHistory> ProfilePositionHistory { get; set; }
     public DbSet<StaffAdmin> StaffAdmins { get; set; }
@@ -105,10 +106,13 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
 
 
         builder.Entity<LeaderSearch>()
-                .ToView("vw_LeaderSearch", "dbo")
+                .ToView("vw_LeaderSearch", "edfi")
                 .HasNoKey();
         builder.Entity<StaffSearch>()
                 .ToView("vw_StaffSearch", "edfi")
+                .HasNoKey();
+        builder.Entity<ActiveStaff>()
+                .ToView("vw_ActiveStaff", "edfi")
                 .HasNoKey();
 
         base.OnModelCreating(builder);
