@@ -16,8 +16,8 @@ public interface IApplicationDbContext
     DbSet<ListItemDegree> ListItemDegrees { get; }
     DbSet<ListItemSchoolCategory> ListItemSchoolCategories { get; }
     DbSet<ListItemInstitution> ListItemItemInstitutions { get; }
+    DbSet<ActiveStaff> ActiveStaff { get; set; }
     DbSet<StaffSearch> StaffSearches { get; set; }
-
     DbSet<ProfileHeader> ProfileHeader { get; set; }
     DbSet<ProfilePositionHistory> ProfilePositionHistory { get; set; }
     DbSet<StaffAdmin> StaffAdmins { get; set; }

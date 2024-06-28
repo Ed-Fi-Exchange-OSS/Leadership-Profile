@@ -3,19 +3,30 @@
 // The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
 // See the LICENSE and NOTICES files in the project root for more information.
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Button } from "reactstrap";
 import { Container, Row, Col, Card, CardTitle, CardText } from "reactstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { TableViewIcon, CardViewIcon } from "../Icons";
 import BreadcrumbList from "../Breadcrumb";
+import AuthService from "../../utils/auth-service";
 // import CardList from './CardListComponents/CardList';
 // import UseLandingPage from './UseLandingPage';
 
 const LandingPage = () => {
   const [activeComponent, setActiveComponent] = useState("table");
+  
+  const { isAuthenticated } = AuthService();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      let path = '/account/login';
+      navigate(path);
+    }
+  }, [])
   // const { setColumnSort, sort, data, exportData, paging, setPage, error, setFilters, exportResults, buttonRef } = UseDirectory();
 
   // const callbackFilteredSearch = (searchData) => {

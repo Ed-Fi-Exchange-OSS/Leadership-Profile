@@ -7,8 +7,8 @@ function IngestDateService() {
     function getLastIngestionDate() {
         return {
             "ISD": "Garland ISD",
-            "Date": new Date("2023-10-25T14:34:08.000Z"),
-            "ItemsProccessed": 1580
+            "Date": new Date("2024-06-13"),
+            "ItemsProccessed": 4018
         };
     }
 

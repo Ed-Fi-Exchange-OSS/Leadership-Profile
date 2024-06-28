@@ -41,9 +41,11 @@ function UseLogin() {
 
             let unmounted = false;
             // const apiUrl = new URL(API_URL + '/Identity/Account/Login?ReturnUrl=/Directory');
-            var uri = "https://localhost:44447";
+            //var uri = "http://localhost";
+            //var uri = "https://victorialeadership.developers.net";
             // alert(uri);
-            const apiUrl = new URL(uri + '/login?useCookies=true');
+            var uri = API_URL.toString().replace('/api', '');
+            const apiUrl = new URL(uri + 'login?useCookies=true');
 
             fetch(apiUrl, API_CONFIG(
                 'POST',

@@ -15,7 +15,7 @@ import ResetPassword from './components/LoginComponents/ResetPassword';
 const AppRoutes = [
   {
     index: true,
-    element: <Login />
+    element: <LandingPage />
   },
   {
     path: '/landing',

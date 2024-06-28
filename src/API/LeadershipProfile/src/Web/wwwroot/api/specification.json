@@ -379,10 +379,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/LeaderBriefDto"
-                  }
+                  "$ref": "#/components/schemas/ResponseDto"
                 }
               }
             }
@@ -513,11 +510,23 @@
       }
     },
     "/api/VacancyForecasts": {
-      "get": {
+      "post": {
         "tags": [
           "VacancyForecasts"
         ],
         "operationId": "GetVacancyForecasts",
+        "requestBody": {
+          "x-name": "query",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetVacancyForecastsQuery"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
         "responses": {
           "200": {
             "description": "",
@@ -527,6 +536,41 @@
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/VacancyForecast"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/VacancyForecasts/ActiveStaff": {
+      "post": {
+        "tags": [
+          "VacancyForecasts"
+        ],
+        "operationId": "GetActiveStaff",
+        "requestBody": {
+          "x-name": "query",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetActiveStaffQuery"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ActiveStaff"
                   }
                 }
               }
@@ -662,10 +706,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ListItemCategory"
-                  }
+                  "$ref": "#/components/schemas/Response2"
                 }
               }
             }
@@ -901,6 +942,29 @@
           }
         }
       },
+      "ResponseDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "staff": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LeaderBriefDto"
+            }
+          },
+          "staffCount": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "chartsData": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChartDataDto"
+            }
+          }
+        }
+      },
       "LeaderBriefDto": {
         "type": "object",
         "additionalProperties": false,
@@ -909,11 +973,11 @@
             "type": "string",
             "nullable": true
           },
-          "fullNameAnnon": {
+          "fullName": {
             "type": "string",
             "nullable": true
           },
-          "schoolNameAnnon": {
+          "nameOfInstitution": {
             "type": "string",
             "nullable": true
           },
@@ -933,7 +997,7 @@
             "type": "string",
             "nullable": true
           },
-          "employeeIDAnnon": {
+          "employeeID": {
             "type": "string",
             "nullable": true
           },
@@ -945,7 +1009,7 @@
             "type": "string",
             "nullable": true
           },
-          "totYrsExp": {
+          "totalYearsOfExperience": {
             "type": "string",
             "nullable": true
           },
@@ -954,14 +1018,6 @@
             "nullable": true
           },
           "race": {
-            "type": "string",
-            "nullable": true
-          },
-          "trsYrs": {
-            "type": "string",
-            "nullable": true
-          },
-          "retElig": {
             "type": "string",
             "nullable": true
           },
@@ -988,6 +1044,45 @@
           "domain5": {
             "type": "number",
             "format": "double"
+          }
+        }
+      },
+      "ChartDataDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "datasets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChartDataset"
+            }
+          }
+        }
+      },
+      "ChartDataset": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "label": {
+            "type": "string",
+            "nullable": true
+          },
+          "backgroundColor": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         }
       },
@@ -1164,10 +1259,12 @@
         "additionalProperties": false,
         "properties": {
           "role": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "schoolName": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "startDate": {
             "type": "string",
@@ -1309,6 +1406,9 @@
             "type": "string",
             "nullable": true
           },
+          "isActive": {
+            "type": "boolean"
+          },
           "degree": {
             "type": "string",
             "nullable": true
@@ -1316,6 +1416,9 @@
           "institution": {
             "type": "string",
             "nullable": true
+          },
+          "interestedInNextRole": {
+            "type": "boolean"
           }
         }
       },
@@ -1392,6 +1495,9 @@
           },
           "institutions": {
             "$ref": "#/components/schemas/ProfileSearchRequestInstitution"
+          },
+          "aspires": {
+            "$ref": "#/components/schemas/ProfileSearchRequestAspires"
           },
           "name": {
             "type": "string",
@@ -1499,7 +1605,74 @@
           }
         }
       },
+      "ProfileSearchRequestAspires": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "values": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        }
+      },
       "VacancyForecast": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "staffUniqueId": {
+            "type": "string"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "age": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "nameOfInstitution": {
+            "type": "string"
+          },
+          "schoolLevel": {
+            "type": "string"
+          },
+          "gender": {
+            "type": "string"
+          },
+          "race": {
+            "type": "string"
+          },
+          "vacancyCause": {
+            "type": "string"
+          },
+          "schoolYear": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "positionTitle": {
+            "type": "string"
+          },
+          "overallScore": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "GetVacancyForecastsQuery": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "role": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "ActiveStaff": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -1507,7 +1680,7 @@
             "type": "string",
             "nullable": true
           },
-          "fullNameAnnon": {
+          "fullName": {
             "type": "string",
             "nullable": true
           },
@@ -1516,11 +1689,7 @@
             "format": "int32",
             "nullable": true
           },
-          "schoolNameAnnon": {
-            "type": "string",
-            "nullable": true
-          },
-          "schoolLevel": {
+          "nameOfInstitution": {
             "type": "string",
             "nullable": true
           },
@@ -1537,20 +1706,50 @@
             "nullable": true
           },
           "schoolYear": {
-            "type": "number",
-            "format": "double",
+            "type": "integer",
+            "format": "int32",
             "nullable": true
           },
           "positionTitle": {
             "type": "string",
             "nullable": true
           },
-          "retElig": {
-            "type": "boolean"
-          },
           "overallScore": {
             "type": "number",
             "format": "double",
+            "nullable": true
+          },
+          "rating": {
+            "type": "number",
+            "format": "decimal",
+            "nullable": true
+          },
+          "schoolCategory": {
+            "type": "string",
+            "nullable": true
+          },
+          "yearsOfService": {
+            "type": "number",
+            "format": "decimal",
+            "nullable": true
+          },
+          "retirementEligibility": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "yearsToRetirement": {
+            "type": "number",
+            "format": "decimal",
+            "nullable": true
+          }
+        }
+      },
+      "GetActiveStaffQuery": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "role": {
+            "type": "string",
             "nullable": true
           }
         }
@@ -1591,6 +1790,10 @@
           "sortOrder": {
             "type": "integer",
             "format": "int32"
+          },
+          "evaluationTitle": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
@@ -1632,6 +1835,37 @@
             "additionalProperties": false
           }
         ]
+      },
+      "Response2": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "categories": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/Category"
+            }
+          }
+        }
+      },
+      "Category": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "value": {
+            "type": "string",
+            "nullable": true
+          },
+          "text": {
+            "type": "string",
+            "nullable": true
+          },
+          "evaluationTitle": {
+            "type": "string",
+            "nullable": true
+          }
+        }
       }
     }
   }

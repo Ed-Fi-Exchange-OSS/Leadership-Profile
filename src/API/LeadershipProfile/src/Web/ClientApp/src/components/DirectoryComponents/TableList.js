@@ -14,6 +14,8 @@ const CreateTableList = (props) => {
     const { sort, data, setColumnSort, paging, setPage } = props;
 
     function RenderTable(data) {
+        console.log("Data: ");
+        console.log(data);
         return (
             <Table striped className="directory-table">
                 <thead>
@@ -27,8 +29,10 @@ const CreateTableList = (props) => {
                         <th width="20%">
                             {/* Position */}
                             POSITION
+                            <Sorting onSortChange={newStatus => setColumnSort('position', newStatus)}
+                                status={sort.category === 'position' ? sort.value : null} />
                         </th>
-                        <th width="30%">
+                        <th width="25%">
                             {/* School  */}
                             SCHOOL
                         </th>
@@ -36,21 +40,27 @@ const CreateTableList = (props) => {
                             {/* Years */}
                             YEARS
                         </th>
-                        <th width="20%">
+                        <th width="15%">
                             {/* Degree */}
                             DEGREE
+                        </th>
+                        <th width="10%">
+                            {/* Degree */}
+                            ASPIRES
                         </th>
                     </tr>
                 </thead>
                 <tbody>
                     {data !== [] ? data.map(profile => (
-                        <tr key={profile.staffUniqueId}>
+                        <tr key={profile.staffUniqueId+Math.random()}>
                             <td></td>
                             <td width="20%"><Link to={`/profile/${profile.staffUniqueId}`}>{profile.lastSurname}, {profile.firstName}</Link></td>
-                            <td width="20%">{profile.assignment}</td>
-                            <td width="20%">{profile.institution}</td>
-                            <td width="20%">{profile.yearsOfService}</td>
-                            <td width="20%">{profile.degree}</td>
+                            <td width="20%">{profile.assignment + ' '}
+                                {profile.isActive ? <span class="badge bagde-pill badge-blue">Active</span> : ''}</td>
+                            <td width="25%">{profile.institution}</td>
+                            <td width="10%">{profile.yearsOfService}</td>
+                            <td width="15%">{profile.degree}</td>
+                            <td width="10%">{profile.interestedInNextRole ? "Yes" : "No"}</td>
                         </tr>)) : ''}
                         <tr className="bottom-row">
                             <td colSpan="5">

@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 
 import config from "../../../config";
 
-function UseAditionalRiskFactors() {
+function UseAditionalRiskFactors(data, selectedRole) {
   const { API_URL, API_CONFIG } = config();
 
   const [vacancyRateData, setVacancyRateData] = useState(null);
@@ -19,16 +19,8 @@ function UseAditionalRiskFactors() {
     useState(null);
   const [currentPerformanceData, setCurrentPerformanceData] = useState(null);
   const [scoreCount, setScoreCount] = useState(null);
-
-  const causes = [
-    "Attrition",
-    "Retirement",
-    "Internal Transfer",
-    "Internal Promotion",
-    // "Finished year"
-  ];
-  var races = ["2orMore", "A", "AA", "W", "H"];
-  const genders = ["M", "F"];
+  const [activeStaffData, setActiveStaffData] = useState(null);
+  const [turnoverPercent, setTurnoverPercent] = useState(0);
 
   useEffect(() => {
     const apiUrl = new URL(API_URL + `VacancyForecasts`);
@@ -36,15 +28,15 @@ function UseAditionalRiskFactors() {
     fetch(
       apiUrl,
       API_CONFIG(
-        "GET"
-        // JSON.stringify({
-        //   role: "AP",
-        // })
+        // "GET"
+        "POST",
+        JSON.stringify({
+          role: selectedRole,
+        })
       )
     ).then((response) => {
       response.json().then((json) => {
         var data = json;
-        console.log("This data: ", data);
         const groupByProp = (a, prop) =>
           a.reduce((byProp, vacancy) => {
             const vacancyProp = vacancy[prop];
@@ -53,31 +45,7 @@ function UseAditionalRiskFactors() {
             return byProp;
           }, []);
 
-        var scoreC = [
-          data.filter((s) => Math.round(s.overallScore) == 1).length,
-          data.filter((s) => Math.round(s.overallScore) == 2).length,
-          data.filter((s) => Math.round(s.overallScore) == 3).length,
-          data.filter((s) => Math.round(s.overallScore) == 4).length,
-          data.filter((s) => Math.round(s.overallScore) == 5).length,
-        ];
-
-        setScoreCount(scoreC);
-
-        /**
-         * Count staff eligible for retirement now or soon (1-2 years).
-         */
-        setEligibleForRetirementNowCount(
-          data.filter((s) => s.retElig).length
-          // data.filter((s) => s.age >= 50).length
-        );
-        setEligibleForRetirementSoonCount(
-          data.filter((s) => [1, 2].includes(Number(s.retElig))).length - 23
-        );
-
-        /**
-         *
-         */
-        const vacancyGroupedBySchool = groupByProp(data, "schoolNameAnnon");
+        const vacancyGroupedBySchool = groupByProp(data, "nameOfInstitution");
         var schoolsArray = [];
         for (const key in vacancyGroupedBySchool) {
           if (vacancyGroupedBySchool.hasOwnProperty(key)) {
@@ -99,32 +67,64 @@ function UseAditionalRiskFactors() {
 
         setVacancyRateData(schoolsArray);
 
-        var staffEligibleForRetirement = schoolsArray
-          .map((school) => {
-            return {
-              schoolName: school.name,
-              eligibles: school.vacancy.filter((v) =>
-                [0, 1, 2].includes(Number(v.retElig))
-              ),
-            };
-          })
-          .filter((ns) => ns.eligibles.length);
-        setEligibleForRetirementData(staffEligibleForRetirement);
-
-        var staffPerformance = schoolsArray
-          .map((school) => {
-            let newSchool = {
-              name: school.name,
-              // staff: school.vacancy.filter(v => v.retElig == 0)
-              staff: school.vacancy,
-            };
-            return newSchool;
-          })
-          .filter((ns) => ns.staff.length);
-        setCurrentPerformanceData(staffPerformance);
       });
     });
   }, []);
+
+  useEffect(() => {
+    getActiveStaff();
+  }, []);
+
+  const getActiveStaff = function () {
+    const apiUrl = new URL(API_URL + 'VacancyForecasts/ActiveStaff');
+
+    fetch(
+      apiUrl,
+      API_CONFIG(
+        // "GET"
+        "POST",
+        JSON.stringify({
+          role: selectedRole,
+        })
+      )
+    ).then((response) => {
+      response.json().then((activeStaff) => {
+
+          var scoreC = [
+            activeStaff.filter((s) => Math.round(s.rating) == 1).length,
+            activeStaff.filter((s) => Math.round(s.rating) == 2).length,
+            activeStaff.filter((s) => Math.round(s.rating) == 3).length,
+            activeStaff.filter((s) => Math.round(s.rating) == 4).length,
+            activeStaff.filter((s) => Math.round(s.rating) == 5).length,
+          ];
+  
+          setScoreCount(scoreC);
+          setEligibleForRetirementNowCount(
+            activeStaff.filter((s) => s.retirementEligibility).length
+          );
+          setEligibleForRetirementSoonCount(
+            // Math.round((thisYearData.filter((s) => !s.retElig).length) * 0.3)
+            activeStaff.filter((s) => !s.retirementEligibility && s.yearsToRetirement > 0 && s.yearsToRetirement <= 2).length          
+          );
+
+        // var schools = {};
+        var groupBy = function(xs, key) {
+          return xs.reduce(function(rv, x) {
+            (rv[x[key]] = rv[x[key]] || []).push(x);
+            return rv;
+          }, {});
+        };
+        var grouped = groupBy(activeStaff, "nameOfInstitution");
+        console.log("grouped");
+        console.log(grouped);
+
+        setActiveStaffData(grouped);
+        console.log("ActiveData");
+        console.log(activeStaffData);
+
+      })
+    })    
+  };
 
   return {
     vacancyRateData,
@@ -133,6 +133,8 @@ function UseAditionalRiskFactors() {
     eligibleForRetirementSoonCount,
     currentPerformanceData,
     scoreCount,
+    activeStaffData,
+    turnoverPercent
   };
 }
 

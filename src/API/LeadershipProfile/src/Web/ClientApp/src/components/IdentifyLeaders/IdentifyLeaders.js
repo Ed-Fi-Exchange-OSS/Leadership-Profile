@@ -14,16 +14,9 @@ import {
 
 import { Button } from "reactstrap";
 import {
-  Container,
   Row,
   Col,
-  Card,
-  CardHeader,
-  CardBody,
-  CardTitle,
-  CardText,
 } from "reactstrap";
-import { Table } from "reactstrap";
 import { Link } from "react-router-dom";
 
 import { TableViewIcon, CardViewIcon } from "../Icons";
@@ -35,8 +28,18 @@ import LeadersCharts from "./LeadersCharts/LeadersCharts";
 import UseIdentifyLeaders from "./UseIdentifyLeaders";
 
 const IdentifyLeaders = () => {
-  const { data, fetchData } = UseIdentifyLeaders();
+  const { 
+    data, 
+    totalCount,
+    isDataLoaded,
+    fetchData,
+    roleChartData,
+    raceChartData,
+    genderChartData,
+  } = UseIdentifyLeaders();
   let [isLoaded, setIsLoaded] = useState(false);
+  const [viewAll, setViewAll] = useState(false);
+
 
   useEffect(() => {
     setIsLoaded(true);
@@ -49,7 +52,6 @@ const IdentifyLeaders = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedPipeLine, setSelectedPipeLine] = useState("Principal");
   const toggle = () => setDropdownOpen((prevState) => !prevState);
-
   const handlePipelineSelection = (role) => {
     if (role != selectedPipeLine) {
       // fetchData(role);
@@ -71,22 +73,27 @@ const IdentifyLeaders = () => {
     }
   };
 
+  const viewAllHandler = (e) => {
+    e.preventDefault();
+    setViewAll(!viewAll);
+  }
+
   return (
     <div className="container flex-container">
       <div className="row my-4">
-        <div className="col-md-3">
-          <Link to={"/vacancy-report"}>
+        <div className="col-md-4">
+          <Link to={"/vacancy-report"}  className="text-decoration-none">
             <Button
               outline
               color="default"
               className="gray-border bold-text w-100 d-flex justify-content-center"
             >
-              <h5 className="pt-1">Forecast Vacancies</h5>
+              <h5 className="pt-1">Forecast Vacancy</h5>
             </Button>
           </Link>
         </div>
-        <div className="col-md-3">
-          <Link to={"/identify-leaders"}>
+        <div className="col-md-4">
+          <Link to={"/identify-leaders"}  className="text-decoration-none">
             <Button
               outline
               color="default"
@@ -96,7 +103,7 @@ const IdentifyLeaders = () => {
             </Button>
           </Link>
         </div>
-
+{/* 
         <div className="col-md-3">
           <Button
             outline
@@ -105,9 +112,9 @@ const IdentifyLeaders = () => {
           >
             <h5 className="pt-1">Develop Leaders</h5>
           </Button>
-        </div>
-        <div className="col-md-3">
-          <Link to="/directory?page=1&sortBy=asc&sortField=id">
+        </div> */}
+        <div className="col-md-4">
+          <Link to="/directory?page=1&sortBy=asc&sortField=id"  className="text-decoration-none">
             <Button
               outline
               color="default"
@@ -120,7 +127,18 @@ const IdentifyLeaders = () => {
       </div>
       <Row>
         <Col md="6">
-          <LeadersCharts></LeadersCharts>
+        { 
+          isDataLoaded != [] ? 
+            <LeadersCharts 
+              roleChartData={roleChartData}
+              raceChartData={raceChartData}
+              genderChartData={genderChartData}
+              totalCount={totalCount}
+            ></LeadersCharts>
+            : 
+            ""  
+        }
+          
         </Col>
         {/* <Col md="6" className="p-3" style={{backgroundColor: 'ligthgray'}}> */}
         <Col md="6" className="p-3">
@@ -162,7 +180,17 @@ const IdentifyLeaders = () => {
       </Row>
       <Row>
         <Col>
-          <LeadersTable data={data}></LeadersTable>
+        {viewAll ? (
+          <LeadersTable
+            data={data}          
+            onViewAll={viewAllHandler}  
+          ></LeadersTable>
+        ) : (
+          <LeadersTable
+            data={data.slice(0, 10)}          
+            onViewAll={viewAllHandler}  
+          ></LeadersTable>
+        )}          
         </Col>
       </Row>
       <Row>
