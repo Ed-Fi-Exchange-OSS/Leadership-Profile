@@ -112,14 +112,14 @@ const AditionalRiskFactors = ({ data, selectedRole }) => {
           </Row>
         </Col>
         <Col md="6" className="mt-3">
-          <h5 className="color left-title">
+          {/* <h5 className="color left-title">
             <span className="color orange-bold-text mr-1">
               {turnoverPercent}%  {" "}
             </span>
             Turnover 5 years
-          </h5>
+          </h5> */}
           <h5 className="left-title">5-Year Vacancy Rate</h5>
-          <Row className="my-3 retirement-max-height">
+          <Row id="vacancy-rate-container" className="vacancy-rate-container my-3 retirement-max-height">
             <Col>
               {vacancyRateData
                 ? vacancyRateData

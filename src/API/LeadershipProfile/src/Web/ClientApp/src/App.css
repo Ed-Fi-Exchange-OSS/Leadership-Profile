@@ -871,3 +871,139 @@ html {
 .text-decoration-none {
   text-decoration: none !important;
 }
+
+
+
+
+
+
+/*
+  ** Adding style to the scrolls
+*/
+
+
+
+#name { font-family: 'proxima_novasemibold', Helvetica, Arial, sans-serif; font-size: 32px; margin: auto; text-align: center; padding-top: 50px; }
+
+#scrollbar1 .vertical { width: 200px; height: 250px; overflow: auto; padding: 20px; position: absolute; left: 0px; right: 300px; top: 0px; bottom: 0px; margin: auto;}
+#scrollbar1 .horizontal { width: 200px; height: 250px; overflow-x: scroll; overflow-y: hidden; padding: 10px; position: absolute; left: 300px; right: 0px; top: 0px; bottom: 0px; margin: auto;}
+#scrollbar1 .horizontal p { width: 1000px; }
+
+#scrollbar2 .vertical { width: 200px; height: 250px; overflow: auto; padding: 20px; position: absolute; left: 0px; right: 300px; top: 0px; bottom: 0px; margin: auto;}
+#scrollbar2 .horizontal { width: 200px; height: 250px; overflow-x: scroll; overflow-y: hidden; padding: 10px; position: absolute; left: 300px; right: 0px; top: 0px; bottom: 0px; margin: auto;}
+#scrollbar2 .horizontal p { width: 1000px; }
+
+#scrollbar3 .vertical { width: 200px; height: 250px; overflow: auto; padding: 20px; position: absolute; left: 0px; right: 300px; top: 0px; bottom: 0px; margin: auto;}
+#scrollbar3 .horizontal { width: 200px; height: 250px; overflow-x: scroll; overflow-y: hidden; padding: 10px; position: absolute; left: 300px; right: 0px; top: 0px; bottom: 0px; margin: auto;}
+#scrollbar3 .horizontal p { width: 1000px; }
+
+#scrollbar4 .vertical { width: 200px; height: 250px; overflow: auto; padding: 20px; position: absolute; left: 0px; right: 300px; top: 0px; bottom: 0px; margin: auto;}
+#scrollbar4 .horizontal { width: 200px; height: 250px; overflow-x: scroll; overflow-y: hidden; padding: 10px; position: absolute; left: 300px; right: 0px; top: 0px; bottom: 0px; margin: auto;}
+#scrollbar4 .horizontal p { width: 1000px; }
+
+#scrollbar5 .vertical { width: 200px; height: 250px; overflow: auto; padding: 20px; position: absolute; left: 0px; right: 300px; top: 0px; bottom: 0px; margin: auto;}
+#scrollbar5 .horizontal { width: 200px; height: 250px; overflow-x: scroll; overflow-y: hidden; padding: 10px; position: absolute; left: 300px; right: 0px; top: 0px; bottom: 0px; margin: auto;}
+#scrollbar5 .horizontal p { width: 1000px; }
+
+#scrollbar2, #scrollbar3, #scrollbar4, #scrollbar5 { display: none; }
+
+.vacancy-rate-container ul { position: absolute; left: 0px; right: 0px; top: 0px; bottom: -400px; margin: auto; width: 110px; height: 7px; }
+.vacancy-rate-container li { float: left; background-color: rgba(0,0,0,0.2); width: 7px; height: 7px; list-style-type: none; margin: 7px; border-radius: 5px; cursor: pointer;}
+.vacancy-rate-container li.active { background-color: rgba(255,255,255,0.8); cursor: default;}
+
+
+/*Scrollbar 1*/
+.vacancy-rate-container ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+ 
+.vacancy-rate-container ::-webkit-scrollbar-track {
+    background-color: rgba(0,0,0,0.1);
+    border-radius: 5px;
+}
+ 
+.vacancy-rate-container ::-webkit-scrollbar-thumb {
+    background-color: rgba(255,255,255,0.8);
+    border-radius: 5px;
+}
+
+.vacancy-rate-container ::-webkit-scrollbar-corner {
+}
+
+
+/*Scrollbar 2*/
+#scrollbar2 ::-webkit-scrollbar {
+    width: 1px;
+    height: 1px;
+}
+ 
+#scrollbar2 ::-webkit-scrollbar-track {
+    background-color: rgba(0,0,0,0.25);
+}
+ 
+#scrollbar2 ::-webkit-scrollbar-thumb {
+    background-color: rgba(255,255,255,0.8);
+}
+
+#scrollbar2 ::-webkit-scrollbar-corner {
+}
+
+
+/*Scrollbar 3*/
+#scrollbar3 ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+ 
+#scrollbar3 ::-webkit-scrollbar-track {
+    background-color: transparent;
+    border-radius: 5px;
+}
+ 
+#scrollbar3 ::-webkit-scrollbar-thumb {
+    background-color: rgba(255,255,255,0.5);
+    border-radius: 5px;
+}
+
+#scrollbar3 ::-webkit-scrollbar-corner {
+}
+
+/*Scrollbar 4*/
+#scrollbar4 ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+ 
+#scrollbar4 ::-webkit-scrollbar-track {
+    background-color: rgba(0,0,0,0.2);
+    box-shadow: inset 0px 0px 0px 2px #78addf;
+    border-radius: 5px;
+}
+ 
+#scrollbar4 ::-webkit-scrollbar-thumb {
+    background-color: rgba(255,255,255,1);
+    border-radius: 5px;
+}
+
+#scrollbar4 ::-webkit-scrollbar-corner {
+}
+
+/*Scrollbar 5*/
+#scrollbar5 ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+ 
+#scrollbar5 ::-webkit-scrollbar-track {
+    background-color: #4f4f4f;
+    border-radius: 5px;
+}
+ 
+#scrollbar5 ::-webkit-scrollbar-thumb {
+    background-color: #ba605e;
+    border-radius: 5px;
+}
+
+#scrollbar5 ::-webkit-scrollbar-corner {
+}

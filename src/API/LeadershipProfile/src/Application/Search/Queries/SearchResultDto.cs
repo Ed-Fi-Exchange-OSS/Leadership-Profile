@@ -11,6 +11,8 @@ public class SearchResultDto
             public string? FullName { get; set; }
             public decimal YearsOfService { get; set; }
             public string? Assignment { get; set; }
+            public bool IsActive { get; set; }
+
             public string? Degree { get; set; }
             public string? Institution { get; set; } = "Default Institution";
             public bool InterestedInNextRole { get; set; } = false;

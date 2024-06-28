@@ -37,6 +37,7 @@ import { Link } from "react-router-dom";
 
 
 import AditionalRiskFactors from "./AditionalRiskFactors/AditionalRiskFactors";
+import SchoolCategoryCharts from "./SchoolCategoryCharts/SchoolCategoryCharts";
 import WhoHasLeft from "./WhoHasLeft/WhoHasLeft";
 
 import UseVacancyReport from "./UseVacancyReport";
@@ -231,7 +232,7 @@ const VacancyReport = () => {
             </DropdownMenu>
           </Dropdown>
         </div>
-        <schoolCategoryCharts></schoolCategoryCharts>
+        {/* <SchoolCategoryCharts></SchoolCategoryCharts> */}
         <div className="row my-4">
           <div
             className="col-md-4"

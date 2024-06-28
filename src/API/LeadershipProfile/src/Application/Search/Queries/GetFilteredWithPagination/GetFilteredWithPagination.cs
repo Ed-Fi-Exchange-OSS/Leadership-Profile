@@ -103,6 +103,7 @@ public class GetFilteredWithPaginationQueryHandler : IRequestHandler<GetFiltered
                     ,YearsOfService
                     ,Assignment
                     ,Institution
+                    ,IsActive
                     ,Degree
                     ,Email
                     ,Telephone

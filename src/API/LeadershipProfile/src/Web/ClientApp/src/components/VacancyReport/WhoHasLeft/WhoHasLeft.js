@@ -154,7 +154,7 @@ const WhoHasLeft = ({data, selectedRole}) => {
               <Col md="3">
                 <div className="cause-square"></div>
               </Col>
-              <Col md="9">{pieChartData && pieChartData.datasets && pieChartData.datasets.length ? pieChartData.datasets[0].data[4] : 0} Not Available</Col>
+              <Col md="9">{pieChartData && pieChartData.datasets && pieChartData.datasets.length ? pieChartData.datasets[0].data[4] : 0} Other</Col>
             </Row>
           </Col>
           <Col md="7" className="p-2">

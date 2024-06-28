@@ -73,7 +73,7 @@ function UseVacancyReport() {
     },
   });
   var labels = getLabels(true, true);
-  console.log("labels", labels);
+  // console.log("labels", labels);
   const [lineChartData, setLineChartData] = useState({
     labels,
     datasets: [

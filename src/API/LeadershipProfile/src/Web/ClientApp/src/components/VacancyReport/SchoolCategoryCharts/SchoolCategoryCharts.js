@@ -3,7 +3,7 @@
 // The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
 // See the LICENSE and NOTICES files in the project root for more information.
 
-import UserSchoolCategoryCharts from './UseSchoolCategoryCharts'
+import UseSchoolCategoryCharts from './UseSchoolCategoryCharts'
 
 
 const SchoolCategoryCharts = () => {
@@ -12,7 +12,7 @@ const SchoolCategoryCharts = () => {
         selectedVacancyYear, setSelectedVacancyYear,
         vacancyProjection, setVacancyProjection,
         selectedSchoolLevel, setSelectedSchoolLevel
-     } = UserSchoolCategoryCharts();
+     } = UseSchoolCategoryCharts();
 
     return (
         <div className="row my-4">

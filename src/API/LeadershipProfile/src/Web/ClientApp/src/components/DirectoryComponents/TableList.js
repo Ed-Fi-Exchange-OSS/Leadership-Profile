@@ -55,7 +55,8 @@ const CreateTableList = (props) => {
                         <tr key={profile.staffUniqueId+Math.random()}>
                             <td></td>
                             <td width="20%"><Link to={`/profile/${profile.staffUniqueId}`}>{profile.lastSurname}, {profile.firstName}</Link></td>
-                            <td width="20%">{profile.assignment}</td>
+                            <td width="20%">{profile.assignment + ' '}
+                                {profile.isActive ? <span class="badge bagde-pill badge-blue">Active</span> : ''}</td>
                             <td width="25%">{profile.institution}</td>
                             <td width="10%">{profile.yearsOfService}</td>
                             <td width="15%">{profile.degree}</td>

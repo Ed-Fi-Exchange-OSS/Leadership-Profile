@@ -72,7 +72,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
             .HasNoKey();
 
         builder.Entity<StaffVacancy>()
-                .ToView("vw_StaffVacancy", "dbo")
+                .ToView("vw_StaffVacancy", "edfi")
                 .HasNoKey();
 
         builder.Entity<Staff>().ToTable("Staff", schema: "edfi")

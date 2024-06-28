@@ -13,13 +13,6 @@ function UseWhoHasLeft(data) {
     const [ mainNumber, setMainNumber] = useState(0);
     const [ mainReason, setMainReason] = useState("");
 
-    // var races = [
-    //   "Other",
-    //   "Black of Afr. American",
-    //   "Asian",
-    //   "White",
-    //   "Hispanic or Latino",
-    // ];
     const causes = [
       "Attrition",
       "Retirement",

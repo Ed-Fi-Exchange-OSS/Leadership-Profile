@@ -2541,6 +2541,7 @@ export class SearchResultDto implements ISearchResultDto {
     fullName?: string | undefined;
     yearsOfService?: number;
     assignment?: string | undefined;
+    isActive?: boolean;
     degree?: string | undefined;
     institution?: string | undefined;
     interestedInNextRole?: boolean;
@@ -2562,6 +2563,7 @@ export class SearchResultDto implements ISearchResultDto {
             this.fullName = _data["fullName"];
             this.yearsOfService = _data["yearsOfService"];
             this.assignment = _data["assignment"];
+            this.isActive = _data["isActive"];
             this.degree = _data["degree"];
             this.institution = _data["institution"];
             this.interestedInNextRole = _data["interestedInNextRole"];
@@ -2583,6 +2585,7 @@ export class SearchResultDto implements ISearchResultDto {
         data["fullName"] = this.fullName;
         data["yearsOfService"] = this.yearsOfService;
         data["assignment"] = this.assignment;
+        data["isActive"] = this.isActive;
         data["degree"] = this.degree;
         data["institution"] = this.institution;
         data["interestedInNextRole"] = this.interestedInNextRole;
@@ -2597,6 +2600,7 @@ export interface ISearchResultDto {
     fullName?: string | undefined;
     yearsOfService?: number;
     assignment?: string | undefined;
+    isActive?: boolean;
     degree?: string | undefined;
     institution?: string | undefined;
     interestedInNextRole?: boolean;

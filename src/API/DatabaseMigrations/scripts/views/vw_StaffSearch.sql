@@ -14,7 +14,13 @@ with assignments as (
 		 , sc.SchoolCategoryDescriptorId as [InstitutionCategoryId]
          , eo.NameOfInstitution as [Institution]
          , seoaa.BeginDate as StartDate
+		 , seoaa.EndDate as EndDate
          , Row_number() over (partition by seoaa.StaffUSI order by BeginDate desc) as "Number"
+		 ,CASE
+                        WHEN YEAR(seoaa.EndDate) >= YEAR(GETDATE()) OR seoaa.EndDate IS NULL
+                            THEN CAST(1 AS BIT)
+                            ELSE CAST(0 AS BIT)
+                     END as IsActive
      from edfi.StaffEducationOrganizationAssignmentAssociation as seoaa
      join edfi.EducationOrganization eo on eo.EducationOrganizationId = seoaa.EducationOrganizationId
 	 left join edfi.SchoolCategory sc on sc.SchoolId = seoaa.EducationOrganizationId
@@ -51,6 +57,7 @@ select DISTINCT s.StaffUSI
      , a.Institution
      , a.InstitutionId
 	 , a.InstitutionCategoryId
+	 , a.IsActive
      , degreeDescriptor.CodeValue as Degree
      , s.HighestCompletedLevelOfEducationDescriptorId
 
@@ -69,3 +76,10 @@ from edfi.Staff as s
 		 LEFT JOIN GISD_Staff giss ON giss.FirstName = s.FirstName and giss.LastSurname = s.LastSurname
 		 LEFT JOIN dbo.GISDAspirations gisda ON gisda.ID = giss.UniqueId
 GO
+
+
+
+
+
+
+

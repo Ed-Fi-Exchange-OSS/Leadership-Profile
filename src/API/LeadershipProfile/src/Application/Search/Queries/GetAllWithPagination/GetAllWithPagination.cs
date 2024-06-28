@@ -78,6 +78,7 @@ public class GetAllWithPaginationQueryHandler : IRequestHandler<GetAllWithPagina
                     ,FullName
                     ,YearsOfService
                     ,Assignment
+                    ,IsActive
                     ,Institution
                     ,Degree
                     ,Email
