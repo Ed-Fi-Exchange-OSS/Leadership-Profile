@@ -6,6 +6,13 @@
 name: On Pull Request - C#
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - "**/*.cs"
+      - "**/*.csproj"
+      - ".github/workflows/on-pullrequest-cs.yml"
   pull_request:
     branches:
       - main
