@@ -43,8 +43,6 @@ jobs:
 
       - name: Setup .NET
         uses: actions/setup-dotnet@4d6c8fcf3c8f7a60068d26b594648e99df24cee3 # v4.0.0
-        with:
-          global-json-file: src/global.json
 
       - name: Dependency Review ("Dependabot on PR")
         uses: actions/dependency-review-action@9129d7d40b8c12c1ed0f60400d00c92d437adcce # v4.1.3
