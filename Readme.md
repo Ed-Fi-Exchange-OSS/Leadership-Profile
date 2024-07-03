@@ -1,5 +1,7 @@
 ﻿# Leadership-Profile
 
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/Ed-Fi-Exchange-OSS/Leadership-Profile/badge)](https://securityscorecards.dev/viewer/?uri=github.com/Ed-Fi-Exchange-OSS/Leadership-Profile)
+
 This web portal built around Ed-Fi technology stack enables districts to bring
 their Leadership Development Framework measures into the hands of district
 leadership and staff.
