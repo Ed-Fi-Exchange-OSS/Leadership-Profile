@@ -4,7 +4,7 @@
 // See the LICENSE and NOTICES files in the project root for more information.
 
 import React, { useEffect, useState } from "react";
-
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -42,6 +42,7 @@ import WhoHasLeft from "./WhoHasLeft/WhoHasLeft";
 
 import UseVacancyReport from "./UseVacancyReport";
 import StaffTable from "../StaffTable";
+import AuthService from "../../utils/auth-service";
 
 // import CardList from './CardListComponents/CardList';
 // import UseLandingPage from './UseLandingPage';
@@ -98,6 +99,8 @@ export const lineChartData3 = {
 const VacancyReport = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const toggle = () => setDropdownOpen((prevState) => !prevState);
+  const navigate = useNavigate();
+
 
   const [activeComponent, setActiveComponent] = useState("table");
   // const { setColumnSort, sort, data, exportData, paging, setPage, error, setFilters, exportResults, buttonRef } = UseDirectory();
@@ -105,6 +108,14 @@ const VacancyReport = () => {
   // const callbackFilteredSearch = (searchData) => {
   //     setFilters(searchData);
   // }
+
+
+  const { isAuthenticated } = AuthService();
+
+
+  useEffect(() => {
+    if (!isAuthenticated()) navigate('/account/login');
+  },[]); 
 
   const {
     data,

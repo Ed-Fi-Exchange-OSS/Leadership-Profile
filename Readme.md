@@ -146,6 +146,12 @@ on the `Startup` class instead of the `SmtpSender` class:
   services.AddTransient<IEmailSender, SmtpSender>();
 ```
 
+## Documentation
+
+You can refer [Leadership Portal Technical Guide](./docs/hw-tech-docs.docx) for more technical details.
+
+We also attach [Holdsworth Data request](./docs/holdsworth_data_request_v1.3.docx) to help in the Ed-Fi adoption process.
+
 ## Legal Information
 
 Copyright (c) 2023 Ed-Fi Alliance, LLC and contributors.

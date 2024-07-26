@@ -3,7 +3,7 @@
 // The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
 // See the LICENSE and NOTICES files in the project root for more information.
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Button } from 'reactstrap';
 
@@ -16,9 +16,21 @@ import ErrorMessage from '../ErrorMessage';
 import DirectoryFilters from './DirectoryFilters';
 import ResultsDownload from '../../utils/ResultsDownload';
 
+import { useLocation, useNavigate } from "react-router-dom";
+import AuthService from "../../utils/auth-service";
+
+
 const Directory = () => {
     const [activeComponent, setActiveComponent] = useState("table");
     const { setColumnSort, sort, data, exportData, paging, setPage, error, setFilters, exportResults, buttonRef } = UseDirectory();
+
+    const { isAuthenticated } = AuthService();
+    const navigate = useNavigate();
+
+        
+    useEffect(() => {
+        if (!isAuthenticated()) navigate('/account/login');
+    },[]); 
 
     const callbackFilteredSearch = (searchData) => {
         setFilters(searchData);
