@@ -59,7 +59,8 @@ function UseLogin() {
             // .then(response => response.json())
             .then(
                 (result) => {
-                    if (!unmounted)
+                    // console(result);
+                    if (!unmounted && result?.status == 200)
                     {
                         setError(false);
                         loginAuth(username);
