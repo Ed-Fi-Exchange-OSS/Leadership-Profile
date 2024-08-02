@@ -150,9 +150,11 @@ on the `Startup` class instead of the `SmtpSender` class:
 
 ## Documentation
 
-You can refer [Leadership Portal Technical Guide](./docs/hw-tech-docs.docx) for more technical details.
-
-We also attach [Holdsworth Data request](./docs/holdsworth_data_request_v1.3.docx) to help in the Ed-Fi adoption process.
+You can refer to this documents for more technical details:
+ 
+1. [Leadership Portal Technical Guide](./docs/hw-tech-docs.docx) 
+2. Toolkit for Vacancy Planning ([PDF](./docs/toolkit_for_vacancy_planning.pdf) and [PowerPoint](./docs/toolkit_for_vacancy_planning.pptx))
+3. [Holdsworth Data request](./docs/holdsworth_data_request_v1.3.docx) to help in the Ed-Fi adoption process.
 
 ## Legal Information
 
