@@ -29,7 +29,7 @@ function LogoutService() {
             'logoutId': authInfo,
         })}).then(() => {
           logoutAuth();
-          navigate('/');
+          navigate('/account/login');
         }).catch(error => console.error(error));
       }
 

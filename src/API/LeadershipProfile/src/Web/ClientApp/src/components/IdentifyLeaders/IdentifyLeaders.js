@@ -27,6 +27,10 @@ import LeadersFilters from "./LeadersFilters/LeadersFilters";
 import LeadersCharts from "./LeadersCharts/LeadersCharts";
 import UseIdentifyLeaders from "./UseIdentifyLeaders";
 
+import AuthService from "../../utils/auth-service";
+import { useLocation, useNavigate } from "react-router-dom";
+
+
 const IdentifyLeaders = () => {
   const { 
     data, 
@@ -39,6 +43,13 @@ const IdentifyLeaders = () => {
   } = UseIdentifyLeaders();
   let [isLoaded, setIsLoaded] = useState(false);
   const [viewAll, setViewAll] = useState(false);
+
+  const navigate = useNavigate();
+  const { isAuthenticated } = AuthService();
+
+  useEffect(() => {
+    if (!isAuthenticated()) navigate('/account/login');
+  },[]); 
 
 
   useEffect(() => {
