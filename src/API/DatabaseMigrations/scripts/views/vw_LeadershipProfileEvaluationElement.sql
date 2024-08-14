@@ -18,5 +18,5 @@ SELECT
          ORDER BY eerr.SchoolYear DESC, eerr.EvaluationDate DESC, eerr.CreateDate DESC) AS INT) AS EvalNumber
 
 FROM tpdm.EvaluationElementRatingResult eerr
-JOIN edfi.Staff AS staff ON staff.PersonId = eerr.PersonId
+JOIN edfi.Staff AS staff ON staff.StaffUniqueId = eerr.PersonId
 ;

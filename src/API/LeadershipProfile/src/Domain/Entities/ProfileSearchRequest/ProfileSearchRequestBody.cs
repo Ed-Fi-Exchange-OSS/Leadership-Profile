@@ -13,6 +13,7 @@ namespace LeadershipProfile.Domain.Entities.ProfileSearchRequest;
         public required ProfileSearchRequestDegrees Degrees { get; set; }
         public required ProfileSearchRequestSchoolCategories SchoolCategories { get; set; }
         public required ProfileSearchRequestInstitution Institutions { get; set; }
+        public required ProfileSearchRequestAspires Aspires { get; set; }
 
         public string? Name { get; set; }
     }

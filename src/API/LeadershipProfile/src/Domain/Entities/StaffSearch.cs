@@ -9,8 +9,11 @@ public class StaffSearch
     public string? FullName { get; set; }
     public decimal? YearsOfService { get; set; }
     public string? Assignment { get; set; }
+    public bool IsActive { get; set; }
     public string? Degree { get; set; }
     public string? Institution { get; set; }
     public string? Email { get; set; }
     public string? Telephone { get; set; }
+    public bool? InterestedInNextRole { get; set; } = false;
+
 }

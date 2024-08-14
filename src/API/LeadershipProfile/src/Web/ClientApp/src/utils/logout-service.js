@@ -14,7 +14,8 @@ function LogoutService() {
     const { API_URL } = config();
 
     function logout() {
-        const apiUrl = new URL(API_URL + '/logout');
+        var uri = API_URL.toString().replace('/api', '');
+        const apiUrl = new URL(uri + '/logout');
         fetch(apiUrl, {
             method: 'POST',
             mode: 'cors',
@@ -28,7 +29,7 @@ function LogoutService() {
             'logoutId': authInfo,
         })}).then(() => {
           logoutAuth();
-          navigate('/');
+          navigate('/account/login');
         }).catch(error => console.error(error));
       }
 

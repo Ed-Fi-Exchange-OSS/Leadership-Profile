@@ -13,19 +13,12 @@ function UseWhoHasLeft(data) {
     const [ mainNumber, setMainNumber] = useState(0);
     const [ mainReason, setMainReason] = useState("");
 
-    // var races = [
-    //   "Other",
-    //   "Black of Afr. American",
-    //   "Asian",
-    //   "White",
-    //   "Hispanic or Latino",
-    // ];
     const causes = [
       "Attrition",
       "Retirement",
       "Internal Transfer",
       "Internal Promotion",
-      // "Finished year"
+      "Other"
     ];
     var races = [
       "2orMore",
@@ -75,13 +68,15 @@ function UseWhoHasLeft(data) {
               "rgba(212, 125,70, 0.25)",
               "rgba(123, 109, 104, 0.25)",
               "rgba(237, 228, 218, 0.5)",
-              "rgba(208, 222, 187, 0.5)"
+              "rgba(208, 222, 187, 0.5)",
+              "rgba(255, 255, 255, 1)"
             ],
             borderColor: [
               "rgba(212, 125,70, 1)",
               "rgba(123, 109, 104, 1)",
               "rgba(237, 228, 218, 1)",
-              "rgba(208, 222, 187, 1)"
+              "rgba(208, 222, 187, 1)",
+              "rgba(123, 109, 104, 0.25)"
             ],
             borderWidth: 1,
           },

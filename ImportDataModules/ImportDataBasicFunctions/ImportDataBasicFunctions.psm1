@@ -28,7 +28,7 @@ function GetToken {
         }
 
         Write-Progress -Activity 'Getting token' -PercentComplete -1
-        $OAuthResponse = Invoke-RestMethod -Uri "$OAuthUrl" -Method Post -Body $FormData
+        $OAuthResponse = Invoke-RestMethod -Uri "$OAuthUrl" -Method Post -Body $FormData -SkipCertificateCheck
         $script:EdfiToken = $OAuthResponse.access_token
     }
     return $script:EdfiToken
@@ -140,7 +140,7 @@ function NPost() {
         }
         $jsonRecord = ConvertTo-Json $InputObject
         try {
-            $result = Invoke-RestMethod -Uri $uri -Method Post -Headers $Headers -Body $jsonRecord
+            $result = Invoke-RestMethod -Uri $uri -Method Post -Headers $Headers -Body $jsonRecord -SkipCertificateCheck
             Write-Output $InputObject
         }
         catch {

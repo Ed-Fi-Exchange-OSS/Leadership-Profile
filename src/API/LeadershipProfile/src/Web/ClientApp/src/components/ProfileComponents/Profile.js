@@ -50,7 +50,7 @@ const Profile = () => {
                 ? yearEndDate
                 : new Date());
         const yearsInLastRole = lastPositionFirstDate && (new Date(lastUpdate - lastPositionFirstDate).getFullYear() - year0);
-        return yearsInLastRole;
+        return yearsInLastRole ?? 'N/A';
     }
 
     return (
@@ -65,7 +65,7 @@ const Profile = () => {
                     <NavLink onClick={() => setActiveComponent("leader")}>Performance</NavLink>
                 </NavItem>
                 <NavItem className={activeComponent === "rating" ? "current-profile-page nav-option" : "nav-option"}>
-                    <NavLink onClick={() => setActiveComponent("rating")}>GISD rating</NavLink>
+                    <NavLink onClick={() => setActiveComponent("rating")}>Readiness</NavLink>
                 </NavItem>
             </Nav>
 
@@ -81,7 +81,7 @@ const Profile = () => {
                              data.evaluations.map(evaluation =>{
                                  return(
                                     <div>
-                                        <EvaluationChart title={evaluation.title} data={data.evaluations} key={evaluation.title}/>
+                                        <EvaluationChart title={evaluation.title} data={data.evaluations} key={'0-' + evaluation.title}/>
                                     </div>
                                  )
                              })
@@ -94,7 +94,7 @@ const Profile = () => {
                              data.rating.map(evaluation =>{
                                  return(
                                     <div>
-                                        <EvaluationChart title={evaluation.title} data={data.ratings} key={evaluation.title}/>
+                                        <EvaluationChart title={evaluation.title} data={data.ratings} key={'1-' + evaluation.title}/>
                                     </div>
                                  )
                              })

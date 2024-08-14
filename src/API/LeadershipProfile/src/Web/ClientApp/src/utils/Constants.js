@@ -16,6 +16,7 @@ export const INITIAL_FILTERS_STATE = {
         score: 0,
     }  */
     ],
+    aspires: [],
     pills: []
 
     /*
@@ -48,7 +49,8 @@ const PillType = {
     Tenure: "TENURE",
     Degree: "DEGREE",
     SchoolCategory: "SCHOOL_CATEGORY",
-    Rating: "RATING"
+    Rating: "RATING",
+    Aspires: "ASPIRES"
 }
 
 export default PillType;
