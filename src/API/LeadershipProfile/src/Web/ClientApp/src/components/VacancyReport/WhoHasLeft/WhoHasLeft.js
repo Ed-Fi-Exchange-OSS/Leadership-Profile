@@ -150,12 +150,12 @@ const WhoHasLeft = ({data, selectedRole}) => {
               </Col>
               <Col md="9" style={{cursor: 'pointer'}} onClick={() => setCauseFilter('Internal Promotion')}>{pieChartData && pieChartData.datasets && pieChartData.datasets.length ? pieChartData.datasets[0].data[3] : 0} Internal Promotion</Col>
             </Row>
-            {/* <Row className="my-1">
+            <Row className="my-1">
               <Col md="3">
-                <div className="purple cause-square"></div>
+                <div className="cause-square"></div>
               </Col>
-              <Col md="9">Finished year</Col>
-            </Row> */}
+              <Col md="9">{pieChartData && pieChartData.datasets && pieChartData.datasets.length ? pieChartData.datasets[0].data[4] : 0} Other</Col>
+            </Row>
           </Col>
           <Col md="7" className="p-2">
             <Row style={{ height: "285px" }}>

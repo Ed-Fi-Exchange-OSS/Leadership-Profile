@@ -16,15 +16,17 @@ Select *
       staff.StaffUSI
       , staff.StaffUniqueId
       , eorr.EvaluationObjectiveTitle AS ObjectiveTitle
+	  , eorr.EvaluationTitle
       , Avg(eorr.Rating) AS Rating
       , CAST(eorr.SchoolYear AS INT) AS SchoolYear
       , Min(eorr.EvaluationDate) as EvaluationDate
       , Min(eorr.CreateDate) as CreateDate
     FROM tpdm.EvaluationElementRatingResult eorr
-    JOIN edfi.Staff AS staff ON staff.PersonId = eorr.PersonId
+    JOIN edfi.Staff AS staff ON staff.StaffUniqueId = eorr.PersonId
     group by     staff.StaffUSI
       , staff.StaffUniqueId
       , eorr.EvaluationObjectiveTitle
+	  , eorr.EvaluationTitle
       , CAST(eorr.SchoolYear AS INT)
   ) as eorr
 ;

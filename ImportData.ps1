@@ -16,7 +16,8 @@ $Config = @{
     }
 
     V0Files         = [PSCustomObject]@{
-        Employees = "Data\garland-data-0\230731_GISD_LeadershipPortal_testdata4.xlsx - Employees.csv"
+        #Employees = "Data\garland-data-0\230731_GISD_LeadershipPortal_testdata4.xlsx - Employees.csv"
+        Employees = "Data\garland-data-0\full_set_update.csv"
         TPESS     = "Data\garland-data-0\230731_GISD_LeadershipPortal_testdata4.xlsx - AP_P T-PESS.csv"
         ProfDev   = "Data\garland-data-0\230731_GISD_LeadershipPortal_testdata4.xlsx - AP_P PD.csv"
         Errors    = "Data\garland-data-0\Errors.txt"
@@ -29,8 +30,9 @@ $Config = @{
     # Key                  = "RvcohKz9zHI4"
     # Secret               = "E1iEFusaNf81xzCxwHfbolkC"
 
-    BaseApiUrl           = 'https://pc-slayerwood:443/WebApi'
-    # BaseApiUrl           = 'https://ec2amaz-jkha7sb:443/WebApi'
+    # BaseApiUrl           = 'https://garlandleadership.developers.net/WebApi'
+    BaseApiUrl           = 'https://edfipilot.developers.net/WebApi'
+    # BaseApiUrl           = 'https://ec2amaz-jkha7sb/WebApi'
     Key                  = "abqdlvFektKS"
     Secret               = "ec6NlGHpxT09lNisWmMmzViP"
 

@@ -6,7 +6,7 @@
  */
 
 CREATE OR ALTER VIEW [edfi].[vw_ListAllCategories] AS
-SELECT EvaluationObjectiveTitle as Category, SortOrder
+SELECT EvaluationObjectiveTitle as Category, SortOrder, EvaluationTitle
 FROM tpdm.EvaluationObjective
-GROUP BY EvaluationObjectiveTitle, SortOrder
+GROUP BY EvaluationObjectiveTitle, SortOrder, EvaluationTitle
 ;

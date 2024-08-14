@@ -23,6 +23,17 @@ function UseVacancyReport() {
     return index === 5 ? 10 : 5;
   }
 
+  const getLabels = (text = false, asc = false) => {
+    var labels = [];
+    var today = new Date();
+    var pivotYear = today.getFullYear() +1;
+    for (var i = 0; i < 6; i++) {
+      text ? labels.push(pivotYear.toString()) : labels.push(pivotYear);
+      pivotYear--;
+    }
+    return asc ? labels.reverse() : labels;
+  }
+
   const [lineChartOptions, setLineChartOptions] = useState({
     responsive: true,
     plugins: {
@@ -61,7 +72,8 @@ function UseVacancyReport() {
       },
     },
   });
-  const labels = ["2018", "2019", "2020", "2021", "2022", "2023"];
+  var labels = getLabels(true, true);
+  // console.log("labels", labels);
   const [lineChartData, setLineChartData] = useState({
     labels,
     datasets: [
@@ -123,10 +135,10 @@ function UseVacancyReport() {
     fetch(
       apiUrl,
       API_CONFIG(
-        "GET"
-        // JSON.stringify({
-        //   role: role,
-        // })
+        "POST",
+        JSON.stringify({
+          role: role,
+        })
       )
     )
       .then((response) => {
@@ -143,7 +155,7 @@ function UseVacancyReport() {
           backgroundColor,
           schoolLevel = "All"
         ) => {
-          const years = [2022, 2021, 2020, 2019, 2018];
+          const years = [2024, 2023, 2022, 2021, 2020];
 
           let totalVacancies = 0;
           const vacancyCount = projectionData
@@ -250,6 +262,8 @@ function UseVacancyReport() {
   useEffect(() => {
     fetchData(selectedRole);
   }, []);
+
+
 
   return {
     data,

@@ -24,7 +24,7 @@ const PillsFilters = (props) =>{
             {(pillState.pills ?? []).length > 0 &&
             <div className="selected-filters">
                 <div className="d-flex justify-content-end">
-                    <a href="#" className="selected-filters-clear mx-3" onClick={() => clearAll()}>Clear Filters</a>
+                    <a className="selected-filters-clear mx-3" onClick={() => clearAll()}>Clear Filters</a>
                 </div>
                 <div className="selected-filters-wrapper">
                     <span>Active Filters:</span>

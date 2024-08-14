@@ -9,5 +9,6 @@ namespace LeadershipProfile.Domain.Entities.ListItem;
         //Evaluation Objective has a Text-Based Key
         public string? Category { get; set; }
         public int SortOrder { get; set; }
+        public string? EvaluationTitle { get; set; }
     }
 

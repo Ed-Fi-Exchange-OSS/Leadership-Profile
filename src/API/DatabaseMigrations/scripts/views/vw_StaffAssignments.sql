@@ -7,13 +7,13 @@
 
 CREATE OR ALTER VIEW [edfi].[vw_StaffAssignments] AS
 
-SELECT sta.StaffUSI as EmployeeIDAnnon
+SELECT sta.StaffUSI as EmployeeID
     , sta.StaffUniqueId
-	, sta.FirstName + ' ' +  sta.LastSurname as FullNameAnnon
+	, sta.FirstName + ' ' +  sta.LastSurname as FullName
 	, sex.CodeValue as Gender
 	, race.CodeValue as Race
 	, empeo.EducationOrganizationId
-	, empeo.NameOfInstitution as SchoolNameAnnon
+	, empeo.NameOfInstitution
 	, empeo.Discriminator
 	, seoea.HireDate
 	, seoea.EndDate
@@ -28,9 +28,7 @@ SELECT sta.StaffUSI as EmployeeIDAnnon
 		YEAR(seoea.HireDate)+1,
 		YEAR(seoea.HireDate)) as float) as SchoolYear
 	, schd.CodeValue as SchoolLevel
-	, '1' as RetElig
-	, '1' as TRSYrs
-	, '1' as TotYrsExp
+	, sta.YearsOfPriorProfessionalExperience as TotalYearsOfExperience
 
 	FROM edfi.Staff sta
 	LEFT JOIN edfi.Descriptor sex on sta.SexDescriptorId = sex.DescriptorId

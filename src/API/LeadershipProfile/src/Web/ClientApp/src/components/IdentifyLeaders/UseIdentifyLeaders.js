@@ -7,26 +7,33 @@ import { useState, useEffect } from "react";
 
 import config from "../../config";
 
-
 function UseIdentifyLeaders() {
+  const { API_URL, API_CONFIG } = config();
 
-    const { API_URL, API_CONFIG } = config();
+  const [data, setData] = useState([]);
+  const [totalCount, setTotalCount] = useState([]);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const [roleChartData, setRoleChartData] = useState([]);
+  const [raceChartData, setRaceChartData] = useState([]);
+  const [genderChartData, setGenderChartData] = useState([]);
 
-    const [data, setData] = useState([]);
+  const fetchData = (filters) => {
+    let unmounted = false;
+    const apiUrl = new URL(API_URL + `IdentifyLeaders`);
 
-    const fetchData = (filters) => {
-      let unmounted = false;
-      const apiUrl = new URL(API_URL + `IdentifyLeaders`);
-
-      fetch(apiUrl, API_CONFIG("POST", JSON.stringify({
-        ...filters
-      })))
+    fetch(
+      apiUrl,
+      API_CONFIG(
+        "POST",
+        JSON.stringify({
+          ...filters,
+        })
+      )
+    )
       .then((response) => {
         if (!response.ok) {
           if (response.status === 401) {
-
           } else {
-
           }
           return;
         }
@@ -34,8 +41,14 @@ function UseIdentifyLeaders() {
         response.json().then((response) => {
           if (!unmounted && response !== null) {
             if (response !== undefined) {
-              setData(response);
-              console.log("items:", response)
+              setData(response.staff);
+              setTotalCount(response.staffCount);
+              setRoleChartData(response.chartsData[0]);
+              setRaceChartData(response.chartsData[1]);
+              setGenderChartData(response.chartsData[2]);
+              
+              setIsDataLoaded(true);
+              console.log("items:", response);
               // lineChartData1.data = response.results.projectionData1;
             }
           }
@@ -44,24 +57,25 @@ function UseIdentifyLeaders() {
       .catch((error) => {
         console.error(error.message);
       });
-    }
+  };
 
-    useEffect(() => {
+  useEffect(() => {
+    var payload = JSON.parse(
+      '{"roles":[3,4,2,1],"schoolLevels":[1,2,3],"highestDegrees":[1,2,3],"hasCertification":[1,2],"yearsOfExperience":[1,2],"overallScore":["0","5"],"domainOneScore":["0","5"],"domainTwoScore":["0","5"],"domainThreeScore":["0","5"],"domainFourScore":["0","5"],"domainFiveScore":["0","5"]}'
+    );
 
-      
-      var payload = JSON.parse(
-        '{"roles":[3,4,2,1],"schoolLevels":[1,2,3],"highestDegrees":[1,2,3],"hasCertification":[1,2],"yearsOfExperience":[1,2],"overallScore":["0","5"],"domainOneScore":["0","5"],"domainTwoScore":["0","5"],"domainThreeScore":["0","5"],"domainFourScore":["0","5"],"domainFiveScore":["0","5"]}'
-      );
+    fetchData(payload);
+  }, []);
 
-      fetchData(payload)
-
-    }, []);
-
-    return {
-        data,
-        fetchData
-    };
-
+  return {
+    data,
+    totalCount,
+    isDataLoaded,
+    fetchData,
+    roleChartData,
+    raceChartData,
+    genderChartData
+  };
 }
 
 export default UseIdentifyLeaders;
