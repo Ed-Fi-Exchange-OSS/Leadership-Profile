@@ -4,7 +4,7 @@
 // See the LICENSE and NOTICES files in the project root for more information.
 
 import React, { useEffect, useState } from "react";
-
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -37,10 +37,12 @@ import { Link } from "react-router-dom";
 
 
 import AditionalRiskFactors from "./AditionalRiskFactors/AditionalRiskFactors";
+import SchoolCategoryCharts from "./SchoolCategoryCharts/SchoolCategoryCharts";
 import WhoHasLeft from "./WhoHasLeft/WhoHasLeft";
 
 import UseVacancyReport from "./UseVacancyReport";
 import StaffTable from "../StaffTable";
+import AuthService from "../../utils/auth-service";
 
 // import CardList from './CardListComponents/CardList';
 // import UseLandingPage from './UseLandingPage';
@@ -56,7 +58,19 @@ ChartJS.register(
   LineElement
 );
 
-const labels = [2018, 2019, 2020, 2021, 2022, 2023];
+const getLabels = (text = false, asc = false) => {
+  var labels = [];
+  var today = new Date();
+  var pivotYear = today.getFullYear() +1;
+  for (var i = 0; i < 6; i++) {
+    text ? labels.push(pivotYear.toString()) : labels.push(pivotYear);
+    pivotYear--;
+  }
+  return asc ? labels.reverse() : labels;
+}
+
+// const labels = [2018, 2019, 2020, 2021, 2022, 2023];
+const labels = getLabels(false, true);
 
 export const lineChartData2 = {
   labels,
@@ -85,6 +99,8 @@ export const lineChartData3 = {
 const VacancyReport = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const toggle = () => setDropdownOpen((prevState) => !prevState);
+  const navigate = useNavigate();
+
 
   const [activeComponent, setActiveComponent] = useState("table");
   // const { setColumnSort, sort, data, exportData, paging, setPage, error, setFilters, exportResults, buttonRef } = UseDirectory();
@@ -92,6 +108,14 @@ const VacancyReport = () => {
   // const callbackFilteredSearch = (searchData) => {
   //     setFilters(searchData);
   // }
+
+
+  const { isAuthenticated } = AuthService();
+
+
+  useEffect(() => {
+    if (!isAuthenticated()) navigate('/account/login');
+  },[]); 
 
   const {
     data,
@@ -112,10 +136,12 @@ const VacancyReport = () => {
     selectedSchoolLevel,
     setSelectedSchoolLevel,
     retirementData,
-    setRetirementData
+    setRetirementData,
+    getLabels
   } = UseVacancyReport();
 
   const handleRoleSelection = (role) => {
+    setSelectedVacancyYear(null);
     if (role != selectedRole) {
       fetchData(role);
       setSelectedRole(role);
@@ -146,19 +172,19 @@ const VacancyReport = () => {
   return (
     <div className="container flex-container">
       <div className="row my-4">
-        <div className="col-md-3">
-          <Link to={"/vacancy-report"}>
+        <div className="col-md-4">
+          <Link to={"/vacancy-report"} className="text-decoration-none">
             <Button
               outline
               color="default"
               className="yellow-border bold-text w-100 d-flex justify-content-center"
             >
-              <h5 className="pt-1">Forecast Vacancies</h5>
+              <h5 className="pt-1">Forecast Vacancy</h5>
             </Button>
           </Link>
         </div>
-        <div className="col-md-3">
-          <Link to={"/identify-leaders"}>
+        <div className="col-md-4">
+          <Link to={"/identify-leaders"}  className="text-decoration-none">
             <Button
               outline
               color="default"
@@ -168,7 +194,7 @@ const VacancyReport = () => {
             </Button>
           </Link>
         </div>
-
+{/* 
         <div className="col-md-3">
           <Button
             outline
@@ -177,9 +203,9 @@ const VacancyReport = () => {
           >
             <h5 className="pt-1">Develop Leaders</h5>
           </Button>
-        </div>
-        <div className="col-md-3">
-          <Link to="/directory?page=1&sortBy=asc&sortField=id">
+        </div> */}
+        <div className="col-md-4">
+          <Link to="/directory?page=1&sortBy=asc&sortField=id"  className="text-decoration-none">
             <Button
               outline
               color="default"
@@ -217,6 +243,7 @@ const VacancyReport = () => {
             </DropdownMenu>
           </Dropdown>
         </div>
+        {/* <SchoolCategoryCharts></SchoolCategoryCharts> */}
         <div className="row my-4">
           <div
             className="col-md-4"

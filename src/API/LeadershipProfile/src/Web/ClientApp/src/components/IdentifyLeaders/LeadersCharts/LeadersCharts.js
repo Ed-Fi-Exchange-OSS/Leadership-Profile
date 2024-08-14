@@ -3,7 +3,7 @@
 // The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
 // See the LICENSE and NOTICES files in the project root for more information.
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   Dropdown,
@@ -61,41 +61,6 @@ export const options = {
   },
 };
 
-const rolesLabels = ['EL', 'MS', 'HS'];
-
-export const roleData = {
-  labels: rolesLabels,
-  datasets: [
-    {
-      label: '',
-      data: [7, 8, 7],
-      backgroundColor: 'rgba(97, 142, 221, 0.5)',
-    }
-  ],
-};
-
-const raceLabels = ['Asian', 'Black', 'Hispanic', 'Two or more races', 'White'];
-export const raceData = {
-  labels: raceLabels,
-  datasets: [
-    {
-      label: 'EL',
-      data: [1, 0, 1, 1, 4],
-      backgroundColor: 'rgba(97, 142, 221, 0.5)',
-    },
-    {
-      label: 'MS',
-      data: [0, 0, 2, 3, 3],
-      backgroundColor: 'rgba(174, 210, 133, 0.5)',
-    },
-    {
-      label: 'HS',
-      data: [0, 1, 1, 1, 4],
-      backgroundColor: 'rgba(223, 109, 25, 0.5)',
-    }
-  ],
-};
-
 const genderLabels = ['F', 'M'];
 export const genderData = {
   labels: genderLabels,
@@ -118,8 +83,11 @@ export const genderData = {
   ],
   // height: '150px'
 };
+const LeadersCharts = ({roleChartData, raceChartData, genderChartData, totalCount}) => {
 
-const LeadersCharts = () => {
+  useEffect(() => {
+  })
+
 
   return (
     <div className="container flex-container">
@@ -131,21 +99,21 @@ const LeadersCharts = () => {
             </div>
           </Col> */}
           <Col md="12">
-            <p>{0} Total Candidates Selected</p>
+            <p>{totalCount} Total Candidates Selected</p>
 
             <div  style={{height: '250px'}}>
-              <Bar options={options} data={roleData} />
+              <Bar options={options} data={roleChartData} />
             </div>
           </Col>
         </Row>
         <Row>
           <Col style={{height: '250px'}}>
-            <Bar options={options} data={raceData} />
+            <Bar options={options} data={raceChartData} />
           </Col>
         </Row>
         <Row>
           <Col style={{height: '250px'}}>
-            <Bar options={options} data={genderData} />
+            <Bar options={options} data={genderChartData} />
           </Col>
         </Row>
     </div>

@@ -4,7 +4,7 @@ namespace LeadershipProfile.Application.VacancyForecasts.Queries.GetVacancyForec
 
 public record GetVacancyForecastsQuery : IRequest<IEnumerable<VacancyForecast>> 
 {
-    public int RoleId { get; set; }
+    public string? Role { get; set; }
 }
 
 public class GetVacancyForecastsQueryHandler : IRequestHandler<GetVacancyForecastsQuery, IEnumerable<VacancyForecast>>
@@ -22,27 +22,31 @@ public class GetVacancyForecastsQueryHandler : IRequestHandler<GetVacancyForecas
     public async Task<IEnumerable<VacancyForecast>> Handle(GetVacancyForecastsQuery request, CancellationToken cancellationToken)
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
     {
+        var nameMapping = new Dictionary<string, string>
+            {
+                {"Principal","Principal" },
+                {"AP", "Assistant Principal"}
+            };
         return await _context.StaffVacancies
-            // .Where(x => x.ListId == request.ListId)
+            .Where(x => x.PositionTitle == nameMapping[request.Role ?? ""])
             // .OrderBy(x => x.Title)
             // .ProjectTo<TodoItemBriefDto>(_mapper.ConfigurationProvider)
             // .PaginatedListAsync(request.PageNumber, request.PageSize);
             // .PaginatedListAsync(1, 20);
             .Select(x => new VacancyForecast {
                     StaffUniqueId = x.StaffUniqueId,
-                    FullNameAnnon  = x.FullNameAnnon, 
+                    FullName = x.FullName, 
                     Age = x.Age,
-                    SchoolNameAnnon = x.SchoolNameAnnon,
+                    NameOfInstitution = x.NameOfInstitution,
                     SchoolLevel = x.SchoolLevel,
                     Gender = x.Gender,
                     Race = x.Race,
                     VacancyCause = x.VacancyCause,
                     SchoolYear = x.SchoolYear,
                     PositionTitle = x.PositionTitle,
-                    RetElig = x.RetElig,
                     OverallScore = x.OverallScore
             })
-            .Take(20)
+            // .Take(20)
             .ToListAsync();
     }
 }
