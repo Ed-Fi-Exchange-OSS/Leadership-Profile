@@ -8,7 +8,7 @@ import {INITIAL_FILTERS_STATE} from "../../utils/Constants";
 
 const Reducer = (state, action) => {
     const {setNameFilter, setPosition, removePosition, setIntitution, removeInstitution, setSchoolCategory, removeSchoolCategory,
-        setDegree, removeDegree, setTenure, removeTenure, setRatingCategory, setRatingScore, removeRating, removePill, clearFilters} = FilterActions;
+        setDegree, removeDegree, setTenure, removeTenure, setRatingCategory, setAspires, removeAspires, setRatingScore, removeRating, removePill, clearFilters} = FilterActions;
 
     switch(action.type){
         case setNameFilter: {
@@ -88,7 +88,7 @@ const Reducer = (state, action) => {
                 schoolCategories: [...state.schoolCategories, filterPill.value],
                 pills: [...state.pills, filterPill]
             }
-        }
+        }   
         case removeSchoolCategory: {
             let filterPill = action.payload;
             return {
@@ -111,11 +111,27 @@ const Reducer = (state, action) => {
                 pills: [...state.pills.filter(pill => pill.filter !== newFilterPill.filter || pill.value?.category !== newFilterPill.value.category), newFilterPill]
             }
         }
+        case setAspires: {
+            let filterPill = action.payload;
+            return {
+                ...state,
+                aspires: [...state.aspires, filterPill.value],
+                pills: [...state.pills, filterPill]
+            }
+        }
         case removeRating: {
             return {
                 ...state,
                 scores: state.scores.filter(s => s.category !== action.payload.value.category),
                 pills: state.pills.filter(value => value !== action.payload)
+            }
+        }
+        case removeAspires: {
+            let filterPill = action.payload;
+            return {
+                ...state,
+                aspires: state.aspires.filter(value => value !== filterPill.value),
+                pills: state.pills.filter(value => value !== filterPill)
             }
         }
         case clearFilters: {

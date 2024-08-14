@@ -10,7 +10,11 @@ namespace LeadershipProfile.Infrastructure.Data;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplicationDbContext
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) {        
+     }
+
+    // public IConfiguration Configuration { get; }
+
 
     public DbSet<TodoList> TodoLists => Set<TodoList>();
 
@@ -25,6 +29,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
     public DbSet<ListItemSchoolCategory> ListItemSchoolCategories => Set<ListItemSchoolCategory>();
     public DbSet<ListItemInstitution> ListItemItemInstitutions => Set<ListItemInstitution>();
     public DbSet<StaffSearch> StaffSearches { get; set; }
+    public DbSet<ActiveStaff> ActiveStaff { get; set; }
     public DbSet<ProfileHeader> ProfileHeader { get; set; }
     public DbSet<ProfilePositionHistory> ProfilePositionHistory { get; set; }
     public DbSet<StaffAdmin> StaffAdmins { get; set; }
@@ -37,10 +42,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder
-            .UseSqlServer(
-                @"server=WHOISIT\SQLEXPRESS;database=EdFi_Ods_4820340;User=sa;Password=1234;TrustServerCertificate=True",
-                providerOptions => { providerOptions.EnableRetryOnFailure(); });
+        // var connectionString = Configuration.GetConnectionString("EdFi");
+        // optionsBuilder
+        //     .UseSqlServer(connectionString,
+        //         providerOptions => { providerOptions.EnableRetryOnFailure(); });
     }
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -67,7 +72,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
             .HasNoKey();
 
         builder.Entity<StaffVacancy>()
-                .ToView("vw_StaffVacancy", "dbo")
+                .ToView("vw_StaffVacancy", "edfi")
                 .HasNoKey();
 
         builder.Entity<Staff>().ToTable("Staff", schema: "edfi")
@@ -101,10 +106,13 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
 
 
         builder.Entity<LeaderSearch>()
-                .ToView("vw_LeaderSearch", "dbo")
+                .ToView("vw_LeaderSearch", "edfi")
                 .HasNoKey();
         builder.Entity<StaffSearch>()
                 .ToView("vw_StaffSearch", "edfi")
+                .HasNoKey();
+        builder.Entity<ActiveStaff>()
+                .ToView("vw_ActiveStaff", "edfi")
                 .HasNoKey();
 
         base.OnModelCreating(builder);

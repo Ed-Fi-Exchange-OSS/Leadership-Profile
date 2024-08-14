@@ -13,7 +13,8 @@ public class WebControls : EndpointGroupBase
 {
     public override void Map(WebApplication app)
     {
-        var group = app.MapGroup(this).RequireAuthorization();
+        var group = app.MapGroup(this)
+            .RequireAuthorization();
         group.MapGet("Assignments", GetAssignments);
         group.MapGet("Categories", GetCategories);
         group.MapGet("Degrees", GetDegrees);
@@ -46,7 +47,7 @@ public class WebControls : EndpointGroupBase
     {
         return await sender.Send(query);
     }
-    public async Task<IEnumerable<ListItemCategory>> GetMeasurementCategories(ISender sender, [AsParameters] GetMeasurementCategoriesQuery query)
+    public async Task<Response> GetMeasurementCategories(ISender sender, [AsParameters] GetMeasurementCategoriesQuery query)
     {
         return await sender.Send(query);
     }

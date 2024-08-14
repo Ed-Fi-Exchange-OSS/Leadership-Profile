@@ -1,12 +1,9 @@
 ﻿using LeadershipProfile.Application.Common.Interfaces;
-using LeadershipProfile.Application.Common.Mappings;
-using LeadershipProfile.Application.Common.Models;
 using LeadershipProfileAPI.Extensions;
-
 
 namespace LeadershipProfile.Application.IdentifyLeaders.Queries.GetLeadersWithPagination;
 
-public record GetLeadersWithPaginationQuery : IRequest<List<LeaderBriefDto>>
+public record GetLeadersWithPaginationQuery : IRequest<ResponseDto>
 {
     public int ListId { get; init; }
     public int PageNumber { get; init; } = 1;
@@ -24,7 +21,7 @@ public record GetLeadersWithPaginationQuery : IRequest<List<LeaderBriefDto>>
     public required int[] DomainFiveScore { get; set; }
 }
 
-public class GetLeadersWithPaginationQueryHandler : IRequestHandler<GetLeadersWithPaginationQuery, List<LeaderBriefDto>>
+public class GetLeadersWithPaginationQueryHandler : IRequestHandler<GetLeadersWithPaginationQuery, ResponseDto>
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
@@ -52,7 +49,7 @@ public class GetLeadersWithPaginationQueryHandler : IRequestHandler<GetLeadersWi
 
     
 
-    public async Task<List<LeaderBriefDto>> Handle(GetLeadersWithPaginationQuery request, CancellationToken cancellationToken)
+    public async Task<ResponseDto> Handle(GetLeadersWithPaginationQuery request, CancellationToken cancellationToken)
     {
 
         var results = await GetLeaderSearchResultsAsync(
@@ -68,14 +65,74 @@ public class GetLeadersWithPaginationQueryHandler : IRequestHandler<GetLeadersWi
                     request.DomainFourScore,
                     request.DomainFiveScore
                 );
-        return results;
 
-        // return await _context.LeaderSearches
-        //     // .Where(x => x.ListId == request.ListId)
-        //     .OrderBy(x => x.FullNameAnnon)
-        //     .ProjectTo<LeaderBriefDto>(_mapper.ConfigurationProvider)
-        //     .PaginatedListAsync(request.PageNumber, request.PageSize);
+        var chartInfo = generateChartInfo(results);
+
+        return new ResponseDto {
+            Staff = results.ToList(),
+            StaffCount = results.Count,
+            ChartsData = chartInfo            
+        };
     }
+
+    private ChartDataDto[] generateChartInfo(List<LeaderBriefDto> results)
+    {                
+        string[] labels = ["EL", "MS", "HS"];
+        List<LeaderBriefDto>[] byLevels = [
+            results.Where(l => l.SchoolLevel == "Elementary School").ToList(),
+            results.Where(l => l.SchoolLevel == "Middle School").ToList(),
+            results.Where(l => l.SchoolLevel == "High School").ToList()
+        ];
+        int[] totalsBySchoolLevel = byLevels.Select(c => c.Count()).ToArray();
+        ChartDataDto schoolLevelChartDto = new ChartDataDto(labels, totalsBySchoolLevel);
+
+        int[] initialRacesState = [0, 0, 0, 0, 0];
+        int[][] totalsBySchoolLevelByRace = byLevels.Select(c => c.Aggregate(initialRacesState, 
+            (accumulate, current) => MutateRaceArray(accumulate, current)
+        )).ToArray();
+        string[] racesLabels = ["Asian", "Black", "Hispanic", "Two or more races", "White"];
+        ChartDataDto racesChartDto = new ChartDataDto(racesLabels, totalsBySchoolLevelByRace);
+
+        int[] initialGenderState = [0, 0];
+        int[][] totalsBySchoolLevelByGender = byLevels.Select(c => c.Aggregate(initialGenderState, 
+            (accumulate, current) => MutateGenderArray(accumulate, current)
+        )).ToArray();
+        string[] genderLabels = ["Male", "Female"];
+        ChartDataDto genderChartDto = new ChartDataDto(genderLabels, totalsBySchoolLevelByGender);
+
+        return [schoolLevelChartDto, racesChartDto, genderChartDto];
+    }
+
+    private int[] MutateRaceArray(int[] accumulate, LeaderBriefDto current) {
+        int arrayPosition = 0;
+        switch(current.Race) {
+            case "Asian":
+                arrayPosition = 0;
+                break;
+            case "Black":
+                arrayPosition = 1;
+                break;
+            case "Hispanic": 
+                arrayPosition = 2;
+                break;
+            case "Two or more races":
+                arrayPosition = 3;
+                break;
+            case "White":
+                arrayPosition = 4;
+                break;
+            default: 
+                break;
+        }
+        accumulate[arrayPosition] = accumulate[arrayPosition] +1;
+        return accumulate;
+    }
+    private int[] MutateGenderArray(int[] accumulate, LeaderBriefDto current) {
+        int arrayPosition = current.Gender == "Male" ? 0 : 1;
+        accumulate[arrayPosition]++;
+        return accumulate;
+    }
+
 
     public Task<List<LeaderBriefDto>> GetLeaderSearchResultsAsync(
             int[] Roles,
@@ -102,11 +159,12 @@ public class GetLeadersWithPaginationQueryHandler : IRequestHandler<GetLeadersWi
                 .ApplyRangeFilter(DomainFiveScore.Select(i => (double)i).ToArray(), s => s.Domain5)
                 .Select(l => new LeaderBriefDto {
                     StaffUniqueId = l.StaffUniqueId,
-                    FullNameAnnon = l.FullNameAnnon,
+                    FullName = l.FullName,
                     SchoolLevel = l.SchoolLevel,
-                    SchoolNameAnnon = l.SchoolNameAnnon,
+                    NameOfInstitution = l.NameOfInstitution,
                     Job = l.Job,
-                    TotYrsExp = l.TotYrsExp,
+                    PositionTitle = l.Job,
+                    TotalYearsOfExperience = l.TotalYearsOfExperience,
                     Race = l.Race,
                     Gender = l.Gender,
                     Domain1 = l.Domain1,
@@ -116,8 +174,8 @@ public class GetLeadersWithPaginationQueryHandler : IRequestHandler<GetLeadersWi
                     Domain5 = l.Domain5,
                     OverallScore = l.OverallScore
                 })
-                .Distinct()
-                .Take(10);
+                .Distinct();
+                // .Take(10);
 
             return result.ToListAsync();
         }

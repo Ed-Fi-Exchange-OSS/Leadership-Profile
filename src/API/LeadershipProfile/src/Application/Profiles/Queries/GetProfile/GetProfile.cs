@@ -48,20 +48,6 @@ public class Response
                 .ForMember(dst => dst.Phone, opt => opt.MapFrom(x => x.Telephone))
                 .ForMember(dst => dst.CurrentPosition, opt => opt.MapFrom(x => x.Position))
                 .ForMember(dst => dst.Evaluations, opt => opt.Ignore());
-
-            CreateMap<ProfilePositionHistory, PositionHistory>()
-                .ForMember(dst => dst.SchoolName, opt => opt.MapFrom(x => x.School));
-
-            CreateMap<ProfileCertification, Certificate>()
-                .ForMember(dst => dst.Type, opt => opt.MapFrom(x => x.CredentialType))
-                .ForMember(dst => dst.ValidFromDate, opt => opt.MapFrom(x => x.IssuanceDate))
-                .ForMember(dst => dst.ValidToDate, opt => opt.MapFrom(x => x.ExpirationDate));
-
-            CreateMap<StaffProfessionalDevelopment, ProfessionalDevelopment>()
-                .ForMember(dst => dst.AttendanceDate, opt => opt.MapFrom(x => x.AttendanceDate))
-                .ForMember(dst => dst.ProfessionalDevelopmentTitle, opt => opt.MapFrom(x => x.ProfessionalDevelopmentTitle))
-                .ForMember(dst => dst.Location, opt => opt.MapFrom(x => x.Location))
-                .ForMember(dst => dst.AlignmentToLeadership, opt => opt.MapFrom(x => x.AlignmentToLeadership));
         }
         
         private static string GetFullName(string firstName, string middleName, string lastName)
@@ -78,7 +64,6 @@ public class Response
             return fullName;
         }
     }
-
 }
 public class PerformanceEvaluation
 {
@@ -90,19 +75,22 @@ public class PerformanceRating
 {
     public required string Category { get; set; }
     public decimal Score { get; set; }
+    
 }
 
 public class PositionHistory
 {
-    public string Role { get; set; } = "Default Role";
-    public string SchoolName { get; set; } = "Default School";
+    public string? Role { get; set; }
+    public string? SchoolName { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime? EndDate { get; set; }
     private class Mapping : Profile
     {
         public Mapping()
         {
-            CreateMap<ProfilePositionHistory, PositionHistory>();
+            // CreateMap<ProfilePositionHistory, PositionHistory>();
+            CreateMap<ProfilePositionHistory, PositionHistory>()
+                .ForMember(dst => dst.SchoolName, opt => opt.MapFrom(x => x.School));
         }
     }
 }
@@ -117,8 +105,13 @@ public class Certificate
     {
         public Mapping()
         {
-            CreateMap<ProfileCertification, Certificate>();
+            // CreateMap<ProfileCertification, Certificate>();
+            CreateMap<ProfileCertification, Certificate>()
+                .ForMember(dst => dst.Type, opt => opt.MapFrom(x => x.CredentialType))
+                .ForMember(dst => dst.ValidFromDate, opt => opt.MapFrom(x => x.IssuanceDate))
+                .ForMember(dst => dst.ValidToDate, opt => opt.MapFrom(x => x.ExpirationDate));
         }
+        
     }
 }
 
@@ -132,7 +125,12 @@ public class ProfessionalDevelopment
     {
         public Mapping()
         {
-            CreateMap<StaffProfessionalDevelopment, ProfessionalDevelopment>();
+            // CreateMap<StaffProfessionalDevelopment, ProfessionalDevelopment>();
+            CreateMap<StaffProfessionalDevelopment, ProfessionalDevelopment>()
+                .ForMember(dst => dst.AttendanceDate, opt => opt.MapFrom(x => x.AttendanceDate))
+                .ForMember(dst => dst.ProfessionalDevelopmentTitle, opt => opt.MapFrom(x => x.ProfessionalDevelopmentTitle))
+                .ForMember(dst => dst.Location, opt => opt.MapFrom(x => x.Location))
+                .ForMember(dst => dst.AlignmentToLeadership, opt => opt.MapFrom(x => x.AlignmentToLeadership));
         }
     }
 }

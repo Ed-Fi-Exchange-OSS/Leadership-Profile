@@ -78,11 +78,13 @@ public class GetAllWithPaginationQueryHandler : IRequestHandler<GetAllWithPagina
                     ,FullName
                     ,YearsOfService
                     ,Assignment
+                    ,IsActive
                     ,Institution
                     ,Degree
                     ,Email
                     ,Telephone
-                from edfi.vw_StaffSearch s
+                    ,a.InterestedInNextRole
+                from edfi.vw_StaffSearch
                 order by {fieldMapping[sortField]} {sortBy}
              ";
             // offset {(currentPage - 1) * pageSize} rows

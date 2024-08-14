@@ -8,26 +8,18 @@ public class LeaderSearch
 {
     public string? StaffUniqueId {get; set;}
     // [Key]
-    // [Column("Full Name Annon")]
-    public String? FullNameAnnon { get; set; }
-    // [Column("School Name Annon")]
-    public string? SchoolNameAnnon { get; set; }
+    public String? FullName { get; set; }
+    public string? NameOfInstitution { get; set; }
     public Double SchoolYear { get; set; }
     public string? SchoolLevel { get; set; }
-    // public string LastSurname { get; set; }
-    // public string SchoolNumberAnnon { get; set; }
     public string? Job { get; set; }
     public string? PositionTitle { get; set; }
-    public string? EmployeeIDAnnon { get; set; }
+    public string? EmployeeID { get; set; }
     public DateTime StartDate { get; set; }
-    // public string EndDate { get; set; }
     public string? VacancyCause { get; set; }
-    // public Double Age { get; set; }
-    public string? TotYrsExp { get; set; }
+    public string? TotalYearsOfExperience { get; set; }
     public string? Gender { get; set; }
     public string? Race { get; set; }
-    public string? TRSYrs { get; set; }
-    public string? RetElig { get; set; }
     public Double OverallScore { get; set; }
     public Double Domain1 { get; set; }
     public Double Domain2 { get; set; }

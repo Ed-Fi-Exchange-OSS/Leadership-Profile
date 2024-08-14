@@ -43,6 +43,9 @@ const UsePills = () => {
             case pillTypes.Position:{
                 return isAdd ? FilterActions.setPosition : FilterActions.removePosition;
             }
+            case pillTypes.Aspires:{
+                return isAdd ? FilterActions.setAspires : FilterActions.removeAspires;
+            }
             case pillTypes.Institution:{
                 return isAdd ? FilterActions.setIntitution : FilterActions.removeInstitution;
             }

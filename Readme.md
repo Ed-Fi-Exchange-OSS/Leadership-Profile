@@ -1,5 +1,7 @@
 ﻿# Leadership-Profile
 
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/Ed-Fi-Exchange-OSS/Leadership-Profile/badge)](https://securityscorecards.dev/viewer/?uri=github.com/Ed-Fi-Exchange-OSS/Leadership-Profile)
+
 This web portal built around Ed-Fi technology stack enables districts to bring
 their Leadership Development Framework measures into the hands of district
 leadership and staff.
@@ -146,9 +148,17 @@ on the `Startup` class instead of the `SmtpSender` class:
   services.AddTransient<IEmailSender, SmtpSender>();
 ```
 
+## Documentation
+
+You can refer to this documents for more technical details:
+ 
+1. [Leadership Portal Technical Guide](./docs/hw-tech-docs.docx) 
+2. Toolkit for Vacancy Planning ([PDF](./docs/toolkit_for_vacancy_planning.pdf) and [PowerPoint](./docs/toolkit_for_vacancy_planning.pptx))
+3. [Holdsworth Data request](./docs/holdsworth_data_request_v1.3.docx) to help in the Ed-Fi adoption process.
+
 ## Legal Information
 
-Copyright (c) 2023 Ed-Fi Alliance, LLC and contributors.
+Copyright (c) 2024 Ed-Fi Alliance, LLC and contributors.
 
 Licensed under the [Apache License, Version 2.0](LICENSE) (the "License").
 
